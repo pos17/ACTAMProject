@@ -1,0 +1,22 @@
+{
+  "name": "ACTAMProject",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npm run clean && parcel src/index.html",
+    "build": "rimraf ./dist/public && parcel build src/index.html --dist-dir dist/public --public-url ./",
+    "clean": "rimraf ./development && rimraf ./.parcel-cache"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/plugin-transform-runtime": "^7.16.0",
+    "@babel/runtime-corejs2": "^7.16.0",
+    "parcel": "^2.0.1",
+    "rimraf": "^3.0.2"
+  }
+}
