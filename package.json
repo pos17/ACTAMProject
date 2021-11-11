@@ -11,12 +11,15 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/plugin-transform-runtime": "^7.16.0",
-    "@babel/runtime-corejs2": "^7.16.0",
+    "@babel/runtime-corejs2": "^7.16.3",
+    "babel-cli": "^6.26.0",
     "parcel": "^2.0.1",
     "rimraf": "^3.0.2"
+  },
+  "dependencies": {
+    "spoonacular_pox": "^1.0.1"
   }
 }
