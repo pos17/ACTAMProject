@@ -20,6 +20,8 @@
     "rimraf": "^3.0.2"
   },
   "dependencies": {
-    "spoonacular_pox": "^1.0.1"
+    "@magenta/music": "^1.23.1",
+    "spoonacular_pox": "^1.0.1",
+    "web-worker": "^1.2.0"
   }
 }
