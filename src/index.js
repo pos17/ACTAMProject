@@ -5,8 +5,8 @@ import Worker from 'web-worker';
  */
 const state= {
   melody:{
-    seedWord1:"",
-    seedWord2:"",
+    seedWord1:"Melone",
+    seedWord2:"Pera",
     
   },
   sequence:{},
@@ -24,7 +24,12 @@ const state= {
   }
 }
 
-
+/**
+ *  Function to initialize the main settings of the player 
+ */
+function initializeState() {
+  //TODO: put here the part of the dialog to input first information about user: mood seedwords
+}
 
 
 
