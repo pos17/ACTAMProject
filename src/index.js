@@ -1,12 +1,37 @@
-import ("./spoonacular.js")
+import Worker from 'web-worker';
 
+/*
+ * State of the main instance of application
+ */
+const state= {
+
+  sequence:{},
+  drums: {
+    mute:false,
+    drumMachine:  new DrumMachine(
+      [
+          {name: "kick", note: "C2", obj: new Instr.Kick()},
+          {name: "snare", note: "C#2", obj: new Instr.Snare()},
+          {name: "hihatC", note: "D2", obj: new Instr.HiHatClosed()},
+          {name: "hihatO", note: "D#2", obj: new Instr.HiHatOpen()}
+      ]
+    ),
+    drumSeq:[]
+  }
+}
+
+
+
+
+
+/*-----------------------Worker -------------------------------*/ 
 
 window.mylog = function mylog() {
     console.log("Hello World!")
 }
-const myWorker = new Worker(
-  new URL("./worker.js", import.meta.url)
-);
+
+var workerURL = new URL("./worker.js", import.meta.url)
+const myWorker = new Worker(workerURL, {type:'module'} );
 
 function talkToWorker() {
     //var topic = "ciao"
@@ -33,3 +58,6 @@ myWorker.onmessage = function(e) {
 */
 const workieTalkie = document.getElementById("workieTalkie")
 workieTalkie.onclick = talkToWorker
+
+
+/*----------------------*/ 
