@@ -4,7 +4,11 @@ import Worker from 'web-worker';
  * State of the main instance of application
  */
 const state= {
-
+  melody:{
+    seedWord1:"",
+    seedWord2:"",
+    
+  },
   sequence:{},
   drums: {
     mute:false,
