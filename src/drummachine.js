@@ -1,4 +1,4 @@
-const Instr = require("./instruments")
+
 
 module.exports = class DrumMachine {
     constructor (instruments){
