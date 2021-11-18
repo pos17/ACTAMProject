@@ -1,10 +1,14 @@
 import Worker from 'web-worker';
 import DrumMachine from './DrumMachine';
+import MusicalScale from './musicalScale';
 import * as Instr from './instruments'
 /*
  * State of the main instance of application
  */
 const state= {
+  key:"", //main key of the system
+  mode:"",
+  scale:undefined, //main mode of the system 
   melody:{
     seedWord1:"",
     seedWord2:"",
@@ -28,14 +32,21 @@ initializeState()
 /**
  *  Function to initialize the main settings of the player 
  */
+
+
+
+
+
 function initializeState() {
   //TODO: put here the part of the dialog to input first information about user: mood seedwords
-    state.melody.seedWord1= "melone";
-    state.melody.seedWord2= "pera";
-    buildSequence(state.melody.seedWord1);
-    buildSequence(state.melody.seedWord2);
-  //
+  state.melody.seedWord1= "coccodrillo";
+  state.melody.seedWord2= "pera";
+  state.scale = new MusicalScale('C','ionian');
+  buildSequence(state.melody.seedWord1);
+  buildSequence(state.melody.seedWord2);
 
+  
+  //console.log("notes belonging to C ionian the scale: "+scale.scaleNotes())
 
 }
 
@@ -43,13 +54,21 @@ function initializeState() {
  * function that builds a sequence starting from a word 
  */
 function buildSequence(seedWord) {
-  var notesArray = [];
+  var melodyArray = [];
   var totalLength = 0;
-
+  var notesArray = state.scale.scaleNotes()
   //TODO: add conversion from string to NoteSequence here
-  for( var i = 0;i<seedWord.length;i++) {
+  var startTime = 0;
+  end = false
+  for( var i = 0;(i<seedWord.length&&!end);i++) {
     var module = seedWord.charCodeAt(i)% 7
-    
+    var pitch = notesArray[module]+"4"; //fixed position on the keyboard
+    var length = calculateRandomTime(32-startTime,6)
+    var noteToinsert = { pitch: pitch, startTime: startTime, endTime: startTime+length }
+    console.log(noteToinsert)
+    startTime=startTime+length
+    melodyArray.push(noteToinsert)
+    if(startTime>=32) end = true
     console.log("module:"+module+", char:"+seedWord.charAt(i)+", code:"+seedWord.charCodeAt(i))
   }
 
@@ -76,6 +95,21 @@ function buildSequence(seedWord) {
   return sequence
 }
 
+/**
+ * calculates a random note length from 1 to maxLength, with 0.5 as minimum length
+ */
+function calculateRandomTime(constraint,maxLength) {
+  maxLength = Math.round(Math.random()*((maxLength*2)));
+  //maxLength = (maxLength*2)-1
+  if((constraint*2)<(maxLength+1)) {
+  toRet = Math.round(Math.random() * ((constraint*2)-1)) +1;
+  } else {
+    toRet = Math.round(Math.random() * maxLength) +1;
+  }
+  toRet = toRet/2
+  return toRet
+}
+
 /*-----------------------Worker -------------------------------*/ 
 
 window.mylog = function mylog() {
@@ -83,7 +117,7 @@ window.mylog = function mylog() {
 }
 
 var workerURL = new URL("./worker.js", import.meta.url)
-const myWorker = new Worker(workerURL, {type:'module'} );
+const myWorker = new Worker(workerURL/*, {type:'module'}*/ );
 
 function talkToWorker() {
     //var topic = "ciao"
