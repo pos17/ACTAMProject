@@ -1,11 +1,18 @@
+//importScripts("https://cdn.jsdelivr.net/npm/@magenta/music@^1.12.0/es6/core.js");
+//const core = require('@magenta/music/node/core');
 import Worker from 'web-worker';
 import DrumMachine from './DrumMachine';
 import MusicalScale from './musicalScale';
-import * as Instr from './instruments'
+import * as Instr from './instruments';
+import {Note} from "tonal";
+import * as Tone from "tone"
 /*
  * State of the main instance of application
  */
+//const player = new core.Player();
+
 const state= {
+  worker: undefined,
   key:"", //main key of the system
   mode:"",
   scale:undefined, //main mode of the system 
@@ -28,6 +35,7 @@ const state= {
     drumSeq:[]
   }
 }
+
 initializeState()
 /**
  *  Function to initialize the main settings of the player 
@@ -37,15 +45,32 @@ initializeState()
 
 
 
-function initializeState() {
+async function   initializeState() {
   //TODO: put here the part of the dialog to input first information about user: mood seedwords
-  state.melody.seedWord1= "coccodrillo";
-  state.melody.seedWord2= "pera";
-  state.scale = new MusicalScale('C','ionian');
-  buildSequence(state.melody.seedWord1);
-  buildSequence(state.melody.seedWord2);
-
+  state.melody.seedWord1= "ciao";
+  state.melody.seedWord2= "bellissima";
+  state.scale = new MusicalScale('D','ionian');
+  var seq1 = buildSequence(state.melody.seedWord1);
+  var seq2 = buildSequence(state.melody.seedWord2);
+  var workerURL = await new URL("./worker.js", import.meta.url)
+  state.worker = await new Worker(workerURL/*, {type:'module'}*/ );
+  console.log("seq1")
+  console.log(seq1)
+  console.log("seq2")
+  console.log(seq2)
+  await interpolateMelodies(seq1,seq2);
   
+  state.worker.onmessage = (event) => {
+    if (event.data.fyi) {
+      console.log(event.data.fyi);
+    } else {
+      const sample = event.data.sample;
+      console.log("response message:"+ event.data.message)
+      const synth = new Tone.Synth().toDestination();
+      addPartToTransport(sample,synth)
+    }
+  };
+
   //console.log("notes belonging to C ionian the scale: "+scale.scaleNotes())
 
 }
@@ -63,15 +88,15 @@ function buildSequence(seedWord) {
   for( var i = 0;(i<seedWord.length&&!end);i++) {
     var module = seedWord.charCodeAt(i)% 7
     var pitch = notesArray[module]+"4"; //fixed position on the keyboard
-    var length = calculateRandomTime(32-startTime,6)
-    var noteToinsert = { pitch: pitch, startTime: startTime, endTime: startTime+length }
+    var length = calculateRandomTime(32-startTime,4)
+    var noteToinsert = { pitch: Note.midi(pitch), startTime: startTime, endTime: startTime+length }
     console.log(noteToinsert)
     startTime=startTime+length
     melodyArray.push(noteToinsert)
     if(startTime>=32) end = true
     console.log("module:"+module+", char:"+seedWord.charAt(i)+", code:"+seedWord.charCodeAt(i))
   }
-
+  totalLength = startTime
   const sequence = {
     ticksPerQuarter: 220,
     totalTime: totalLength,
@@ -85,10 +110,10 @@ function buildSequence(seedWord) {
     tempos: [
       {
         time: 0,
-        qpm: 120
+        qpm:  240
       }
     ],
-    notes: notesArray
+    notes: melodyArray
   }
 
   //{ pitch: 'G4', startTime: 25.5, endTime: 28.5 }
@@ -110,32 +135,42 @@ function calculateRandomTime(constraint,maxLength) {
   return toRet
 }
 
-/*-----------------------Worker -------------------------------*/ 
+/*-----------------------Worker --------------------------------*/ 
 
 window.mylog = function mylog() {
     console.log("Hello World!")
+    Tone.start()
+    Tone.Transport.start();
+
 }
 
-var workerURL = new URL("./worker.js", import.meta.url)
-const myWorker = new Worker(workerURL/*, {type:'module'}*/ );
 
-function talkToWorker() {
-    //var topic = "ciao"
-    someNoteSequence = "cazzi"
-    myWorker.postMessage(someNoteSequence);
-    //console.log("posted the message: "+topic+" to the worker")
+
+function interpolateMelodies(mel1ToSend,mel2ToSend) {
+  toSend={
+    message:"interpolate",
+    mel1:mel1ToSend,
+    mel2:mel2ToSend
+  }
+  _talkToWorker(toSend)
+  console.log("interpolation message sent")
+  
 }
 
-myWorker.onmessage = (event) => {
-    if (event.data.fyi) {
-      console.log(event.data.fyi);
-    } else {
-      const sample = event.data.sample;
-      console.log(sample)
-      // Do something with this sample
-    }
-  };
+/**
+ * general function to talk to the worker
+ * @param {object} toSend data be sent to the worker 
+ */
+function _talkToWorker(toSend) {
+    state.worker.postMessage(toSend);
+}
 
+
+
+/**
+ * response to worker
+ */
+  
 /*
 myWorker.onmessage = function(e) {
     result.textContent = e.data;
@@ -143,7 +178,42 @@ myWorker.onmessage = function(e) {
 }
 */
 const workieTalkie = document.getElementById("workieTalkie")
-workieTalkie.onclick = talkToWorker
+//workieTalkie.onclick = talkToWorker
 
 
 /*----------------------*/ 
+
+function addPartToTransport(noteSequence,instrument) {
+  var qpm = noteSequence.tempos[0].qpm
+  var numofnotes = noteSequence.notes.length
+  var notesToTranscribe = noteSequence.notes
+  var notes = []
+  for(var i = 0;i<numofnotes;i++) {
+    noteFromArray = notesToTranscribe[i]
+    console.log(noteFromArray.startTime)
+    var note = Note.fromMidi(noteFromArray.pitch)
+    var velocity = 0.5;
+    var measure = Math.floor(noteFromArray.startTime / 4)
+    var quarter = Math.floor(noteFromArray.startTime%4)
+    var sixteenth = Math.floor(noteFromArray.startTime*4)%16 -quarter*4;
+    console.log(measure)
+    var timeString = measure+":"+quarter+":"+sixteenth;
+    var indexInput = {
+      time:timeString,
+      note: note,
+      velocity:velocity
+    }
+    notes.push(indexInput)
+  }
+  console.log(notes)
+  console.log(qpm)
+  var i =0;
+  const part = new Tone.Part(((time, value)=> {
+      instrument.triggerAttackRelease(value.note, notesToTranscribe[i].endTime-notesToTranscribe[i].startTime,time,value.velocity )
+      i++;
+    }
+  ),notes
+  
+  ).start(0)
+
+}
