@@ -47,9 +47,9 @@ initializeState()
 
 async function   initializeState() {
   //TODO: put here the part of the dialog to input first information about user: mood seedwords
-  state.melody.seedWord1= "ciao";
+  state.melody.seedWord1= "ciaonissimo";
   state.melody.seedWord2= "bellissima";
-  state.scale = new MusicalScale('D','ionian');
+  state.scale = new MusicalScale('D','aeolian');
   var seq1 = buildSequence(state.melody.seedWord1);
   var seq2 = buildSequence(state.melody.seedWord2);
   var workerURL = await new URL("./worker.js", import.meta.url)
@@ -67,6 +67,11 @@ async function   initializeState() {
       const sample = event.data.sample;
       console.log("response message:"+ event.data.message)
       const synth = new Tone.Synth().toDestination();
+      const pingPong = new Tone.PingPongDelay("8n", 0.4).toDestination();
+      //const freeverb = new Tone.Freeverb().toDestination();
+      //freeverb.dampening = 1000;
+      synth.connect(pingPong)//.connect(freeverb)
+      
       addPartToTransport(sample,synth)
     }
   };
@@ -87,7 +92,7 @@ function buildSequence(seedWord) {
   end = false
   for( var i = 0;(i<seedWord.length&&!end);i++) {
     var module = seedWord.charCodeAt(i)% 7
-    var pitch = notesArray[module]+"4"; //fixed position on the keyboard
+    var pitch = notesArray[module]+"5"; //fixed position on the keyboard
     var length = calculateRandomTime(32-startTime,4)
     var noteToinsert = { pitch: Note.midi(pitch), startTime: startTime, endTime: startTime+length }
     console.log(noteToinsert)
@@ -124,8 +129,8 @@ function buildSequence(seedWord) {
  * calculates a random note length from 1 to maxLength, with 0.5 as minimum length
  */
 function calculateRandomTime(constraint,maxLength) {
-  maxLength = Math.round(Math.random()*((maxLength*2)));
-  //maxLength = (maxLength*2)-1
+  //maxLength = Math.round(Math.random()*((maxLength*2)));
+  maxLength = (maxLength*2)-1
   if((constraint*2)<(maxLength+1)) {
   toRet = Math.round(Math.random() * ((constraint*2)-1)) +1;
   } else {
@@ -209,7 +214,7 @@ function addPartToTransport(noteSequence,instrument) {
   console.log(qpm)
   var i =0;
   const part = new Tone.Part(((time, value)=> {
-      instrument.triggerAttackRelease(value.note, notesToTranscribe[i].endTime-notesToTranscribe[i].startTime,time,value.velocity )
+      instrument.triggerAttackRelease(value.note, "4n"/*notesToTranscribe[i].endTime-notesToTranscribe[i].startTime*/,time,value.velocity )
       i++;
     }
   ),notes
