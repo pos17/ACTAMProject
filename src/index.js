@@ -79,7 +79,7 @@ function buildSequence(seedWord) {
   end = false
   for( var i = 0;(i<seedWord.length&&!end);i++) {
     var module = seedWord.charCodeAt(i)% 7
-    var pitch = notesArray[module]+"5"; //fixed position on the keyboard
+    var pitch = notesArray[module]+"4"; //fixed position on the keyboard
     var length = calculateRandomTime(32-startTime,4)
     var noteToinsert = { pitch: Note.midi(pitch), startTime: startTime, endTime: startTime+length }
     console.log(noteToinsert)
@@ -134,6 +134,9 @@ window.mylog = function mylog() {
     Tone.start()
     Tone.Transport.start();
     Tone.Transport.bpm.value = 60;
+    Tone.Transport.loopEnd = "8m"
+    Tone.Transport.loopStart = 0
+    Tone.Transport.loop=true
 }
 /**
  * function that handles the messages from the external worker, message used as routing for the switch case path
@@ -181,7 +184,28 @@ function workieTalkie(event) {
       //synth.connect(pingPong)//.connect(freeverb)
       
       addPartToTransport(sample,synth)
-      
+      const AMSynth =  new Tone.PolySynth(/*{
+        envelope: {
+          attack: 1,
+          decay: 0.6,
+          sustain: 0.6,
+          release: 0.8,}
+      }*/).toDestination();
+      const partChord = new Tone.Part(((time, value)=> {
+        AMSynth.triggerAttackRelease(value, "2m",time,0.5 )
+        console.log("playi")
+        console.log(value)
+        
+      }
+    ),[
+        [0, ["C3","Eb3","G3"]],//[0, "Eb2"],[0, "G2"], 
+        ["2:0", ["Gb2","Bb3","Db3"]],//["2:0", "Bb3"],["2:0", "Db3"],
+        ["4:0", ["Db3","F3","Ab3"]],//["4:0", "F2"],["4:0", "Ab2"],
+        ["6:0", ["G2","Bb3","Eb3"]]//,["6:0", "Bb2"],["6:0", "Eb2"],
+    ]
+    ).start(0)
+    partChord.loopEnd = "8m";
+    partChord.loop = true;
     } break;
   }
 };
@@ -255,5 +279,6 @@ function addPartToTransport(noteSequence,instrument) {
   ),notes
   
   ).start(0)
-
+  part.loopEnd="8m"
+  part.loopEnd = true;
 }
