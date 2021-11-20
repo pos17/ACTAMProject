@@ -1,20 +1,24 @@
 importScripts("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.4.0/dist/tf.min.js");
 importScripts("https://cdn.jsdelivr.net/npm/@magenta/music@^1.12.0/es6/core.js");
 importScripts("https://cdn.jsdelivr.net/npm/@magenta/music@^1.12.0/es6/music_vae.js");
+importScripts("https://cdn.jsdelivr.net/npm/@magenta/music@1.17.0/es6/music_rnn.js");
 //import music_vae from '@magenta/music/node/music_vae';
 //const music_vae = require('@magenta/music/node/music_vae');
 const mvae = new music_vae.MusicVAE('https://storage.googleapis.com/magentadata/js/checkpoints/music_vae/mel_2bar_small');
-
+const mrnn = new music_rnn.MusicRNN("https://storage.googleapis.com/magentadata/js/checkpoints/music_rnn/chord_pitches_improv");
 // Main script asks for work.
 self.onmessage = async (event) => {
   taskType = event.data.message
   console.log("message received, type of work: "+taskType)
   switch(taskType) {
+    case "hi":
+      post("hi","Hello There!")
+      break;
     case "interpolate":
       interpolate(event.data.mel1,event.data.mel2)
       break;
     case "continue":
-      // code block
+      continueMelody(event.data.mel,event.data.length,event.data.chordProgression)
       break;
     default:
       console.error("no message to the, don't know what to do!")
@@ -25,7 +29,7 @@ self.onmessage = async (event) => {
 async function interpolate(mel1, mel2) {
   if (!mvae.isInitialized()) {
     await mvae.initialize();
-    postMessage({fyi: 'model initialized'});
+    post("fyi","mrnnInitialized")
   }
   mel1q = core.sequences.quantizeNoteSequence(mel1, 1)
   mel2q = core.sequences.quantizeNoteSequence(mel2, 1)
@@ -50,12 +54,43 @@ async function interpolate(mel1, mel2) {
   console.log(concatenatedOut2)
   // Send main script the result.
   
-  self.postMessage({
-    message:"interpolation",
-    sample: concatenatedOut2
-  });
+  post("interpolation",concatenatedOut2);
 }
 
+async function continueMelody(mel, length,chordProgression) {
+  if (!mrnn.isInitialized()) {
+    await mrnn.initialize();
+    post("fyi","mrnnInitialized")
+  }
+  melq = core.sequences.quantizeNoteSequence(mel, 1)
+  console.log("mel")
+  console.log(mel)
+  console.log("melq")
+  console.log(melq)
+  const result = await mrnn.continueSequence(
+    melq,
+    length,
+    1.0,
+    chordProgression
+  );
+  console.log("result of continue:")
+  console.log(result)
+  var continueOut = core.sequences.unquantizeSequence(result,60)
+  console.log("unquantizedContinue")
+  console.log(continueOut)
+  // Send main script the result.
+  
+  post("continue",continueOut);
+}
+
+function post(message,element="Nothing,sorry :(") {
+  self.postMessage(
+    {
+      message:message,
+      element:element
+    }
+  )
+}
 
 /*
 onmessage = function(e) {

@@ -16,6 +16,7 @@ const state= {
   key:"", //main key of the system
   mode:"",
   scale:undefined, //main mode of the system 
+  bpm:60,
   melody:{
     seedWord1:"",
     seedWord2:"",
@@ -49,7 +50,7 @@ async function   initializeState() {
   //TODO: put here the part of the dialog to input first information about user: mood seedwords
   state.melody.seedWord1= "ciaonissimo";
   state.melody.seedWord2= "bellissima";
-  state.scale = new MusicalScale('D','aeolian');
+  state.scale = new MusicalScale('C','phrygian');
   var seq1 = buildSequence(state.melody.seedWord1);
   var seq2 = buildSequence(state.melody.seedWord2);
   var workerURL = await new URL("./worker.js", import.meta.url)
@@ -60,21 +61,7 @@ async function   initializeState() {
   console.log(seq2)
   await interpolateMelodies(seq1,seq2);
   
-  state.worker.onmessage = (event) => {
-    if (event.data.fyi) {
-      console.log(event.data.fyi);
-    } else {
-      const sample = event.data.sample;
-      console.log("response message:"+ event.data.message)
-      const synth = new Tone.Synth().toDestination();
-      const pingPong = new Tone.PingPongDelay("8n", 0.4).toDestination();
-      //const freeverb = new Tone.Freeverb().toDestination();
-      //freeverb.dampening = 1000;
-      synth.connect(pingPong)//.connect(freeverb)
-      
-      addPartToTransport(sample,synth)
-    }
-  };
+  state.worker.onmessage = (event)=> {workieTalkie(event)}
 
   //console.log("notes belonging to C ionian the scale: "+scale.scaleNotes())
 
@@ -132,7 +119,7 @@ function calculateRandomTime(constraint,maxLength) {
   //maxLength = Math.round(Math.random()*((maxLength*2)));
   maxLength = (maxLength*2)-1
   if((constraint*2)<(maxLength+1)) {
-  toRet = Math.round(Math.random() * ((constraint*2)-1)) +1;
+  toRet = Math.floor(Math.random() * ((constraint*2)-1)) +1;
   } else {
     toRet = Math.round(Math.random() * maxLength) +1;
   }
@@ -146,10 +133,58 @@ window.mylog = function mylog() {
     console.log("Hello World!")
     Tone.start()
     Tone.Transport.start();
-
+    Tone.Transport.bpm.value = 60;
 }
-
-
+/**
+ * function that handles the messages from the external worker, message used as routing for the switch case path
+ * @param {Event} event object that wraps all the data to be 
+ */
+function workieTalkie(event) {
+  switch(event.data.message){
+    case "fyi": {
+      console.log(event.data.element);
+    } break;
+    case "interpolation": {
+      const sample = event.data.element;
+      console.log("response message:"+ event.data.message)
+      state.worker.postMessage(
+        {
+          message:"continue",
+          mel:sample,
+          length:32,
+          chordProgression:["Cm","Gb","Db","Gdim"]
+        }
+      )
+      /*const synth = new Tone.Synth().toDestination();
+      const pingPong = new Tone.PingPongDelay("8n", 0.3).toDestination();
+      //const freeverb = new Tone.Freeverb().toDestination();
+      //freeverb.dampening = 1000;
+      synth.connect(pingPong)//.connect(freeverb)
+      
+      addPartToTransport(sample,synth)
+      */
+    } break;
+    case "continue": {
+      const sample = event.data.element;
+      console.log("response message:"+ event.data.message)
+      var synth = new Tone.Synth({
+        envelope: {
+          attack: 1,
+          decay: 0.6,
+          sustain: 0.6,
+          release: 0.8,}
+      }).toDestination();
+      
+      //const pingPong = new Tone.PingPongDelay("8n", 0.3).toDestination();
+      //const freeverb = new Tone.Freeverb().toDestination();
+      //freeverb.dampening = 1000;
+      //synth.connect(pingPong)//.connect(freeverb)
+      
+      addPartToTransport(sample,synth)
+      
+    } break;
+  }
+};
 
 function interpolateMelodies(mel1ToSend,mel2ToSend) {
   toSend={
@@ -182,7 +217,7 @@ myWorker.onmessage = function(e) {
     console.log("Message received from worker: " + resul.textContent)
 }
 */
-const workieTalkie = document.getElementById("workieTalkie")
+//const workieTalkie = document.getElementById("workieTalkie")
 //workieTalkie.onclick = talkToWorker
 
 
@@ -214,7 +249,7 @@ function addPartToTransport(noteSequence,instrument) {
   console.log(qpm)
   var i =0;
   const part = new Tone.Part(((time, value)=> {
-      instrument.triggerAttackRelease(value.note, "4n"/*notesToTranscribe[i].endTime-notesToTranscribe[i].startTime*/,time,value.velocity )
+      instrument.triggerAttackRelease(value.note, /*"4n"*/notesToTranscribe[i].endTime-notesToTranscribe[i].startTime,time,value.velocity )
       i++;
     }
   ),notes
