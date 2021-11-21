@@ -176,14 +176,15 @@ function workieTalkie(event) {
     case "continue": {
       const sample = event.data.element;
       console.log("response message:"+ event.data.message)
-      var synth = new Tone.FMSynth({
+      /* var synth = new Tone.FMSynth({
         envelope: {
           attack: 1,
           decay: 0.6,
           sustain: 0.6,
           release: 0.8,}
-      }).toDestination();
-      synth.volume.value = -6;
+      }).toDestination(); */
+      var synth = new Instr.Lead()
+      synth.volume = -10;  
       //const pingPong = new Tone.PingPongDelay("8n", 0.3).toDestination();
       //const freeverb = new Tone.Freeverb().toDestination();
       //freeverb.dampening = 1000;
@@ -280,7 +281,7 @@ function addPartToTransport(noteSequence,instrument) {
   console.log(qpm)
   var i =0;
   const part = new Tone.Part(((time, value)=> {
-      instrument.triggerAttackRelease(value.note, /*"4n"*/notesToTranscribe[i].endTime-notesToTranscribe[i].startTime,time,value.velocity )
+      instrument.triggerAttackRelease(value.note, /*"4n"*/notesToTranscribe[i].endTime-notesToTranscribe[i].startTime, time, value.velocity )
       console.log(value.note)
       if(i<notesToTranscribe.length-1) i++;
       else i=0;
