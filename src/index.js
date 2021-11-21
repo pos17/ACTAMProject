@@ -20,13 +20,16 @@ const state= {
   harmony:{
     mute:false,
     chordProgression: ["Cm","Gb","Db","Gdim"],
-    startTime: "0"
+    startTime: "0",
+    possibleProgressions: [
+      ["I","VI","II","V"],
+    ]
   },
   melody:{
     mute:false,
     seedWord1:"",
     seedWord2:"",
-    
+    melodyPart:undefined
   },
   sequence:{},
   drums: {
@@ -143,6 +146,15 @@ window.mylog = function mylog() {
     Tone.Transport.loopEnd = "8m"
     Tone.Transport.loopStart = 0
     Tone.Transport.loop=true
+    console.log("one quarter to Seconds:"+Tone.Time("4n").toSeconds())
+    Tone.Transport.bpm.value = 70;
+    console.log("one quarter to Seconds:"+Tone.Time("4n").toSeconds())
+    Tone.Transport.schedule((time) => {
+      console.log(Tone.Transport.now())
+      console.log("calling scheduled function")
+      addPartToTransport(state.melody.melodyPart,synth)
+    }, "7:3:0");
+    
 }
 /**
  * function that handles the messages from the external worker, message used as routing for the switch case path
@@ -176,6 +188,7 @@ function workieTalkie(event) {
     case "continue": {
       const sample = event.data.element;
       console.log("response message:"+ event.data.message)
+      /*
       var synth = new Tone.FMSynth({
         envelope: {
           attack: 1,
@@ -184,35 +197,16 @@ function workieTalkie(event) {
           release: 0.8,}
       }).toDestination();
       synth.volume.value = -6;
+      */
       //const pingPong = new Tone.PingPongDelay("8n", 0.3).toDestination();
       //const freeverb = new Tone.Freeverb().toDestination();
       //freeverb.dampening = 1000;
       //synth.connect(pingPong)//.connect(freeverb)
+      var notePart = generatePart(sample);
+      state.melody.melodyPart = notePart;
+
+     
       
-      addPartToTransport(sample,synth)
-      const AMSynth =  new Tone.PolySynth(/*{
-        envelope: {
-          attack: 1,
-          decay: 0.6,
-          sustain: 0.6,
-          release: 0.8,}
-      }*/).toDestination();
-      AMSynth.volume.value = -6;
-      const partChord = new Tone.Part(((time, value)=> {
-        AMSynth.triggerAttackRelease(value, "2m",time,0.5 )
-        console.log("playi")
-        console.log(value)
-        
-      }
-    ),[
-        [0, ["C3","Eb3","G3"]],//[0, "Eb2"],[0, "G2"], 
-        ["2:0", ["Gb2","Bb3","Db3"]],//["2:0", "Bb3"],["2:0", "Db3"],
-        ["4:0", ["Db3","F3","Ab3"]],//["4:0", "F2"],["4:0", "Ab2"],
-        ["6:0", ["G2","Bb3","Eb3"]]//,["6:0", "Bb2"],["6:0", "Eb2"],
-    ]
-    ).start(0)
-    partChord.loopEnd = "8m";
-    partChord.loop = true;
     } break;
   }
 };
@@ -254,7 +248,7 @@ myWorker.onmessage = function(e) {
 
 /*----------------------*/ 
 
-function addPartToTransport(noteSequence,instrument) {
+function generatePart(noteSequence) {
   var qpm = noteSequence.tempos[0].qpm
   var numofnotes = noteSequence.notes.length
   var notesToTranscribe = noteSequence.notes
@@ -264,30 +258,75 @@ function addPartToTransport(noteSequence,instrument) {
     console.log(noteFromArray.startTime)
     var note = Note.fromMidi(noteFromArray.pitch)
     var velocity = 0.5;
-    var measure = Math.floor(noteFromArray.startTime / 4)
+    var measure = Math.floor(noteFromArray.startTime/4)
     var quarter = Math.floor(noteFromArray.startTime%4)
     var sixteenth = Math.floor(noteFromArray.startTime*4)%16 -quarter*4;
     console.log(measure)
     var timeString = measure+":"+quarter+":"+sixteenth;
+    var durationTime = noteFromArray.endTime-noteFromArray.startTime
+    var measureDur = Math.floor(durationTime/4)
+    var quarterDur = Math.floor(durationTime%4)
+    var sixteenthDur = Math.floor(durationTime*4)%16 -quarterDur*4;
+    var durationString=measureDur+":"+quarterDur+":"+sixteenthDur;
     var indexInput = {
       time:timeString,
       note: note,
-      velocity:velocity
+      velocity:velocity,
+      duration:durationString
     }
     notes.push(indexInput)
   }
   console.log(notes)
   console.log(qpm)
-  var i =0;
+  
+  return notes
+}
+
+function addPartToTransport(notePart,instrument) {
+  
   const part = new Tone.Part(((time, value)=> {
-      instrument.triggerAttackRelease(value.note, /*"4n"*/notesToTranscribe[i].endTime-notesToTranscribe[i].startTime,time,value.velocity )
+      instrument.triggerAttackRelease(value.note, /*"4n"*/value.duration,time,value.velocity )
       console.log(value.note)
-      if(i<notesToTranscribe.length-1) i++;
-      else i=0;
     }
-  ),notes
+  ),notePart
   
   ).start(0)
-  part.loopEnd="8m"
-  part.loop = true;
+  //part.loopEnd="8m"
+  //part.loop = false;
 }
+
+Tone.Transport.schedule((time) => {
+	console.log(Tone.Transport.now())
+  console.log("calling scheduled function")
+  addPartToTransport(state.melody.melodyPart,synth)
+}, "7:3:0");
+
+var synth = new Tone.FMSynth({
+  envelope: {
+    attack: 0.1}
+}).toDestination();
+synth.volume.value = -6;
+
+const AMSynth =  new Tone.PolySynth(/*{
+  envelope: {
+    attack: 1,
+    decay: 0.6,
+    sustain: 0.6,
+    release: 0.8,}
+}*/).toDestination();
+AMSynth.volume.value = -6;
+const partChord = new Tone.Part(((time, value)=> {
+  AMSynth.triggerAttackRelease(value, "2m",time,0.5 )
+  console.log("playi")
+  console.log(value)
+  
+}
+),[
+  [0, ["C3","Eb3","G3"]],//[0, "Eb2"],[0, "G2"], 
+  ["2:0", ["Gb2","Bb3","Db3"]],//["2:0", "Bb3"],["2:0", "Db3"],
+  ["4:0", ["Db3","F3","Ab3"]],//["4:0", "F2"],["4:0", "Ab2"],
+  ["6:0", ["G2","Bb3","Eb3"]]//,["6:0", "Bb2"],["6:0", "Eb2"],
+]
+).start(0)
+partChord.loopEnd = "8m";
+partChord.loop = true;
