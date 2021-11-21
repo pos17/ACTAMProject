@@ -14,11 +14,19 @@ const urls = {
     moon: new URL('../assets/MOON/Moon.png', import.meta.url),
     star: new URL('../assets/Small Star.png', import.meta.url),
     bigStar: new URL('../assets/Big Star.png', import.meta.url),
+    treeMaj: new URL('../assets/TREES/Tree Maj.png', import.meta.url),
+    treeMin: new URL('../assets/TREES/Tree Min.png', import.meta.url),
+    treeAlt: new URL('../assets/TREES/Tree Alt.png', import.meta.url),
 }
 
 var assets = {
     MoonUrls: ['../assets/MOON/Moon.png'],
-    stars: []
+    stars: [],
+    trees: {
+        Maj: [],
+        Min: [],
+        Alt: [],
+    }
 }
 
 
@@ -63,6 +71,7 @@ function addImage () {
         display: 'none'
     });
 
+
     addStars(150)
 
 }
@@ -77,6 +86,42 @@ function addStars (num) {
             zIndex:'0'
         })
     }
+}
+
+function addTreeMaj () {
+    var img = addImageToCanvasDiv(urls.treeMaj, {
+        class: 'overlay',
+        width: `${19/256*100}%`,
+        left: `${Math.floor(Math.random()*40)}%`,
+        bottom: `${Math.floor(Math.random()*17)}%`,
+        zIndex:'+2'
+    })
+    assets.trees.Maj.push(img)
+    console.log(assets)
+}
+
+function addTreeMin () {
+    var img = addImageToCanvasDiv(urls.treeMin, {
+        class: 'overlay',
+        width: `${19/256*100}%`,
+        left: `${Math.floor(Math.random()*40)}%`,
+        bottom: `${Math.floor(Math.random()*17)}%`,
+        zIndex:'+2'
+    })
+    assets.trees.Min.push(img)
+    console.log(assets)
+}
+
+function addTreeAlt () {
+    var img = addImageToCanvasDiv(urls.treeAlt, {
+        class: 'overlay',
+        width: `${19/256*100}%`,
+        left: `${Math.floor(Math.random()*40)}%`,
+        bottom: `${Math.floor(Math.random()*17)}%`,
+        zIndex:'+2'
+    })
+    assets.trees.Alt.push(img)
+    console.log(assets)
 }
 
 
@@ -137,6 +182,10 @@ function addImageToCanvasDiv (src, params) {
 
 
 document.getElementById("stop").onclick = () => {clearInterval(timer)};
+document.getElementById('tree-M').onclick = addTreeMaj;
+document.getElementById('tree-m').onclick = addTreeMin;
+document.getElementById('tree-A').onclick = addTreeAlt;
+
 
 let timer = setInterval(()=> {
     subStar(assets.stars[Math.floor(Math.random()*assets.stars.length)]);
