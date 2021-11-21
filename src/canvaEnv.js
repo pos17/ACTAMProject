@@ -7,7 +7,8 @@ console.log('sky width: '+sky.clientWidth);
 
 var state = {
     canvas: {},
-    assets: {}
+    assets: {},
+    redMountains: false
 } 
 
 const urls = {
@@ -192,6 +193,17 @@ document.getElementById("stop").onclick = () => {clearInterval(timer)};
 document.getElementById('tree-M').onclick = addTreeMaj;
 document.getElementById('tree-m').onclick = addTreeMin;
 document.getElementById('tree-A').onclick = addTreeAlt;
+document.getElementById('toggleRed').onclick = toggleRedFun;
+
+function toggleRedFun() {
+    if(!state.redMountains){
+        assets.mountains.src = urls.mountains[1]
+        state.redMountains = true
+    } else {
+        assets.mountains.src = urls.mountains[0]
+        state.redMountains =  false
+    }
+}
 
 
 timer = setInterval(()=> {
@@ -201,22 +213,26 @@ timer = setInterval(()=> {
 window.addEventListener('load', ()=>{
     console.log(assets)
 })
-
+/*
 var myMount = new Vue({
-    el: '#mountains',
-
+    el: '#toggleRed',
     data: {
         red: true,
     },
     
-    method: {
-        seeMe: function () {
-            if (this.red) {
-                assets.mountains.src = urls.mountains[1]
-            }
-        }
+    methods: { toggleRed: function() {
+        if(red) this.red = false
+        else this.red =true;
+        console.log("red="+this.red)
     }
-}); 
-
+    },
+    
+    updated: function () {
+        if (this.red) {
+            assets.mountains.src = urls.mountains[1]
+         }
+    }
+});
+*/ 
 addImage()
 // initCanvas()
