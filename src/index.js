@@ -282,3 +282,6 @@ function addPartToTransport(noteSequence,instrument) {
   part.loopEnd="8m"
   part.loopEnd = true;
 }
+
+
+

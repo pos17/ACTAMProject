@@ -126,4 +126,40 @@ module.exports = {
     Snare: Snare,
     HiHatClosed: HiHatClosed,
     HiHatOpen: HiHatOpen,   
+    Pad: Pad,
+}
+
+
+class Pad {
+    constructor(){
+        var pad = new Tone.PolySynth(6, Tone.Synth);
+        pad.set({
+            oscillator: {
+                type: 'triangle',
+            },
+            
+            envelope: {
+                attack: '4n',
+                decay: '0',
+                sustain: '1',
+                release:  '2n'
+            }
+        })
+
+        var filter = new Tone.Filter({
+            frequency: '100Hz',
+            type: 'lowpass',
+            rolloff: '-24db'
+        })
+
+        pad.connect(filter).toDestination();
+
+        this.pad = pad
+        this.filter = filter
+    }
+
+    triggerAttackRelease(notes, duration, time, velocity) {
+        this.pad.triggerAttackRelease(notes, duration, time, velocity)
+    }
+
 }
