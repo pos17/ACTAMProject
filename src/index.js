@@ -184,13 +184,14 @@ function workieTalkie(event) {
       //synth.connect(pingPong)//.connect(freeverb)
       
       addPartToTransport(sample,synth)
-      const AMSynth =  new Tone.PolySynth(/*{
+      /*const AMSynth =  new Tone.PolySynth({
         envelope: {
           attack: 1,
           decay: 0.6,
           sustain: 0.6,
           release: 0.8,}
-      }*/).toDestination();
+      }).toDestination();*/
+      const AMSynth = new Instr.Pad();
       const partChord = new Tone.Part(((time, value)=> {
         AMSynth.triggerAttackRelease(value, "2m",time,0.5 )
         console.log("playi")
