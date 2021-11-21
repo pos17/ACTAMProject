@@ -14,10 +14,16 @@ import * as Tone from "tone"
 const state= {
   worker: undefined,
   key:"", //main key of the system
-  mode:"",
-  scale:undefined, //main mode of the system 
+  mode:"", //reference mode 
+  scale:undefined, //scale 
   bpm:60,
+  harmony:{
+    mute:false,
+    chordProgression: ["Cm","Gb","Db","Gdim"],
+    startTime: "0"
+  },
   melody:{
+    mute:false,
     seedWord1:"",
     seedWord2:"",
     
@@ -48,8 +54,8 @@ initializeState()
 
 async function   initializeState() {
   //TODO: put here the part of the dialog to input first information about user: mood seedwords
-  state.melody.seedWord1= "ciaonissimo";
-  state.melody.seedWord2= "bellissima";
+  state.melody.seedWord1= "ciao";
+  state.melody.seedWord2= "bella";
   state.scale = new MusicalScale('C','phrygian');
   var seq1 = buildSequence(state.melody.seedWord1);
   var seq2 = buildSequence(state.melody.seedWord2);
@@ -170,14 +176,14 @@ function workieTalkie(event) {
     case "continue": {
       const sample = event.data.element;
       console.log("response message:"+ event.data.message)
-      var synth = new Tone.Synth({
+      var synth = new Tone.FMSynth({
         envelope: {
           attack: 1,
           decay: 0.6,
           sustain: 0.6,
           release: 0.8,}
       }).toDestination();
-      
+      synth.volume.value = -6;
       //const pingPong = new Tone.PingPongDelay("8n", 0.3).toDestination();
       //const freeverb = new Tone.Freeverb().toDestination();
       //freeverb.dampening = 1000;
@@ -275,13 +281,15 @@ function addPartToTransport(noteSequence,instrument) {
   var i =0;
   const part = new Tone.Part(((time, value)=> {
       instrument.triggerAttackRelease(value.note, /*"4n"*/notesToTranscribe[i].endTime-notesToTranscribe[i].startTime,time,value.velocity )
-      i++;
+      console.log(value.note)
+      if(i<notesToTranscribe.length-1) i++;
+      else i=0;
     }
   ),notes
   
   ).start(0)
   part.loopEnd="8m"
-  part.loopEnd = true;
+  part.loop = true;
 }
 
 
