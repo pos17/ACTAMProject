@@ -1,5 +1,3 @@
-import Vue from "vue";
-
 
 const canvasDiv = document.getElementById('canvas-div');
 const sky = document.getElementById('sky');
