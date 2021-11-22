@@ -12,12 +12,14 @@ import * as Tone from "tone"
 //const player = new core.Player();
 
 const state= {
+  currentRepetition:0,
   worker: undefined,
   key:"", //main key of the system
   mode:"", //reference mode 
   scale:undefined, //scale 
   bpm:60,
   harmony:{
+    instrument: new Tone.PolySynth().toDestination(),
     mute:false,
     chordProgression: ["Cm","Gb","Db","Gdim"],
     startTime: "0",
@@ -26,10 +28,15 @@ const state= {
     ]
   },
   melody:{
+    instrument: new Tone.FMSynth({
+      envelope: {
+        attack: 0.1}
+    }).toDestination(),
     mute:false,
     seedWord1:"",
     seedWord2:"",
-    melodyPart:undefined
+    melodyPart:undefined,
+    noteSequence:undefined
   },
   sequence:{},
   drums: {
@@ -143,18 +150,20 @@ window.mylog = function mylog() {
     Tone.start()
     Tone.Transport.start();
     Tone.Transport.bpm.value = 60;
-    Tone.Transport.loopEnd = "8m"
-    Tone.Transport.loopStart = 0
-    Tone.Transport.loop=true
+    //Tone.Transport.loopEnd = "8m"
+    //Tone.Transport.loopStart = 0
+    //Tone.Transport.loop=true
     console.log("one quarter to Seconds:"+Tone.Time("4n").toSeconds())
     Tone.Transport.bpm.value = 70;
     console.log("one quarter to Seconds:"+Tone.Time("4n").toSeconds())
+    //state.melody.playingPart=addPartToTransport(state.melody.melodyPart,synth)
+    /*
     Tone.Transport.schedule((time) => {
       console.log(Tone.Transport.now())
       console.log("calling scheduled function")
       addPartToTransport(state.melody.melodyPart,synth)
     }, "7:3:0");
-    
+    */
 }
 /**
  * function that handles the messages from the external worker, message used as routing for the switch case path
@@ -202,6 +211,7 @@ function workieTalkie(event) {
       //const freeverb = new Tone.Freeverb().toDestination();
       //freeverb.dampening = 1000;
       //synth.connect(pingPong)//.connect(freeverb)
+      state.melody.noteSequence = sample
       var notePart = generatePart(sample);
       state.melody.melodyPart = notePart;
 
@@ -282,7 +292,7 @@ function generatePart(noteSequence) {
   return notes
 }
 
-function addPartToTransport(notePart,instrument) {
+function addPartToTransport(notePart,instrument,startTime) {
   
   const part = new Tone.Part(((time, value)=> {
       instrument.triggerAttackRelease(value.note, /*"4n"*/value.duration,time,value.velocity )
@@ -290,33 +300,54 @@ function addPartToTransport(notePart,instrument) {
     }
   ),notePart
   
-  ).start(0)
+  ).start(startTime)
   //part.loopEnd="8m"
   //part.loop = false;
+  return part 
 }
 
-Tone.Transport.schedule((time) => {
-	console.log(Tone.Transport.now())
-  console.log("calling scheduled function")
-  addPartToTransport(state.melody.melodyPart,synth)
-}, "7:3:0");
+//addPartToTransport(state.melody.melodyPart,synth)
 
-var synth = new Tone.FMSynth({
+Tone.Transport.scheduleRepeat((time) => {
+	//console.log(Tone.Transport.now())
+  //console.log("calling scheduled function")
+  state.currentRepetition+=8;
+  var repStr = state.currentRepetition+"m"
+  addPartToTransport(state.melody.melodyPart,state.melody.instrument,repStr)
+  //console.log("time next sub:" +Tone.Transport.nextSubdivision("8m"))
+  console.log("measure 16!");
+  state.worker.postMessage(
+    {
+      message:"continue",
+      mel:state.melody.noteSequence,
+      length:32,
+      chordProgression:["Cm","Gb","Db","Gdim"]
+    }
+  )
+},interval="8m",startTime="7:3:0");
+
+/*
+var j = 0;
+Tone.Transport.scheduleRepeat((time) => {
+  console.log("measure num:" + j++)
+},interval="8m",startTime="0:0:0");
+*/
+state.melody.instrument = new Tone.FMSynth({
   envelope: {
     attack: 0.1}
 }).toDestination();
-synth.volume.value = -6;
+state.harmony.instrument.volume.value = -6;
 
-const AMSynth =  new Tone.PolySynth(/*{
+state.harmony.instrument =  new Tone.PolySynth(/*{
   envelope: {
     attack: 1,
     decay: 0.6,
     sustain: 0.6,
     release: 0.8,}
 }*/).toDestination();
-AMSynth.volume.value = -6;
+state.harmony.instrument.volume.value = -6;
 const partChord = new Tone.Part(((time, value)=> {
-  AMSynth.triggerAttackRelease(value, "2m",time,0.5 )
+  state.harmony.instrument.triggerAttackRelease(value, "2m",time,0.5 )
   console.log("playi")
   console.log(value)
   
