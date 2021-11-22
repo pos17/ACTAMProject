@@ -279,9 +279,26 @@ function addImageToCanvasDiv (src, params) {
 
 let timer;
 document.getElementById("stop").onclick = () => {clearInterval(timer)};
+<<<<<<< HEAD
 // document.getElementById('tree-M').onclick = addTreeMaj;
 // document.getElementById('tree-m').onclick = addTreeMin;
 // document.getElementById('tree-A').onclick = addTreeAlt;
+=======
+document.getElementById('tree-M').onclick = addTreeMaj;
+document.getElementById('tree-m').onclick = addTreeMin;
+document.getElementById('tree-A').onclick = addTreeAlt;
+document.getElementById('toggleRed').onclick = toggleRedFun;
+
+function toggleRedFun() {
+    if(!state.redMountains){
+        assets.mountains.src = urls.mountains[1]
+        state.redMountains = true
+    } else {
+        assets.mountains.src = urls.mountains[0]
+        state.redMountains =  false
+    }
+}
+>>>>>>> 23d78fc9bbba2e037e6ca31ac93725bb3db2fdaf
 
 
 timer = setInterval(()=> {
@@ -291,11 +308,35 @@ timer = setInterval(()=> {
 window.addEventListener('load', ()=>{
     console.log(state)
 })
+<<<<<<< HEAD
 
 
 /* state.assets.moon.onclick = (e) => {
     e.target.src = new_assets.mountains.url[1]
 } */
 
+=======
+/*
+var myMount = new Vue({
+    el: '#toggleRed',
+    data: {
+        red: true,
+    },
+    
+    methods: { toggleRed: function() {
+        if(red) this.red = false
+        else this.red =true;
+        console.log("red="+this.red)
+    }
+    },
+    
+    updated: function () {
+        if (this.red) {
+            assets.mountains.src = urls.mountains[1]
+         }
+    }
+});
+*/ 
+>>>>>>> 23d78fc9bbba2e037e6ca31ac93725bb3db2fdaf
 addImage()
 // initCanvas()
