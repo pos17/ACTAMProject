@@ -42,6 +42,7 @@ const state= {
     seedWord1:"",
     seedWord2:"",
     melodyPart:undefined,
+    playingPart:undefined,
     noteSequence:undefined
   },
   sequence:{},
@@ -87,9 +88,9 @@ async function   initializeState() {
   
   state.worker.onmessage = (event)=> {workieTalkie(event)}
   state.melody.instrument = new Instr.Lead()
-  state.melody.instrument.volume = -18;
+  state.melody.instrument.setVolume(-10);
   state.harmony.instrument = new Instr.Pad()
-  state.harmony.instrument.volume = -10;
+  state.harmony.instrument.setVolume(-3);
   //console.log("notes belonging to C ionian the scale: "+scale.scaleNotes())
 
 }
@@ -161,9 +162,9 @@ window.mylog = function mylog() {
     Tone.start()
     Tone.Transport.start();
     Tone.Transport.bpm.value = 60;
-    //Tone.Transport.loopEnd = "8m"
+    Tone.Transport.loopEnd = "8m"
     //Tone.Transport.loopStart = 0
-    //Tone.Transport.loop=true
+    Tone.Transport.loop=true
     console.log("one quarter to Seconds:"+Tone.Time("4n").toSeconds())
     Tone.Transport.bpm.value = 70;
     console.log("one quarter to Seconds:"+Tone.Time("4n").toSeconds())
@@ -224,8 +225,16 @@ function workieTalkie(event) {
       state.melody.noteSequence = sample
       var notePart = generatePart(sample);
       state.melody.melodyPart = notePart;
-
-     
+      if(state.melody.melodyPart!=undefined) {
+        if(state.melody.playingPart!=undefined) {
+          state.melody.playingPart.stop(0)
+          state.melody.playingPart = addPartToTransport(state.melody.melodyPart, state.melody.instrument, 0)
+        }else{
+            state.melody.playingPart = addPartToTransport(state.melody.melodyPart, state.melody.instrument, 0)
+          }
+        
+        }
+      
       
     } break;
   }
@@ -249,131 +258,6 @@ function interpolateMelodies(mel1ToSend,mel2ToSend) {
 function _talkToWorker(toSend) {
     state.worker.postMessage(toSend);
 }
-
-
-
-/**
- * response to worker
- */
-  
-/*
-myWorker.onmessage = function(e) {
-    result.textContent = e.data;
-    console.log("Message received from worker: " + resul.textContent)
-}
-*/
-//const workieTalkie = document.getElementById("workieTalkie")
-//workieTalkie.onclick = talkToWorker
-/* ----   ASSETS LOADING   ---- */
-/*
-const assets = {
-    TreeUrls: ['./assets/TREES/Tree Alt.png', './assets/TREES/Tree Maj.png', './assets/TREES/Tree Min.png', './assets/TREES/Trees.png'],
-    StarUrls: ['./assets/Big Star.png', './assets/Small Star.png'],
-    HouseUrls: ['./assets/HOUSE/Home.png'],
-    MoonUrls: ['./assets/MOON/Moon.png']
-};
-*/
-/*
-function addImage () {
-   assets.sky = addImageToCanvasDiv(new URL('../assets/BG/Background.png', import.meta.url), {
-    // class: 'large-on-hover',
-    width: '80%',
-    left: '10%',
-    // top: '10%',
-    zIndex: '-2'
-  }); 
-
-  assets.mountain = addImageToCanvasDiv(new URL('../assets/BG/Mountains.png', import.meta.url), {
-    // class: 'large-on-hover',
-    width: '80%',
-    left: '10%',
-    top: '53%',
-    zIndex: '0'
-  });
-
-  assets.grass = addImageToCanvasDiv(new URL('../assets/BG/Grass.png', import.meta.url), {
-    // class: 'large-on-hover',
-    width: '80%',
-    left: '10%',
-    top: '72%',
-    zIndex: '1'
-  });
-
-  console.log(assets)
-}
-
-// addImage()
-// initCanvas()
-
-/* function addImageToCanvasDiv(src, params) {
-  let img = new Image();
-  img.src = src;  
-
-  console.log('group'+params.group)
-  if (params.group) {
-    const div = document.createElement('DIV');
-    div.style.position = 'absolute';
-
-    img.style.width = '100%';
-    img.style.top = '0';
-    img.style.left = '0';
-    img.style.margin = '0';
-    div.appendChild(img);
-    img = div;
-  } else {
-    img.style.position = 'absolute';
-  }
-
-  if (params.class) {
-    if (params.class.includes(' ')) {
-      img.classList.add(...params.class.split(' '));
-    } else {
-      img.classList.add(params.class);
-    }
-  }
-  // img.style.position = 'relative'; 
-  img.style.position = 'absolute';
-
-  if (params.display) {
-    img.style.display = params.display;
-  } else {
-    img.style.display = 'block';
-  }
-
-  if (!params.height) {
-    img.style.width = params.width ? params.width : '25%';
-    img.style.height = 'auto';
-  } else {
-    img.style.height = params.height;
-    img.style.width = 'auto';
-  }
-
-  if (!params.right) {
-    img.style.left = params.left ? params.left : '5%';
-  } else {
-    img.style.right = params.right;
-  }
-
-  if (!params.top) {
-    img.style.bottom = params.bottom ? params.bottom : '5%';
-  } else {
-    img.style.top = params.top;
-  }
-
-  if (!params.display) {
-    img.style.display = 'block';
-  } else {
-    img.style.display = params.display;
-  }
-
-  img.style.zIndex = params.zIndex ? params.zIndex : '0';
-
-  canvasDiv.appendChild(img);
-  console.log(params.class)
-  console.log(state)
-  return img;
-} */
-
 /*----------------------*/ 
 
 function generatePart(noteSequence) {
@@ -425,13 +309,17 @@ function addPartToTransport(notePart,instrument,startTime) {
 }
 
 //addPartToTransport(state.melody.melodyPart,synth)
-
-Tone.Transport.scheduleRepeat((time) => {
+/*
+Tone.Transport.schedule((time) => {
 	//console.log(Tone.Transport.now())
   //console.log("calling scheduled function")
-  state.currentRepetition+=8;
-  var repStr = state.currentRepetition+"m"
-  addPartToTransport(state.melody.melodyPart, state.melody.instrument, repStr)
+  //state.currentRepetition+=8;
+  //var repStr = state.currentRepetition+"m"
+  if(state.melody.playingPart!=undefined) {
+  state.melody.playingPart.stop().then(()=>{
+      state.melody.playingPart = addPartToTransport(state.melody.melodyPart, state.melody.instrument, 0)
+    });
+  }
   //console.log("time next sub:" +Tone.Transport.nextSubdivision("8m"))
   console.log("measure 16!");
   state.worker.postMessage(
@@ -442,7 +330,9 @@ Tone.Transport.scheduleRepeat((time) => {
       chordProgression: ["Cm", "Gb", "Db", "Gdim"]
     }
   )
-}, interval="8m", startTime="7:0:0");
+}, "1:0:0");
+*/
+
 
 /*
 var j = 0;
@@ -466,6 +356,7 @@ state.harmony.instrument =  new Tone.PolySynth({
 }).toDestination();
 state.harmony.instrument.volume.value = -6;
 */
+
 const partChord = new Tone.Part(((time, value)=> {
   state.harmony.instrument.triggerAttackRelease(value, "2m",time,0.5 )
   console.log("playi")
@@ -479,5 +370,19 @@ const partChord = new Tone.Part(((time, value)=> {
   ["6:0", ["G2","Bb3","Eb3"]]//,["6:0", "Bb2"],["6:0", "Eb2"],
 ]
 ).start(0)
+/*
 partChord.loopEnd = "8m";
 partChord.loop = true;
+*/
+var k = 0
+Tone.Transport.schedule((time) => {
+  state.worker.postMessage(
+    {
+      message: "continue",
+      mel: state.melody.noteSequence,
+      length: 32,
+      chordProgression: ["Cm", "Gb", "Db", "Gdim"]
+    }
+  )
+  console.log("settima battuta loop "+ k++)
+},"7:0:0")

@@ -165,12 +165,15 @@ class Pad {
     triggerAttackRelease(notes, duration, time, velocity) {
         this.pad.triggerAttackRelease(notes, duration, time, velocity)
     }
+    setVolume(volValue) {
+        this.pad.volume.value = volValue
+    }
 
 }
 
 class Lead {
     constructor() {
-        var volume = -15;
+        //var volume = -15;
         var lead = new Tone.PolySynth(Tone.Synth);
         lead.set({envelope: {
             attack: '4n',
@@ -183,7 +186,7 @@ class Lead {
             type: 'sine2'
         },
 
-        volume: volume.toString(),
+        volume: "-15"//volume.toString(),
         })
         /*
         var lead = new Tone.Synth({
@@ -202,7 +205,7 @@ class Lead {
         });
         */
         var filter = new Tone.Filter({
-            frequency: '2000hz',
+            frequency: '1500hz',
             type: 'lowpass',
             rolloff: '-24db'
         })
@@ -226,6 +229,10 @@ class Lead {
 
     triggerAttackRelease(note, duration, time, velocity) {
         this.lead.triggerAttackRelease(note, duration, time, velocity)
+    }
+
+    setVolume(volValue) {
+        this.lead.volume.value = volValue
     }
 }
 
