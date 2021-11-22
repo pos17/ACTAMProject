@@ -171,6 +171,21 @@ class Pad {
 class Lead {
     constructor() {
         var volume = -15;
+        var lead = new Tone.PolySynth(Tone.Synth);
+        lead.set({envelope: {
+            attack: '4n',
+            decay: '8n',
+            sustain: '0.6',
+            release: '4n'
+        },
+        
+        oscillator: {
+            type: 'sine2'
+        },
+
+        volume: volume.toString(),
+        })
+        /*
         var lead = new Tone.Synth({
             envelope: {
                 attack: '4n',
@@ -185,7 +200,7 @@ class Lead {
 
             volume: volume.toString(),
         });
-
+        */
         var filter = new Tone.Filter({
             frequency: '2000hz',
             type: 'lowpass',

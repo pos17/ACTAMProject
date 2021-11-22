@@ -442,6 +442,7 @@ Tone.Transport.scheduleRepeat((time) => {
       chordProgression:["Cm","Gb","Db","Gdim"]
     }
   )
+  console.log(Tone.Transport)
 },interval="8m",startTime="7:3:0");
 
 /*
