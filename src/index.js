@@ -83,7 +83,7 @@ async function   initializeState() {
   console.log(seq1)
   console.log("seq2")
   console.log(seq2)
-  await interpolateMelodies(seq1,seq2);
+  interpolateMelodies(seq1,seq2);
   
   state.worker.onmessage = (event)=> {workieTalkie(event)}
   state.melody.instrument = new Instr.Lead()
@@ -431,19 +431,18 @@ Tone.Transport.scheduleRepeat((time) => {
   //console.log("calling scheduled function")
   state.currentRepetition+=8;
   var repStr = state.currentRepetition+"m"
-  addPartToTransport(state.melody.melodyPart,state.melody.instrument,repStr)
+  addPartToTransport(state.melody.melodyPart, state.melody.instrument, repStr)
   //console.log("time next sub:" +Tone.Transport.nextSubdivision("8m"))
   console.log("measure 16!");
   state.worker.postMessage(
     {
-      message:"continue",
-      mel:state.melody.noteSequence,
-      length:32,
-      chordProgression:["Cm","Gb","Db","Gdim"]
+      message: "continue",
+      mel: state.melody.noteSequence,
+      length: 32,
+      chordProgression: ["Cm", "Gb", "Db", "Gdim"]
     }
   )
-  console.log(Tone.Transport)
-},interval="8m",startTime="7:3:0");
+}, interval="8m", startTime="7:0:0");
 
 /*
 var j = 0;
