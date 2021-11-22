@@ -78,7 +78,8 @@ async function   initializeState() {
   await interpolateMelodies(seq1,seq2);
   
   state.worker.onmessage = (event)=> {workieTalkie(event)}
-
+  state.melody.instrument = new Instr.Lead()
+  state.melody.instrument.volume = -10;
   //console.log("notes belonging to C ionian the scale: "+scale.scaleNotes())
 
 }
@@ -204,9 +205,8 @@ function workieTalkie(event) {
           decay: 0.6,
           sustain: 0.6,
           release: 0.8,}
-      }).toDestination();
-      synth.volume.value = -6;
-      */
+      }).toDestination(); */
+        
       //const pingPong = new Tone.PingPongDelay("8n", 0.3).toDestination();
       //const freeverb = new Tone.Freeverb().toDestination();
       //freeverb.dampening = 1000;
