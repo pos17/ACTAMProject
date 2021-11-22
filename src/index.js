@@ -79,7 +79,9 @@ async function   initializeState() {
   
   state.worker.onmessage = (event)=> {workieTalkie(event)}
   state.melody.instrument = new Instr.Lead()
-  state.melody.instrument.volume = -10;
+  state.melody.instrument.volume = -18;
+  state.harmony.instrument = new Instr.Pad()
+  state.harmony.instrument.volume = -10;
   //console.log("notes belonging to C ionian the scale: "+scale.scaleNotes())
 
 }
@@ -332,20 +334,22 @@ Tone.Transport.scheduleRepeat((time) => {
   console.log("measure num:" + j++)
 },interval="8m",startTime="0:0:0");
 */
+/*
 state.melody.instrument = new Tone.FMSynth({
   envelope: {
     attack: 0.1}
 }).toDestination();
 state.harmony.instrument.volume.value = -6;
 
-state.harmony.instrument =  new Tone.PolySynth(/*{
+state.harmony.instrument =  new Tone.PolySynth({
   envelope: {
     attack: 1,
     decay: 0.6,
     sustain: 0.6,
     release: 0.8,}
-}*/).toDestination();
+}).toDestination();
 state.harmony.instrument.volume.value = -6;
+*/
 const partChord = new Tone.Part(((time, value)=> {
   state.harmony.instrument.triggerAttackRelease(value, "2m",time,0.5 )
   console.log("playi")
