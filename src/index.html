@@ -12,11 +12,25 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="style.css">
         <script type="module" src="index.js"></script>
+        <script type="module" src="canvaEnv.js"></script>
+        <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>   -->
     </head>
     <body>
-        <button onclick="mylog()">CIAONE</button>
-        <button id = "workieTalkie">Talk to worker</button>
-        
+        <!-- <button onclick="mylog()">CIAONE</button>
+        <button id = "workieTalkie">Talk to worker</button> -->
+        <div id="container">
+            <div id="canvas-div">
+                <img src="../assets/BG/Background.png" id="sky" /> 
+                <!-- <canvas id="main-canvas"></canvas>   -->
+            </div>
+        </div>
+        <!--<div id="app-5">-->
+            <button type="reset" id="stop">STOP ME</button>
+            <button id="tree-M">TREE M</button>
+            <button id="tree-m">TREE m</button>
+            <button id="tree-A">TREE A</button>
+            <button id="toggleRed" >TOGGLE RED</button>
+        <!--</div>-->
     </body>
     
 </html>
