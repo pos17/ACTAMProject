@@ -179,7 +179,7 @@ class Lead {
             attack: '4n',
             decay: '8n',
             sustain: '0.6',
-            release: '4n'
+            release: '2n'
         },
         
         oscillator: {
