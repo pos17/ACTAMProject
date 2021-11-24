@@ -3,7 +3,7 @@
 import Worker from 'web-worker';
 import DrumMachine from './DrumMachine';
 import MusicalScale from './musicalScale';
-//import * as Instr from './instruments';
+import * as Instr from './instruments';
 import {Note} from "tonal";
 import * as Tone from "tone"
 

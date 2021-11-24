@@ -211,6 +211,15 @@ function subStar (star) {
     }, 1100, star)
 }
 
+/* const blob = new Blob([JSON.stringify(new_assets, null, 4)], {type : 'application/json'});
+console.log(blob)
+var file = new File([blob], "./name"); */
+
+
+/* var FileSystem = require("fs");
+ FileSystem.writeFile(new URL('./assets.json', import.meta.url), JSON.stringify(new_assets, null, 4), (error) => {
+    if (error) throw error;
+  }); */
 
 function addImage() {
     state.assets.mountains = addImageToCanvasDiv(new_assets.mountains.url, new_assets.mountains.style);

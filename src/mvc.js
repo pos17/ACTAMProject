@@ -1,6 +1,14 @@
-import * as Instr from './instruments';
+// import * as Instr from './instruments';
+const Instr = require('./instruments.js')
 import * as Tone from "tone"
 import MusicalScale from './musicalScale';
+
+// const assets = JSON.parse(new URL("./assets.json", import.meta.url));
+import assets from './assets.json';
+
+console.log('assets:')
+console.log(assets)
+
 class Model {
     constructor() {
         this.ready = false
@@ -102,7 +110,9 @@ class Model {
   }
   
   class View {
-    constructor() {}
+    constructor() {
+      
+    }
   }
   
   class Controller {
