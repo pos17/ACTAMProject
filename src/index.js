@@ -244,129 +244,6 @@ function _talkToWorker(toSend) {
 }
 
 
-
-/**
- * response to worker
- */
-  
-/*
-myWorker.onmessage = function(e) {
-    result.textContent = e.data;
-    console.log("Message received from worker: " + resul.textContent)
-}
-*/
-//const workieTalkie = document.getElementById("workieTalkie")
-//workieTalkie.onclick = talkToWorker
-/* ----   ASSETS LOADING   ---- */
-/*
-const assets = {
-    TreeUrls: ['./assets/TREES/Tree Alt.png', './assets/TREES/Tree Maj.png', './assets/TREES/Tree Min.png', './assets/TREES/Trees.png'],
-    StarUrls: ['./assets/Big Star.png', './assets/Small Star.png'],
-    HouseUrls: ['./assets/HOUSE/Home.png'],
-    MoonUrls: ['./assets/MOON/Moon.png']
-};
-*/
-/*
-function addImage () {
-   assets.sky = addImageToCanvasDiv(new URL('../assets/BG/Background.png', import.meta.url), {
-    // class: 'large-on-hover',
-    width: '80%',
-    left: '10%',
-    // top: '10%',
-    zIndex: '-2'
-  }); 
-
-  assets.mountain = addImageToCanvasDiv(new URL('../assets/BG/Mountains.png', import.meta.url), {
-    // class: 'large-on-hover',
-    width: '80%',
-    left: '10%',
-    top: '53%',
-    zIndex: '0'
-  });
-
-  assets.grass = addImageToCanvasDiv(new URL('../assets/BG/Grass.png', import.meta.url), {
-    // class: 'large-on-hover',
-    width: '80%',
-    left: '10%',
-    top: '72%',
-    zIndex: '1'
-  });
-
-  console.log(assets)
-}
-
-// addImage()
-// initCanvas()
-
-/* function addImageToCanvasDiv(src, params) {
-  let img = new Image();
-  img.src = src;  
-
-  console.log('group'+params.group)
-  if (params.group) {
-    const div = document.createElement('DIV');
-    div.style.position = 'absolute';
-
-    img.style.width = '100%';
-    img.style.top = '0';
-    img.style.left = '0';
-    img.style.margin = '0';
-    div.appendChild(img);
-    img = div;
-  } else {
-    img.style.position = 'absolute';
-  }
-
-  if (params.class) {
-    if (params.class.includes(' ')) {
-      img.classList.add(...params.class.split(' '));
-    } else {
-      img.classList.add(params.class);
-    }
-  }
-  // img.style.position = 'relative'; 
-  img.style.position = 'absolute';
-
-  if (params.display) {
-    img.style.display = params.display;
-  } else {
-    img.style.display = 'block';
-  }
-
-  if (!params.height) {
-    img.style.width = params.width ? params.width : '25%';
-    img.style.height = 'auto';
-  } else {
-    img.style.height = params.height;
-    img.style.width = 'auto';
-  }
-
-  if (!params.right) {
-    img.style.left = params.left ? params.left : '5%';
-  } else {
-    img.style.right = params.right;
-  }
-
-  if (!params.top) {
-    img.style.bottom = params.bottom ? params.bottom : '5%';
-  } else {
-    img.style.top = params.top;
-  }
-
-  if (!params.display) {
-    img.style.display = 'block';
-  } else {
-    img.style.display = params.display;
-  }
-
-  img.style.zIndex = params.zIndex ? params.zIndex : '0';
-
-  canvasDiv.appendChild(img);
-  console.log(params.class)
-  console.log(state)
-  return img;
-} */
-
 /*----------------------*/ 
 
 function generatePart(noteSequence) {
@@ -403,7 +280,7 @@ function generatePart(noteSequence) {
   return notes
 }
 
-function addPartToTransport(notePart,instrument,startTime) {
+function addNotePartToTransport(notePart,instrument,startTime) {
   
   const part = new Tone.Part(((time, value)=> {
       instrument.triggerAttackRelease(value.note, /*"4n"*/value.duration,time,value.velocity )
@@ -424,7 +301,7 @@ Tone.Transport.scheduleRepeat((time) => {
   //console.log("calling scheduled function")
   state.currentRepetition+=8;
   var repStr = state.currentRepetition+"m"
-  addPartToTransport(state.melody.melodyPart, state.melody.instrument, repStr)
+  addNotePartToTransport(state.melody.melodyPart, state.melody.instrument, repStr)
   //console.log("time next sub:" +Tone.Transport.nextSubdivision("8m"))
   console.log("measure 16!");
   state.worker.postMessage(
