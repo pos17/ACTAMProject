@@ -4,9 +4,11 @@ import Worker from 'web-worker';
 import DrumMachine from './DrumMachine';
 import MusicalScale from './musicalScale';
 import * as Instr from './instruments';
-
-import * as Tone from "tone"
 import {Scale, Note} from "@tonaljs/tonal";
+import * as Tone from "tone"
+
+
+
 
 // const canvas = document.getElementById('main-canvas');
 // const canvasDiv  = document.getElementById('canvas-div')
