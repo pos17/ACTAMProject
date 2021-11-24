@@ -88,9 +88,9 @@ async function   initializeState() {
   
   state.worker.onmessage = (event)=> {workieTalkie(event)}
   state.melody.instrument = new Instr.Lead()
-  state.melody.instrument.setVolume(-10);
+  state.melody.instrument.setVolume(-3);
   state.harmony.instrument = new Instr.Pad()
-  state.harmony.instrument.setVolume(-3);
+  state.harmony.instrument.setVolume(-1);
   //console.log("notes belonging to C ionian the scale: "+scale.scaleNotes())
 
 }
