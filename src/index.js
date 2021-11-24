@@ -4,9 +4,9 @@ import Worker from 'web-worker';
 import DrumMachine from './DrumMachine';
 import MusicalScale from './musicalScale';
 import * as Instr from './instruments';
-import {Note} from "tonal";
-import * as Tone from "tone"
 
+import * as Tone from "tone"
+import {Scale, Note} from "@tonaljs/tonal";
 
 // const canvas = document.getElementById('main-canvas');
 // const canvasDiv  = document.getElementById('canvas-div')
@@ -481,3 +481,6 @@ const partChord = new Tone.Part(((time, value)=> {
 ).start(0)
 partChord.loopEnd = "8m";
 partChord.loop = true;
+
+console.log("prova scale")
+console.log(Scale.get("d5 ionian"))
