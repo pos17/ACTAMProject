@@ -57,6 +57,7 @@ const state= {
     seedWord1:"",
     seedWord2:"",
     melodyPart:undefined,
+    playingPart:undefined,
     noteSequence:undefined
   },
   sequence:{},
@@ -88,7 +89,7 @@ async function   initializeState() {
   state.scale = new MusicalScale('C','phrygian');
   var seq1 = buildSequence(state.melody.seedWord1);
   var seq2 = buildSequence(state.melody.seedWord2);
-  var workerURL = await new URL("./worker.js", import.meta.url)
+  var workerURL =  new URL("./worker.js", import.meta.url)
   state.worker = await new Worker(workerURL/*, {type:'module'}*/ );
   console.log("seq1")
   console.log(seq1)
@@ -98,9 +99,9 @@ async function   initializeState() {
   
   state.worker.onmessage = (event)=> {workieTalkie(event)}
   state.melody.instrument = new Instr.Lead()
-  state.melody.instrument.volume = -18;
+  state.melody.instrument.setVolume(-3);
   state.harmony.instrument = new Instr.Pad()
-  state.harmony.instrument.volume = -10;
+  state.harmony.instrument.setVolume(-1);
   //console.log("notes belonging to C ionian the scale: "+scale.scaleNotes())
 
 }
@@ -170,6 +171,8 @@ function calculateRandomTime(constraint,maxLength) {
 export function startMusic() {
     Tone.start()
     Tone.Transport.start();
+    Tone.Transport.loopEnd = "8m";
+    Tone.Transport.loop=true;
 }
 export function stopMusic() {
   Tone.start()
@@ -216,6 +219,16 @@ function workieTalkie(event) {
     case "continue": {
       const sample = event.data.element;
       console.log("response message:"+ event.data.message)
+      if(state.melody.melodyPart!=undefined) {
+        if(state.melody.playingPart!=undefined) {
+          state.melody.playingPart.stop(0)
+          state.melody.playingPart = addPartToTransport(state.melody.melodyPart, state.melody.instrument, 0)
+        }else{
+            state.melody.playingPart = addPartToTransport(state.melody.melodyPart, state.melody.instrument, 0)
+          }
+        
+        }
+      
       
       state.melody.noteSequence = sample
       var notePart = generatePart(sample);
@@ -242,8 +255,6 @@ function interpolateMelodies(mel1ToSend,mel2ToSend) {
 function _talkToWorker(toSend) {
     state.worker.postMessage(toSend);
 }
-
-
 /*----------------------*/ 
 
 function generatePart(noteSequence) {
@@ -295,13 +306,17 @@ function addNotePartToTransport(notePart,instrument,startTime) {
 }
 
 //addPartToTransport(state.melody.melodyPart,synth)
-
-Tone.Transport.scheduleRepeat((time) => {
+/*
+Tone.Transport.schedule((time) => {
 	//console.log(Tone.Transport.now())
   //console.log("calling scheduled function")
-  state.currentRepetition+=8;
-  var repStr = state.currentRepetition+"m"
-  addNotePartToTransport(state.melody.melodyPart, state.melody.instrument, repStr)
+  //state.currentRepetition+=8;
+  //var repStr = state.currentRepetition+"m"
+  if(state.melody.playingPart!=undefined) {
+  state.melody.playingPart.stop().then(()=>{
+      state.melody.playingPart = addPartToTransport(state.melody.melodyPart, state.melody.instrument, 0)
+    });
+  }
   //console.log("time next sub:" +Tone.Transport.nextSubdivision("8m"))
   console.log("measure 16!");
   state.worker.postMessage(
@@ -312,7 +327,9 @@ Tone.Transport.scheduleRepeat((time) => {
       chordProgression: ["Cm", "Gb", "Db", "Gdim"]
     }
   )
-}, interval="8m", startTime="7:0:0");
+}, "1:0:0");
+*/
+
 
 /*
 var j = 0;
@@ -336,6 +353,7 @@ state.harmony.instrument =  new Tone.PolySynth({
 }).toDestination();
 state.harmony.instrument.volume.value = -6;
 */
+
 const partChord = new Tone.Part(((time, value)=> {
   state.harmony.instrument.triggerAttackRelease(value, "2m",time,0.5 )
   console.log("playi")
@@ -349,5 +367,19 @@ const partChord = new Tone.Part(((time, value)=> {
   ["6:0", ["G2","Bb3","Eb3"]]//,["6:0", "Bb2"],["6:0", "Eb2"],
 ]
 ).start(0)
+/*
 partChord.loopEnd = "8m";
 partChord.loop = true;
+*/
+var k = 0
+Tone.Transport.schedule((time) => {
+  state.worker.postMessage(
+    {
+      message: "continue",
+      mel: state.melody.noteSequence,
+      length: 32,
+      chordProgression: ["Cm", "Gb", "Db", "Gdim"]
+    }
+  )
+  console.log("settima battuta loop "+ k++)
+},"7:0:0")
