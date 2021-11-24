@@ -89,121 +89,7 @@ const new_assets = {
     }  
 }
 
-/* var assets = {
-    MoonUrls: ['../assets/MOON/Moon.png'],
-    stars: [],
-    trees: {
-        Maj: [],
-        Min: [],
-        Alt: [],
-    }
-} */
-
-
-// function addImage () {
-    /* assets.mountains = addImageToCanvasDiv('mountains', urls.mountains[0], {
-        class: 'overlay',
-        width: '100%',
-        left: '0',
-        bottom: '0',
-        zIndex:'+1'
-    }); */
-    
-    /* assets.grass = addImageToCanvasDiv('grass', urls.grass, {
-        class: 'overlay',
-        width: '100%',
-        left: '0',
-        bottom: '0',
-        zIndex:'+1'
-    }); */
-
-    /* assets.house = addImageToCanvasDiv('house', urls.house, {
-        class: 'overlay',
-        width: `${49/256*100}%`,
-        right: '10%',
-        bottom: '10%',
-        zIndex:'+1'
-    }); */
-
-    /* assets.moon = addImageToCanvasDiv('moon', urls.moon, {
-        class: 'overlay',
-        width: `${31/256*100}%`,
-        left: '10%',
-        top: '10%',
-        zIndex:'+1'
-    }); */
-
-    /* assets.bigStar = addImageToCanvasDiv('big-star', urls.bigStar  , {
-        class: 'overlay',
-        width: `${7/256*100}%`,
-        zIndex:'0',
-        display: 'none'
-    }); */
-
-
-/*     addStars(150)
-
-} */
-
-/* function addStars (num) {
-    for (var i=0; i<num; i++) {
-        assets.stars[i] = addImageToCanvasDiv('star', urls.star, {
-            class: 'overlay',
-            width: `${7/256*100}%`,
-            left: `${Math.floor(Math.random()*100)}%`,
-            top: `${Math.floor(Math.random()*70)}%`,
-            zIndex:'0'
-        })
-    }
-}
-
-function addTreeMaj () {
-    var img = addImageToCanvasDiv(urls.treeMaj, {
-        class: 'overlay',
-        width: `${19/256*100}%`,
-        left: `${Math.floor(Math.random()*40)}%`,
-        bottom: `${Math.floor(Math.random()*17)}%`,
-        zIndex:'+2'
-    })
-    assets.trees.Maj.push(img)
-    console.log(assets)
-}
-
-function addTreeMin () {
-    var img = addImageToCanvasDiv(urls.treeMin, {
-        class: 'overlay',
-        width: `${19/256*100}%`,
-        left: `${Math.floor(Math.random()*40)}%`,
-        bottom: `${Math.floor(Math.random()*17)}%`,
-        zIndex:'+2'
-    })
-    assets.trees.Min.push(img)
-    console.log(assets)
-}
-
-function addTreeAlt () {
-    var img = addImageToCanvasDiv(urls.treeAlt, {
-        class: 'overlay',
-        width: `${19/256*100}%`,
-        left: `${Math.floor(Math.random()*40)}%`,
-        bottom: `${Math.floor(Math.random()*17)}%`,
-        zIndex:'+2'
-    })
-    assets.trees.Alt.push(img)
-    console.log(assets)
-} */
-
-
 function subStar (star) {
-    // var width = assets.bigStar.style.width; 
-    // assets.bigStar.style.top = star.style.top;
-    // assets.bigStar.style.left = star.style.left;
-    // // assets.bigStar.style.width = width;
-    // assets.bigStar.style.display = 'block';
-    // setTimeout(() => {
-    //     assets.bigStar.style.display = 'none';
-    // }, 500);
-    // console.log(state.assets.stars.indexOf(star))
     star.src = new_assets.star.url[1];
    
     setTimeout((star)=>{
@@ -211,15 +97,6 @@ function subStar (star) {
     }, 1100, star)
 }
 
-/* const blob = new Blob([JSON.stringify(new_assets, null, 4)], {type : 'application/json'});
-console.log(blob)
-var file = new File([blob], "./name"); */
-
-
-/* var FileSystem = require("fs");
- FileSystem.writeFile(new URL('./assets.json', import.meta.url), JSON.stringify(new_assets, null, 4), (error) => {
-    if (error) throw error;
-  }); */
 
 function addImage() {
     state.assets.mountains = addImageToCanvasDiv(new_assets.mountains.url, new_assets.mountains.style);
@@ -241,7 +118,7 @@ function addStars (num) {
     }
 }
 
-// params = {class, height, width, top, left, display}
+
 function addImageToCanvasDiv (src, params) {
     var img = new Image();
     img.src = src
@@ -287,9 +164,6 @@ function addImageToCanvasDiv (src, params) {
 
 let timer;
 document.getElementById("stop").onclick = () => {clearInterval(timer); clearInterval(timer2)};
-// document.getElementById('tree-m').onclick = redMount;
-// document.getElementById('tree-A').onclick = addTreeAlt;
-
 
 timer = setInterval(()=> {
     subStar(state.assets.stars[Math.floor(Math.random()*state.assets.stars.length)]);
@@ -301,21 +175,6 @@ window.addEventListener('load', ()=>{
     console.log(state.assets.moon)
 })
 
-
-/* function moveMoon () {
-   var moon = state.assets.moon;
-   var right = 100-parseFloat(moon.style.left)-parseFloat(moon.style.width)
-   if (right>0) {
-        moon.style.left = ((parseFloat(moon.style.left) + 1 ) % 100) + '%'
-        console.log(2*Math.PI* (clock))
-        moon.style.transform = "translateY("+ 2*Math.PI*clock + "%)"
-   }
-   else {
-    moon.style.left = '0%'
-    moon.style.top = '34%'
-   } 
-}
- */
 
 function moveMoon(elapsed) {
     var moon = state.assets.moon;
@@ -352,10 +211,10 @@ function showInitPanel() {
     document.getElementById("panel-container").hidden = !document.getElementById("panel-container").hidden
 }
 
-
 document.getElementById('ok-button').onclick = ()=> {
     showInitPanel();
     window.requestAnimationFrame(moveMoon)
 }
+
 var house = state.assets.house;
 house.onclick = showInitPanel
