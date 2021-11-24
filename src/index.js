@@ -78,7 +78,7 @@ async function   initializeState() {
   state.scale = new MusicalScale('C','phrygian');
   var seq1 = buildSequence(state.melody.seedWord1);
   var seq2 = buildSequence(state.melody.seedWord2);
-  var workerURL = await new URL("./worker.js", import.meta.url)
+  var workerURL =  new URL("./worker.js", import.meta.url)
   state.worker = await new Worker(workerURL/*, {type:'module'}*/ );
   console.log("seq1")
   console.log(seq1)
