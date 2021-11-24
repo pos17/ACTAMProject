@@ -17,6 +17,9 @@ self.onmessage = async (event) => {
     case "interpolate":
       interpolate(event.data.mel1,event.data.mel2)
       break;
+    case "continueFirst":
+      continueMelody(event.data.mel, event.data.length, event.data.chordProgression)
+      break;
     case "continue":
       continueMelody(event.data.mel,event.data.length,event.data.chordProgression)
       break;
@@ -80,7 +83,7 @@ async function continueMelody(mel, length,chordProgression) {
   console.log(continueOut)
   // Send main script the result.
   
-  post("continue",continueOut);
+  post("continueFirst", continueOut);
 }
 
 function post(message,element="Nothing,sorry :(") {

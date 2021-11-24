@@ -6,6 +6,7 @@ import MusicalScale from './musicalScale';
 import * as Instr from './instruments';
 import {Note} from "tonal";
 import * as Tone from "tone"
+import * as CanvaEnv from './canvaEnv.js'
 
 
 // const canvas = document.getElementById('main-canvas');
@@ -18,6 +19,20 @@ import * as Tone from "tone"
 //const player = new core.Player();
 
 const state= {
+  ready: {
+    value: false,
+    get getReady () {
+      return this.value;
+    },
+    set setReady(bool) {
+      this.value = bool;
+      this.listener(this.value);
+    },
+    listener: function (value){
+      CanvaEnv.playableButton(value);
+      console.log("READY MOTHERFUCKER")
+    },
+  },
   currentRepetition:0,
   worker: undefined,
   key:"", //main key of the system
@@ -156,25 +171,13 @@ function calculateRandomTime(constraint,maxLength) {
 
 /*-----------------------Worker --------------------------------*/ 
 
-window.mylog = function mylog() {
-    console.log("Hello World!")
+export function startMusic() {
     Tone.start()
     Tone.Transport.start();
-    Tone.Transport.bpm.value = 60;
-    //Tone.Transport.loopEnd = "8m"
-    //Tone.Transport.loopStart = 0
-    //Tone.Transport.loop=true
-    console.log("one quarter to Seconds:"+Tone.Time("4n").toSeconds())
-    Tone.Transport.bpm.value = 70;
-    console.log("one quarter to Seconds:"+Tone.Time("4n").toSeconds())
-    //state.melody.playingPart=addPartToTransport(state.melody.melodyPart,synth)
-    /*
-    Tone.Transport.schedule((time) => {
-      console.log(Tone.Transport.now())
-      console.log("calling scheduled function")
-      addPartToTransport(state.melody.melodyPart,synth)
-    }, "7:3:0");
-    */
+}
+export function stopMusic() {
+  Tone.start()
+  Tone.Transport.stop();
 }
 /**
  * function that handles the messages from the external worker, message used as routing for the switch case path
@@ -190,7 +193,7 @@ function workieTalkie(event) {
       console.log("response message:"+ event.data.message)
       state.worker.postMessage(
         {
-          message:"continue",
+          message:"continueFirst",
           mel:sample,
           length:32,
           chordProgression:["Cm","Gb","Db","Gdim"]
@@ -205,28 +208,22 @@ function workieTalkie(event) {
       addPartToTransport(sample,synth)
       */
     } break;
-    case "continue": {
+    case "continueFirst": {
       const sample = event.data.element;
       console.log("response message:"+ event.data.message)
-      /*
-      var synth = new Tone.FMSynth({
-        envelope: {
-          attack: 1,
-          decay: 0.6,
-          sustain: 0.6,
-          release: 0.8,}
-      }).toDestination(); */
-        
-      //const pingPong = new Tone.PingPongDelay("8n", 0.3).toDestination();
-      //const freeverb = new Tone.Freeverb().toDestination();
-      //freeverb.dampening = 1000;
-      //synth.connect(pingPong)//.connect(freeverb)
+      
       state.melody.noteSequence = sample
       var notePart = generatePart(sample);
       state.melody.melodyPart = notePart;
-
-     
+      state.ready.setReady = true
+    } break;
+    case "continue": {
+      const sample = event.data.element;
+      console.log("response message:"+ event.data.message)
       
+      state.melody.noteSequence = sample
+      var notePart = generatePart(sample);
+      state.melody.melodyPart = notePart;
     } break;
   }
 };

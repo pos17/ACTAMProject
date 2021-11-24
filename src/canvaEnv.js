@@ -1,7 +1,11 @@
-
+import * as Model from "./index.js"
 const canvasDiv = document.getElementById('canvas-div');
 const sky = document.getElementById('sky');
 console.log('sky width: '+sky.clientWidth);
+
+var startButton = document.createElement('button');
+startButton.onclick= Model.startMusic
+
 
 var state = {
     canvas: {},
@@ -76,6 +80,11 @@ function addImage () {
         display: 'none'
     });
 
+    var body = document.querySelector('body')
+    startButton.disabled = true;
+    startButton.textContent = "ciaone!"
+
+    body.appendChild(startButton)
 
     addStars(150)
 
@@ -187,30 +196,30 @@ function addImageToCanvasDiv (id, src, params) {
 }
 
 let timer;
-document.getElementById("stop").onclick = () => {clearInterval(timer)};
-document.getElementById('tree-M').onclick = addTreeMaj;
-document.getElementById('tree-m').onclick = addTreeMin;
-document.getElementById('tree-A').onclick = addTreeAlt;
-document.getElementById('toggleRed').onclick = toggleRedFun;
+// document.getElementById("stop").onclick = () => {clearInterval(timer)};
+// document.getElementById('tree-M').onclick = addTreeMaj;
+// document.getElementById('tree-m').onclick = addTreeMin;
+// document.getElementById('tree-A').onclick = addTreeAlt;
+// document.getElementById('toggleRed').onclick = toggleRedFun;
 
-function toggleRedFun() {
-    if(!state.redMountains){
-        assets.mountains.src = urls.mountains[1]
-        state.redMountains = true
-    } else {
-        assets.mountains.src = urls.mountains[0]
-        state.redMountains =  false
-    }
-}
+// function toggleRedFun() {
+//     if(!state.redMountains){
+//         assets.mountains.src = urls.mountains[1]
+//         state.redMountains = true
+//     } else {
+//         assets.mountains.src = urls.mountains[0]
+//         state.redMountains =  false
+//     }
+// }
 
 
-timer = setInterval(()=> {
-    subStar(assets.stars[Math.floor(Math.random()*assets.stars.length)]);
-}, 1000)
+// timer = setInterval(()=> {
+//     subStar(assets.stars[Math.floor(Math.random()*assets.stars.length)]);
+// }, 1000)
 
-window.addEventListener('load', ()=>{
-    console.log(assets)
-})
+// window.addEventListener('load', ()=>{
+//     console.log(assets)
+// })
 /*
 var myMount = new Vue({
     el: '#toggleRed',
@@ -234,3 +243,10 @@ var myMount = new Vue({
 */ 
 addImage()
 // initCanvas()
+
+
+export function playableButton (ready) {
+    if (ready) {
+        startButton.disabled = false;
+    }
+}
