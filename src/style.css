@@ -1,3 +1,4 @@
+
 html {
     height: 100%;
     width: 100%;
@@ -16,16 +17,94 @@ body {
     top: 50%;
     transform: translate(-50%, -50%);
     position: absolute;
+    border-radius: 20px;
     /* margin: auto; */
 }
 
 #sky {
     width: 100%; 
     height: auto;
-    bottom: 0;
+    bottom: 0%;
     image-rendering: crisp-edges;
+    border-radius: 10px;
 }
 
 .overlay{
     position: absolute;
+}
+
+#panel-container {
+    width: 100%;
+    width: 100%;
+    display: block;
+}
+
+#init-panel {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+    opacity: 80%;
+    z-index: 10;
+}
+
+#front-panel {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    background-color: rgba(255, 255, 255, 1);
+    border-radius: 10px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 11;
+    opacity: 1;
+    align-content: center;
+}
+
+#title {
+    text-align: center;
+    top: 5%;
+}
+
+.nes-field {
+    display: flex;
+    position: absolute;
+    width: 100%;
+}
+
+.word-input {
+    width: 30%;
+    margin: auto;
+}
+
+#ok-button {
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+.mood {
+    position: absolute;
+    width: 90%;
+    height: min-content;
+    left: 50%;
+    top: 60%;
+    transform: translate(-50%, -50%);
+}
+
+.mood-slider {
+    margin-top: 1%;
+    position: absolute;
+    display: flex;
+    left: 50%;
+    width: 90%;
+    transform: translate(-50%);
+}
+
+.nes-progress {
+    margin: 5px;
+    height: 20px;
 }

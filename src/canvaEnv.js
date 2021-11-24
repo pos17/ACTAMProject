@@ -1,7 +1,8 @@
 
 const canvasDiv = document.getElementById('canvas-div');
 const sky = document.getElementById('sky');
-console.log('sky width: '+sky.clientWidth);
+
+var clock = new Date().getSeconds()
 
 var state = {
     canvas: {},
@@ -12,17 +13,15 @@ var state = {
 
 const new_assets = {
     mountains: {
-        url: [
-            new URL('../assets/BG/Mountains.png', import.meta.url),
-            new  URL('../assets/BG/Mountains2.png', import.meta.url),
-        ],
+        url: new URL('../assets/BG/Mountains.png', import.meta.url),
         style: {
             class: 'overlay',
             width: '100%',
-            left: '0',
-            bottom: '0',
+            left: '0%',
+            bottom: '0%',
             zIndex:'+1'
         },
+        index: 0
     },
 
     grass: {
@@ -30,8 +29,8 @@ const new_assets = {
         style: {
             class: 'overlay',
             width: '100%',
-            left: '0',
-            bottom: '0',
+            left: '0%',
+            bottom: '0%',
             zIndex:'+1'
         }
     },
@@ -58,8 +57,8 @@ const new_assets = {
         style: {
             class: 'overlay',
             width: `${31/256*100}%`,
-            left: '10%',
-            top: '10%',
+            left: '0%',
+            top: '34%',
             zIndex:'+1'
         }
     },
@@ -214,7 +213,7 @@ function subStar (star) {
 
 
 function addImage() {
-    state.assets.mountains = addImageToCanvasDiv(new_assets.mountains.url[0], new_assets.mountains.style);
+    state.assets.mountains = addImageToCanvasDiv(new_assets.mountains.url, new_assets.mountains.style);
     state.assets.grass = addImageToCanvasDiv(new_assets.grass.url, new_assets.grass.style);
     state.assets.house = addImageToCanvasDiv(new_assets.house.url, new_assets.house.style);
     state.assets.moon = addImageToCanvasDiv(new_assets.moon.url[0], new_assets.moon.style);
@@ -278,27 +277,9 @@ function addImageToCanvasDiv (src, params) {
 }
 
 let timer;
-document.getElementById("stop").onclick = () => {clearInterval(timer)};
-<<<<<<< HEAD
-// document.getElementById('tree-M').onclick = addTreeMaj;
-// document.getElementById('tree-m').onclick = addTreeMin;
+document.getElementById("stop").onclick = () => {clearInterval(timer); clearInterval(timer2)};
+// document.getElementById('tree-m').onclick = redMount;
 // document.getElementById('tree-A').onclick = addTreeAlt;
-=======
-document.getElementById('tree-M').onclick = addTreeMaj;
-document.getElementById('tree-m').onclick = addTreeMin;
-document.getElementById('tree-A').onclick = addTreeAlt;
-document.getElementById('toggleRed').onclick = toggleRedFun;
-
-function toggleRedFun() {
-    if(!state.redMountains){
-        assets.mountains.src = urls.mountains[1]
-        state.redMountains = true
-    } else {
-        assets.mountains.src = urls.mountains[0]
-        state.redMountains =  false
-    }
-}
->>>>>>> 23d78fc9bbba2e037e6ca31ac93725bb3db2fdaf
 
 
 timer = setInterval(()=> {
@@ -307,36 +288,65 @@ timer = setInterval(()=> {
 
 window.addEventListener('load', ()=>{
     console.log(state)
+    console.log('moon:')
+    console.log(state.assets.moon)
 })
-<<<<<<< HEAD
 
 
-/* state.assets.moon.onclick = (e) => {
-    e.target.src = new_assets.mountains.url[1]
-} */
+/* function moveMoon () {
+   var moon = state.assets.moon;
+   var right = 100-parseFloat(moon.style.left)-parseFloat(moon.style.width)
+   if (right>0) {
+        moon.style.left = ((parseFloat(moon.style.left) + 1 ) % 100) + '%'
+        console.log(2*Math.PI* (clock))
+        moon.style.transform = "translateY("+ 2*Math.PI*clock + "%)"
+   }
+   else {
+    moon.style.left = '0%'
+    moon.style.top = '34%'
+   } 
+}
+ */
 
-=======
-/*
-var myMount = new Vue({
-    el: '#toggleRed',
-    data: {
-        red: true,
-    },
-    
-    methods: { toggleRed: function() {
-        if(red) this.red = false
-        else this.red =true;
-        console.log("red="+this.red)
+function moveMoon(elapsed) {
+    var moon = state.assets.moon;
+    var grass = state.assets.grass;
+    var width = grass.width - moon.width
+
+    var cx = grass.width/2;
+    var cy = sky.height*1.4;
+    var x = 0;
+    var y = 0;
+
+
+    if (x>=0 && x<width && y<=0) {
+        moon.style.display = 'block'
+        moon.style.transform = 'translate('+ x +'px, '+ y +'px)'
+        x =  cx + width*Math.cos(elapsed/10000);
+        y = cy + width*Math.sin(elapsed/10000);
+        var myAnimation = window.requestAnimationFrame(moveMoon)
+
     }
-    },
-    
-    updated: function () {
-        if (this.red) {
-            assets.mountains.src = urls.mountains[1]
-         }
+    else{
+        moon.display = 'none'
+        window.cancelAnimationFrame(myAnimation)
+        return
     }
-});
-*/ 
->>>>>>> 23d78fc9bbba2e037e6ca31ac93725bb3db2fdaf
+
+    console.log('partiti')
+}
+
 addImage()
-// initCanvas()
+
+
+function showInitPanel() {
+    document.getElementById("panel-container").hidden = !document.getElementById("panel-container").hidden
+}
+
+
+document.getElementById('ok-button').onclick = ()=> {
+    showInitPanel();
+    window.requestAnimationFrame(moveMoon)
+}
+var house = state.assets.house;
+house.onclick = showInitPanel

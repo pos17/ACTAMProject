@@ -11,6 +11,10 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="../node_modules/nes.css/css/nes.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet"> 
         <script type="module" src="index.js"></script>
         <script type="module" src="canvaEnv.js"></script>
         <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>   -->
@@ -19,18 +23,50 @@
         <!-- <button onclick="mylog()">CIAONE</button>
         <button id = "workieTalkie">Talk to worker</button> -->
         <div id="container">
+
+            <div id="panel-container">
+                <div id="init-panel"></div>
+                <div id="front-panel">
+                    <h1 id="title"> TITLE </h1>
+
+                    <div class="nes-field">
+                        <div class="word-input">
+                            <label for="name_field2">Word1</label>
+                            <input type="text" id="name_field1" class="nes-input">
+                        </div>
+                        
+                        <div class="word-input">
+                            <label for="name_field2">Word2</label>
+                            <input type="text" id="name_field2" class="nes-input">
+                        </div>
+
+                    </div>
+                    
+                    <div class="mood">
+                        <label for="mood">How do you feel today?</label>
+                        <div class="mood-slider">
+                            <p>SAD </p>
+                            <input type="range" class="nes-progress" max="7" min="1" step="1">
+                            <p> HAPPY</p>
+                        </div>
+                    </div>
+                    
+
+                    <button id="ok-button" class="nes-btn is-success">OK</button>
+                </div>
+            </div>
+            
+
             <div id="canvas-div">
                 <img src="../assets/BG/Background.png" id="sky" /> 
                 <!-- <canvas id="main-canvas"></canvas>   -->
             </div>
+
         </div>
-        <!--<div id="app-5">-->
-            <button type="reset" id="stop">STOP ME</button>
-            <button id="tree-M">TREE M</button>
-            <button id="tree-m">TREE m</button>
-            <button id="tree-A">TREE A</button>
-            <button id="toggleRed" >TOGGLE RED</button>
-        <!--</div>-->
+
+        <button type="reset" id="stop">STOP ME</button>
+        <button id="show">SHOWME</button>
+
     </body>
     
 </html>
