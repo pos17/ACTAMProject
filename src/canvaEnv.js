@@ -1,43 +1,106 @@
 import * as Model from "./index.js"
+
 const canvasDiv = document.getElementById('canvas-div');
 const sky = document.getElementById('sky');
-console.log('sky width: '+sky.clientWidth);
+
+var clock = new Date().getSeconds()
 
 var startButton = document.createElement('button');
-startButton.onclick= Model.startMusic
+// startButton.onclick= 
 
 
 var state = {
     canvas: {},
-    assets: {},
-    redMountains: false
+    assets: {
+        stars: []
+    }
 } 
 
-const urls = {
-    mountains: [
-        new URL('../assets/BG/Mountains.png', import.meta.url),
-        new  URL('../assets/BG/Mountains2.png', import.meta.url),
-    ],
-    grass: new URL('../assets/BG/Grass.png', import.meta.url),
-    house: new URL('../assets/HOUSE/Home.png', import.meta.url),
-    moon: new URL('../assets/MOON/Moon.png', import.meta.url),
-    star: new URL('../assets/Small Star.png', import.meta.url),
-    bigStar: new URL('../assets/Big Star.png', import.meta.url),
-    treeMaj: new URL('../assets/TREES/Tree Maj.png', import.meta.url),
-    treeMin: new URL('../assets/TREES/Tree Min.png', import.meta.url),
-    treeAlt: new URL('../assets/TREES/Tree Alt.png', import.meta.url),
-}
+const new_assets = {
+    mountains: {
+        url: new URL('../assets/BG/Mountains.png', import.meta.url),
+        style: {
+            class: 'overlay',
+            width: '100%',
+            left: '0%',
+            bottom: '0%',
+            zIndex:'+1'
+        },
+        index: 0
+    },
 
-var assets = {
-    MoonUrls: ['../assets/MOON/Moon.png'],
-    stars: [],
+    grass: {
+        url: new URL('../assets/BG/Grass.png', import.meta.url),
+        style: {
+            class: 'overlay',
+            width: '100%',
+            left: '0%',
+            bottom: '0%',
+            zIndex:'+1'
+        }
+    },
+
+    house: {
+        url: new URL('../assets/HOUSE/Home.png', import.meta.url),
+        style: {
+            class: 'overlay',
+            width: `${49/256*100}%`,
+            right: '10%',
+            bottom: '10%',
+            zIndex:'+1'
+        }
+    },
+
+    moon: {
+        url: [
+            new URL('../assets/MOON/Moon1.png', import.meta.url),
+            new URL('../assets/MOON/Moon2.png', import.meta.url),
+            new URL('../assets/MOON/Moon3.png', import.meta.url),
+            new URL('../assets/MOON/Moon4.png', import.meta.url),
+            new URL('../assets/MOON/Moon5.png', import.meta.url),
+        ],
+        style: {
+            class: 'overlay',
+            width: `${31/256*100}%`,
+            left: '0%',
+            top: '34%',
+            zIndex:'+1'
+        }
+    },
+
+    star: {
+        url: [new URL('../assets/Small Star.png', import.meta.url), new URL('../assets/Big Star.png', import.meta.url),],
+        style: {
+            class: 'overlay',
+            width: `${7/256*100}%`,
+            left: '0',
+            top: '0',
+            zIndex:'0',
+            display: 'none'
+        }
+    },
+
     trees: {
-        Maj: [],
-        Min: [],
-        Alt: [],
-    }
+        url: {
+            Maj: new URL('../assets/TREES/Tree Maj.png', import.meta.url),
+            Min: new URL('../assets/TREES/Tree Min.png', import.meta.url),
+            Alt: new URL('../assets/TREES/Tree Alt.png', import.meta.url),
+        },
+        style: {
+            class: 'overlay',
+            width: `${19/256*100}%`,
+            zIndex:'+2'
+        }
+    }  
 }
 
+function subStar (star) {
+    star.src = new_assets.star.url[1];
+   
+    setTimeout((star)=>{
+        star.src = new_assets.star.url[0];
+    }, 1100, star)
+}
 
 function addImage () {
     assets.mountains = addImageToCanvasDiv('mountains', urls.mountains[0], {
@@ -59,7 +122,6 @@ function addImage () {
     assets.house = addImageToCanvasDiv('house', urls.house, {
         class: 'overlay',
         width: `${49/256*100}%`,
-        // width: `${this.clientWidth/sky.clientWidth*100}%`,
         right: '10%',
         bottom: '10%',
         zIndex:'+1'
@@ -80,82 +142,34 @@ function addImage () {
         display: 'none'
     });
 
-    var body = document.querySelector('body')
-    startButton.disabled = true;
-    startButton.textContent = "ciaone!"
-
-    body.appendChild(startButton)
-
     addStars(150)
+}
 
+function addImage() {
+    state.assets.mountains = addImageToCanvasDiv(new_assets.mountains.url, new_assets.mountains.style);
+    state.assets.grass = addImageToCanvasDiv(new_assets.grass.url, new_assets.grass.style);
+    state.assets.house = addImageToCanvasDiv(new_assets.house.url, new_assets.house.style);
+    state.assets.moon = addImageToCanvasDiv(new_assets.moon.url[0], new_assets.moon.style);
+    addStars(150);
 }
 
 function addStars (num) {
     for (var i=0; i<num; i++) {
-        assets.stars[i] = addImageToCanvasDiv('star', urls.star, {
+        state.assets.stars[i] = addImageToCanvasDiv(new_assets.star.url[0], {
             class: 'overlay',
             width: `${7/256*100}%`,
-            left: `${Math.floor(Math.random()*100)}%`,
+            left: `${Math.floor(Math.random()*95)}%`,
             top: `${Math.floor(Math.random()*70)}%`,
-            zIndex:'0'
-        })
+            zIndex: '0'
+        });
     }
 }
 
-function addTreeMaj () {
-    var img = addImageToCanvasDiv(urls.treeMaj, {
-        class: 'overlay',
-        width: `${19/256*100}%`,
-        left: `${Math.floor(Math.random()*40)}%`,
-        bottom: `${Math.floor(Math.random()*17)}%`,
-        zIndex:'+2'
-    })
-    assets.trees.Maj.push(img)
-    console.log(assets)
-}
 
-function addTreeMin () {
-    var img = addImageToCanvasDiv(urls.treeMin, {
-        class: 'overlay',
-        width: `${19/256*100}%`,
-        left: `${Math.floor(Math.random()*40)}%`,
-        bottom: `${Math.floor(Math.random()*17)}%`,
-        zIndex:'+2'
-    })
-    assets.trees.Min.push(img)
-    console.log(assets)
-}
-
-function addTreeAlt () {
-    var img = addImageToCanvasDiv(urls.treeAlt, {
-        class: 'overlay',
-        width: `${19/256*100}%`,
-        left: `${Math.floor(Math.random()*40)}%`,
-        bottom: `${Math.floor(Math.random()*17)}%`,
-        zIndex:'+2'
-    })
-    assets.trees.Alt.push(img)
-    console.log(assets)
-}
-
-
-function subStar (star) {
-    // var width = assets.bigStar.style.width; 
-    assets.bigStar.style.top = star.style.top;
-    assets.bigStar.style.left = star.style.left;
-    // assets.bigStar.style.width = width;
-    assets.bigStar.style.display = 'block';
-    setTimeout(() => {
-        assets.bigStar.style.display = 'none';
-    }, 500);
-}
-
-// params = {class, height, width, top, left, display}
-function addImageToCanvasDiv (id, src, params) {
+function addImageToCanvasDiv (src, params) {
     var img = new Image();
     img.src = src
 
-    img.id = id ? id : null;
     img.style.position = 'absolute';
     img.style.display = params.display ? params.display : 'block'
     img.style.zIndex = params.zIndex ? params.zIndex : '0';
@@ -196,57 +210,69 @@ function addImageToCanvasDiv (id, src, params) {
 }
 
 let timer;
-// document.getElementById("stop").onclick = () => {clearInterval(timer)};
-// document.getElementById('tree-M').onclick = addTreeMaj;
-// document.getElementById('tree-m').onclick = addTreeMin;
-// document.getElementById('tree-A').onclick = addTreeAlt;
-// document.getElementById('toggleRed').onclick = toggleRedFun;
 
-// function toggleRedFun() {
-//     if(!state.redMountains){
-//         assets.mountains.src = urls.mountains[1]
-//         state.redMountains = true
-//     } else {
-//         assets.mountains.src = urls.mountains[0]
-//         state.redMountains =  false
-//     }
-// }
+timer = setInterval(()=> {
+    subStar(state.assets.stars[Math.floor(Math.random()*state.assets.stars.length)]);
+}, 1000)
+
+window.addEventListener('load', ()=>{
+    console.log(state)
+    console.log('moon:')
+    console.log(state.assets.moon)
+})
 
 
-// timer = setInterval(()=> {
-//     subStar(assets.stars[Math.floor(Math.random()*assets.stars.length)]);
-// }, 1000)
+function moveMoon(elapsed) {
+    var moon = state.assets.moon;
+    var grass = state.assets.grass;
+    var width = grass.width - moon.width
 
-// window.addEventListener('load', ()=>{
-//     console.log(assets)
-// })
-/*
-var myMount = new Vue({
-    el: '#toggleRed',
-    data: {
-        red: true,
-    },
-    
-    methods: { toggleRed: function() {
-        if(red) this.red = false
-        else this.red =true;
-        console.log("red="+this.red)
+    var cx = grass.width/2;
+    var cy = sky.height*1.4;
+    var x = 0;
+    var y = 0;
+
+
+    if (x>=0 && x<width && y<=0) {
+        moon.style.display = 'block'
+        moon.style.transform = 'translate('+ x +'px, '+ y +'px)'
+        x =  cx + width*Math.cos(elapsed/10000);
+        y = cy + width*Math.sin(elapsed/10000);
+        var myAnimation = window.requestAnimationFrame(moveMoon)
+
     }
-    },
-    
-    updated: function () {
-        if (this.red) {
-            assets.mountains.src = urls.mountains[1]
-         }
+    else{
+        moon.display = 'none'
+        window.cancelAnimationFrame(myAnimation)
+        return
     }
-});
-*/ 
+
+    console.log('partiti')
+}
+
 addImage()
 // initCanvas()
 
 
 export function playableButton (ready) {
     if (ready) {
-        startButton.disabled = false;
+        okButton.classList.replace('is-disabled', 'is-success');
     }
 }
+
+function showInitPanel() {
+    document.getElementById("panel-container").hidden = !document.getElementById("panel-container").hidden
+}
+
+var okButton = document.getElementById('ok-button');
+okButton.onclick = ()=> {
+    if (okButton.classList.contains('is-success')){
+        showInitPanel();
+        window.requestAnimationFrame(moveMoon) 
+        Model.startMusic();   
+    }
+    
+}
+
+var house = state.assets.house;
+house.onclick = showInitPanel;

@@ -81,10 +81,6 @@ initializeState()
  *  Function to initialize the main settings of the player 
  */
 
-
-
-
-
 async function   initializeState() {
   //TODO: put here the part of the dialog to input first information about user: mood seedwords
   state.melody.seedWord1= "ciao";
