@@ -23,16 +23,31 @@ self.onmessage = async (event) => {
     case "continue":
       continueMelody(event.data.mel,event.data.length,event.data.chordProgression)
       break;
+    case "initializeWorker":
+      initializeWorker();
+      break;
     default:
       console.error("no message to the, don't know what to do!")
   }
   
 };
+
+async function initializeWorker() {
+  if (!mvae.isInitialized()) {
+    await mvae.initialize();
+    post("fyi","mvaeInitialized")
+  }
+  if (!mrnn.isInitialized()) {
+    await mrnn.initialize();
+    post("fyi","mrnnInitialized")
+  }
+}
 //TODO:add new features as choosable temp and so on 
 async function interpolate(mel1, mel2) {
   if (!mvae.isInitialized()) {
     await mvae.initialize();
-    post("fyi","mrnnInitialized")
+    post("fyi","mvaeInitialized")
+    
   }
   mel1q = core.sequences.quantizeNoteSequence(mel1, 1)
   mel2q = core.sequences.quantizeNoteSequence(mel2, 1)

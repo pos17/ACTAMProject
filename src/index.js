@@ -19,7 +19,7 @@ import * as CanvaEnv from './canvaEnv.js'
 //const player = new core.Player();
 
 const state= {
-  ready: {
+  readyToPlay: {
     value: false,
     get getReady () {
       return this.value;
@@ -82,28 +82,26 @@ initializeState()
  *  Function to initialize the main settings of the player 
  */
 
-async function   initializeState() {
+async function initializeState() {
+  var workerURL =  new URL("./worker.js", import.meta.url)
+  state.worker = await new Worker(workerURL/*, {type:'module'}*/ );
+  initializeWorker();
+  state.worker.onmessage = (event)=> {workieTalkie(event)}
+}
+
+function initializeMelody() {
   //TODO: put here the part of the dialog to input first information about user: mood seedwords
+  //lines of code to be removed
   state.melody.seedWord1= "ciao";
   state.melody.seedWord2= "bella";
   state.scale = new MusicalScale('C','phrygian');
   var seq1 = buildSequence(state.melody.seedWord1);
   var seq2 = buildSequence(state.melody.seedWord2);
-  var workerURL =  new URL("./worker.js", import.meta.url)
-  state.worker = await new Worker(workerURL/*, {type:'module'}*/ );
-  console.log("seq1")
-  console.log(seq1)
-  console.log("seq2")
-  console.log(seq2)
   interpolateMelodies(seq1,seq2);
-  
-  state.worker.onmessage = (event)=> {workieTalkie(event)}
   state.melody.instrument = new Instr.Lead()
   state.melody.instrument.setVolume(-3);
   state.harmony.instrument = new Instr.Pad()
   state.harmony.instrument.setVolume(-1);
-  //console.log("notes belonging to C ionian the scale: "+scale.scaleNotes())
-
 }
 
 /**
@@ -166,7 +164,7 @@ function calculateRandomTime(constraint,maxLength) {
   return toRet
 }
 
-/*-----------------------Worker --------------------------------*/ 
+
 
 export function startMusic() {
     Tone.start()
@@ -178,6 +176,8 @@ export function stopMusic() {
   Tone.start()
   Tone.Transport.stop();
 }
+
+/*-----------------------Worker --------------------------------*/ 
 /**
  * function that handles the messages from the external worker, message used as routing for the switch case path
  * @param {Event} event object that wraps all the data to be 
@@ -198,44 +198,35 @@ function workieTalkie(event) {
           chordProgression:["Cm","Gb","Db","Gdim"]
         }
       )
-      /*const synth = new Tone.Synth().toDestination();
-      const pingPong = new Tone.PingPongDelay("8n", 0.3).toDestination();
-      //const freeverb = new Tone.Freeverb().toDestination();
-      //freeverb.dampening = 1000;
-      synth.connect(pingPong)//.connect(freeverb)
-      
-      addPartToTransport(sample,synth)
-      */
+
     } break;
     case "continueFirst": {
       const sample = event.data.element;
       console.log("response message:"+ event.data.message)
-      
       state.melody.noteSequence = sample
       var notePart = generatePart(sample);
       state.melody.melodyPart = notePart;
-      state.ready.setReady = true
+      state.melody.playingPart = addNotePartToTransport(state.melody.melodyPart, state.melody.instrument, 0)
+      state.readyToPlay.setReady = true
     } break;
     case "continue": {
       const sample = event.data.element;
       console.log("response message:"+ event.data.message)
-      if(state.melody.melodyPart!=undefined) {
-        if(state.melody.playingPart!=undefined) {
-          state.melody.playingPart.stop(0)
-          state.melody.playingPart = addPartToTransport(state.melody.melodyPart, state.melody.instrument, 0)
-        }else{
-            state.melody.playingPart = addPartToTransport(state.melody.melodyPart, state.melody.instrument, 0)
-          }
-        
-        }
-      
-      
+      state.melody.playingPart.stop(0)
+      state.melody.playingPart = addNotePartToTransport(state.melody.melodyPart, state.melody.instrument, 0)    
       state.melody.noteSequence = sample
       var notePart = generatePart(sample);
       state.melody.melodyPart = notePart;
     } break;
   }
 };
+
+function initializeWorker() {
+  toSend={
+    message:"initializeWorker",
+  }
+  state.worker.postMessage(toSend)
+}
 
 function interpolateMelodies(mel1ToSend,mel2ToSend) {
   toSend={

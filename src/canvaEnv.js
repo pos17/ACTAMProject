@@ -247,7 +247,7 @@ function moveMoon(elapsed) {
         return
     }
 
-    console.log('partiti')
+    //console.log('partiti')
 }
 
 addImage()
