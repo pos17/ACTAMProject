@@ -7,8 +7,7 @@ import * as Instr from './instruments';
 import {Note} from "tonal";
 import * as Tone from "tone"
 import * as CanvaEnv from './canvaEnv.js'
-
-
+import {Emitter} from "./eventEmitter.js"
 // const canvas = document.getElementById('main-canvas');
 // const canvasDiv  = document.getElementById('canvas-div')
 // const sky = document.getElementById('sky')
@@ -18,13 +17,15 @@ import * as CanvaEnv from './canvaEnv.js'
  */
 //const player = new core.Player();
 
-const state= {
+export const state= {
+  readyModel:false,
   readyToPlay: {
     value: false,
     get getReady () {
       return this.value;
     },
     set setReady(bool) {
+      
       this.value = bool;
       this.listener(this.value);
     },
@@ -35,6 +36,7 @@ const state= {
   },
   currentRepetition:0,
   worker: undefined,
+  emitter: new Emitter(),
   key:"", //main key of the system
   mode:"", //reference mode 
   scale:undefined, //scale 
@@ -87,11 +89,14 @@ async function initializeState() {
   state.worker = await new Worker(workerURL/*, {type:'module'}*/ );
   initializeWorker();
   state.worker.onmessage = (event)=> {workieTalkie(event)}
+  await initializeMelody()
 }
 
-function initializeMelody() {
+async function initializeMelody() {
   //TODO: put here the part of the dialog to input first information about user: mood seedwords
   //lines of code to be removed
+  await state.emitter.isReady()
+  console.log("Done?!?")
   state.melody.seedWord1= "ciao";
   state.melody.seedWord2= "bella";
   state.scale = new MusicalScale('C','phrygian');
@@ -182,7 +187,7 @@ export function stopMusic() {
  * function that handles the messages from the external worker, message used as routing for the switch case path
  * @param {Event} event object that wraps all the data to be 
  */
-function workieTalkie(event) {
+async function workieTalkie(event) {
   switch(event.data.message){
     case "fyi": {
       console.log(event.data.element);
@@ -217,9 +222,35 @@ function workieTalkie(event) {
       state.melody.noteSequence = sample
       var notePart = generatePart(sample);
       state.melody.melodyPart = notePart;
-    } break;
+    }
+    break;
+    case "modelInitialized": {
+      state.emitter.updateReady()
+      console.log("model initialized")
+    }
+    break;
   }
 };
+
+/*-------------------------event handling--------------------- */
+/*
+function waitForEvent(emitter, event){
+  return new Promise((resolve, reject) => {
+      const success = (val) => {
+          emitter.off("error", fail);
+          resolve(val);
+      };
+      const fail = (err) => {
+          emitter.off(event, success);
+          reject(err);
+      };
+      emitter.once(event, success);
+      emitter.once("error", fail);
+  });
+}
+*/
+
+/*---------------------------------------------*/
 
 function initializeWorker() {
   toSend={

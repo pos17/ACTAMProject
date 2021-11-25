@@ -7,7 +7,7 @@ module.exports = class musicalScale {
         this.key = key;
         this.mode = mode;
         this.dict = this._loadDictionary()
-        console.table(this.dict);
+        //console.table(this.dict);
         this._scale = this.dict.scales[this._paramMode(this.mode)]  //FIXME: doesn't work with flat and sharps
     }
     //given a key and a mode returns the notes of a scale
@@ -22,16 +22,16 @@ module.exports = class musicalScale {
         var keys = this.dict.keys
         var keyToRet = [] 
         var offset = keys.indexOf(this.key);
-        console.log("offset:" +offset)
-        console.log("keys:"+keys)
-        console.log("steps:"+steps)
-        console.log("keys.length:"+keys.length)
+        //console.log("offset:" +offset)
+        //console.log("keys:"+keys)
+        //console.log("steps:"+steps)
+        //console.log("keys.length:"+keys.length)
         for(var i = 0;i <keys.length;i++) {
             
             if(steps[i]>=1) {
                 keyToRet.push(keys[(offset+i) % keys.length])
             }
-            console.log(keyToRet)
+            //console.log(keyToRet)
         }
         
         return keyToRet;
@@ -125,7 +125,7 @@ module.exports = class musicalScale {
     _genSteps(steps_str) {
         console.log(steps_str)
         let arr = steps_str.split(' ');
-        console.log(arr)
+        //console.log(arr)
         let steps = [];
         //let step = 0;
         steps.push(1);

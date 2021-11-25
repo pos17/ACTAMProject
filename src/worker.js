@@ -41,6 +41,7 @@ async function initializeWorker() {
     await mrnn.initialize();
     post("fyi","mrnnInitialized")
   }
+  post("modelInitialized")
 }
 //TODO:add new features as choosable temp and so on 
 async function interpolate(mel1, mel2) {
