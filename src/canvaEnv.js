@@ -1,5 +1,5 @@
 import * as Model from "./index.js"
-
+import {Emitter} from "./eventEmitter.js"
 const canvasDiv = document.getElementById('canvas-div');
 const sky = document.getElementById('sky');
 
@@ -254,10 +254,10 @@ addImage()
 // initCanvas()
 
 
-export function playableButton (ready) {
-    if (ready) {
-        okButton.classList.replace('is-disabled', 'is-success');
-    }
+export async function playableButton () {
+    await Model.state.emitter.isReadyToPlay()
+    console.log("READY MOTHERFUCKER")
+    okButton.classList.replace('is-disabled', 'is-success');
 }
 
 function showInitPanel() {

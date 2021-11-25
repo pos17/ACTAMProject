@@ -19,7 +19,7 @@ import {Emitter} from "./eventEmitter.js"
 
 export const state= {
   readyModel:false,
-  readyToPlay: {
+  readyToPlay: false,/* {
     value: false,
     get getReady () {
       return this.value;
@@ -33,7 +33,7 @@ export const state= {
       CanvaEnv.playableButton(value);
       console.log("READY MOTHERFUCKER")
     },
-  },
+  },*/
   currentRepetition:0,
   worker: undefined,
   emitter: new Emitter(),
@@ -90,12 +90,13 @@ async function initializeState() {
   initializeWorker();
   state.worker.onmessage = (event)=> {workieTalkie(event)}
   await initializeMelody()
+  await CanvaEnv.playableButton()
 }
 
 async function initializeMelody() {
   //TODO: put here the part of the dialog to input first information about user: mood seedwords
   //lines of code to be removed
-  await state.emitter.isReady()
+  await state.emitter.isReadyModel()
   console.log("Done?!?")
   state.melody.seedWord1= "ciao";
   state.melody.seedWord2= "bella";
@@ -212,7 +213,7 @@ async function workieTalkie(event) {
       var notePart = generatePart(sample);
       state.melody.melodyPart = notePart;
       state.melody.playingPart = addNotePartToTransport(state.melody.melodyPart, state.melody.instrument, 0)
-      state.readyToPlay.setReady = true
+      state.emitter.updateReadyToPlay()
     } break;
     case "continue": {
       const sample = event.data.element;
@@ -225,7 +226,7 @@ async function workieTalkie(event) {
     }
     break;
     case "modelInitialized": {
-      state.emitter.updateReady()
+      state.emitter.updateReadyModel()
       console.log("model initialized")
     }
     break;
