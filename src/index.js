@@ -9,7 +9,6 @@ import * as Tone from "tone"
 
 
 
-
 // const canvas = document.getElementById('main-canvas');
 // const canvasDiv  = document.getElementById('canvas-div')
 // const sky = document.getElementById('sky')
@@ -485,4 +484,89 @@ partChord.loopEnd = "8m";
 partChord.loop = true;
 
 console.log("prova scale")
-console.log(Scale.get("d5 ionian"))
+
+console.log(Scale.get("d5 dorian"))
+
+//prendo l'array fatto da Scale.get e ci metto i pesi, le passo la scala: nota e modo (string)
+//function PesiNote(scale)
+//{
+ //sequence=Scale.get("d5 dorian").chroma
+ //imposta la tonica a val 5
+ //sequence[0]=5;
+ //counter=1;
+ //for ( int i =1; i< sequence.length; i++)
+  /*  {if ( sequence[i]== 1)
+     { counter++;
+      switch (counter){
+        case (2):  break;
+        case (3): sequence[i]= 4; break;
+        case (4):  break;
+       case (5): sequence[i]=3; break;
+        case (6):  break; 
+        case (7): sequence[i]=2; break;
+      }
+   
+    }
+    bluenote per le scale minori sulla terza min
+    if (sequence[4]==0)
+      sequence[4]=1;
+
+    totProb=17+sequence[4];
+ }
+      }*/
+
+function transportSeq (scale)
+{
+  ScArr=Scale.get("scale").chroma;
+  //ChArr=Scale.get("chord").chroma
+var SeqToRet [12];
+
+for (var i=0; i< Sequence.length; i++)
+  SeqToRet[i]=0;
+
+var tonic= Scale.get("scale").tonic;
+var shift=Interval.semitones( Interval.distance(tonic, "note"));
+var counter=0;
+for (var i =0; i<SeqToRet.legth; i++)
+  {
+  SeqToRet[i]=ScArr[(i-shift)%SeqToRet.legth];
+  if ( ScArr[(i-shift)%SeqToRet.legth]== 1)
+    { counter++;
+     switch (counter){
+       case (1): SeqToRet[i]= 5; break;
+       case (2):  break;
+       case (3): SeqToRet[i]= 4; break;
+       case (4):  break;
+      case (5): SeqToRet[i]=3; break;
+       case (6):  break; 
+       case (7): SeqToRet[i]=2; break;
+     }
+    }
+  }
+
+     //per chord ci vuole un arpeggiatore
+  /*var Chord [12];
+  for (var i =0; i<SeqToRet.legth; i++)
+  {
+    if (SeqToRet[i]==1) continue;
+    else Chord[i]=SeqToRet[i];
+  }
+}
+return SeqToRet, Chord;
+*/
+console.log("prova scale trasposte e pesate");
+for (var i =0; i<SeqToRet.legth; i++)
+  console.log(SeqToRet(i));
+
+return SeqToRet;
+}
+
+//non funzia
+
+transportSeq("d dorian");
+
+
+
+
+
+
