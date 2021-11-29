@@ -4,7 +4,7 @@ import Worker from 'web-worker';
 import DrumMachine from './DrumMachine';
 import MusicalScale from './musicalScale';
 import * as Instr from './instruments';
-import {Scale, Note} from "@tonaljs/tonal";
+import {Scale, Note,Chord,Interval} from "@tonaljs/tonal";
 import * as Tone from "tone"
 
 
@@ -514,23 +514,51 @@ console.log(Scale.get("d5 dorian"))
     totProb=17+sequence[4];
  }
       }*/
+      
+/**
+ * 
+ * @param {string} scale definition of the scale 
+ * @returns array of 12 chromatic notes 
+ */
+function transportSeq (scale, chord) {
+  chromaChr = Chord.get(chord).chroma.split("").map((num)=>{
+    return Number(num)
+  })
+  var tonicChr= Chord.get(chord).tonic;
+  var shiftChr=Interval.semitones( Interval.distance("C",tonicChr));
+  //scale chroma
+  scArr=Scale.get(scale).chroma.split("").map((num)=>{
+    return Number(num)
+  })
+  var seqToRet = [0,0,0,0,0,0,0,0,0,0,0,0];
 
-function transportSeq (scale)
-{
-  ScArr=Scale.get("scale").chroma;
-  //ChArr=Scale.get("chord").chroma
-var SeqToRet [12];
-
-for (var i=0; i< Sequence.length; i++)
-  SeqToRet[i]=0;
-
-var tonic= Scale.get("scale").tonic;
-var shift=Interval.semitones( Interval.distance(tonic, "note"));
+  var tonic= Scale.get(scale).tonic;
+  var shift=Interval.semitones( Interval.distance("C",tonic));
+  console.log("interval between:"+tonic+ "and reference: C, is: " +Interval.distance("C",tonic)+" ,in semitones: "+ shift)
+  console.log("chroma of the scale:"+scArr)
+  console.log("tonic of the scale:"+tonic)
+  console.log("reference tonic:C")
+  console.log("shift interval:"+shift)
+  console.log("shift chr interval:"+shiftChr)
+  console.log("chord chroma:"+chromaChr)
+  var counter=0;
+  var countChord = 5
+  for(var i = 0; i <chromaChr.length; i++) {
+    chromaChr[i] = chromaChr[i]*countChord;
+    if(chromaChr[i]!=0) countChord--;
+  }
+  for (var i =0; i<seqToRet.length; i++)
+    {
+      console.log(seqToRet)
+    seqToRet[i]= seqToRet[i] +scArr[(12+i-shift)%seqToRet.length];
+    seqToRet[i]=seqToRet[i] +(chromaChr[(12+i-shiftChr)%seqToRet.length]);
+    }
+/*
 var counter=0;
-for (var i =0; i<SeqToRet.legth; i++)
+for (var i =0; i<SeqToRet.length; i++)
   {
   SeqToRet[i]=ScArr[(i-shift)%SeqToRet.legth];
-  if ( ScArr[(i-shift)%SeqToRet.legth]== 1)
+  if ( ScArr[(i-shift)%SeqToRet.length]== 1)
     { counter++;
      switch (counter){
        case (1): SeqToRet[i]= 5; break;
@@ -542,28 +570,11 @@ for (var i =0; i<SeqToRet.legth; i++)
        case (7): SeqToRet[i]=2; break;
      }
     }
+  */
+    return seqToRet
   }
 
-     //per chord ci vuole un arpeggiatore
-  /*var Chord [12];
-  for (var i =0; i<SeqToRet.legth; i++)
-  {
-    if (SeqToRet[i]==1) continue;
-    else Chord[i]=SeqToRet[i];
-  }
-}
-return SeqToRet, Chord;
-*/
-console.log("prova scale trasposte e pesate");
-for (var i =0; i<SeqToRet.legth; i++)
-  console.log(SeqToRet(i));
-
-return SeqToRet;
-}
-
-//non funzia
-
-transportSeq("d dorian");
+console.log(transportSeq("d dorian","dm7"));
 
 
 
