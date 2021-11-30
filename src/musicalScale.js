@@ -18,7 +18,7 @@ module.exports = class musicalScale {
     scaleNotes() {
         //console.log(this._scale = this.dict.scales[this._paramMode(this.mode)])
         var steps = this._scale.steps
-        console.log(this._scale.steps)
+        //console.log(this._scale.steps)
         var keys = this.dict.keys
         var keyToRet = [] 
         var offset = keys.indexOf(this.key);
@@ -123,7 +123,7 @@ module.exports = class musicalScale {
     };
 
     _genSteps(steps_str) {
-        console.log(steps_str)
+        //console.log(steps_str)
         let arr = steps_str.split(' ');
         //console.log(arr)
         let steps = [];
@@ -146,7 +146,7 @@ module.exports = class musicalScale {
             }
             break;
           }
-          console.log(steps)
+          //console.log(steps)
         }
         return steps;
       };

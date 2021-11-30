@@ -176,9 +176,9 @@ class Lead {
         //var volume = -15;
         var lead = new Tone.PolySynth(Tone.Synth);
         lead.set({envelope: {
-            attack: '4n',
-            decay: '8n',
-            sustain: '0.6',
+            attack: '2n',
+            decay: '2n',
+            sustain: '0.1',
             release: '2n'
         },
         
