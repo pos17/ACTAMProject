@@ -4,7 +4,7 @@ import Worker from 'web-worker';
 import DrumMachine from './DrumMachine';
 import MusicalScale from './musicalScale';
 import * as Instr from './instruments';
-import {Note} from "tonal";
+import {Scale, Note,Chord,Interval} from "@tonaljs/tonal";
 import * as Tone from "tone"
 import * as CanvaEnv from './canvaEnv.js'
 import {Emitter} from "./eventEmitter.js"
@@ -38,6 +38,7 @@ export const state= {
   worker: undefined,
   emitter: new Emitter(),
   key:"", //main key of the system
+  major: true,
   mode:"", //reference mode 
   scale:undefined, //scale 
   bpm:60,
@@ -47,7 +48,19 @@ export const state= {
     chordProgression: ["Cm","Gb","Db","Gdim"],
     startTime: "0",
     possibleProgressions: [
-      ["I","VI","II","V"],
+      [{
+        position:"II",
+        length:"1m"
+      },
+      {
+        position:"V",
+        length:"1m"
+      },
+      {
+        position:"I",
+        length:"2m"
+      },
+      ],
     ]
   },
   melody:{
@@ -378,7 +391,7 @@ state.harmony.instrument.volume.value = -6;
 */
 
 const partChord = new Tone.Part(((time, value)=> {
-  state.harmony.instrument.triggerAttackRelease(value, "2m",time,0.5 )
+  state.harmony.instrument.triggerAttackRelease(value,time,0.5 )
   console.log("playi")
   console.log(value)
   
@@ -406,3 +419,54 @@ Tone.Transport.schedule((time) => {
   )
   console.log("settima battuta loop "+ k++)
 },"7:0:0")
+
+/**
+ * 
+ * @param {string} scale definition of the scale 
+ * @returns array of 12 chromatic notes 
+ */
+function chromaValues (scale, chord) {
+  chromaChr = Chord.get(chord).chroma.split("").map((num)=>{
+    return Number(num)
+  })
+  var tonicChr= Chord.get(chord).tonic;
+  var shiftChr=Interval.semitones( Interval.distance("C",tonicChr));
+  //scale chroma
+  scArr=Scale.get(scale).chroma.split("").map((num)=>{
+    return Number(num)
+  })
+  var seqToRet = [0,0,0,0,0,0,0,0,0,0,0,0];
+
+  var tonic= Scale.get(scale).tonic;
+  var shift=Interval.semitones( Interval.distance("C",tonic));
+  /*
+  console.log("interval between:"+tonic+ "and reference: C, is: " +Interval.distance("C",tonic)+" ,in semitones: "+ shift)
+  console.log("chroma of the scale:"+scArr)
+  console.log("tonic of the scale:"+tonic)
+  console.log("reference tonic:C")
+  console.log("shift interval:"+shift)
+  console.log("shift chr interval:"+shiftChr)
+  console.log("chord chroma:"+chromaChr)
+  */
+  var counter=0;
+  var countChord = 5
+  for(var i = 0; i <chromaChr.length; i++) {
+    chromaChr[i] = chromaChr[i]*countChord;
+    if(chromaChr[i]!=0) countChord--;
+  }
+  for (var i =0; i<seqToRet.length; i++)
+    {
+      console.log(seqToRet)
+    seqToRet[i]= seqToRet[i] +scArr[(12+i-shift)%seqToRet.length];
+    seqToRet[i]=seqToRet[i] +(chromaChr[(12+i-shiftChr)%seqToRet.length]);
+    }
+    return seqToRet
+  }
+
+console.log(transportSeq("d dorian","dm7"));
+
+
+
+
+
+

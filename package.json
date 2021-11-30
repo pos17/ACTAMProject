@@ -23,9 +23,13 @@
     "@magenta/music": "^1.23.1",
     "@parcel/fs": "^2.0.1",
     "@tensorflow/tfjs": "^3.11.0",
+<<<<<<< HEAD
     "eventemitter3": "^4.0.7",
     "nes.css": "^2.3.0",
     "tonal": "^2.2.2",
+=======
+    "@tonaljs/tonal": "^4.6.5",
+>>>>>>> scales
     "web-worker": "^1.2.0"
   }
 }
