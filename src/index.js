@@ -550,24 +550,6 @@ function transportSeq (scale, chord) {
     seqToRet[i]= seqToRet[i] +scArr[(12+i-shift)%seqToRet.length];
     seqToRet[i]=seqToRet[i] +(chromaChr[(12+i-shiftChr)%seqToRet.length]);
     }
-/*
-var counter=0;
-for (var i =0; i<SeqToRet.length; i++)
-  {
-  SeqToRet[i]=ScArr[(i-shift)%SeqToRet.legth];
-  if ( ScArr[(i-shift)%SeqToRet.length]== 1)
-    { counter++;
-     switch (counter){
-       case (1): SeqToRet[i]= 5; break;
-       case (2):  break;
-       case (3): SeqToRet[i]= 4; break;
-       case (4):  break;
-      case (5): SeqToRet[i]=3; break;
-       case (6):  break; 
-       case (7): SeqToRet[i]=2; break;
-     }
-    }
-  */
     return seqToRet
   }
 
