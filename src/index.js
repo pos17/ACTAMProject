@@ -22,6 +22,7 @@ const state= {
   currentRepetition:0,
   worker: undefined,
   key:"", //main key of the system
+  major: true,
   mode:"", //reference mode 
   scale:undefined, //scale 
   bpm:60,
@@ -31,7 +32,19 @@ const state= {
     chordProgression: ["Cm","Gb","Db","Gdim"],
     startTime: "0",
     possibleProgressions: [
-      ["I","VI","II","V"],
+      [{
+        position:"II",
+        length:"1m"
+      },
+      {
+        position:"V",
+        length:"1m"
+      },
+      {
+        position:"I",
+        length:"2m"
+      },
+      ],
     ]
   },
   melody:{
@@ -511,13 +524,12 @@ partChord.loop = true;
     totProb=17+sequence[4];
  }
       }*/
-      
 /**
  * 
  * @param {string} scale definition of the scale 
  * @returns array of 12 chromatic notes 
  */
-function transportSeq (scale, chord) {
+function chromaValues (scale, chord) {
   chromaChr = Chord.get(chord).chroma.split("").map((num)=>{
     return Number(num)
   })
@@ -531,6 +543,7 @@ function transportSeq (scale, chord) {
 
   var tonic= Scale.get(scale).tonic;
   var shift=Interval.semitones( Interval.distance("C",tonic));
+  /*
   console.log("interval between:"+tonic+ "and reference: C, is: " +Interval.distance("C",tonic)+" ,in semitones: "+ shift)
   console.log("chroma of the scale:"+scArr)
   console.log("tonic of the scale:"+tonic)
@@ -538,6 +551,7 @@ function transportSeq (scale, chord) {
   console.log("shift interval:"+shift)
   console.log("shift chr interval:"+shiftChr)
   console.log("chord chroma:"+chromaChr)
+  */
   var counter=0;
   var countChord = 5
   for(var i = 0; i <chromaChr.length; i++) {
