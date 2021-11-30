@@ -468,7 +468,7 @@ state.harmony.instrument =  new Tone.PolySynth({
 state.harmony.instrument.volume.value = -6;
 */
 const partChord = new Tone.Part(((time, value)=> {
-  state.harmony.instrument.triggerAttackRelease(value, "2m",time,0.5 )
+  state.harmony.instrument.triggerAttackRelease(value,time,0.5 )
   console.log("playi")
   console.log(value)
   
@@ -483,9 +483,6 @@ const partChord = new Tone.Part(((time, value)=> {
 partChord.loopEnd = "8m";
 partChord.loop = true;
 
-console.log("prova scale")
-
-console.log(Scale.get("d5 dorian"))
 
 //prendo l'array fatto da Scale.get e ci metto i pesi, le passo la scala: nota e modo (string)
 //function PesiNote(scale)
