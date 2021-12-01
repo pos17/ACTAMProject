@@ -76,10 +76,7 @@ export const state= {
     ]
   },
   melody:{
-    instrument: new Tone.FMSynth({
-      envelope: {
-        attack: 0.1}
-    }).toDestination(),
+    instrument: new Instr.Pad(),
     mute:false,
     seedWord1:"",
     seedWord2:"",
@@ -110,6 +107,8 @@ initializeState()
  */
 
 async function initializeState() {
+  Tone.start()
+  Tone.setContext(new Tone.Context({ latencyHint : "playback" }))
   var workerURL =  new URL("./worker.js", import.meta.url)
   state.worker = await new Worker(workerURL/*, {type:'module'}*/ );
   initializeWorker();
@@ -130,7 +129,7 @@ async function initializeMelody() {
   var seq2 = buildSequence(state.melody.seedWord2,state.key,state.harmony.chordProgression,0,1);
   interpolateMelodies(seq1,seq2);
   state.melody.instrument = new Tone.Synth().toDestination()//new Instr.Lead()
-  state.melody.instrument.volume.value = -3//setVolume(-3);
+  state.melody.instrument.volume.value=-1//.setVolume(-3);
   state.harmony.instrument = new Instr.Pad()
   state.harmony.instrument.setVolume(-1);
 }
@@ -234,14 +233,13 @@ function calculateTime(value,botLength,topLength) {
 
 
 export function startMusic() {
-    Tone.start()
+    
     Tone.Transport.bpm.value = 60
     Tone.Transport.start();
     Tone.Transport.loopEnd = "8m";
     Tone.Transport.loop=true;
 }
 export function stopMusic() {
-  Tone.start()
   Tone.Transport.stop();
 }
 
@@ -380,7 +378,7 @@ function addNotePartToTransport(notePart,instrument,startTime) {
   
   const part = new Tone.Part(((time, value)=> {
       instrument.triggerAttackRelease(value.note, /*"4n"*/value.duration,time,value.velocity )
-      console.log(value.note)
+      console.log("note: "+value.note+" ,time: "+time+" duration: "+ value.duration)
     }
   ),notePart
   

@@ -87,10 +87,10 @@ async function continueMelody(mel, length,chordProgression) {
   console.log("melq")
   console.log(melq)
   const result = await mrnn.continueSequence(
-    melq,
-    length,
-    1.0,
-    chordProgression
+    sequence=melq,
+    steps=length,
+    temperature=0.6,
+    chordProgression=chordProgression
   );
   console.log("result of continue:")
   console.log(result)
