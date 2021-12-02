@@ -18,7 +18,7 @@ self.onmessage = async (event) => {
       interpolate(event.data.mel1,event.data.mel2)
       break;
     case "continueFirst":
-      continueMelody(event.data.mel, event.data.length, event.data.chordProgression)
+      continueMelodyFirst(event.data.mel, event.data.length, event.data.chordProgression)
       break;
     case "continue":
       continueMelody(event.data.mel,event.data.length,event.data.chordProgression)
@@ -75,7 +75,6 @@ async function interpolate(mel1, mel2) {
   
   post("interpolation",concatenatedOut2);
 }
-
 async function continueMelody(mel, length,chordProgression) {
   if (!mrnn.isInitialized()) {
     await mrnn.initialize();
@@ -89,7 +88,32 @@ async function continueMelody(mel, length,chordProgression) {
   const result = await mrnn.continueSequence(
     sequence=melq,
     steps=length,
-    temperature=0.6,
+    temperature=0.9,
+    chordProgression=chordProgression
+  );
+  console.log("result of continue:")
+  console.log(result)
+  var continueOut = core.sequences.unquantizeSequence(result,60)
+  console.log("unquantizedContinue")
+  console.log(continueOut)
+  // Send main script the result.
+  
+  post("continue", continueOut);
+}
+async function continueMelodyFirst(mel, length,chordProgression) {
+  if (!mrnn.isInitialized()) {
+    await mrnn.initialize();
+    post("fyi","mrnnInitialized")
+  }
+  melq = core.sequences.quantizeNoteSequence(mel, 1)
+  console.log("mel")
+  console.log(mel)
+  console.log("melq")
+  console.log(melq)
+  const result = await mrnn.continueSequence(
+    sequence=melq,
+    steps=length,
+    temperature=0.9,
     chordProgression=chordProgression
   );
   console.log("result of continue:")

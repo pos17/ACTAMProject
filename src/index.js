@@ -108,7 +108,7 @@ initializeState()
 
 async function initializeState() {
   Tone.start()
-  Tone.setContext(new Tone.Context({ latencyHint : "playback" }))
+  //Tone.setContext(new Tone.Context({ latencyHint : "playback" }))
   var workerURL =  new URL("./worker.js", import.meta.url)
   state.worker = await new Worker(workerURL/*, {type:'module'}*/ );
   initializeWorker();
@@ -125,11 +125,11 @@ async function initializeMelody() {
   state.melody.seedWord1= "ciao";
   state.melody.seedWord2= "bella";
   state.scale = new MusicalScale('C','major');
-  var seq1 = buildSequence(state.melody.seedWord1,state.key,state.harmony.chordProgression,0,1);
-  var seq2 = buildSequence(state.melody.seedWord2,state.key,state.harmony.chordProgression,0,1);
+  var seq1 = buildSequence(state.melody.seedWord1,state.key,state.harmony.chordProgression,1,6);
+  var seq2 = buildSequence(state.melody.seedWord2,state.key,state.harmony.chordProgression,1,6);
   interpolateMelodies(seq1,seq2);
-  state.melody.instrument = new Tone.Synth().toDestination()//new Instr.Lead()
-  state.melody.instrument.volume.value=-1//.setVolume(-3);
+  state.melody.instrument = new Instr.Lead()//new Tone.Synth().toDestination()//
+  state.melody.instrument.setVolume(-6);
   state.harmony.instrument = new Instr.Pad()
   state.harmony.instrument.setVolume(-1);
 }
@@ -150,7 +150,7 @@ function buildSequence(seedWord, key, chordsArray,botLength,topLength) {
     var chromas = chromaValues(key+" major",chordsArray[i].chord)
     var j = 0
     for(startTimeChord = 0 ; startTimeChord< chordLength;){
-      var pitch = getRandomNote(chromas)+"4"
+      var pitch = getRandomNote(chromas)+"3"
       var length = calculateTime(seedWord.charCodeAt(j%seedWord.length),botLength,topLength)
       console.log("length: "+length)
       if(length>chordLength-startTimeChord) {
@@ -445,7 +445,7 @@ const partChord = new Tone.Part(((time, value)=> {
 }
 ),[
   [0, ["D3","F3","A3","C4"]],//[0, "Eb2"],[0, "G2"], 
-  ["2:0", ["G2","B2","E3","F3"]],//["2:0", "Bb3"],["2:0", "Db3"],
+  ["2:0", ["G2","B2","D3","F3"]],//["2:0", "Bb3"],["2:0", "Db3"],
   ["4:0", ["C3","E3","G3","B3"]],
   ["6:0", ["C3","E3","G3","B3"]]//["4:0", "F2"],["4:0", "Ab2"],
   //,["6:0", "Bb2"],["6:0", "Eb2"],
