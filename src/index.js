@@ -196,11 +196,13 @@ export function startMusic() {
     Tone.Transport.loop=true;
     state.isPlaying = true;
 }
+
 export function stopMusic() {
   Tone.Transport.stop();
   state.isPlaying=false;
 }
 
+//FIXME some delay play/pause
 function togglePlayPause() {
   if(state.isPlaying) {
     Tone.Transport.pause()
@@ -214,15 +216,9 @@ function togglePlayPause() {
 }
 
 window.addEventListener("keydown", function(event) {
-  /*
-  const p = document.createElement("p");
-  
-  p.textContent = `KeyboardEvent: key='${event.key}' | code='${event.code}'`;
-  
-  document.getElementById("output").appendChild(p);
-  */
   if(event.key=="MediaPlayPause") togglePlayPause()
 }, true);
+
 /*-----------------------Worker --------------------------------*/ 
 /**
  * function that handles the messages from the external worker, message used as routing for the switch case path
@@ -343,8 +339,6 @@ function addNotePartToTransport(notePart,instrument,startTime) {
   ),notePart
   
   ).start(startTime)
-  //part.loopEnd="8m"
-  //part.loop = false;
   return part 
 }
 
@@ -464,8 +458,6 @@ function chromaValues (scale, chord) {
     console.log(seqToRet)
     return seqToRet
   }
-
-//console.log(chromaValues("d dorian","dm7"));
 
 
 

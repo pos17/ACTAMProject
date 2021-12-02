@@ -1,0 +1,43 @@
+[
+    {
+        "id":0,
+        "instrument":"pad",
+        "pitch Sequence":"II_V_I_major",
+        "scaleType":"major",
+        "gradeSequence":[
+            {
+                "grade":"II",
+                "length":"2m"
+            },
+            {
+                "grade":"V",
+                "length":"2m"
+            },
+            {
+                "grade":"I",
+                "length":"4m"
+            }
+        ]
+    },
+    {
+        "id":1,
+        "instrument":"pad",
+        "pitch Sequence":"VII_V_II_major",
+        "scaleType":"minor harmonic",
+        "gradeSequence":[
+            {
+                "grade":"II",
+                "length":"2m"
+            },
+            {
+                "grade":"V",
+                "length":"2m"
+            },
+            {
+                "grade":"I",
+                "length":"4m"
+            }
+        ]
+    }
+
+]
