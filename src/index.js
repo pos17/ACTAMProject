@@ -8,32 +8,11 @@ import {Scale, Note,Chord,Interval} from "@tonaljs/tonal";
 import * as Tone from "tone"
 import * as CanvaEnv from './canvaEnv.js'
 import {Emitter} from "./eventEmitter.js"
-// const canvas = document.getElementById('main-canvas');
-// const canvasDiv  = document.getElementById('canvas-div')
-// const sky = document.getElementById('sky')
-
-/*
- * State of the main instance of application
- */
-//const player = new core.Player();
 
 export const state= {
   readyModel:false,
-  readyToPlay: false,/* {
-    value: false,
-    get getReady () {
-      return this.value;
-    },
-    set setReady(bool) {
-      
-      this.value = bool;
-      this.listener(this.value);
-    },
-    listener: function (value){
-      CanvaEnv.playableButton(value);
-      console.log("READY MOTHERFUCKER")
-    },
-  },*/
+  readyToPlay: false,
+  isPlaying:false,
   currentRepetition:0,
   worker: undefined,
   emitter: new Emitter(),
@@ -59,21 +38,7 @@ export const state= {
     },
   ],
     startTime: "0",
-    possibleProgressions: [
-      [{
-        position:"II",
-        length:"1m"
-      },
-      {
-        position:"V",
-        length:"1m"
-      },
-      {
-        position:"I",
-        length:"2m"
-      },
-      ],
-    ]
+    
   },
   melody:{
     instrument: new Instr.Pad(),
@@ -131,7 +96,7 @@ async function initializeMelody() {
   state.melody.instrument = new Instr.Lead()//new Tone.Synth().toDestination()//
   state.melody.instrument.setVolume(-6);
   state.harmony.instrument = new Instr.Pad()
-  state.harmony.instrument.setVolume(-1);
+  state.harmony.instrument.setVolume(-5);
 }
 
 /**
@@ -165,18 +130,9 @@ function buildSequence(seedWord, key, chordsArray,botLength,topLength) {
     //module gives duration to the note
     startTime = startTime+startTimeChord
   }
-    //random
-    /*
-    var pitch = notesArray[module]+"4"; //fixed position on the keyboard
-    var length = calculateRandomTime(32-startTime,4)
-    var noteToinsert = { pitch: Note.midi(pitch), startTime: startTime, endTime: startTime+length }
-    console.log(noteToinsert)
-    startTime=startTime+length
-    melodyArray.push(noteToinsert)
-    if(startTime>=32) end = true
-    console.log("module:"+module+", char:"+seedWord.charAt(i)+", code:"+seedWord.charCodeAt(i))
-    */
   totalLength = startTime
+  
+  
   const sequence = {
     ticksPerQuarter: 220,
     totalTime: totalLength,
@@ -238,11 +194,35 @@ export function startMusic() {
     Tone.Transport.start();
     Tone.Transport.loopEnd = "8m";
     Tone.Transport.loop=true;
+    state.isPlaying = true;
 }
 export function stopMusic() {
   Tone.Transport.stop();
+  state.isPlaying=false;
 }
 
+function togglePlayPause() {
+  if(state.isPlaying) {
+    Tone.Transport.pause()
+    state.isPlaying=false
+    console.log(state.isPlaying)
+  } else {
+    Tone.Transport.start()
+    state.isPlaying=true
+    
+  }
+}
+
+window.addEventListener("keydown", function(event) {
+  /*
+  const p = document.createElement("p");
+  
+  p.textContent = `KeyboardEvent: key='${event.key}' | code='${event.code}'`;
+  
+  document.getElementById("output").appendChild(p);
+  */
+  if(event.key=="MediaPlayPause") togglePlayPause()
+}, true);
 /*-----------------------Worker --------------------------------*/ 
 /**
  * function that handles the messages from the external worker, message used as routing for the switch case path
@@ -292,26 +272,6 @@ async function workieTalkie(event) {
     break;
   }
 };
-
-/*-------------------------event handling--------------------- */
-/*
-function waitForEvent(emitter, event){
-  return new Promise((resolve, reject) => {
-      const success = (val) => {
-          emitter.off("error", fail);
-          resolve(val);
-      };
-      const fail = (err) => {
-          emitter.off(event, success);
-          reject(err);
-      };
-      emitter.once(event, success);
-      emitter.once("error", fail);
-  });
-}
-*/
-
-/*---------------------------------------------*/
 
 function initializeWorker() {
   toSend={
@@ -438,17 +398,15 @@ state.harmony.instrument.volume.value = -6;
 */
 
 const partChord = new Tone.Part(((time, value)=> {
-  state.harmony.instrument.triggerAttackRelease(value,"2m",time,0.5 )
+  state.harmony.instrument.triggerAttackRelease(value.notes,value.dur,time,0.5 )
   console.log("playi")
   console.log(value)
   
 }
 ),[
-  [0, ["D3","F3","A3","C4"]],//[0, "Eb2"],[0, "G2"], 
-  ["2:0", ["G2","B2","D3","F3"]],//["2:0", "Bb3"],["2:0", "Db3"],
-  ["4:0", ["C3","E3","G3","B3"]],
-  ["6:0", ["C3","E3","G3","B3"]]//["4:0", "F2"],["4:0", "Ab2"],
-  //,["6:0", "Bb2"],["6:0", "Eb2"],
+    {time:0, notes: ["D3","F3","A3","C4"], dur:"2m"},//[0, "Eb2"],[0, "G2"], 
+  {time:"2:0", notes: ["G2","B2","D3","F3"], dur:"2m"},//["2:0", "Bb3"],["2:0", "Db3"],
+  {time:"4:0", notes: ["C3","E3","G3","B3"], dur:"4m"}
 ]
 ).start(0)
 /*
@@ -491,15 +449,6 @@ function chromaValues (scale, chord) {
 
   var tonic= Scale.get(scale).tonic;
   var shift=Interval.semitones( Interval.distance("C",tonic));
-  /*
-  console.log("interval between:"+tonic+ "and reference: C, is: " +Interval.distance("C",tonic)+" ,in semitones: "+ shift)
-  console.log("chroma of the scale:"+scArr)
-  console.log("tonic of the scale:"+tonic)
-  console.log("reference tonic:C")
-  console.log("shift interval:"+shift)
-  console.log("shift chr interval:"+shiftChr)
-  console.log("chord chroma:"+chromaChr)
-  */
   var counter=0;
   var countChord = 5
   for(var i = 0; i <chromaChr.length; i++) {
