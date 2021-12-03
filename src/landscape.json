@@ -1,0 +1,22 @@
+{
+    "foreground":"house",
+    "fill":"grass",
+    "secondView":"mountains",
+    "sequence": 
+    [
+        {
+            "harmonyId":0,
+            "repetitions":2,
+            "key":"C",
+            "animation":"moon",
+            "background":"night"
+        },
+        {
+            "harmonyId":1,
+            "repetitions":2,
+            "key":"A",
+            "animation":"sun",
+            "background":"day"
+        }
+    ]
+}

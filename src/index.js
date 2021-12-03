@@ -9,6 +9,9 @@ import * as Tone from "tone"
 import * as CanvaEnv from './canvaEnv.js'
 import {Emitter} from "./eventEmitter.js"
 
+let landScape = require("./landscape.json")
+let harmonies = require("./possibleSchedules.json")
+
 export const state= {
   readyModel:false,
   readyToPlay: false,
@@ -24,21 +27,7 @@ export const state= {
   harmony:{
     instrument: new Tone.PolySynth().toDestination(),
     mute:false,
-    chordProgression: [{
-      chord:"Dm7",
-      length:"2m"
-    },
-    {
-      chord:"G7",
-      length:"2m"
-    },
-    {
-      chord:"CMaj7",
-      length:"4m"
-    },
-  ],
-    startTime: "0",
-    
+    chordParts: []
   },
   melody:{
     instrument: new Instr.Pad(),
@@ -67,20 +56,27 @@ export const state= {
 }
 
 initializeState()
+
+
 /**
  *  Function to initialize the main settings of the player 
  */
-
 async function initializeState() {
   Tone.start()
-  //Tone.setContext(new Tone.Context({ latencyHint : "playback" }))
+  Tone.Transport.bpm.value = 60
   var workerURL =  new URL("./worker.js", import.meta.url)
   state.worker = await new Worker(workerURL/*, {type:'module'}*/ );
   initializeWorker();
   state.worker.onmessage = (event)=> {workieTalkie(event)}
+  state.melody.instrument = new Instr.Lead()//new Tone.Synth().toDestination()//
+  state.melody.instrument.setVolume(-6);
+  state.harmony.instrument = new Instr.Pad()
+  state.harmony.instrument.setVolume(-5);
+  buildLandScape()
   await initializeMelody()
   await CanvaEnv.playableButton()
 }
+
 
 async function initializeMelody() {
   //TODO: put here the part of the dialog to input first information about user: mood seedwords
@@ -93,11 +89,9 @@ async function initializeMelody() {
   var seq1 = buildSequence(state.melody.seedWord1,state.key,state.harmony.chordProgression,1,6);
   var seq2 = buildSequence(state.melody.seedWord2,state.key,state.harmony.chordProgression,1,6);
   interpolateMelodies(seq1,seq2);
-  state.melody.instrument = new Instr.Lead()//new Tone.Synth().toDestination()//
-  state.melody.instrument.setVolume(-6);
-  state.harmony.instrument = new Instr.Pad()
-  state.harmony.instrument.setVolume(-5);
+  
 }
+
 
 /**
  * function that builds a sequence starting from a word 
@@ -146,7 +140,7 @@ function buildSequence(seedWord, key, chordsArray,botLength,topLength) {
     tempos: [
       {
         time: 0,
-        qpm:  240
+        qpm:  60
       }
     ],
     notes: melodyArray
@@ -190,7 +184,6 @@ function calculateTime(value,botLength,topLength) {
 
 export function startMusic() {
     
-    Tone.Transport.bpm.value = 60
     Tone.Transport.start();
     Tone.Transport.loopEnd = "8m";
     Tone.Transport.loop=true;
@@ -390,7 +383,7 @@ state.harmony.instrument =  new Tone.PolySynth({
 }).toDestination();
 state.harmony.instrument.volume.value = -6;
 */
-
+/*
 const partChord = new Tone.Part(((time, value)=> {
   state.harmony.instrument.triggerAttackRelease(value.notes,value.dur,time,0.5 )
   console.log("playi")
@@ -403,6 +396,7 @@ const partChord = new Tone.Part(((time, value)=> {
   {time:"4:0", notes: ["C3","E3","G3","B3"], dur:"4m"}
 ]
 ).start(0)
+*/
 /*
 partChord.loopEnd = "8m";
 partChord.loop = true;
@@ -459,8 +453,52 @@ function chromaValues (scale, chord) {
     return seqToRet
   }
 
+function buildLandScape() {
+  //for cycle to build landscape and to schedule animations
+  var whenTostart = 0
+  for(var i = 0; i < landScape.sequence.length; i++) {
+    var harmonyToParse= harmonies[landScape.sequence[i].harmonyId]
+    
+    var transposedChords = transposeHarmony(harmonyToParse.gradeSequence,state.key,landScape.sequence[i].key)
+    state.harmony.chordParts.push(transposedChords)
+    var chordsNotePart = fromChordsToNotes(transposedChords)
+    console.log(chordsNotePart);
+    for(var j = 0; j<landScape.sequence[i].repetitions;j++) {
+      new Tone.Part(((time, value)=> {
+        state.harmony.instrument.triggerAttackRelease(value.notes,value.length,time,0.5)
+        console.log("playi")
+        console.log(value)
+      }
+      ),chordsNotePart).start(whenTostart)
+      console.log("whenToStart"+whenTostart)
+      whenTostart = Tone.Time(Tone.Time(whenTostart).toSeconds() + Tone.Time(harmonyToParse.totalLength).toSeconds()).toBarsBeatsSixteenths()
+    }
+    console.log("harmonyToParse")
+    console.log(harmonyToParse)
+    
+  }
+}
+
+function fromChordsToNotes(chordsObjectArray) {
+  for(var i = 0; i<chordsObjectArray.length; i++) {
+    var notesArray = Chord.get(chordsObjectArray[i].value).notes
+    for(var j = 0; j<notesArray.length;j++) {
+      //FIXME: assigning the correct octave to the note to play
+      notesArray[j] = notesArray[j] + "3"
+    }
+    chordsObjectArray[i].notes = notesArray
+  }
+  //{value:["C","E","G"],length:"2m"}
+  return chordsObjectArray
+}
 
 
-
-
+//TODO: generate transposition if sequence different from this one 
+function transposeHarmony(harmonyToParse, generalkey,sectionBaseKey) {
+  /*
+  if(key=="C" || key =="c") return harmonyToParse
+  harmonyToParse
+  */
+ return harmonyToParse
+}
 

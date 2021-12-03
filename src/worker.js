@@ -50,8 +50,8 @@ async function interpolate(mel1, mel2) {
     post("fyi","mvaeInitialized")
     
   }
-  mel1q = core.sequences.quantizeNoteSequence(mel1, 1)
-  mel2q = core.sequences.quantizeNoteSequence(mel2, 1)
+  mel1q = core.sequences.quantizeNoteSequence(mel1, 4)
+  mel2q = core.sequences.quantizeNoteSequence(mel2, 4)
   melArray = [mel1q,mel2q]
   console.log("mel1")
   console.log(mel1)

@@ -4,40 +4,34 @@
         "instrument":"pad",
         "pitch Sequence":"II_V_I_major",
         "scaleType":"major",
+        "totalLength":"8m",
         "gradeSequence":[
-            {
-                "grade":"II",
-                "length":"2m"
-            },
-            {
-                "grade":"V",
-                "length":"2m"
-            },
-            {
-                "grade":"I",
-                "length":"4m"
-            }
+            {"time":"0:0:0","value":"Dm7","length":"2m"},
+            {"time":"2:0:0","value":"G7","length":"2m"},
+            {"time":"4:0:0","value":"Cmaj7","length":"2m"},
+            {"time":"6:0:0","value":"Cmaj7","length":"2m"}
         ]
     },
     {
         "id":1,
         "instrument":"pad",
-        "pitch Sequence":"VII_V_II_major",
+        "pitch Sequence":"II_V_I_minor",
         "scaleType":"minor harmonic",
+        "totalLength":"8m",
         "gradeSequence":[
-            {
-                "grade":"II",
-                "length":"2m"
-            },
-            {
-                "grade":"V",
-                "length":"2m"
-            },
-            {
-                "grade":"I",
-                "length":"4m"
-            }
-        ]
+            {"time":"0:0:0","value":"Bdim7","length":"2m"},
+            {"time":"2:0:0","value":"G7","length":"2m"},
+            {"time":"4:0:0","value":"Cm7","length":"2m"},
+            {"time":"6:0:0","value":"Cm7","length":"2m"}
+        ],
+        "length":"8m"
+    },
+    {
+        "id":2,
+        "instrument":"pad",
+        "pitch Sequence":"classical_turn",
+        "scaleType":"major",
+        "totalLength":"8m",
+        "gradeSequence":["Cmaj","Fmaj7","Am7","G7"]
     }
-
 ]
