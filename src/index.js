@@ -466,11 +466,11 @@ function buildLandScape() {
     for(var j = 0; j<landScape.sequence[i].repetitions;j++) {
       new Tone.Part(((time, value)=> {
         state.harmony.instrument.triggerAttackRelease(value.notes,value.length,time,0.5)
-        console.log("playi")
+        console.log("value to be played")
         console.log(value)
       }
       ),chordsNotePart).start(whenTostart)
-      console.log("whenToStart"+whenTostart)
+      //console.log("whenToStart"+whenTostart)
       whenTostart = Tone.Time(Tone.Time(whenTostart).toSeconds() + Tone.Time(harmonyToParse.totalLength).toSeconds()).toBarsBeatsSixteenths()
     }
     console.log("harmonyToParse")
@@ -494,11 +494,19 @@ function fromChordsToNotes(chordsObjectArray) {
 
 
 //TODO: generate transposition if sequence different from this one 
-function transposeHarmony(harmonyToParse, generalkey,sectionBaseKey) {
-  /*
-  if(key=="C" || key =="c") return harmonyToParse
-  harmonyToParse
-  */
+function transposeHarmony(harmonyToParse, generalKey,sectionBaseKey) {
+  var generalDistance = Interval.semitones(Interval.distance("C",generalKey))
+  var sectionBaseDistance = Interval.semitones(Interval.distance(generalKey,sectionBaseKey))
+  var totalDistance = generalDistance + sectionBaseDistance
+  var totalDistanceStr = Interval.fromSemitones(totalDistance)
+  console.log("general distance between C and "+generalKey+": "+generalDistance)
+  console.log("sectionBase distance between "+generalKey+" and "+ sectionBaseKey+ ": "+sectionBaseDistance)
+  console.log("total distance: "+totalDistance)
+  console.log("total distance in str: "+totalDistanceStr)
+  for(var i =0; i<harmonyToParse.length;i++) {
+    var transposed = Chord.transpose(harmonyToParse[i].value,totalDistanceStr)
+    harmonyToParse[i].value = transposed
+  }
  return harmonyToParse
 }
 

@@ -19,10 +19,10 @@
         "scaleType":"minor harmonic",
         "totalLength":"8m",
         "gradeSequence":[
-            {"time":"0:0:0","value":"Bdim7","length":"2m"},
+            {"time":"0:0:0","value":"Ddim7","length":"2m"},
             {"time":"2:0:0","value":"G7","length":"2m"},
-            {"time":"4:0:0","value":"Cm7","length":"2m"},
-            {"time":"6:0:0","value":"Cm7","length":"2m"}
+            {"time":"4:0:0","value":"CmMaj7","length":"2m"},
+            {"time":"6:0:0","value":"CmMaj7","length":"2m"}
         ],
         "length":"8m"
     },
