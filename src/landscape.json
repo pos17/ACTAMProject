@@ -21,14 +21,14 @@
         {
             "harmonyId":1,
             "repetitions":2,
-            "key":"C",
+            "key":"A",
             "animation":"moon",
             "background":"night"
         },
         {
             "harmonyId":5,
             "repetitions":1,
-            "key":"C",
+            "key":"A",
             "animation":"sun",
             "background":"day"
         }

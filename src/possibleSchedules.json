@@ -80,10 +80,10 @@
         "scaleType":"minor",
         "totalLength":"4m",
         "gradeSequence":[
-            {"time":"0:0:0","value":"E7","length":"1m"},
-            {"time":"1:0:0","value":"A7","length":"1m"},
-            {"time":"2:0:0","value":"D7","length":"1m"},
-            {"time":"3:0:0","value":"G7","length":"1m"}
+            {"time":"0:0:0","value":"G7","length":"1m"},
+            {"time":"1:0:0","value":"C7","length":"1m"},
+            {"time":"2:0:0","value":"F7","length":"1m"},
+            {"time":"3:0:0","value":"Bb7","length":"1m"}
         ]
     }
 ]
