@@ -21,7 +21,7 @@ self.onmessage = async (event) => {
       continueMelodyFirst(event.data.mel, event.data.length, event.data.chordProgression)
       break;
     case "continue":
-      continueMelody(event.data.mel,event.data.length,event.data.chordProgression)
+      continueMelody(event.data.mel,event.data.length,event.data.chordProgression,event.data.index)
       break;
     case "initializeWorker":
       initializeWorker();
@@ -50,41 +50,41 @@ async function interpolate(mel1, mel2) {
     post("fyi","mvaeInitialized")
     
   }
-  mel1q = core.sequences.quantizeNoteSequence(mel1, 4)
-  mel2q = core.sequences.quantizeNoteSequence(mel2, 4)
-  melArray = [mel1q,mel2q]
+  //mel1q = core.sequences.quantizeNoteSequence(mel1, 4)
+  //mel2q = core.sequences.quantizeNoteSequence(mel2, 4)
+  melArray = [mel1,mel2]
   console.log("mel1")
   console.log(mel1)
   console.log("mel2")
   console.log(mel2)
-  console.log("mel1q")
-  console.log(mel1q)
-  console.log("mel2q")
-  console.log(mel2q)
+  //console.log("mel1q")
+  //console.log(mel1q)
+  //console.log("mel2q")
+  //console.log(mel2q)
   const output = await mvae.interpolate(inputSequences= melArray, numInterps= 6, temperature= 1.0)
   console.log("output of interpolation:")
   console.log(output)
 
-  var concatenatedOut = core.sequences.concatenate(output)
-  console.log("concatenatedOut")
-  console.log(concatenatedOut)
-  var concatenatedOut2 = core.sequences.unquantizeSequence(concatenatedOut,60)
-  console.log("concatenatedOut2")
-  console.log(concatenatedOut2)
+  //var concatenatedOut = core.sequences.concatenate(output)
+  //console.log("concatenatedOut")
+  //console.log(concatenatedOut)
+  //var concatenatedOut2 = core.sequences.unquantizeSequence(concatenatedOut,60)
+  //console.log("concatenatedOut2")
+  //console.log(concatenatedOut2)
   // Send main script the result.
   
-  post("interpolation",concatenatedOut2);
+  post("interpolation",output[Math.floor(output.length/2)]);
 }
-async function continueMelody(mel, length,chordProgression) {
+async function continueMelody(mel, length,chordProgression,index) {
   if (!mrnn.isInitialized()) {
     await mrnn.initialize();
     post("fyi","mrnnInitialized")
   }
-  melq = core.sequences.quantizeNoteSequence(mel, 1)
+  //melq = core.sequences.quantizeNoteSequence(mel, 4)
   console.log("mel")
   console.log(mel)
-  console.log("melq")
-  console.log(melq)
+  //console.log("melq")
+  //console.log(melq)
   const result = await mrnn.continueSequence(
     sequence=melq,
     steps=length,
@@ -93,19 +93,19 @@ async function continueMelody(mel, length,chordProgression) {
   );
   console.log("result of continue:")
   console.log(result)
-  var continueOut = core.sequences.unquantizeSequence(result,60)
-  console.log("unquantizedContinue")
-  console.log(continueOut)
+  //var continueOut = core.sequences.unquantizeSequence(result,60)
+  //console.log("unquantizedContinue")
+  //console.log(continueOut)
   // Send main script the result.
   
-  post("continue", continueOut);
+  post("continue", result);
 }
 async function continueMelodyFirst(mel, length,chordProgression) {
   if (!mrnn.isInitialized()) {
     await mrnn.initialize();
     post("fyi","mrnnInitialized")
   }
-  melq = core.sequences.quantizeNoteSequence(mel, 1)
+  //melq = core.sequences.quantizeNoteSequence(mel, 1)
   console.log("mel")
   console.log(mel)
   console.log("melq")

@@ -29,9 +29,35 @@
     {
         "id":2,
         "instrument":"pad",
-        "pitch Sequence":"classical_turn",
+        "pitch Sequence":"let_it_be_verse",
         "scaleType":"major",
         "totalLength":"8m",
-        "gradeSequence":["Cmaj","Fmaj7","Am7","G7"]
+        "gradeSequence":[
+            {"time":"0:0:0","value":"C","length":"1m"},
+            {"time":"1:0:0","value":"G","length":"1m"},
+            {"time":"2:0:0","value":"Am","length":"1m"},
+            {"time":"3:0:0","value":"F","length":"1m"},
+            {"time":"4:0:0","value":"C","length":"1m"},
+            {"time":"5:0:0","value":"G","length":"1m"},
+            {"time":"6:0:0","value":"F","length":"1m"},
+            {"time":"7:0:0","value":"F","length":"1m"}
+        ]
+    },
+    {
+        "id":3,
+        "instrument":"pad",
+        "pitch Sequence":"let_it_be_chorus",
+        "scaleType":"major",
+        "totalLength":"8m",
+        "gradeSequence":[
+            {"time":"0:0:0","value":"Am","length":"1m"},
+            {"time":"1:0:0","value":"G","length":"1m"},
+            {"time":"2:0:0","value":"F","length":"1m"},
+            {"time":"3:0:0","value":"C","length":"1m"},
+            {"time":"4:0:0","value":"C","length":"1m"},
+            {"time":"5:0:0","value":"G","length":"1m"},
+            {"time":"6:0:0","value":"F","length":"1m"},
+            {"time":"7:0:0","value":"F","length":"1m"}
+        ]
     }
 ]

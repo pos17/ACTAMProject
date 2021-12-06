@@ -33,4 +33,22 @@ export class Emitter extends EventEmitter {
         }) 
         return p
     }
+
+    isThePreviousMelodyScheduled(actualMelody) {
+        var previousMelody = actualMelody-1;
+        var p = new Promise((resolve)=> {
+            const success = () => {
+                console.log("previous melody: "+previousMelody+"schedule received and ready to go on")
+                resolve()
+            }
+            this.once("melody"+previousMelody+"Scheduled",success)
+        });
+        console.log("waiting for melody n: "+ previousMelody+"to be scheduled")
+        return p 
+    }
+    melodyScheduled(melodyScheduled) {
+        this.emit("melody"+melodyScheduled+"Scheduled")
+        index.state.melody.partPosition++;
+        console.log("melody"+melodyScheduled+"Scheduled")
+    }
 }

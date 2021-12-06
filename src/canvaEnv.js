@@ -254,8 +254,8 @@ addImage()
 // initCanvas()
 
 
-export async function playableButton () {
-    await Model.state.emitter.isReadyToPlay()
+export function playableButton () {
+    
     console.log("READY MOTHERFUCKER")
     okButton.classList.replace('is-disabled', 'is-success');
 }

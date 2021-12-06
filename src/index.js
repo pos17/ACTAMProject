@@ -2,7 +2,6 @@
 //const core = require('@magenta/music/node/core');
 import Worker from 'web-worker';
 import DrumMachine from './DrumMachine';
-import MusicalScale from './musicalScale';
 import * as Instr from './instruments';
 import {Scale, Note,Chord,Interval} from "@tonaljs/tonal";
 import * as Tone from "tone"
@@ -24,19 +23,20 @@ export const state= {
   mode:"", //reference mode 
   scale:undefined, //scale 
   bpm:60,
+  totalLength:"",
+  parts:[],
   harmony:{
     instrument: new Tone.PolySynth().toDestination(),
     mute:false,
     chordParts: []
   },
   melody:{
+    partPosition: 0,
     instrument: new Instr.Pad(),
     mute:false,
     seedWord1:"",
     seedWord2:"",
-    melodyPart:undefined,
-    playingPart:undefined,
-    noteSequence:undefined
+    melodyParts:[]
   },
   sequence:{},
   drums: {
@@ -73,63 +73,82 @@ async function initializeState() {
   state.harmony.instrument = new Instr.Pad()
   state.harmony.instrument.setVolume(-5);
   buildLandScape()
-  await initializeMelody()
-  await CanvaEnv.playableButton()
+  await state.emitter.isReadyModel()
+  initializeMelody()
+  await state.emitter.isReadyToPlay()
+  CanvaEnv.playableButton()
+  for(var i = 1;;i++) {
+    await state.emitter.isThePreviousMelodyScheduled(i)
+    state.worker.postMessage(
+      {
+        message:"continue",
+        index:i,
+        mel:state.parts[((i-1)%state.parts.length)].melody.melodyNoteSequence,
+        length:(Tone.Time(state.parts[i].totalLength).quantize("16n")),
+        chordProgression:state.parts.chordsArray
+      }
+    )
+  }
 }
 
 
-async function initializeMelody() {
+function initializeMelody() {
   //TODO: put here the part of the dialog to input first information about user: mood seedwords
   //lines of code to be removed
-  await state.emitter.isReadyModel()
+  
   console.log("Done?!?")
   state.melody.seedWord1= "ciao";
   state.melody.seedWord2= "bella";
-  state.scale = new MusicalScale('C','major');
-  var seq1 = buildSequence(state.melody.seedWord1,state.key,state.harmony.chordProgression,1,6);
-  var seq2 = buildSequence(state.melody.seedWord2,state.key,state.harmony.chordProgression,1,6);
-  interpolateMelodies(seq1,seq2);
+  //FIXME: sequences built in steps, lengths need to be adapted to that 
   
+  var seq1 = buildSequence(state.melody.seedWord1,state.key,state.parts[0].chords,4,24);
+  var seq2 = buildSequence(state.melody.seedWord2,state.key,state.parts[0].chords,4,24);
+  console.log("seq1")
+  console.log(seq1)
+  console.log("seq2")
+  console.log(seq2)
+  interpolateMelodies(seq1,seq2);
 }
 
 
 /**
  * function that builds a sequence starting from a word 
  */
-function buildSequence(seedWord, key, chordsArray,botLength,topLength) {
+function buildSequence(seedWord, key, chords,botLength,topLength) {
   var melodyArray = [];
   var totalLength = 0;
-  //var notesArray = state.scale.scaleNotes()
-  //TODO: add conversion from string to NoteSequence here
-  var startTime = 0;
+  var chordStartTime = 0;
   end = false
-  //
-  for( var i = 0;(i<chordsArray.length);i++) {
-    var chordLength = (Tone.Transport.bpm.value/60)*Tone.Time(chordsArray[i].length)
-    var chromas = chromaValues(key+" major",chordsArray[i].chord)
+  //chordsArray
+  //four steps per quarter 
+  for( var i = 0;(i<chords.length);i++) {
+    var chordLength = (Tone.Transport.bpm.value/60)*Tone.Time(chords[i].length) * 4 
+    
+    //FIXME: adapt the chroma values to the specific scale considered 
+    var chromas = chromaValues(key+" major",chords[i].value)
     var j = 0
-    for(startTimeChord = 0 ; startTimeChord< chordLength;){
+    for(var startStepInChord = 0 ; startStepInChord< chordLength;){
       var pitch = getRandomNote(chromas)+"3"
       var length = calculateTime(seedWord.charCodeAt(j%seedWord.length),botLength,topLength)
-      console.log("length: "+length)
-      if(length>chordLength-startTimeChord) {
-        length = chordLength-startTimeChord
+      //console.log("length: "+length)
+      if(length>chordLength-startStepInChord) {
+        length = chordLength-startStepInChord
       }
-      var noteToinsert = { pitch: Note.midi(pitch), startTime: startTime +startTimeChord, endTime: startTime +startTimeChord+length }
-      startTimeChord = startTimeChord + length
-      console.log(noteToinsert)
+      //{ pitch: 60, quantizedStartStep: 0, quantizedEndStep: 2 },
+      var noteToinsert = { pitch: Note.midi(pitch), quantizedStartStep: chordStartTime + startStepInChord, quantizedEndStep: chordStartTime + startStepInChord+length }
+      startStepInChord = startStepInChord + length
+      //console.log(noteToinsert)
       melodyArray.push(noteToinsert)
       j++
     }
     //module gives duration to the note
-    startTime = startTime+startTimeChord
+    chordStartTime = chordStartTime+startStepInChord
   }
-  totalLength = startTime
+  totalLength = chordStartTime
   
   
   const sequence = {
-    ticksPerQuarter: 220,
-    totalTime: totalLength,
+    totalQuantizedSteps: totalLength,
     timeSignatures: [
       {
         time: 0,
@@ -143,6 +162,7 @@ function buildSequence(seedWord, key, chordsArray,botLength,topLength) {
         qpm:  60
       }
     ],
+    quantizationInfo: { stepsPerQuarter: 4 },
     notes: melodyArray
   }
 
@@ -154,8 +174,8 @@ function getRandomNote(chromas) {
   var totalweight = chromas.reduce(function (accumulator, current) {
     return accumulator + current;
   });
-  console.log("totalWeight="+totalweight)
-  console.log("totalWeight="+totalweight)
+  //console.log("totalWeight="+totalweight);
+  //console.log("totalWeight="+totalweight);
   var chosenValue = Math.round(Math.random()*totalweight)
   var compValue= 0
   for(var i=0; i<chromas.length;i++) {
@@ -164,9 +184,9 @@ function getRandomNote(chromas) {
       return Scale.get("C chromatic").notes[i]
     }
   }
-  console.log("compValue="+compValue)
-  console.log("chosenValue="+chosenValue)
-  console.error("Oh No something went really wrong sorry")
+  //console.log("compValue="+compValue)
+  //console.log("chosenValue="+chosenValue)
+  //console.error("Oh No something went really wrong sorry")
 }
 
 
@@ -174,18 +194,18 @@ function getRandomNote(chromas) {
  * calculates a random note length from 1 to maxLength, with 0.5 as minimum length
  */
 function calculateTime(value,botLength,topLength) {
-  possibleValue = ((topLength-botLength)*2)-1
+  possibleValue = ((topLength-botLength))-1
   toRet = Math.round(value%possibleValue) +1;
-  toRet = (toRet/2)+botLength
+  toRet = toRet+botLength
   return toRet
 }
 
 
 
 export function startMusic() {
-    
+    Tone.Transport.bpm.value = 60
     Tone.Transport.start();
-    Tone.Transport.loopEnd = "8m";
+    Tone.Transport.loopEnd = state.totalLength;
     Tone.Transport.loop=true;
     state.isPlaying = true;
 }
@@ -224,7 +244,13 @@ async function workieTalkie(event) {
     } break;
     case "interpolation": {
       const sample = event.data.element;
-      console.log("response message:"+ event.data.message)
+      console.log("response message in interpolation:"+ event.data.message)
+      console.log(state.parts)
+      state.parts[0].melodyNoteSequence = sample;
+      state.parts[0].melodyPlayingPart = addNotePartToTransport(generatePart(sample),state.melody.instrument,state.parts[0].startTime);
+      state.emitter.melodyScheduled(0);
+      state.emitter.updateReadyToPlay();
+      /*
       state.worker.postMessage(
         {
           message:"continueFirst",
@@ -233,7 +259,7 @@ async function workieTalkie(event) {
           chordProgression:["Dm7","G7","Cmaj7","Cmaj7"]
         }
       )
-
+      */
     } break;
     case "continueFirst": {
       const sample = event.data.element;
@@ -242,7 +268,7 @@ async function workieTalkie(event) {
       var notePart = generatePart(sample);
       state.melody.melodyPart = notePart;
       state.melody.playingPart = addNotePartToTransport(state.melody.melodyPart, state.melody.instrument, 0)
-      state.emitter.updateReadyToPlay()
+      
     } break;
     case "continue": {
       const sample = event.data.element;
@@ -288,26 +314,32 @@ function _talkToWorker(toSend) {
     state.worker.postMessage(toSend);
 }
 /*----------------------*/ 
-
+/**
+ * 
+ * @param {*} noteSequence quantized noteSequence generated by magenta models
+ * @returns 
+ */
 function generatePart(noteSequence) {
-  var qpm = noteSequence.tempos[0].qpm
+  console.log(noteSequence)
+  //var qpm = 
   var numofnotes = noteSequence.notes.length
   var notesToTranscribe = noteSequence.notes
   var notes = []
+  var stepsPerQuarter = noteSequence.quantizationInfo.stepsPerQuarter;
   for(var i = 0;i<numofnotes;i++) {
     noteFromArray = notesToTranscribe[i]
-    console.log(noteFromArray.startTime)
+    console.log(noteFromArray.quantizedStartStep)
     var note = Note.fromMidi(noteFromArray.pitch)
     var velocity = 0.5;
-    var measure = Math.floor(noteFromArray.startTime/4)
-    var quarter = Math.floor(noteFromArray.startTime%4)
-    var sixteenth = Math.floor(noteFromArray.startTime*4)%16 -quarter*4;
+    var measure = Math.floor(noteFromArray.quantizedStartStep/(4*stepsPerQuarter))
+    var quarter = Math.floor((noteFromArray.quantizedStartStep%(4*stepsPerQuarter))/4)
+    var sixteenth = Math.floor(noteFromArray.quantizedStartStep) -quarter*4-measure*16;
     console.log(measure)
     var timeString = measure+":"+quarter+":"+sixteenth;
-    var durationTime = noteFromArray.endTime-noteFromArray.startTime
-    var measureDur = Math.floor(durationTime/4)
-    var quarterDur = Math.floor(durationTime%4)
-    var sixteenthDur = Math.floor(durationTime*4)%16 -quarterDur*4;
+    var durationSteps = noteFromArray.quantizedEndStep-noteFromArray.quantizedStartStep
+    var measureDur = Math.floor(durationSteps/(4*stepsPerQuarter))
+    var quarterDur = Math.floor((durationSteps%(4*stepsPerQuarter))/4)
+    var sixteenthDur = Math.floor(durationSteps)-quarterDur*4-measureDur*16;
     var durationString=measureDur+":"+quarterDur+":"+sixteenthDur;
     var indexInput = {
       time:timeString,
@@ -318,7 +350,6 @@ function generatePart(noteSequence) {
     notes.push(indexInput)
   }
   console.log(notes)
-  console.log(qpm)
   
   return notes
 }
@@ -402,6 +433,7 @@ partChord.loopEnd = "8m";
 partChord.loop = true;
 */
 var k = 0
+/*
 Tone.Transport.schedule((time) => {
   state.worker.postMessage(
     {
@@ -413,7 +445,7 @@ Tone.Transport.schedule((time) => {
   )
   console.log("settima battuta loop "+ k++)
 },"7:0:0")
-
+*/
 /**
  * 
  * @param {string} scale definition of the scale 
@@ -443,15 +475,14 @@ function chromaValues (scale, chord) {
     chromaChr[i] = chromaChr[i]*countChord;
     if(chromaChr[i]!=0) countChord--;
   }
-  for (var i =0; i<seqToRet.length; i++)
-    {
+  for (var i =0; i<seqToRet.length; i++) {
       //console.log(seqToRet)
     seqToRet[i]= seqToRet[i] +scArr[(12+i-shift)%seqToRet.length];
     seqToRet[i]=seqToRet[i] +(chromaChr[(12+i-shiftChr)%seqToRet.length]);
-    }
-    console.log(seqToRet)
-    return seqToRet
   }
+  console.log(seqToRet)
+  return seqToRet
+}
 
 function buildLandScape() {
   //for cycle to build landscape and to schedule animations
@@ -460,23 +491,40 @@ function buildLandScape() {
     var harmonyToParse= harmonies[landScape.sequence[i].harmonyId]
     
     var transposedChords = transposeHarmony(harmonyToParse.gradeSequence,state.key,landScape.sequence[i].key)
-    state.harmony.chordParts.push(transposedChords)
+    
     var chordsNotePart = fromChordsToNotes(transposedChords)
     console.log(chordsNotePart);
     for(var j = 0; j<landScape.sequence[i].repetitions;j++) {
-      new Tone.Part(((time, value)=> {
+      
+      chordsPlayed =  new Tone.Part(((time, value)=> {
         state.harmony.instrument.triggerAttackRelease(value.notes,value.length,time,0.5)
         console.log("value to be played")
         console.log(value)
       }
       ),chordsNotePart).start(whenTostart)
-      //console.log("whenToStart"+whenTostart)
+      console.log("whenToStart"+whenTostart)
+      
+      var chordsArray=[];
+      for(var k = 0; k<transposedChords.length;k++) {
+        chordsArray.push(transposedChords[k].value)
+      }
+      state.parts.push({
+        chords:transposedChords,
+        chordsPartPlayed:chordsPlayed,
+        chordsArray:chordsArray,
+        length:harmonyToParse.totalLength,
+        startTime:whenTostart
+      })
       whenTostart = Tone.Time(Tone.Time(whenTostart).toSeconds() + Tone.Time(harmonyToParse.totalLength).toSeconds()).toBarsBeatsSixteenths()
     }
     console.log("harmonyToParse")
     console.log(harmonyToParse)
-    
   }
+  console.log("state.parts")
+  console.log(state.parts)
+  state.totalLength=whenTostart;
+  console.log("state.parts:")
+  console.log(state.parts)
 }
 
 function fromChordsToNotes(chordsObjectArray) {
@@ -492,8 +540,13 @@ function fromChordsToNotes(chordsObjectArray) {
   return chordsObjectArray
 }
 
-
-//TODO: generate transposition if sequence different from this one 
+/**
+ * sequence of chords to be transposed to general key plus sectionBaseKey
+ * @param {*} harmonyToParse 
+ * @param {*} generalKey 
+ * @param {*} sectionBaseKey 
+ * @returns the same sequence with the chords transposed to the tonality requested
+ */
 function transposeHarmony(harmonyToParse, generalKey,sectionBaseKey) {
   var generalDistance = Interval.semitones(Interval.distance("C",generalKey))
   var sectionBaseDistance = Interval.semitones(Interval.distance(generalKey,sectionBaseKey))
