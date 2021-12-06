@@ -5,14 +5,28 @@
     "sequence": 
     [
         {
-            "harmonyId":0,
+            "harmonyId":2,
             "repetitions":2,
             "key":"C",
             "animation":"moon",
             "background":"night"
         },
         {
-            "harmonyId":4,
+            "harmonyId":3,
+            "repetitions":1,
+            "key":"C",
+            "animation":"sun",
+            "background":"day"
+        },
+        {
+            "harmonyId":2,
+            "repetitions":2,
+            "key":"C",
+            "animation":"moon",
+            "background":"night"
+        },
+        {
+            "harmonyId":3,
             "repetitions":1,
             "key":"C",
             "animation":"sun",
@@ -20,15 +34,8 @@
         },
         {
             "harmonyId":1,
-            "repetitions":2,
-            "key":"C",
-            "animation":"moon",
-            "background":"night"
-        },
-        {
-            "harmonyId":5,
             "repetitions":1,
-            "key":"C",
+            "key":"A",
             "animation":"sun",
             "background":"day"
         }
