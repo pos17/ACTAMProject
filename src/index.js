@@ -6,7 +6,8 @@ import MusicalScale from './musicalScale';
 import * as Instr from './instruments';
 import {Note} from "tonal";
 import * as Tone from "tone"
-import * as CanvaEnv from './canvaEnv.js'
+// import * as CanvaEnv from './canvaEnv.js'
+import * as Canva from './canva.js'
 
 
 // const canvas = document.getElementById('main-canvas');
@@ -29,7 +30,8 @@ const state= {
       this.listener(this.value);
     },
     listener: function (value){
-      CanvaEnv.playableButton(value);
+      // CanvaEnv.playableButton(value);
+      Canva.playableButton(value);
       console.log("READY MOTHERFUCKER")
     },
   },
@@ -89,11 +91,11 @@ async function initializeState() {
   state.worker.onmessage = (event)=> {workieTalkie(event)}
 }
 
-function initializeMelody() {
+export function initializeMelody() {
   //TODO: put here the part of the dialog to input first information about user: mood seedwords
   //lines of code to be removed
-  state.melody.seedWord1= "ciao";
-  state.melody.seedWord2= "bella";
+  // state.melody.seedWord1= "ciao";
+  // state.melody.seedWord2= "bella";
   state.scale = new MusicalScale('C','phrygian');
   var seq1 = buildSequence(state.melody.seedWord1);
   var seq2 = buildSequence(state.melody.seedWord2);
@@ -374,3 +376,9 @@ Tone.Transport.schedule((time) => {
   )
   console.log("settima battuta loop "+ k++)
 },"7:0:0")
+
+
+export function setSeedWords(word1, word2) {
+  state.melody.seedWord1= word1;
+  state.melody.seedWord2= word2;
+}

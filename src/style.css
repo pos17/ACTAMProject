@@ -2,11 +2,13 @@
 html {
     height: 100%;
     width: 100%;
+    background-color: coral;
+
 }
 
 body {
     width: min-content;
-    background-color: coral;
+    /* background-color: coral; */
     /* position: absolute; */
 }
 
@@ -17,16 +19,18 @@ body {
     top: 50%;
     transform: translate(-50%, -50%);
     position: absolute;
-    border-radius: 20px;
+    border-radius: 10px;
     /* margin: auto; */
 }
 
-#sky {
+.sky {
+    /* position: absolute; */
     width: 100%; 
     height: auto;
     bottom: 0%;
     image-rendering: crisp-edges;
     border-radius: 10px;
+    z-index: 0;
 }
 
 .overlay{
@@ -37,6 +41,7 @@ body {
     width: 100%;
     width: 100%;
     display: block;
+    text-align: center;
 }
 
 #init-panel {
@@ -44,15 +49,15 @@ body {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.3);
-    border-radius: 20px;
+    border-radius: 10px;
     opacity: 80%;
     z-index: 10;
 }
 
-#front-panel {
+#front-panel, #start-panel {
     position: absolute;
-    width: 80%;
-    height: 80%;
+    width: 60%;
+    height: 60%;
     background-color: rgba(255, 255, 255, 1);
     border-radius: 10px;
     left: 50%;
@@ -60,18 +65,24 @@ body {
     transform: translate(-50%, -50%);
     z-index: 11;
     opacity: 1;
+    padding: 20px;
     align-content: center;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
 }
 
 #title {
     text-align: center;
     top: 5%;
+    margin: auto;
 }
 
 .nes-field {
     display: flex;
     position: absolute;
     width: 100%;
+    margin: auto;
 }
 
 .word-input {
@@ -91,11 +102,11 @@ body {
     width: 90%;
     height: min-content;
     left: 50%;
-    top: 60%;
+    top: 50%;
     transform: translate(-50%, -50%);
 }
 
-.mood-slider {
+.mood-slider-div {
     margin-top: 1%;
     position: absolute;
     display: flex;
@@ -118,7 +129,32 @@ body {
     bottom: 2%;
 }
 
-button {
+.nes-btn {
     position: absolute;
     margin: auto;
+}
+
+#mood-slider, #name-field1, #name-field2 {
+    width: calc((100%-2px)/2);
+    height: calc((100%-4px)/6);
+    flex-basis: auto;
+}
+
+p {
+    position: static;
+}
+
+.canvases {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    top: 0px;
+    left: 0px;
+    image-rendering: crisp-edges;
+    border-radius: 10px;
+}
+
+img {
+    image-rendering: crisp-edges;
 }
