@@ -65,7 +65,7 @@ async function interpolate(mel1, mel2) {
   console.log("output of interpolation:")
   console.log(output)
 
-  //var concatenatedOut = core.sequences.concatenate(output)
+  var concatenatedOut = core.sequences.concatenate(output)
   //console.log("concatenatedOut")
   //console.log(concatenatedOut)
   //var concatenatedOut2 = core.sequences.unquantizeSequence(concatenatedOut,60)
@@ -73,7 +73,7 @@ async function interpolate(mel1, mel2) {
   //console.log(concatenatedOut2)
   // Send main script the result.
   
-  post("interpolation",output[Math.floor(output.length/2)]);
+  post("interpolation",concatenatedOut);
 }
 async function continueMelody(mel, length,chordProgression,index) {
   if (!mrnn.isInitialized()) {
@@ -83,10 +83,11 @@ async function continueMelody(mel, length,chordProgression,index) {
   //melq = core.sequences.quantizeNoteSequence(mel, 4)
   console.log("mel")
   console.log(mel)
-  //console.log("melq")
-  //console.log(melq)
+  console.log("length")
+  console.log(length)
+  
   const result = await mrnn.continueSequence(
-    sequence=melq,
+    sequence=mel,
     steps=length,
     temperature=0.9,
     chordProgression=chordProgression
@@ -98,7 +99,7 @@ async function continueMelody(mel, length,chordProgression,index) {
   //console.log(continueOut)
   // Send main script the result.
   
-  post("continue", result);
+  post("continue", result,index);
 }
 async function continueMelodyFirst(mel, length,chordProgression) {
   if (!mrnn.isInitialized()) {
@@ -126,11 +127,12 @@ async function continueMelodyFirst(mel, length,chordProgression) {
   post("continueFirst", continueOut);
 }
 
-function post(message,element="Nothing,sorry :(") {
+function post(message,element="Nothing,sorry :(",index=-1) {
   self.postMessage(
     {
       message:message,
-      element:element
+      element:element,
+      index:index
     }
   )
 }

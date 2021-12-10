@@ -24,6 +24,7 @@ export const state= {
   scale:undefined, //scale 
   bpm:60,
   totalLength:"",
+  seedPart:undefined,
   parts:[],
   harmony:{
     instrument: new Tone.PolySynth().toDestination(),
@@ -62,8 +63,7 @@ initializeState()
  *  Function to initialize the main settings of the player 
  */
 async function initializeState() {
-  Tone.start()
-  Tone.Transport.bpm.value = 60
+  
   var workerURL =  new URL("./worker.js", import.meta.url)
   state.worker = await new Worker(workerURL/*, {type:'module'}*/ );
   initializeWorker();
@@ -85,7 +85,7 @@ async function initializeState() {
         index:i,
         mel:state.parts[((i-1)%state.parts.length)].melody.melodyNoteSequence,
         length:(Tone.Time(state.parts[i].totalLength).quantize("16n")),
-        chordProgression:state.parts.chordsArray
+        chordProgression:state.parts[i].chordsArray
       }
     )
   }
@@ -145,7 +145,8 @@ function buildSequence(seedWord, key, chords,botLength,topLength) {
     chordStartTime = chordStartTime+startStepInChord
   }
   totalLength = chordStartTime
-  
+  console.log("totalLength in qua: ")
+  console.log(totalLength)
   
   const sequence = {
     totalQuantizedSteps: totalLength,
@@ -203,6 +204,8 @@ function calculateTime(value,botLength,topLength) {
 
 
 export function startMusic() {
+    Tone.start()
+    //Tone.Transport.bpm.value = 60
     Tone.Transport.bpm.value = 60
     Tone.Transport.start();
     Tone.Transport.loopEnd = state.totalLength;
@@ -246,20 +249,24 @@ async function workieTalkie(event) {
       const sample = event.data.element;
       console.log("response message in interpolation:"+ event.data.message)
       console.log(state.parts)
-      state.parts[0].melodyNoteSequence = sample;
-      state.parts[0].melodyPlayingPart = addNotePartToTransport(generatePart(sample),state.melody.instrument,state.parts[0].startTime);
-      state.emitter.melodyScheduled(0);
-      state.emitter.updateReadyToPlay();
-      /*
+      //state.parts[0].melodyNoteSequence = sample;
+      //state.parts[0].melodyPlayingPart = addNotePartToTransport(generatePart(sample),state.melody.instrument,state.parts[0].startTime);
+      //state.emitter.melodyScheduled(0);
+      //state.emitter.updateReadyToPlay();
+      console.log(state.parts[0])
+      console.log("time in seconds")
+      console.log(Tone.Time(state.parts[0].length).toSeconds())
+      console.log(Tone.Time(state.parts[0].length).quantize("16n"))
       state.worker.postMessage(
         {
-          message:"continueFirst",
+          message:"continue",
+          index:0,
           mel:sample,
-          length:32,
-          chordProgression:["Dm7","G7","Cmaj7","Cmaj7"]
+          length:(Tone.Time(state.parts[0].totalLength).quantize("16n")),
+          chordProgression:state.parts[0].chordsArray//["Dm7","G7","Cmaj7","Cmaj7"]
         }
       )
-      */
+      
     } break;
     case "continueFirst": {
       const sample = event.data.element;
@@ -273,11 +280,19 @@ async function workieTalkie(event) {
     case "continue": {
       const sample = event.data.element;
       console.log("response message:"+ event.data.message)
+      const index = event.data.index;
       state.melody.playingPart.stop(0)
       state.melody.playingPart = addNotePartToTransport(state.melody.melodyPart, state.melody.instrument, 0)    
       state.melody.noteSequence = sample
       var notePart = generatePart(sample);
-      state.melody.melodyPart = notePart;
+      //state.melody.melodyPart = notePart;
+
+      state.parts[index].melodyNoteSequence = sample;
+      state.parts[index].melodyPlayingPart = addNotePartToTransport(generatePart(sample),state.melody.instrument,state.parts[0].startTime);
+      state.emitter.melodyScheduled(index);
+      if(index == 0) {
+      state.emitter.updateReadyToPlay();
+      }
     }
     break;
     case "modelInitialized": {
