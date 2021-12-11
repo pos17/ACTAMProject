@@ -56,6 +56,9 @@ export const state= {
   canvas: {}
 }
 
+/**
+ * function call to start the whole system
+ */
 initializeState()
 
 
@@ -69,14 +72,17 @@ async function initializeState() {
   initializeWorker();
   state.worker.onmessage = (event)=> {workieTalkie(event)}
   state.melody.instrument = new Instr.Lead()//new Tone.Synth().toDestination()//
-  state.melody.instrument.setVolume(-6);
+  state.melody.instrument./*volume.value=-6*/setVolume(-6);
   state.harmony.instrument = new Instr.Pad()
   state.harmony.instrument.setVolume(-5);
-  buildLandScape()
+  //buildLandScape()
+  console.log(landScape)
+  playChordSequence(landScape.chordsSequence, state.key, state.harmony.instrument)
   await state.emitter.isReadyModel()
   initializeMelody()
-  await state.emitter.isReadyToPlay()
+  //await state.emitter.isReadyToPlay()
   CanvaEnv.playableButton()
+  /*
   for(var i = 1;;i++) {
     await state.emitter.isThePreviousMelodyScheduled(i)
     state.worker.postMessage(
@@ -89,6 +95,7 @@ async function initializeState() {
       }
     )
   }
+  */
 }
 
 
@@ -101,13 +108,26 @@ function initializeMelody() {
   state.melody.seedWord2= "bella";
   //FIXME: sequences built in steps, lengths need to be adapted to that 
   
-  var seq1 = buildSequence(state.melody.seedWord1,state.key,state.parts[0].chords,4,24);
-  var seq2 = buildSequence(state.melody.seedWord2,state.key,state.parts[0].chords,4,24);
-  console.log("seq1")
-  console.log(seq1)
-  console.log("seq2")
-  console.log(seq2)
-  interpolateMelodies(seq1,seq2);
+  //var seq1 = buildSequence(state.melody.seedWord1,state.key,state.parts[0].chords,4,24);
+  //var seq2 = buildSequence(state.melody.seedWord2,state.key,state.parts[0].chords,4,24);
+  //console.log("seq1")
+  //console.log(seq1)
+  //console.log("seq2")
+  //console.log(seq2)
+  //interpolateMelodies(seq1,seq2);
+  console.log(landScape.length)
+  console.log((Tone.Time(landScape.length).toSeconds()*(Tone.Transport.bpm.value))/15)
+
+  
+  state.worker.postMessage(
+    {
+      message:"continue",
+      mel:simpleMelody3,
+      length:((Tone.Time(landScape.length).toSeconds()*(Tone.Transport.bpm.value))/15),
+      chordProgression:landScape.chordsArray//["Dm7","G7","Cmaj7","Cmaj7"]
+    }
+  )
+  
 }
 
 
@@ -205,11 +225,10 @@ function calculateTime(value,botLength,topLength) {
 
 export function startMusic() {
     Tone.start()
-    //Tone.Transport.bpm.value = 60
+    //Tone.Transport.bpm.value = 150
     Tone.Transport.bpm.value = 60
     Tone.Transport.start();
-    Tone.Transport.loopEnd = state.totalLength;
-    Tone.Transport.loop=true;
+    
     state.isPlaying = true;
 }
 
@@ -280,19 +299,20 @@ async function workieTalkie(event) {
     case "continue": {
       const sample = event.data.element;
       console.log("response message:"+ event.data.message)
-      const index = event.data.index;
-      state.melody.playingPart.stop(0)
-      state.melody.playingPart = addNotePartToTransport(state.melody.melodyPart, state.melody.instrument, 0)    
+      //const index = event.data.index;
+      //state.melody.playingPart.stop(0)
+      //state.melody.playingPart = addNotePartToTransport(state.melody.melodyPart, state.melody.instrument, 0)    
       state.melody.noteSequence = sample
       var notePart = generatePart(sample);
+      state.melody.playingPart = addNotePartToTransport(notePart, state.melody.instrument, 0)
       //state.melody.melodyPart = notePart;
 
-      state.parts[index].melodyNoteSequence = sample;
-      state.parts[index].melodyPlayingPart = addNotePartToTransport(generatePart(sample),state.melody.instrument,state.parts[0].startTime);
-      state.emitter.melodyScheduled(index);
-      if(index == 0) {
-      state.emitter.updateReadyToPlay();
-      }
+      //state.parts[index].melodyNoteSequence = sample;
+      //state.parts[index].melodyPlayingPart = addNotePartToTransport(generatePart(sample),state.melody.instrument,state.parts[0].startTime);
+      //state.emitter.melodyScheduled(index);
+      //if(index == 0) {
+      //state.emitter.updateReadyToPlay();
+      //}
     }
     break;
     case "modelInitialized": {
@@ -501,7 +521,7 @@ function chromaValues (scale, chord) {
 
 function buildLandScape() {
   //for cycle to build landscape and to schedule animations
-  var whenTostart = 0
+  //var whenTostart = 0
   for(var i = 0; i < landScape.sequence.length; i++) {
     var harmonyToParse= harmonies[landScape.sequence[i].harmonyId]
     
@@ -542,39 +562,174 @@ function buildLandScape() {
   console.log(state.parts)
 }
 
-function fromChordsToNotes(chordsObjectArray) {
-  for(var i = 0; i<chordsObjectArray.length; i++) {
-    var notesArray = Chord.get(chordsObjectArray[i].value).notes
+function playChordSequence(chordsSequence, key, instrument) {
+  var keyDistance = Interval.distance("C",key)
+  console.log(keyDistance)
+  chordsArray = []
+  for(var i = 0; i < chordsSequence.length; i++) {
+    console.log(chordsSequence[i].value)
+    var transposed = Chord.transpose(chordsSequence[i].value,keyDistance)
+    console.log(transposed)
+    chordsSequence[i].value = transposed
+    //FIXME: adding right length to the chord
+    var numOfBars = (Tone.Time(chordsSequence[i].length)*Tone.Transport.bpm.value)/240
+    console.log("numOfBars")
+    console.log(numOfBars)
+    for(j =0; j<numOfBars;j++) {
+    chordsArray.push(chordsSequence[i].value)
+    }
+    chordsSequence[i].notes = fromChordToNotes(chordsSequence[i].value) 
+  }
+  console.log(chordsSequence)
+  chordsPlayed =  new Tone.Part(((time, value)=> {
+    console.log("value to be played")
+    console.log(value)
+    instrument.triggerAttackRelease(value.notes,value.length,time,0.5)
+    
+  }
+  ),chordsSequence).start(0)
+  Tone.Transport.loopEnd = landScape.length;
+  Tone.Transport.loop=true;
+  landScape.chordsArray = chordsArray
+  console.log(landScape)
+}
+
+
+
+function fromChordToNotes(chordName) {
+    var notesArray = Chord.get(chordName).notes
+
     for(var j = 0; j<notesArray.length;j++) {
       //FIXME: assigning the correct octave to the note to play
       notesArray[j] = notesArray[j] + "3"
     }
-    chordsObjectArray[i].notes = notesArray
-  }
-  //{value:["C","E","G"],length:"2m"}
-  return chordsObjectArray
+    console.log(notesArray)
+    return notesArray
 }
 
-/**
- * sequence of chords to be transposed to general key plus sectionBaseKey
- * @param {*} harmonyToParse 
- * @param {*} generalKey 
- * @param {*} sectionBaseKey 
- * @returns the same sequence with the chords transposed to the tonality requested
- */
-function transposeHarmony(harmonyToParse, generalKey,sectionBaseKey) {
-  var generalDistance = Interval.semitones(Interval.distance("C",generalKey))
-  var sectionBaseDistance = Interval.semitones(Interval.distance(generalKey,sectionBaseKey))
-  var totalDistance = generalDistance + sectionBaseDistance
-  var totalDistanceStr = Interval.fromSemitones(totalDistance)
-  console.log("general distance between C and "+generalKey+": "+generalDistance)
-  console.log("sectionBase distance between "+generalKey+" and "+ sectionBaseKey+ ": "+sectionBaseDistance)
-  console.log("total distance: "+totalDistance)
-  console.log("total distance in str: "+totalDistanceStr)
-  for(var i =0; i<harmonyToParse.length;i++) {
-    var transposed = Chord.transpose(harmonyToParse[i].value,totalDistanceStr)
-    harmonyToParse[i].value = transposed
-  }
- return harmonyToParse
+var simpleMelody = {
+  totalQuantizedSteps: 64,
+  timeSignatures: [
+    {
+      time: 0,
+      numerator: 4,
+      denominator: 4
+    }
+  ],
+  tempos: [
+    {
+      time: 0,
+      qpm:  60
+    }
+  ],
+  quantizationInfo: { stepsPerQuarter: 4 },
+  notes:[ {pitch: Note.midi("B4"), quantizedStartStep: 0, quantizedEndStep: 4 },
+          {pitch: Note.midi("A4"), quantizedStartStep: 4, quantizedEndStep: 8 },
+          {pitch: Note.midi("G4"), quantizedStartStep: 8, quantizedEndStep: 12 },
+          {pitch: Note.midi("A4"), quantizedStartStep: 12, quantizedEndStep: 16 },
+          {pitch: Note.midi("B4"), quantizedStartStep: 16, quantizedEndStep: 20 },
+          {pitch: Note.midi("B4"), quantizedStartStep: 20, quantizedEndStep: 24 },
+          {pitch: Note.midi("B4"), quantizedStartStep: 24, quantizedEndStep: 32 },
+          {pitch: Note.midi("A4"), quantizedStartStep: 32, quantizedEndStep: 36 },
+          {pitch: Note.midi("A4"), quantizedStartStep: 36, quantizedEndStep: 40 },
+          {pitch: Note.midi("A4"), quantizedStartStep: 40, quantizedEndStep: 48 },
+          {pitch: Note.midi("B4"), quantizedStartStep: 48, quantizedEndStep: 52 },
+          {pitch: Note.midi("B4"), quantizedStartStep: 52, quantizedEndStep: 56 },
+          {pitch: Note.midi("B4"), quantizedStartStep: 56, quantizedEndStep: 64 }
+  ]
 }
 
+var simpleMelody1 = {
+  totalQuantizedSteps: 64,
+  timeSignatures: [
+    {
+      time: 0,
+      numerator: 4,
+      denominator: 4
+    }
+  ],
+  tempos: [
+    {
+      time: 0,
+      qpm:  60
+    }
+  ],
+  quantizationInfo: { stepsPerQuarter: 4 },
+  notes:[ {pitch: Note.midi("B4"), quantizedStartStep: 0, quantizedEndStep: 2 },
+          {pitch: Note.midi("A4"), quantizedStartStep: 2, quantizedEndStep: 4 },
+          {pitch: Note.midi("G4"), quantizedStartStep: 4, quantizedEndStep: 6 },
+          {pitch: Note.midi("A4"), quantizedStartStep: 6, quantizedEndStep: 8 },
+          {pitch: Note.midi("B4"), quantizedStartStep: 8, quantizedEndStep: 10 },
+          {pitch: Note.midi("B4"), quantizedStartStep: 10, quantizedEndStep: 12 },
+          {pitch: Note.midi("B4"), quantizedStartStep: 12, quantizedEndStep: 16 },
+          {pitch: Note.midi("A4"), quantizedStartStep: 16, quantizedEndStep: 18 },
+          {pitch: Note.midi("A4"), quantizedStartStep: 18, quantizedEndStep: 20 },
+          {pitch: Note.midi("A4"), quantizedStartStep: 20, quantizedEndStep: 24 },
+          {pitch: Note.midi("B4"), quantizedStartStep: 24, quantizedEndStep: 26 },
+          {pitch: Note.midi("B4"), quantizedStartStep: 26, quantizedEndStep: 28 },
+          {pitch: Note.midi("B4"), quantizedStartStep: 28, quantizedEndStep: 32 }
+  ]
+}
+
+var simpleMelody2 = {
+  totalQuantizedSteps: 16,
+  timeSignatures: [
+    {
+      time: 0,
+      numerator: 4,
+      denominator: 4
+    }
+  ],
+  tempos: [
+    {
+      time: 0,
+      qpm:  60
+    }
+  ],
+  quantizationInfo: { stepsPerQuarter: 4 },
+  notes:[ {pitch: Note.midi("B4"), quantizedStartStep: 0, quantizedEndStep: 1 },
+          {pitch: Note.midi("A4"), quantizedStartStep: 1, quantizedEndStep: 2 },
+          {pitch: Note.midi("G4"), quantizedStartStep: 2, quantizedEndStep: 3 },
+          {pitch: Note.midi("A4"), quantizedStartStep: 3, quantizedEndStep: 4 },
+          {pitch: Note.midi("B4"), quantizedStartStep: 4, quantizedEndStep: 5 },
+          {pitch: Note.midi("B4"), quantizedStartStep: 5, quantizedEndStep: 6 },
+          {pitch: Note.midi("B4"), quantizedStartStep: 6, quantizedEndStep: 8 },
+          {pitch: Note.midi("A4"), quantizedStartStep: 9, quantizedEndStep: 9 },
+          {pitch: Note.midi("A4"), quantizedStartStep: 9, quantizedEndStep: 11 },
+          {pitch: Note.midi("A4"), quantizedStartStep: 10, quantizedEndStep: 12 },
+          {pitch: Note.midi("B4"), quantizedStartStep: 12, quantizedEndStep: 13 },
+          {pitch: Note.midi("B4"), quantizedStartStep: 13, quantizedEndStep: 14 },
+          {pitch: Note.midi("B4"), quantizedStartStep: 14, quantizedEndStep: 16 }
+  ]
+}
+var simpleMelody3 = {
+  totalQuantizedSteps: 128,
+  timeSignatures: [
+    {
+      time: 0,
+      numerator: 4,
+      denominator: 4
+    }
+  ],
+  tempos: [
+    {
+      time: 0,
+      qpm:  60
+    }
+  ],
+  quantizationInfo: { stepsPerQuarter: 4 },
+  notes:[ {pitch: Note.midi("B4"), quantizedStartStep: 0, quantizedEndStep: 16 },
+          {pitch: Note.midi("A4"), quantizedStartStep: 16, quantizedEndStep: 32 },
+          {pitch: Note.midi("G4"), quantizedStartStep: 32, quantizedEndStep: 48 },
+          {pitch: Note.midi("A4"), quantizedStartStep: 48, quantizedEndStep: 64 },
+          {pitch: Note.midi("B4"), quantizedStartStep: 64, quantizedEndStep: 80 },
+          {pitch: Note.midi("B4"), quantizedStartStep: 80, quantizedEndStep: 96 },
+          {pitch: Note.midi("B4"), quantizedStartStep: 96, quantizedEndStep: 128 },
+          {pitch: Note.midi("A4"), quantizedStartStep: 128, quantizedEndStep: 154 },
+          {pitch: Note.midi("A4"), quantizedStartStep: 154, quantizedEndStep: 160 },
+          {pitch: Note.midi("A4"), quantizedStartStep: 160, quantizedEndStep: 192 },
+          {pitch: Note.midi("B4"), quantizedStartStep: 192, quantizedEndStep: 208 },
+          {pitch: Note.midi("B4"), quantizedStartStep: 208, quantizedEndStep: 224 },
+          {pitch: Note.midi("B4"), quantizedStartStep: 224, quantizedEndStep: 256 }
+  ]
+}

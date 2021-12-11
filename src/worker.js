@@ -75,7 +75,7 @@ async function interpolate(mel1, mel2) {
   
   post("interpolation",concatenatedOut);
 }
-async function continueMelody(mel, length,chordProgression,index) {
+async function continueMelody(mel, length,chordProgression) {
   if (!mrnn.isInitialized()) {
     await mrnn.initialize();
     post("fyi","mrnnInitialized")
@@ -89,7 +89,7 @@ async function continueMelody(mel, length,chordProgression,index) {
   const result = await mrnn.continueSequence(
     sequence=mel,
     steps=length,
-    temperature=0.9,
+    temperature=1.1,
     chordProgression=chordProgression
   );
   console.log("result of continue:")
@@ -99,7 +99,7 @@ async function continueMelody(mel, length,chordProgression,index) {
   //console.log(continueOut)
   // Send main script the result.
   
-  post("continue", result,index);
+  post("continue", result);
 }
 async function continueMelodyFirst(mel, length,chordProgression) {
   if (!mrnn.isInitialized()) {
