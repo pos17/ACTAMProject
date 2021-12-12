@@ -82,7 +82,13 @@ async function initializeState() {
   initializeMelody()
   await state.emitter.isReadyToPlay()
   CanvaEnv.playableButton()
+  var isFirst = true
   Tone.Transport.schedule((time)=>{
+    console.log(isFirst)
+    if(isFirst==false) {
+      state.melody.playingPart.stop(0)
+    }
+    state.melody.playingPart = addNotePartToTransport(generatePart(state.melody.noteSequence),state.melody.instrument,0)
     state.worker.postMessage(
       {
         message:"continue",
@@ -91,9 +97,9 @@ async function initializeState() {
         chordProgression:landScape.chordsArray//["Dm7","G7","Cmaj7","Cmaj7"]
       }
     );
-    state.melody.playingPart.stop(0)
-  },"23:3:0")
-    
+    isFirst = false
+  },"0:0:0")
+  
   
   
 }
@@ -117,7 +123,7 @@ function initializeMelody() {
   //interpolateMelodies(seq1,seq2);
   console.log(landScape.length)
   console.log((Tone.Time(landScape.length).toSeconds()*(Tone.Transport.bpm.value))/15)
-  state.melody.noteSequence = simpleMelody1
+  state.melody.noteSequence = simpleMelody
   state.worker.postMessage(
     {
       message:"continue",
@@ -293,8 +299,8 @@ async function workieTalkie(event) {
       //state.melody.playingPart.stop(0)
       //state.melody.playingPart = addNotePartToTransport(state.melody.melodyPart, state.melody.instrument, 0)    
       state.melody.noteSequence = sample
-      var notePart = generatePart(sample);
-      state.melody.playingPart = addNotePartToTransport(notePart, state.melody.instrument, 0)
+      //var notePart = generatePart(sample);
+      //state.melody.playingPart = addNotePartToTransport(notePart, state.melody.instrument, 0)
       state.emitter.updateReadyToPlay();
       //state.emitter.melodyScheduled(index);
       //state.melody.melodyPart = notePart;
