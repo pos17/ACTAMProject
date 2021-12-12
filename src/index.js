@@ -71,8 +71,8 @@ async function initializeState() {
   state.worker = await new Worker(workerURL/*, {type:'module'}*/ );
   initializeWorker();
   state.worker.onmessage = (event)=> {workieTalkie(event)}
-  state.melody.instrument =/* new Instr.Lead()*/new Tone.Synth().toDestination()
-  state.melody.instrument.volume.value=-6//setVolume(-6);
+  state.melody.instrument =new Instr.Lead()//new Tone.Synth().toDestination()
+  state.melody.instrument/*.volume.value=-6*/.setVolume(-6);
   state.harmony.instrument = new Instr.Pad()
   state.harmony.instrument.setVolume(-5);
   //buildLandScape()
