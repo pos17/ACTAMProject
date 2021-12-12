@@ -123,7 +123,7 @@ function initializeMelody() {
   //interpolateMelodies(seq1,seq2);
   console.log(landScape.length)
   console.log((Tone.Time(landScape.length).toSeconds()*(Tone.Transport.bpm.value))/15)
-  state.melody.noteSequence = simpleMelody
+  state.melody.noteSequence = simpleMelody3
   state.worker.postMessage(
     {
       message:"continue",
