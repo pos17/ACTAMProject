@@ -89,7 +89,7 @@ async function continueMelody(mel, length,chordProgression) {
   const result = await mrnn.continueSequence(
     sequence=mel,
     steps=length,
-    temperature=1.1,
+    temperature=1.0,
     chordProgression=chordProgression
   );
   console.log("result of continue:")

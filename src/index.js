@@ -598,14 +598,23 @@ function playChordSequence(chordsSequence, key, instrument) {
 
 function fromChordToNotes(chordName) {
     var notesArray = Chord.get(chordName).notes
+    var distanceFromC = Interval.distance("C",notesArray[notesArray.length-1])
+    console.log("distance from C: "+distanceFromC)
+    noteOctave = 3
+    for(var j = notesArray.length-1; j>=0;j--) {
+      if(Interval.semitones(Interval.distance("C",notesArray[j]))>Interval.semitones(distanceFromC)){
+        noteOctave--;
+        distanceFromC = Interval.distance("C",notesArray[j])
+      }
+      notesArray[j] = notesArray[j] + noteOctave
 
-    for(var j = 0; j<notesArray.length;j++) {
-      //FIXME: assigning the correct octave to the note to play
-      notesArray[j] = notesArray[j] + "3"
     }
     console.log(notesArray)
     return notesArray
 }
+
+
+
 
 var simpleMelody = {
   totalQuantizedSteps: 64,
@@ -703,7 +712,7 @@ var simpleMelody2 = {
   ]
 }
 var simpleMelody3 = {
-  totalQuantizedSteps: 128,
+  totalQuantizedSteps: 256,
   timeSignatures: [
     {
       time: 0,
