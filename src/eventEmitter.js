@@ -18,7 +18,7 @@ export class Emitter extends EventEmitter {
         return p
     }
 
-    updateReadyToPlay(ready) {
+    updateReadyToPlay() {
         this.emit("readyToPlay")
         index.state.readyToPlay = true
         console.log("updateReady called")

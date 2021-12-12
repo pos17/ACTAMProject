@@ -1,6 +1,6 @@
 import * as Model from "./index.js"
 import * as Tone from 'tone'
-
+import {Emitter} from "./eventEmitter.js"
 //TODO: create modular structure for various environments
 
 const canvasDiv = document.getElementById('canvas-div');
@@ -293,7 +293,7 @@ okButton.onclick = () => {
     if ((word1 != "")&&(word2 != "")) {
         document.getElementById('front-panel').hidden = true;
         document.getElementById('start-panel').hidden = false;
-        Model.initializeMelody()
+        Model.state.emitter.updateReadyToPlay()
     }    
 }
 
