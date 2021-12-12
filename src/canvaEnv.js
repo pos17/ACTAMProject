@@ -5,7 +5,7 @@ const sky = document.getElementById('sky');
 
 var clock = new Date().getSeconds()
 
-var startButton = document.createElement('button');
+// var startButton = document.createElement('button');
 // startButton.onclick= 
 
 
@@ -262,17 +262,33 @@ export function playableButton () {
 
 function showInitPanel() {
     document.getElementById("panel-container").hidden = !document.getElementById("panel-container").hidden
+    document.getElementById('front-panel').hidden = false
+    document.getElementById('start-panel').hidden = true;
 }
 
 var okButton = document.getElementById('ok-button');
-okButton.onclick = ()=> {
-    if (okButton.classList.contains('is-success')){
+okButton.onclick = () => {
+    var word1 = document.getElementById('name-field1').value
+    var word2 = document.getElementById('name-field2').value
+    Model.setSeedWords(word1, word2);
+    if ((word1 != "")&&(word2 != "")) {
+        document.getElementById('front-panel').hidden = true;
+        document.getElementById('start-panel').hidden = false;
+        Model.initializeMelody()
+    }    
+}
+
+var playButton = document.getElementById('play-button');
+playButton.onclick = ()=> {
+    if (playButton.classList.contains('is-success')){
         showInitPanel();
         window.requestAnimationFrame(moveMoon) 
         Model.startMusic();   
     }
-    
 }
 
 var house = state.assets.house;
-house.onclick = showInitPanel;
+house.onclick = ()=> {
+    showInitPanel()
+    Model.stopMusic();
+} 

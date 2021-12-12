@@ -5,8 +5,8 @@ import DrumMachine from './DrumMachine';
 import * as Instr from './instruments';
 import {Scale, Note,Chord,Interval} from "@tonaljs/tonal";
 import * as Tone from "tone"
-import * as CanvaEnv from './canvaEnv.js'
 import {Emitter} from "./eventEmitter.js"
+import * as Canva from './canva.js'
 
 let landScape = require("./landscape.json")
 let harmonies = require("./possibleSchedules.json")
@@ -81,7 +81,7 @@ async function initializeState() {
   await state.emitter.isReadyModel()
   initializeMelody()
   await state.emitter.isReadyToPlay()
-  CanvaEnv.playableButton()
+  Canva.playableButton(true)
   var isFirst = true
   Tone.Transport.schedule((time)=>{
     console.log(isFirst)
@@ -739,4 +739,8 @@ var simpleMelody3 = {
           {pitch: Note.midi("B4"), quantizedStartStep: 208, quantizedEndStep: 224 },
           {pitch: Note.midi("B4"), quantizedStartStep: 224, quantizedEndStep: 256 }
   ]
+}
+export function setSeedWords(word1, word2) {
+  state.melody.seedWord1= word1;
+  state.melody.seedWord2= word2;
 }
