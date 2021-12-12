@@ -71,8 +71,8 @@ async function initializeState() {
   state.worker = await new Worker(workerURL/*, {type:'module'}*/ );
   initializeWorker();
   state.worker.onmessage = (event)=> {workieTalkie(event)}
-  state.melody.instrument = new Instr.Lead()//new Tone.Synth().toDestination()//
-  state.melody.instrument./*volume.value=-6*/setVolume(-6);
+  state.melody.instrument =/* new Instr.Lead()*/new Tone.Synth().toDestination()
+  state.melody.instrument.volume.value=-6//setVolume(-6);
   state.harmony.instrument = new Instr.Pad()
   state.harmony.instrument.setVolume(-5);
   //buildLandScape()
@@ -80,22 +80,22 @@ async function initializeState() {
   playChordSequence(landScape.chordsSequence, state.key, state.harmony.instrument)
   await state.emitter.isReadyModel()
   initializeMelody()
-  //await state.emitter.isReadyToPlay()
+  await state.emitter.isReadyToPlay()
   CanvaEnv.playableButton()
-  /*
-  for(var i = 1;;i++) {
-    await state.emitter.isThePreviousMelodyScheduled(i)
+  Tone.Transport.schedule((time)=>{
     state.worker.postMessage(
       {
         message:"continue",
-        index:i,
-        mel:state.parts[((i-1)%state.parts.length)].melody.melodyNoteSequence,
-        length:(Tone.Time(state.parts[i].totalLength).quantize("16n")),
-        chordProgression:state.parts[i].chordsArray
+        mel:state.melody.noteSequence,
+        length:((Tone.Time(landScape.length).toSeconds()*(Tone.Transport.bpm.value))/15),
+        chordProgression:landScape.chordsArray//["Dm7","G7","Cmaj7","Cmaj7"]
       }
-    )
-  }
-  */
+    );
+    state.melody.playingPart.stop(0)
+  },"23:3:0")
+    
+  
+  
 }
 
 
@@ -117,12 +117,11 @@ function initializeMelody() {
   //interpolateMelodies(seq1,seq2);
   console.log(landScape.length)
   console.log((Tone.Time(landScape.length).toSeconds()*(Tone.Transport.bpm.value))/15)
-
-  
+  state.melody.noteSequence = simpleMelody1
   state.worker.postMessage(
     {
       message:"continue",
-      mel:simpleMelody3,
+      mel:state.melody.noteSequence,
       length:((Tone.Time(landScape.length).toSeconds()*(Tone.Transport.bpm.value))/15),
       chordProgression:landScape.chordsArray//["Dm7","G7","Cmaj7","Cmaj7"]
     }
@@ -287,15 +286,6 @@ async function workieTalkie(event) {
       )
       
     } break;
-    case "continueFirst": {
-      const sample = event.data.element;
-      console.log("response message:"+ event.data.message)
-      state.melody.noteSequence = sample
-      var notePart = generatePart(sample);
-      state.melody.melodyPart = notePart;
-      state.melody.playingPart = addNotePartToTransport(state.melody.melodyPart, state.melody.instrument, 0)
-      
-    } break;
     case "continue": {
       const sample = event.data.element;
       console.log("response message:"+ event.data.message)
@@ -305,11 +295,13 @@ async function workieTalkie(event) {
       state.melody.noteSequence = sample
       var notePart = generatePart(sample);
       state.melody.playingPart = addNotePartToTransport(notePart, state.melody.instrument, 0)
+      state.emitter.updateReadyToPlay();
+      //state.emitter.melodyScheduled(index);
       //state.melody.melodyPart = notePart;
 
       //state.parts[index].melodyNoteSequence = sample;
       //state.parts[index].melodyPlayingPart = addNotePartToTransport(generatePart(sample),state.melody.instrument,state.parts[0].startTime);
-      //state.emitter.melodyScheduled(index);
+      
       //if(index == 0) {
       //state.emitter.updateReadyToPlay();
       //}
