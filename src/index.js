@@ -231,7 +231,6 @@ function calculateTime(value,botLength,topLength) {
 export function startMusic() {
     
     Tone.start()
-    Tone.setContext(new Tone.Context({ latencyHint : "playback" }))
     //Tone.Transport.bpm.value = 150
     Tone.Transport.bpm.value = 60
     Tone.Transport.start();
