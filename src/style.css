@@ -158,3 +158,10 @@ p {
 img {
     image-rendering: crisp-edges;
 }
+
+
+/* IMAGE FILTERS */
+
+.invert {
+    filter: invert(100%);
+}

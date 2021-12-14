@@ -94,7 +94,7 @@ function initializeMelody() {
   //interpolateMelodies(seq1,seq2);
   console.log(landScape.length)
   console.log((Tone.Time(landScape.length).toSeconds()*(Tone.Transport.bpm.value))/15)
-  state.melody.noteSequence = simpleMelody3
+  state.melody.noteSequence = simpleMelody
   state.worker.postMessage(
     {
       message:"continue",
@@ -601,19 +601,19 @@ var simpleMelody = {
     }
   ],
   quantizationInfo: { stepsPerQuarter: 4 },
-  notes:[ {pitch: Note.midi("B4"), quantizedStartStep: 0, quantizedEndStep: 4 },
-          {pitch: Note.midi("A4"), quantizedStartStep: 4, quantizedEndStep: 8 },
-          {pitch: Note.midi("G4"), quantizedStartStep: 8, quantizedEndStep: 12 },
-          {pitch: Note.midi("A4"), quantizedStartStep: 12, quantizedEndStep: 16 },
-          {pitch: Note.midi("B4"), quantizedStartStep: 16, quantizedEndStep: 20 },
-          {pitch: Note.midi("B4"), quantizedStartStep: 20, quantizedEndStep: 24 },
-          {pitch: Note.midi("B4"), quantizedStartStep: 24, quantizedEndStep: 32 },
-          {pitch: Note.midi("A4"), quantizedStartStep: 32, quantizedEndStep: 36 },
-          {pitch: Note.midi("A4"), quantizedStartStep: 36, quantizedEndStep: 40 },
-          {pitch: Note.midi("A4"), quantizedStartStep: 40, quantizedEndStep: 48 },
-          {pitch: Note.midi("B4"), quantizedStartStep: 48, quantizedEndStep: 52 },
-          {pitch: Note.midi("B4"), quantizedStartStep: 52, quantizedEndStep: 56 },
-          {pitch: Note.midi("B4"), quantizedStartStep: 56, quantizedEndStep: 64 }
+  notes:[ {pitch: Note.midi("B3"), quantizedStartStep: 0, quantizedEndStep: 4 },
+          {pitch: Note.midi("A3"), quantizedStartStep: 4, quantizedEndStep: 8 },
+          {pitch: Note.midi("G3"), quantizedStartStep: 8, quantizedEndStep: 12 },
+          {pitch: Note.midi("A3"), quantizedStartStep: 12, quantizedEndStep: 16 },
+          {pitch: Note.midi("B3"), quantizedStartStep: 16, quantizedEndStep: 20 },
+          {pitch: Note.midi("B3"), quantizedStartStep: 20, quantizedEndStep: 24 },
+          {pitch: Note.midi("B3"), quantizedStartStep: 24, quantizedEndStep: 32 },
+          {pitch: Note.midi("A3"), quantizedStartStep: 32, quantizedEndStep: 36 },
+          {pitch: Note.midi("A3"), quantizedStartStep: 36, quantizedEndStep: 40 },
+          {pitch: Note.midi("A3"), quantizedStartStep: 40, quantizedEndStep: 48 },
+          {pitch: Note.midi("B3"), quantizedStartStep: 48, quantizedEndStep: 52 },
+          {pitch: Note.midi("B3"), quantizedStartStep: 52, quantizedEndStep: 56 },
+          {pitch: Note.midi("B3"), quantizedStartStep: 56, quantizedEndStep: 64 }
   ]
 }
 
