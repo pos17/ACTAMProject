@@ -7,7 +7,7 @@ const canvasDiv = document.getElementById('canvas-div');
 // const canva = document.getElementById('main-canvas');
 const sky = document.getElementById('sky');
 
-var factor = 16;
+var factor = 1;
 var channels = ['mountain', 'seaside', 'city']
 
 
