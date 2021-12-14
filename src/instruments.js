@@ -176,10 +176,10 @@ class Lead {
         //var volume = -15;
         var lead = new Tone.PolySynth(Tone.Synth);
         lead.set({envelope: {
-            attack: '16n',
-            decay: '16',
+            attack: '8n',
+            decay: '16n',
             sustain: '0.1',
-            release: '8n'
+            release: '16n'
         },
         
         oscillator: {
@@ -210,7 +210,7 @@ class Lead {
             rolloff: '-24db'
         })
 
-        var dly = new Tone.PingPongDelay('4n', 0.3);
+        var dly = new Tone.PingPongDelay('8n', 0.1);
 
         var verb = new Tone.Reverb({
             decay: '4',
