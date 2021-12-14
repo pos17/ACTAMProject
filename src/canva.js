@@ -171,6 +171,9 @@ function initImages(env){
     sun.src = new_assets.sun.url;
     star.src = new_assets.star.url[0];
 
+    moon.classList.add('invert');
+    console.log(moon)
+
     state.assets.stars = []
 
     for (i=0; i<250; i++){
@@ -248,7 +251,7 @@ function createEnvironment(env) {
     drawThisImage(floor, environment[env].floor.left, environment[env].floor.bottom);
     drawThisImage(building, environment[env].building.left, environment[env].building.bottom);
 
-    blendBG()
+    // blendBG()
 
     window.requestAnimationFrame(() => {createEnvironment(env)});
 }
