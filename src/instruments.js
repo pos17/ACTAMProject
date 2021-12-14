@@ -129,7 +129,7 @@ class Pad {
                 type: 'triangle',
             },
 
-            volume: '-18',
+            volume: '-25',
             
             envelope: {
                 attack: '4n',
@@ -176,17 +176,17 @@ class Lead {
         //var volume = -15;
         var lead = new Tone.PolySynth(Tone.Synth);
         lead.set({envelope: {
-            attack: '2n',
-            decay: '2n',
+            attack: '16n',
+            decay: '16',
             sustain: '0.1',
-            release: '2n'
+            release: '8n'
         },
         
         oscillator: {
             type: 'sine2'
         },
 
-        volume: "-15"//volume.toString(),
+        volume: "-10"//volume.toString(),
         })
         /*
         var lead = new Tone.Synth({

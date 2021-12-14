@@ -289,7 +289,7 @@ var okButton = document.getElementById('ok-button');
 okButton.onclick = () => {
     var word1 = document.getElementById('name-field1').value
     var word2 = document.getElementById('name-field2').value
-    Model.setSeedWords(word1, word2);
+    // Model.setSeedWords(word1, word2);
     if ((word1 != "")&&(word2 != "")) {
         document.getElementById('front-panel').hidden = true;
         document.getElementById('start-panel').hidden = false;

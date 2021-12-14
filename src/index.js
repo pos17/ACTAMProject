@@ -1,7 +1,6 @@
 //importScripts("https://cdn.jsdelivr.net/npm/@magenta/music@^1.12.0/es6/core.js");
 //const core = require('@magenta/music/node/core');
 import Worker from 'web-worker';
-import DrumMachine from './DrumMachine';
 import * as Instr from './instruments';
 import {Scale, Note,Chord,Interval} from "@tonaljs/tonal";
 import * as Tone from "tone"
@@ -15,45 +14,12 @@ export const state= {
   readyModel:false,
   readyToPlay: false,
   isPlaying:false,
-  currentRepetition:0,
   worker: undefined,
   emitter: new Emitter(),
   key:"c", //main key of the system
-  major: true,
-  mode:"", //reference mode 
-  scale:undefined, //scale 
   bpm:60,
   totalLength:"",
-  seedPart:undefined,
-  parts:[],
-  harmony:{
-    instrument: new Tone.PolySynth().toDestination(),
-    mute:false,
-    chordParts: []
-  },
-  melody:{
-    partPosition: 0,
-    instrument: new Instr.Pad(),
-    mute:false,
-    seedWord1:"",
-    seedWord2:"",
-    melodyParts:[]
-  },
-  sequence:{},
-  drums: {
-    mute:false,
-    drumMachine:  new DrumMachine(
-      [
-          {name: "kick", note: "C2", obj: new Instr.Kick()},
-          {name: "snare", note: "C#2", obj: new Instr.Snare()},
-          {name: "hihatC", note: "D2", obj: new Instr.HiHatClosed()},
-          {name: "hihatO", note: "D#2", obj: new Instr.HiHatOpen()}
-      ]
-    ),
-    drumSeq:[]
-  },
-  assets: {},
-  canvas: {}
+  drawing:undefined
 }
 
 /**
@@ -71,24 +37,22 @@ async function initializeState() {
   state.worker = await new Worker(workerURL/*, {type:'module'}*/ );
   initializeWorker();
   state.worker.onmessage = (event)=> {workieTalkie(event)}
-  state.melody.instrument =new Instr.Lead()//new Tone.Synth().toDestination()
-  state.melody.instrument/*.volume.value=-6*/.setVolume(-6);
-  state.harmony.instrument = new Instr.Pad()
-  state.harmony.instrument.setVolume(-5);
-  //buildLandScape()
-  console.log(landScape)
-  playChordSequence(landScape.chordsSequence, state.key, state.harmony.instrument)
-  await state.emitter.isReadyModel()
-  initializeMelody()
-  await state.emitter.isReadyToPlay()
+  state.drawing = require("./base_drawing.json")
+  playChordSequence(state.drawing.chordsSequence, state.key, constructInstrument(state.drawing.chordsInstrument))
+  //await state.emitter.isReadyModel()
+  //initializeMelody()
+  //await state.emitter.isReadyToPlay()
   Canva.playableButton(true)
-  var isFirst = true
-  Tone.Transport.schedule((time)=>{
-    console.log(isFirst)
-    if(isFirst==false) {
-      state.melody.playingPart.stop(0)
-    }
-    state.melody.playingPart = addNotePartToTransport(generatePart(state.melody.noteSequence),state.melody.instrument,0)
+  //var isFirst = true
+  //Tone.Transport.schedule((time)=>{
+    //console.log(isFirst)
+    //if(isFirst==false) {
+    //  state.melody.playingPart.stop(0)
+    //}
+  state.playingPart = addNotePartToTransport(generatePart(state.drawing.melodySequence),constructInstrument(state.drawing.melodyInstrument),0)
+  Tone.Transport.loopEnd = "8:0:0"
+  Tone.Transport.loop=true;  
+  /*
     state.worker.postMessage(
       {
         message:"continue",
@@ -99,11 +63,18 @@ async function initializeState() {
     );
     isFirst = false
   },"0:0:0")
-  
+  */
   
   
 }
 
+function constructInstrument(constructorPath) {
+  console.log(constructorPath.split('.'))
+  //var constructorFunc = constructorPath.split('.')
+  //  .reduce((prev, next) => prev[next],Instr)
+  //console.log(constructorFunc)
+  return new Instr[constructorPath]//constructorFunc()
+}
 
 function initializeMelody() {
   //TODO: put here the part of the dialog to input first information about user: mood seedwords
@@ -233,7 +204,7 @@ export function startMusic() {
     Tone.start()
     //Tone.Transport.bpm.value = 150
     Tone.Transport.bpm.value = 60
-    Tone.Transport.start();
+    Tone.Transport.start("+0.1");
     
     state.isPlaying = true;
 }
@@ -587,8 +558,7 @@ function playChordSequence(chordsSequence, key, instrument) {
     
   }
   ),chordsSequence).start(0)
-  Tone.Transport.loopEnd = landScape.length;
-  Tone.Transport.loop=true;
+  
   landScape.chordsArray = chordsArray
   console.log(landScape)
 }
