@@ -297,8 +297,8 @@ okButton.onclick = () => {
         document.getElementById('front-panel').hidden = true;
         document.getElementById('start-panel').hidden = false;
         Model.state.emitter.updateReadyToPlay()
-        //Tone.start()
-        //Tone.setContext(new Tone.Context({ latencyHint : "playback" }))
+        Tone.start()
+        Tone.setContext(new Tone.Context({ latencyHint : "playback" }))
     }    
 }
 
