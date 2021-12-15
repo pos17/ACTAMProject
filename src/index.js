@@ -50,7 +50,7 @@ async function initializeState() {
     //  state.melody.playingPart.stop(0)
     //}
   state.playingPart = addNotePartToTransport(generatePart(state.drawing.melodySequence),constructInstrument(state.drawing.melodyInstrument),0)
-  Tone.Transport.loopEnd = "8:0:0"
+  Tone.Transport.loopEnd = state.drawing.loopLength;
   Tone.Transport.loop=true;  
   /*
     state.worker.postMessage(

@@ -65,6 +65,7 @@
         {"time":"6:0:0","value":"C","length":"1m"},
         {"time":"7:0:0","value":"C","length":"1m"}
     ],
+    "loopLength":"8:0:0",
     "melodyEffects":"",
     "chordsEffects":"" 
 }

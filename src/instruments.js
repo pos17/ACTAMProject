@@ -210,7 +210,7 @@ class Lead {
             rolloff: '-24db'
         })
 
-        var dly = new Tone.PingPongDelay('8n', 0.1);
+        var dly = new Tone.PingPongDelay('4n', 0.2);
 
         var verb = new Tone.Reverb({
             decay: '4',
