@@ -15,7 +15,7 @@ self.onmessage = async (event) => {
       post("hi","Hello There!")
       break;
     case "interpolate":
-      interpolate(event.data.mel1,event.data.mel2)
+      interpolate(event.data.seedMelodies,event.data.numOfInterpolations)
       break;
     case "continueFirst":
       continueMelodyFirst(event.data.mel, event.data.length, event.data.chordProgression)
@@ -44,28 +44,18 @@ async function initializeWorker() {
   post("modelInitialized")
 }
 //TODO:add new features as choosable temp and so on 
-async function interpolate(mel1, mel2) {
+async function interpolate(seedMelodies,numOfInterpolations) {
   if (!mvae.isInitialized()) {
     await mvae.initialize();
     post("fyi","mvaeInitialized")
     
   }
-  //mel1q = core.sequences.quantizeNoteSequence(mel1, 4)
-  //mel2q = core.sequences.quantizeNoteSequence(mel2, 4)
-  melArray = [mel1,mel2]
-  console.log("mel1")
-  console.log(mel1)
-  console.log("mel2")
-  console.log(mel2)
-  //console.log("mel1q")
-  //console.log(mel1q)
-  //console.log("mel2q")
-  //console.log(mel2q)
-  const output = await mvae.interpolate(inputSequences= melArray, numInterps= 6, temperature= 1.0)
+  console.log(seedMelodies)
+  const output = await mvae.interpolate(inputSequences= seedMelodies, numInterps= numOfInterpolations, temperature= 1.0)
   console.log("output of interpolation:")
   console.log(output)
 
-  var concatenatedOut = core.sequences.concatenate(output)
+  //var concatenatedOut = core.sequences.concatenate(output)
   //console.log("concatenatedOut")
   //console.log(concatenatedOut)
   //var concatenatedOut2 = core.sequences.unquantizeSequence(concatenatedOut,60)
@@ -73,7 +63,7 @@ async function interpolate(mel1, mel2) {
   //console.log(concatenatedOut2)
   // Send main script the result.
   
-  post("interpolation",concatenatedOut);
+  post("interpolation",output);
 }
 async function continueMelody(mel, length,chordProgression) {
   if (!mrnn.isInitialized()) {

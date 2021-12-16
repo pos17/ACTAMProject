@@ -11,6 +11,7 @@ let landScape = require("./landscape.json")
 let harmonies = require("./possibleSchedules.json")
 
 export const state= {
+  stateChanged:false,
   readyModel:false,
   readyToPlay: false,
   isPlaying:false,
@@ -19,26 +20,29 @@ export const state= {
   key:"c", //main key of the system
   bpm:60,
   totalLength:"",
-  drawing:undefined
+  drawing:undefined,
+  possibleValues:require("./possible_elements.json")
 }
 
 /**
  * function call to start the whole system
  */
-initializeState()
+initializeApp()
 
 
 /**
  *  Function to initialize the main settings of the player 
  */
-async function initializeState() {
+async function initializeApp() {
   
   var workerURL =  new URL("./worker.js", import.meta.url)
   state.worker = await new Worker(workerURL/*, {type:'module'}*/ );
   initializeWorker();
   state.worker.onmessage = (event)=> {workieTalkie(event)}
+  //initialize the drawing values
   state.drawing = require("./base_drawing.json")
-  playChordSequence(state.drawing.chordsSequence, state.key, constructInstrument(state.drawing.chordsInstrument))
+  propagateStateChanges(true)
+
   //await state.emitter.isReadyModel()
   //initializeMelody()
   //await state.emitter.isReadyToPlay()
@@ -49,9 +53,8 @@ async function initializeState() {
     //if(isFirst==false) {
     //  state.melody.playingPart.stop(0)
     //}
-  state.playingPart = addNotePartToTransport(generatePart(state.drawing.melodySequence),constructInstrument(state.drawing.melodyInstrument),0)
-  Tone.Transport.loopEnd = state.drawing.loopLength;
-  Tone.Transport.loop=true;  
+  
+  
   /*
     state.worker.postMessage(
       {
@@ -67,6 +70,72 @@ async function initializeState() {
   
   
 }
+/**
+ * 
+ * @param {bool} isFirst values that states if the function is called during the initialization 
+ */
+function propagateStateChanges(isFirst) { 
+  if(state.drawing.image.isChanged) {
+    //TODO: adding function to reshape the image of the view 
+  }
+
+  if(state.drawing.chords.isChanged) {
+    if(!isFirst) {
+      state.drawing.chords.playingPart.stop()
+    }
+    else {
+      Tone.Transport.loop=true;  
+    }
+    Tone.Transport.loopEnd = state.drawing.chords.loopLength;
+    state.drawing.chords.playingPart =playChordSequence(state.drawing.chords.sequence, state.key, constructInstrument(state.drawing.chords.instrument))    
+  }
+
+  if(state.drawing.melody.isChanged) {
+    if(!isFirst) {
+      state.drawing.melody.playingPart.stop()
+    }
+    state.drawing.melody.playingPart =addNotePartToTransport(generatePart(state.drawing.melody.sequence),constructInstrument(state.drawing.melody.instrument),0)    
+  }
+
+}
+
+modifyState(20)
+/**
+ * 
+ */
+function modifyState(idValue) {
+  modifyingValue = state.possibleValues.find(element => element.id==idValue)
+  console.log("modifying value")
+  console.log(modifyingValue)
+  switch(modifyingValue.elementType) {
+    case("background"):{
+      state.drawing.chords.sequence = modifyingValue.sequence
+      state.drawing.melody.seedMelodies = modifyingValue.melodies
+      state.worker.postMessage({
+        message:"interpolate",
+        seedMelodies:state.drawing.melody.seedMelodies,
+        numOfInterpolations:state.drawing.melody.numOfInterpolation
+      })
+    } break;
+    case("landscape"):{
+
+    } break;
+    case("building"):{
+      state.drawing.image.building = modifyingState.image
+      state.drawing.melody.instrument = modifyingValue.instrument
+    } break;
+    case("plant"):{
+
+    } break;
+    case("astrum"):{
+
+    } break;
+
+  }
+    
+}
+
+
 
 function constructInstrument(constructorPath) {
   console.log(constructorPath.split('.'))
@@ -244,25 +313,8 @@ async function workieTalkie(event) {
     case "interpolation": {
       const sample = event.data.element;
       console.log("response message in interpolation:"+ event.data.message)
-      console.log(state.parts)
-      //state.parts[0].melodyNoteSequence = sample;
-      //state.parts[0].melodyPlayingPart = addNotePartToTransport(generatePart(sample),state.melody.instrument,state.parts[0].startTime);
-      //state.emitter.melodyScheduled(0);
-      //state.emitter.updateReadyToPlay();
-      console.log(state.parts[0])
-      console.log("time in seconds")
-      console.log(Tone.Time(state.parts[0].length).toSeconds())
-      console.log(Tone.Time(state.parts[0].length).quantize("16n"))
-      state.worker.postMessage(
-        {
-          message:"continue",
-          index:0,
-          mel:sample,
-          length:(Tone.Time(state.parts[0].totalLength).quantize("16n")),
-          chordProgression:state.parts[0].chordsArray//["Dm7","G7","Cmaj7","Cmaj7"]
-        }
-      )
-      
+      state.melodiesMatrix = sample
+      console.log(samplep)
     } break;
     case "continue": {
       const sample = event.data.element;

@@ -1,0 +1,87 @@
+[
+    {
+        "id":10,
+        "elementType":"background",
+        "image":"../assets/BG/Background2.png",
+        "sequence":[
+            {"time":"0:0:0","value":"Dm","length":"1m"},
+            {"time":"1:0:0","value":"G","length":"1m"},
+            {"time":"2:0:0","value":"C","length":"1m"},
+            {"time":"3:0:0","value":"C","length":"1m"},
+            {"time":"4:0:0","value":"Dm","length":"1m"},
+            {"time":"5:0:0","value":"G7","length":"1m"},
+            {"time":"6:0:0","value":"C","length":"1m"},
+            {"time":"7:0:0","value":"C","length":"1m"}
+          ],
+        "melodies":[
+                {
+                  "totalQuantizedSteps": 128,
+                  "timeSignatures": [
+                    {
+                      "time": 0,
+                      "numerator": 4,
+                      "denominator": 4
+                    }
+                  ],
+                  "tempos": [
+                    {
+                      "time": 0,
+                      "qpm":  60
+                    }
+                  ],
+                  "quantizationInfo": { "stepsPerQuarter": 4 },
+                  "notes":[ {"pitch": 50, "quantizedStartStep": 0, "quantizedEndStep": 8 },
+                          {"pitch": 52, "quantizedStartStep": 8, "quantizedEndStep": 12 },
+                          {"pitch": 53, "quantizedStartStep": 12, "quantizedEndStep": 16 },
+                          {"pitch": 55, "quantizedStartStep": 16, "quantizedEndStep": 24 },
+                          {"pitch": 53, "quantizedStartStep": 24, "quantizedEndStep": 32 },
+                          {"pitch": 52, "quantizedStartStep": 32, "quantizedEndStep": 40 },
+                          {"pitch": 53, "quantizedStartStep": 40, "quantizedEndStep": 44 },
+                          {"pitch": 55, "quantizedStartStep": 44, "quantizedEndStep": 48 },
+                          {"pitch": 57, "quantizedStartStep": 48, "quantizedEndStep": 64 },
+                          {"pitch": 53, "quantizedStartStep": 64, "quantizedEndStep": 72 },
+                          {"pitch": 55, "quantizedStartStep": 72, "quantizedEndStep": 76 },
+                          {"pitch": 57, "quantizedStartStep": 76, "quantizedEndStep": 80 },
+                          {"pitch": 59, "quantizedStartStep": 80, "quantizedEndStep": 88 },
+                          {"pitch": 57, "quantizedStartStep": 88, "quantizedEndStep": 96 },
+                          {"pitch": 55, "quantizedStartStep": 96, "quantizedEndStep": 104 },
+                          {"pitch": 57, "quantizedStartStep": 104, "quantizedEndStep": 108 },
+                          {"pitch": 59, "quantizedStartStep": 108, "quantizedEndStep": 112 },
+                          {"pitch": 60, "quantizedStartStep": 112, "quantizedEndStep": 128 }
+                  ]
+                }
+        ]
+    },
+
+    {
+        "id":20,
+        "elementType":"landscape",
+        "image":"../assets/BG/Mountains.png",
+        "instrument":"pad",
+        "effect":"chorus"
+    },
+    {
+        "id":30,
+        "elementType":"building",
+        "image":"../assets/HOUSE/Home.png",
+        "instrument":"lead"
+    },
+    {
+        "id":40,
+        "elementType":"plant",
+        "image":"../assets/TREES/Tree Maj.png",
+        "modEffect":"chorus"
+    },
+    {
+        "id":41,
+        "elementType":"plant",
+        "image":"../assets/TREES/Tree Min.png",
+        "modEffect":"chorus"
+    },
+    {
+        "id":42,
+        "elementType":"plant",
+        "image":"../assets/TREES/Tree Alt.png",
+        "modEffect":"chorus"
+    }
+]
