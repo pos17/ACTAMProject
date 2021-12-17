@@ -6,6 +6,7 @@ import {Scale, Note,Chord,Interval} from "@tonaljs/tonal";
 import * as Tone from "tone"
 import {Emitter} from "./eventEmitter.js"
 import * as Canva from './canva.js'
+import { concatenate } from '@magenta/music/esm/core/sequences';
 
 let landScape = require("./landscape.json")
 let harmonies = require("./possibleSchedules.json")
@@ -110,12 +111,19 @@ function modifyState(idValue) {
   switch(modifyingValue.elementType) {
     case("background"):{
       state.drawing.chords.sequence = modifyingValue.sequence
+      state.drawing.chords.isChanged = true
       state.drawing.melody.seedMelodies = modifyingValue.melodies
+      waitingObj = state.emitter.waitForWorker()
       state.worker.postMessage({
         message:"interpolate",
         seedMelodies:state.drawing.melody.seedMelodies,
-        numOfInterpolations:state.drawing.melody.numOfInterpolation
+        numOfInterpolations:state.drawing.melody.numOfInterpolation,
+        waitingIndex:waitingObj.waitingIndex
       })
+      await waitingObj.promise
+      concatenateMelodiesFromMatrix()
+      propagateStateChanges()
+
     } break;
     case("landscape"):{
 
@@ -136,13 +144,26 @@ function modifyState(idValue) {
 }
 
 
-
 function constructInstrument(constructorPath) {
   console.log(constructorPath.split('.'))
   //var constructorFunc = constructorPath.split('.')
   //  .reduce((prev, next) => prev[next],Instr)
   //console.log(constructorFunc)
   return new Instr[constructorPath]//constructorFunc()
+}
+
+function concatenateMelodiesFromMatrix(positionsArray) {
+  toConcatenate = []
+  for(var i = 0; i <positionsArray.length;i++) {
+    toConcatenate.push(state.melodiesMatrix[positionsArray[i].x][positionsArray[i].y])
+  }
+  var waitingObj = state.emitter.waitForWorker
+  state.worker.postMessage({
+    message:"concatenate",
+    concatenationArray:toConcatenate,
+    waitingIndex:waitingObj.waitingIndex
+  })
+  await waitingObj.promise
 }
 
 function initializeMelody() {
@@ -311,10 +332,12 @@ async function workieTalkie(event) {
       console.log(event.data.element);
     } break;
     case "interpolation": {
-      const sample = event.data.element;
+      const sample = event.data.element.value;
+      const waitingIndex = event.data.element.interpolIndex;
       console.log("response message in interpolation:"+ event.data.message)
       state.melodiesMatrix = sample
-      console.log(samplep)
+      console.log(sample)
+      state.emitter.waitingResolved(waitingIndex);
     } break;
     case "continue": {
       const sample = event.data.element;
@@ -335,6 +358,12 @@ async function workieTalkie(event) {
       //if(index == 0) {
       //state.emitter.updateReadyToPlay();
       //}
+    }
+    break;
+    case "concatenate": {
+      state.drawing.melody= event.data.element.value;
+      const waitingIndex = event.data.element.interpolIndex;
+      state.emitter.waitingResolved(waitingIndex)
     }
     break;
     case "modelInitialized": {

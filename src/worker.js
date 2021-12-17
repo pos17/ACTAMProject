@@ -1,3 +1,5 @@
+import { concatenate } from "@magenta/music/esm/core/sequences";
+
 importScripts("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.4.0/dist/tf.min.js");
 importScripts("https://cdn.jsdelivr.net/npm/@magenta/music@^1.12.0/es6/core.js");
 importScripts("https://cdn.jsdelivr.net/npm/@magenta/music@^1.12.0/es6/music_vae.js");
@@ -15,7 +17,7 @@ self.onmessage = async (event) => {
       post("hi","Hello There!")
       break;
     case "interpolate":
-      interpolate(event.data.seedMelodies,event.data.numOfInterpolations)
+      interpolate(event.data.seedMelodies,event.data.numOfInterpolations,event.data.interpolIndex)
       break;
     case "continueFirst":
       continueMelodyFirst(event.data.mel, event.data.length, event.data.chordProgression)
@@ -25,6 +27,9 @@ self.onmessage = async (event) => {
       break;
     case "initializeWorker":
       initializeWorker();
+      break;
+    case "concatenate":
+      concatenate(event.data.concatenationArray);
       break;
     default:
       console.error("no message to the, don't know what to do!")
@@ -43,8 +48,13 @@ async function initializeWorker() {
   }
   post("modelInitialized")
 }
+
+async function concatenate(melodyArray,interpolIndex) {
+  var concatenatedOut = core.sequences.concatenate(melodyArray)
+  post("concatenate", concatenatedOut,interpolIndex);
+}
 //TODO:add new features as choosable temp and so on 
-async function interpolate(seedMelodies,numOfInterpolations) {
+async function interpolate(seedMelodies,numOfInterpolations,interpolIndex) {
   if (!mvae.isInitialized()) {
     await mvae.initialize();
     post("fyi","mvaeInitialized")
@@ -54,7 +64,9 @@ async function interpolate(seedMelodies,numOfInterpolations) {
   const output = await mvae.interpolate(inputSequences= seedMelodies, numInterps= numOfInterpolations, temperature= 1.0)
   console.log("output of interpolation:")
   console.log(output)
-
+  const outputObj= {
+    value:output,
+  }
   //var concatenatedOut = core.sequences.concatenate(output)
   //console.log("concatenatedOut")
   //console.log(concatenatedOut)
@@ -63,7 +75,7 @@ async function interpolate(seedMelodies,numOfInterpolations) {
   //console.log(concatenatedOut2)
   // Send main script the result.
   
-  post("interpolation",output);
+  post("interpolation",outputObj,interpolIndex);
 }
 async function continueMelody(mel, length,chordProgression) {
   if (!mrnn.isInitialized()) {
@@ -117,12 +129,12 @@ async function continueMelodyFirst(mel, length,chordProgression) {
   post("continueFirst", continueOut);
 }
 
-function post(message,element="Nothing,sorry :(",index=-1) {
+function post(message,element="Nothing,sorry :(",interpolIndex=-1) {
   self.postMessage(
     {
       message:message,
       element:element,
-      index:index
+      interpolIndex:interpolIndex
     }
   )
 }

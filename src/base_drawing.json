@@ -10,7 +10,7 @@
             "../assets/TREES/Tree Min.png",
             "../assets/TREES/Tree Alt.png"
         ],
-        "astrum":"../assets/MOON/Moon1.png",
+        "astrum":"",
         "starsMap":"",
         "flyingObjects":[
             "",
@@ -38,6 +38,7 @@
       "isChanged":"true",
       "instrument":"Lead",
       "numOfInterpolation":"6",
+      "positionsArray":[{"x":0,"y":0}],
       "sequence":{
         "totalQuantizedSteps": 128,
         "timeSignatures": [

@@ -83,5 +83,19 @@
         "elementType":"plant",
         "image":"../assets/TREES/Tree Alt.png",
         "modEffect":"chorus"
-    }
+    },
+    {
+      "id":50,
+      "elementType":"astrum",
+      "image":"../assets/MOON/Moon1.png",
+      "positionsArray":[
+        { "x":0, "y":0},
+        { "x":1, "y":1},
+        { "x":2, "y":2},
+        { "x":3, "y":3},
+        { "x":4, "y":4},
+        { "x":5, "y":5}
+      ]
+  }
+
 ]

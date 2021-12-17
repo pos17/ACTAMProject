@@ -2,6 +2,10 @@ import * as index from "./index.js"
 import EventEmitter from 'eventemitter3'
 
 export class Emitter extends EventEmitter {
+    constructor() {
+        this.waitingNum = 0;
+        super()
+    }
     updateReadyModel(ready) {
         this.emit("modelReady")
         index.state.readyModel = true
@@ -33,22 +37,21 @@ export class Emitter extends EventEmitter {
         }) 
         return p
     }
-
-    isThePreviousMelodyScheduled(actualMelody) {
-        var previousMelody = actualMelody-1;
+    waitForWorker() {   
         var p = new Promise((resolve)=> {
             const success = () => {
-                console.log("previous melody: "+previousMelody+"schedule received and ready to go on")
                 resolve()
+                console.log("waiting num: "+this.waitingNum+" resolved")
             }
-            this.once("melody"+previousMelody+"Scheduled",success)
+            this.once("waiting"+this.waitingNum,success)
         });
-        console.log("waiting for melody n: "+ previousMelody+"to be scheduled")
-        return p 
+        this.waitingNum++;
+        console.log("waiting for num: "+ this.waitingNum+" to be scheduled")
+        waitingIndex= this.waitingNum
+        return {promise:p,waitingIndex:waitingIndex} 
     }
-    melodyScheduled(melodyScheduled) {
-        this.emit("melody"+melodyScheduled+"Scheduled")
-        index.state.melody.partPosition++;
-        console.log("melody"+melodyScheduled+"Scheduled")
+    waitingResolved(waitingIndex) {
+        this.emit("waiting"+waitingIndex)
+        console.log("waiting resolved"+waitingIndex)
     }
 }
