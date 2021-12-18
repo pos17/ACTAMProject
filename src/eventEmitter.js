@@ -3,8 +3,9 @@ import EventEmitter from 'eventemitter3'
 
 export class Emitter extends EventEmitter {
     constructor() {
-        this.waitingNum = 0;
         super()
+        this.waitingNum = 0;
+        
     }
     updateReadyModel(ready) {
         this.emit("modelReady")
@@ -45,13 +46,14 @@ export class Emitter extends EventEmitter {
             }
             this.once("waiting"+this.waitingNum,success)
         });
-        this.waitingNum++;
+        
         console.log("waiting for num: "+ this.waitingNum+" to be scheduled")
-        waitingIndex= this.waitingNum
+        var waitingIndex= this.waitingNum
+        this.waitingNum++;
         return {promise:p,waitingIndex:waitingIndex} 
     }
     waitingResolved(waitingIndex) {
         this.emit("waiting"+waitingIndex)
-        console.log("waiting resolved"+waitingIndex)
+        console.log("waiting resolved "+waitingIndex)
     }
 }

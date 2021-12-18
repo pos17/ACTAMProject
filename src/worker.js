@@ -1,12 +1,13 @@
 import { concatenate } from "@magenta/music/esm/core/sequences";
 
-importScripts("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.4.0/dist/tf.min.js");
-importScripts("https://cdn.jsdelivr.net/npm/@magenta/music@^1.12.0/es6/core.js");
-importScripts("https://cdn.jsdelivr.net/npm/@magenta/music@^1.12.0/es6/music_vae.js");
-importScripts("https://cdn.jsdelivr.net/npm/@magenta/music@1.17.0/es6/music_rnn.js");
+importScripts("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js");
+importScripts("https://cdn.jsdelivr.net/npm/@magenta/music@1.23.1/es6/core.js");
+//importScripts("https://cdn.jsdelivr.net/npm/@magenta/music@1.23.1/dist/magentamusic.min.js")
+importScripts("https://cdn.jsdelivr.net/npm/@magenta/music@1.23.1/es6/music_vae.js");
+importScripts("https://cdn.jsdelivr.net/npm/@magenta/music@1.23.1/es6/music_rnn.js");
 //import music_vae from '@magenta/music/node/music_vae';
 //const music_vae = require('@magenta/music/node/music_vae');
-const mvae = new music_vae.MusicVAE('https://storage.googleapis.com/magentadata/js/checkpoints/music_vae/mel_2bar_small');
+const mvae = new music_vae.MusicVAE('https://storage.googleapis.com/magentadata/js/checkpoints/music_vae/mel_4bar_small_q2');
 const mrnn = new music_rnn.MusicRNN("https://storage.googleapis.com/magentadata/js/checkpoints/music_rnn/chord_pitches_improv");
 // Main script asks for work.
 self.onmessage = async (event) => {
@@ -17,7 +18,7 @@ self.onmessage = async (event) => {
       post("hi","Hello There!")
       break;
     case "interpolate":
-      interpolate(event.data.seedMelodies,event.data.numOfInterpolations,event.data.interpolIndex)
+      interpolate(event.data.seedMelodies,event.data.numOfInterpolations,event.data.waitingIndex)
       break;
     case "continueFirst":
       continueMelodyFirst(event.data.mel, event.data.length, event.data.chordProgression)
@@ -28,8 +29,11 @@ self.onmessage = async (event) => {
     case "initializeWorker":
       initializeWorker();
       break;
-    case "concatenate":
-      concatenate(event.data.concatenationArray);
+    case "concatenate": {
+      console.log("qui ci sono ")
+      console.log(event.data.concatenationArray)
+      concatenateSeq(event.data.concatenationArray,event.data.waitingIndex);
+    }
       break;
     default:
       console.error("no message to the, don't know what to do!")
@@ -49,12 +53,14 @@ async function initializeWorker() {
   post("modelInitialized")
 }
 
-async function concatenate(melodyArray,interpolIndex) {
+function concatenateSeq(melodyArray,waitingIndex) {
+  console.log("concazzoinculo1")
   var concatenatedOut = core.sequences.concatenate(melodyArray)
-  post("concatenate", concatenatedOut,interpolIndex);
+  console.log("concazzoinculo")
+  post("concatenate", concatenatedOut,waitingIndex);
 }
 //TODO:add new features as choosable temp and so on 
-async function interpolate(seedMelodies,numOfInterpolations,interpolIndex) {
+async function interpolate(seedMelodies,numOfInterpolations,waitingIndex) {
   if (!mvae.isInitialized()) {
     await mvae.initialize();
     post("fyi","mvaeInitialized")
@@ -75,7 +81,7 @@ async function interpolate(seedMelodies,numOfInterpolations,interpolIndex) {
   //console.log(concatenatedOut2)
   // Send main script the result.
   
-  post("interpolation",outputObj,interpolIndex);
+  post("interpolation",outputObj,waitingIndex);
 }
 async function continueMelody(mel, length,chordProgression) {
   if (!mrnn.isInitialized()) {
@@ -129,12 +135,12 @@ async function continueMelodyFirst(mel, length,chordProgression) {
   post("continueFirst", continueOut);
 }
 
-function post(message,element="Nothing,sorry :(",interpolIndex=-1) {
+function post(message,element="Nothing,sorry :(",waitingIndex=-1) {
   self.postMessage(
     {
       message:message,
       element:element,
-      interpolIndex:interpolIndex
+      waitingIndex:waitingIndex
     }
   )
 }

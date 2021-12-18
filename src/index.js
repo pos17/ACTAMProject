@@ -42,7 +42,8 @@ async function initializeApp() {
   state.worker.onmessage = (event)=> {workieTalkie(event)}
   //initialize the drawing values
   state.drawing = require("./base_drawing.json")
-  propagateStateChanges(true)
+  state.isFirst = true
+  propagateStateChanges(state.isFirst)
 
   //await state.emitter.isReadyModel()
   //initializeMelody()
@@ -89,6 +90,11 @@ function propagateStateChanges(isFirst) {
     }
     Tone.Transport.loopEnd = state.drawing.chords.loopLength;
     state.drawing.chords.playingPart =playChordSequence(state.drawing.chords.sequence, state.key, constructInstrument(state.drawing.chords.instrument))    
+    //
+    if(!isFirst) {
+      Tone.Transport.stop()
+      Tone.Transport.start("+0.1");
+    }
   }
 
   if(state.drawing.melody.isChanged) {
@@ -100,18 +106,16 @@ function propagateStateChanges(isFirst) {
 
 }
 
-modifyState(20)
 /**
  * 
  */
-function modifyState(idValue) {
+export async function modifyState(idValue) {
   modifyingValue = state.possibleValues.find(element => element.id==idValue)
   console.log("modifying value")
   console.log(modifyingValue)
   switch(modifyingValue.elementType) {
     case("background"):{
-      state.drawing.chords.sequence = modifyingValue.sequence
-      state.drawing.chords.isChanged = true
+      
       state.drawing.melody.seedMelodies = modifyingValue.melodies
       waitingObj = state.emitter.waitForWorker()
       state.worker.postMessage({
@@ -121,9 +125,18 @@ function modifyState(idValue) {
         waitingIndex:waitingObj.waitingIndex
       })
       await waitingObj.promise
-      concatenateMelodiesFromMatrix()
-      propagateStateChanges()
-
+      console.log("voglio morire")
+      await concatenateMelodiesFromMatrix(state.drawing.melody.positionsArray,6)
+      console.log(state.drawing.melody.sequence.totalQuantizedSteps)
+      console.log(state.drawing.melody.sequence.tempos[0].qpm)
+      state.drawing.loopLength = Tone.Time((state.drawing.melody.sequence.totalQuantizedSteps*60)/
+                                            (state.drawing.melody.sequence.tempos[0].qpm*
+                                              state.drawing.melody.sequence.quantizationInfo.stepsPerQuarter)).toBarsBeatsSixteenths()
+      console.log("loopLength")
+      console.log(state.drawing.loopLength)
+      state.drawing.chords.sequence = modifyingValue.sequence
+      state.drawing.chords.isChanged = true
+      propagateStateChanges(false)
     } break;
     case("landscape"):{
 
@@ -152,18 +165,21 @@ function constructInstrument(constructorPath) {
   return new Instr[constructorPath]//constructorFunc()
 }
 
-function concatenateMelodiesFromMatrix(positionsArray) {
+async function concatenateMelodiesFromMatrix(positionsArray,matrixSideDim) {
   toConcatenate = []
   for(var i = 0; i <positionsArray.length;i++) {
-    toConcatenate.push(state.melodiesMatrix[positionsArray[i].x][positionsArray[i].y])
+    var index = positionsArray[i].x*matrixSideDim + positionsArray[i].y
+    toConcatenate.push(state.melodiesMatrix[index])
   }
-  var waitingObj = state.emitter.waitForWorker
+  console.log(toConcatenate)
+  var waitingObj = state.emitter.waitForWorker()
   state.worker.postMessage({
     message:"concatenate",
     concatenationArray:toConcatenate,
     waitingIndex:waitingObj.waitingIndex
   })
   await waitingObj.promise
+  console.log("qui ha fatto??")
 }
 
 function initializeMelody() {
@@ -333,7 +349,8 @@ async function workieTalkie(event) {
     } break;
     case "interpolation": {
       const sample = event.data.element.value;
-      const waitingIndex = event.data.element.interpolIndex;
+      const waitingIndex = event.data.waitingIndex;
+      console.log(waitingIndex)
       console.log("response message in interpolation:"+ event.data.message)
       state.melodiesMatrix = sample
       console.log(sample)
@@ -361,9 +378,13 @@ async function workieTalkie(event) {
     }
     break;
     case "concatenate": {
-      state.drawing.melody= event.data.element.value;
-      const waitingIndex = event.data.element.interpolIndex;
+      console.log("here done")
+      console.log(event.data)
+      state.drawing.melody.sequence= event.data.element;
+      state.drawing.melody.isChanged = true;
+      const waitingIndex = event.data.waitingIndex;
       state.emitter.waitingResolved(waitingIndex)
+      console.log(state)
     }
     break;
     case "modelInitialized": {
@@ -613,35 +634,36 @@ function buildLandScape() {
   console.log(state.parts)
 }
 
-function playChordSequence(chordsSequence, key, instrument) {
+function playChordSequence(chordsSequence, key, instrument,numOfRepetitions=1) {
   var keyDistance = Interval.distance("C",key)
   console.log(keyDistance)
   chordsArray = []
-  for(var i = 0; i < chordsSequence.length; i++) {
-    console.log(chordsSequence[i].value)
-    var transposed = Chord.transpose(chordsSequence[i].value,keyDistance)
-    console.log(transposed)
-    chordsSequence[i].value = transposed
-    //FIXME: adding right length to the chord
-    var numOfBars = (Tone.Time(chordsSequence[i].length)*Tone.Transport.bpm.value)/240
-    console.log("numOfBars")
-    console.log(numOfBars)
-    for(j =0; j<numOfBars;j++) {
-    chordsArray.push(chordsSequence[i].value)
+    for(var i = 0; i < chordsSequence.length; i++) {
+      console.log(chordsSequence[i].value)
+      var transposed = Chord.transpose(chordsSequence[i].value,keyDistance)
+      console.log(transposed)
+      chordsSequence[i].value = transposed
+      //FIXME: adding right length to the chord
+      var numOfBars = (Tone.Time(chordsSequence[i].length)*Tone.Transport.bpm.value)/240
+      console.log("numOfBars")
+      console.log(numOfBars)
+      for(j =0; j<numOfBars;j++) {
+      chordsArray.push(chordsSequence[i].value)
+      }
+      chordsSequence[i].notes = fromChordToNotes(chordsSequence[i].value) 
     }
-    chordsSequence[i].notes = fromChordToNotes(chordsSequence[i].value) 
-  }
-  console.log(chordsSequence)
-  chordsPlayed =  new Tone.Part(((time, value)=> {
-    console.log("value to be played")
-    console.log(value)
-    instrument.triggerAttackRelease(value.notes,value.length,time,0.5)
-    
-  }
-  ),chordsSequence).start(0)
-  
+    console.log(chordsSequence)
+    chordsPlayed =  new Tone.Part(((time, value)=> {
+      console.log("value to be played")
+      console.log(value)
+      instrument.triggerAttackRelease(value.notes,value.length,time,0.5)
+      
+    }
+    ),chordsSequence).start(0)
+    chordsPlayed.loop = numOfRepetitions
   landScape.chordsArray = chordsArray
   console.log(landScape)
+  return chordsPlayed
 }
 
 

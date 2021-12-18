@@ -319,3 +319,7 @@ document.getElementById('change').onclick = () => {
     
     initImages(state.environment)
 }
+
+document.getElementById('ciao').onclick = () => {
+    Model.modifyState(10)
+}
