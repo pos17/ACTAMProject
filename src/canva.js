@@ -298,7 +298,8 @@ okButton.onclick = () => {
         document.getElementById('start-panel').hidden = false;
         Model.state.emitter.updateReadyToPlay()
         Tone.start()
-        Tone.setContext(new Tone.Context({ latencyHint : "playback" }))
+        //Tone.setContext(new Tone.Context({ latencyHint : "balanced" }))
+        Tone.context.latencyHint = "playback"
     }    
 }
 
@@ -311,13 +312,23 @@ playButton.onclick = ()=> {
         
         }
 }
-
+var isPlayingCanva = true
 document.getElementById('change').onclick = () => {
+    if(isPlayingCanva) {
+        Model.stopMusic()
+        
+    } else {
+    Model.startMusic()
+    }
+    isPlayingCanva = !isPlayingCanva
+    console.log(isPlayingCanva)
+    /*
     var idx = channels.indexOf(state.environment)
     idx = (idx + 1) % channels.length
     state.environment = channels[idx]; 
     
     initImages(state.environment)
+    */
 }
 
 document.getElementById('ciao').onclick = () => {

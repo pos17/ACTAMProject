@@ -1,5 +1,3 @@
-import { concatenate } from "@magenta/music/esm/core/sequences";
-
 importScripts("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js");
 importScripts("https://cdn.jsdelivr.net/npm/@magenta/music@1.23.1/es6/core.js");
 //importScripts("https://cdn.jsdelivr.net/npm/@magenta/music@1.23.1/dist/magentamusic.min.js")

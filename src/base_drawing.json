@@ -1,6 +1,6 @@
 {
     "image": {
-        "isChanged":"true",
+        "isChanged":true,
         "background":"../assets/BG/Background2.png",
         "landscape":"../assets/BG/Mountains.png",
         "bottom":"../assets/BG/Grass.png",
@@ -19,7 +19,7 @@
         ]
     },
     "chords":{
-      "isChanged":"true",
+      "isChanged":true,
       "instrument":"Pad",
       "sequence":[
         {"time":"0:0:0","value":"Dm","length":"1m"},
@@ -31,7 +31,7 @@
       "chordsEffects":""  
     },
     "melody": {
-      "isChanged":"true",
+      "isChanged":true,
       "instrument":"Lead",
       "numOfInterpolation":6,
       "positionsArray":[
@@ -69,5 +69,6 @@
         ]
       },
       "melodyEffects":""
-    }
+    },
+    "loopLength":"4:0:0"
 }

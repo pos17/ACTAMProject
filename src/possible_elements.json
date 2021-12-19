@@ -4,18 +4,14 @@
         "elementType":"background",
         "image":"../assets/BG/Background2.png",
         "sequence":[
-            {"time":"0:0:0","value":"Dm","length":"1m"},
+            {"time":"0:0:0","value":"Em","length":"1m"},
             {"time":"1:0:0","value":"G","length":"1m"},
             {"time":"2:0:0","value":"C","length":"1m"},
-            {"time":"3:0:0","value":"C","length":"1m"},
-            {"time":"4:0:0","value":"Dm","length":"1m"},
-            {"time":"5:0:0","value":"G7","length":"1m"},
-            {"time":"6:0:0","value":"C","length":"1m"},
-            {"time":"7:0:0","value":"C","length":"1m"}
+            {"time":"3:0:0","value":"C","length":"1m"}
           ],
         "melodies":[
                 {
-                  "totalQuantizedSteps": 128,
+                  "totalQuantizedSteps": 64,
                   "timeSignatures": [
                     {
                       "time": 0,
@@ -42,7 +38,7 @@
                   ]
                 },
                 {
-                  "totalQuantizedSteps": 128,
+                  "totalQuantizedSteps": 64,
                   "timeSignatures": [
                     {
                       "time": 0,
@@ -69,7 +65,7 @@
                   ]
                 },
                 {
-                  "totalQuantizedSteps": 128,
+                  "totalQuantizedSteps": 64,
                   "timeSignatures": [
                     {
                       "time": 0,
@@ -96,7 +92,7 @@
                   ]
                 },
                 {
-                  "totalQuantizedSteps": 128,
+                  "totalQuantizedSteps": 64,
                   "timeSignatures": [
                     {
                       "time": 0,
