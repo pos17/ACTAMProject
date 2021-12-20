@@ -71,7 +71,7 @@ async function initializeApp() {
       if(!isFirst) {
         state.drawing.melody.playingPart.stop()
       }
-      state.drawing.melody.playingPart =addNotePartToTransport(generatePart(state.drawing.melody.sequence),constructInstrument(state.drawing.melody.instrument),0)    
+      state.drawing.melody.playingPart =addNotePartToTransport(generatePart(state.drawing.melody.sequence),/*constructInstrument(state.drawing.melody.instrument)*/new Tone.Synth().toDestination(),0)    
       state.drawing.melody.isChanged =  false
     }
     console.log("state after propagation")

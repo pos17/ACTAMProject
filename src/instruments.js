@@ -210,7 +210,7 @@ class Lead {
             rolloff: '-24db'
         })
 
-        var dly = new Tone.PingPongDelay('4n', 0.2);
+        //var dly = new Tone.PingPongDelay('4n', 0.2);
 
         var verb = new Tone.Reverb({
             decay: '4',
@@ -219,7 +219,7 @@ class Lead {
         var amp = new Tone.Gain(0.8)
 
         lead.chain(filter);
-        lead.chain(filter, dly, verb, amp)
+        lead.chain(filter, /*dly,*/ verb, amp)
         filter.toDestination();
         amp.toDestination();
         // lead.chain(verb, amp).toDestination()
