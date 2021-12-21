@@ -22,10 +22,10 @@
       "isChanged":true,
       "instrument":"Pad",
       "sequence":[
-        {"time":"0:0:0","value":"Dm","length":"1m"},
-        {"time":"1:0:0","value":"G","length":"1m"},
-        {"time":"2:0:0","value":"C","length":"1m"},
-        {"time":"3:0:0","value":"C","length":"1m"}
+        {"time":"0:0:0","value":"F","length":"1m"},
+        {"time":"1:0:0","value":"Am","length":"1m"},
+        {"time":"2:0:0","value":"Am","length":"1m"},
+        {"time":"3:0:0","value":"G","length":"1m"}
       ],
       "loopLength":"4:0:0",
       "chordsEffects":""  
@@ -33,7 +33,7 @@
     "melody": {
       "isChanged":true,
       "instrument":"Lead",
-      "numOfInterpolation":6,
+      "numOfInterpolation":20,
       "positionsArray":[
         {"x":0,"y":0},
         {"x":1,"y":1},
@@ -42,7 +42,7 @@
         {"x":4,"y":4}
       ],
       "sequence":{
-        "totalQuantizedSteps": 128,
+        "totalQuantizedSteps": 64,
         "timeSignatures": [
           {
             "time": 0,
@@ -57,15 +57,35 @@
           }
         ],
         "quantizationInfo": { "stepsPerQuarter": 4 },
-        "notes":[ {"pitch": 50, "quantizedStartStep": 0, "quantizedEndStep": 8 },
-                {"pitch": 52, "quantizedStartStep": 8, "quantizedEndStep": 12 },
-                {"pitch": 53, "quantizedStartStep": 12, "quantizedEndStep": 16 },
-                {"pitch": 55, "quantizedStartStep": 16, "quantizedEndStep": 24 },
-                {"pitch": 53, "quantizedStartStep": 24, "quantizedEndStep": 32 },
-                {"pitch": 52, "quantizedStartStep": 32, "quantizedEndStep": 40 },
-                {"pitch": 53, "quantizedStartStep": 40, "quantizedEndStep": 44 },
-                {"pitch": 55, "quantizedStartStep": 44, "quantizedEndStep": 48 },
-                {"pitch": 57, "quantizedStartStep": 48, "quantizedEndStep": 64 }
+        "notes":[ 
+                {"pitch": 60, "quantizedStartStep": 0, "quantizedEndStep": 2 },
+                {"pitch": 60, "quantizedStartStep": 2, "quantizedEndStep": 4 },
+                {"pitch": 62, "quantizedStartStep": 4, "quantizedEndStep": 6 },
+                {"pitch": 60, "quantizedStartStep": 6, "quantizedEndStep": 8 },
+                {"pitch": 69, "quantizedStartStep": 8, "quantizedEndStep": 10 },
+                {"pitch": 67, "quantizedStartStep": 10, "quantizedEndStep": 12 },
+                {"pitch": 72, "quantizedStartStep": 12, "quantizedEndStep": 14 },
+                {"pitch": 60, "quantizedStartStep": 14, "quantizedEndStep": 16 },
+                {"pitch": 62, "quantizedStartStep": 16, "quantizedEndStep": 18 },
+                {"pitch": 60, "quantizedStartStep": 18, "quantizedEndStep": 20 },
+                {"pitch": 65, "quantizedStartStep": 20, "quantizedEndStep": 22 },
+                {"pitch": 64, "quantizedStartStep": 22, "quantizedEndStep": 24 },
+                {"pitch": 62, "quantizedStartStep": 24, "quantizedEndStep": 26 },
+                {"pitch": 60, "quantizedStartStep": 26, "quantizedEndStep": 28 },
+                {"pitch": 62, "quantizedStartStep": 28, "quantizedEndStep": 30 },
+                {"pitch": 60, "quantizedStartStep": 30, "quantizedEndStep": 32 },
+                {"pitch": 72, "quantizedStartStep": 32, "quantizedEndStep": 34 },
+                {"pitch": 60, "quantizedStartStep": 34, "quantizedEndStep": 36 },
+                {"pitch": 65, "quantizedStartStep": 36, "quantizedEndStep": 38 },
+                {"pitch": 64, "quantizedStartStep": 38, "quantizedEndStep": 40 },
+                {"pitch": 62, "quantizedStartStep": 40, "quantizedEndStep": 42 },
+                {"pitch": 64, "quantizedStartStep": 42, "quantizedEndStep": 44 },
+                {"pitch": 72, "quantizedStartStep": 44, "quantizedEndStep": 48 },
+                {"pitch": 71, "quantizedStartStep": 48, "quantizedEndStep": 50 },
+                {"pitch": 60, "quantizedStartStep": 50, "quantizedEndStep": 52 },
+                {"pitch": 62, "quantizedStartStep": 52, "quantizedEndStep": 54 },
+                {"pitch": 60, "quantizedStartStep": 54, "quantizedEndStep": 56 },
+                {"pitch": 69, "quantizedStartStep": 56, "quantizedEndStep": 64 }
         ]
       },
       "melodyEffects":""

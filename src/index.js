@@ -136,11 +136,13 @@ function constructInstrument(constructorPath) {
   }
 
 async function concatenateMelodiesFromMatrix(positionsArray,matrixSideDim) {
-toConcatenate = []
+toConcatenate = []/*
 for(var i = 0; i <positionsArray.length;i++) {
     var index = positionsArray[i].x*matrixSideDim + positionsArray[i].y
     toConcatenate.push(state.melodiesMatrix[index])
 }
+*/
+toConcatenate = state.melodiesMatrix
 console.log(toConcatenate)
 var waitingObj = state.emitter.waitForWorker()
 state.worker.postMessage({
