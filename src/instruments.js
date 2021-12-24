@@ -173,9 +173,8 @@ class Pad {
 
 class Lead {
     constructor() {
-        //var volume = -15;
-        var lead = new Tone.PolySynth(Tone.Synth);
-        lead.set({envelope: {
+        var instr = new Tone.PolySynth(Tone.Synth);
+        instr.set({envelope: {
             attack: '8n',
             decay: '16n',
             sustain: '0.1',
@@ -186,53 +185,58 @@ class Lead {
             type: 'sine2'
         },
 
-        volume: "-10"//volume.toString(),
+        volume: "-10"
         })
-        /*
-        var lead = new Tone.Synth({
-            envelope: {
-                attack: '4n',
-                decay: '8n',
-                sustain: '0.6',
-                release: '4n'
-            },
-            
-            oscillator: {
-                type: 'sine2'
-            },
-
-            volume: volume.toString(),
-        });
-        */
         var filter = new Tone.Filter({
             frequency: '1500hz',
             type: 'lowpass',
             rolloff: '-24db'
         })
 
-        //var dly = new Tone.PingPongDelay('4n', 0.2);
-
+        var dly = new Tone.PingPongDelay('4n', 0.2);
+        dly.wet.value = 0.7
         var verb = new Tone.Reverb({
-            decay: '4',
+            decay: '4'
         })
-
+        verb.wet.value = 0.5
         var amp = new Tone.Gain(0.8)
 
-        lead.chain(filter);
-        lead.chain(filter, /*dly,*/ verb, amp)
-        filter.toDestination();
-        amp.toDestination();
-        // lead.chain(verb, amp).toDestination()
-
-        this.lead = lead;
+        instr.chain(filter, dly, verb, amp)
+        this.amp = amp
+        this.instr = instr;
     }
 
     triggerAttackRelease(note, duration, time, velocity) {
-        this.lead.triggerAttackRelease(note, duration, time, velocity)
+        this.instr.triggerAttackRelease(note, duration, time, velocity)
+    }
+
+    connect(node) {
+        this.amp.connect(node)
     }
 
     setVolume(volValue) {
-        this.lead.volume.value = volValue
+        this.instr.volume.value = volValue
+    }
+}
+
+class Synth {
+    constructor() {
+        var instr = new Tone.PolySynth(Tone.Synth);
+        
+        var amp = new Tone.Gain()
+        instr.chain(amp)
+        this.instr = instr;
+        this.amp=amp
+    }    
+    connect(node) {
+        this.instr.connect(node)
+    }
+    triggerAttackRelease(note, duration, time, velocity) {
+        this.instr.triggerAttackRelease(note, duration, time, velocity)
+    }
+
+    setVolume(volValue) {
+        this.instr.volume.value = volValue
     }
 }
 
@@ -243,4 +247,5 @@ module.exports = {
     HiHatOpen: HiHatOpen,   
     Pad: Pad,
     Lead: Lead,
+    Synth: Synth
 }
