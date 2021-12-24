@@ -1,13 +1,15 @@
 import * as Model from "./index.js"
 import * as Tone from 'tone'
 
-//TODO: create modular structure for various environments
 
 const canvasDiv = document.getElementById('canvas-div');
 // const canva = document.getElementById('main-canvas');
 const sky = document.getElementById('sky');
+const container = document.getElementById('container')
 
-var factor = 16;
+var generateButton = document.createElement('button')
+
+var factor = 8;
 var channels = ['mountain', 'seaside', 'city']
 
 
@@ -127,42 +129,64 @@ const new_assets = {
         url: [new URL('../assets/Small Star.png', import.meta.url), new URL('../assets/Big Star.png', import.meta.url),],  
     },
 
-    trees: {
-        url: {
-            Maj: new URL('../assets/TREES/Tree Maj.png', import.meta.url),
-            Min: new URL('../assets/TREES/Tree Min.png', import.meta.url),
-            Alt: new URL('../assets/TREES/Tree Alt.png', import.meta.url),
-        },
+    tree1: {
+        url: new URL('../assets/TREES/Tree Alt.png', import.meta.url),
         left: 0,
         bottom: 0,
-    }  
+    }, 
+
+    tree2: {
+        url: new URL('../assets/TREES/Tree Maj.png', import.meta.url),
+        left: 0,
+        bottom: 0,
+    },
+    
+    tree3: {
+        url: new URL('../assets/TREES/Tree Min.png', import.meta.url),
+        left: 0,
+        bottom: 0,
+    }, 
 }
+
+// TODO: environment
 
 const environment = {
     mountain: {
         background: new_assets.mountains,
         floor: new_assets.grass,
         building: new_assets.house,
+        shrub: new_assets.tree1,
     },
     desert: {
-        background: new_assets.desertMountains,
-        floor: {},
-        building: {},
+        background: new_assets.mountains,
+        floor: new_assets.concrete,
+        building: new_assets.house,
+        shrub: new_assets.tree2,
     },
     city: {
         background: new_assets.skyline,
         floor: new_assets.concrete,
         building: new_assets.house,
+        shrub: new_assets.tree3,
     },
     seaside: {
         background: new_assets.sea,
         floor: new_assets.sand,
         building: new_assets.house,
+        shrub: new_assets.tree1,
     }
+}
+
+var environmentToGenerate = {
+    background: "",
+    floor: "",
+    building: "",
+    shrub: "",
 }
 
 function initImages(env){
     ctx.clearRect(0, 0, canvas.width, canvas.height)
+    
     bg.src = environment[env].background.url
     floor.src = environment[env].floor.url
     building.src = environment[env].building.url
@@ -173,7 +197,9 @@ function initImages(env){
 
     state.assets.stars = []
 
-    for (i=0; i<250; i++){
+    var numOfStars = 32
+
+    for (i=0; i<numOfStars; i++){
         var aStar = {img: star, left: Math.random(), bottom: 1-(Math.random()*0.7)}
         state.assets.stars.push(aStar);
     }
@@ -248,7 +274,7 @@ function createEnvironment(env) {
     drawThisImage(floor, environment[env].floor.left, environment[env].floor.bottom);
     drawThisImage(building, environment[env].building.left, environment[env].building.bottom);
 
-    blendBG()
+    // blendBG()
 
     window.requestAnimationFrame(() => {createEnvironment(env)});
 }
@@ -270,6 +296,90 @@ function blendBG() {
 
 initImages(state.environment);  
 
+function appendTokenButton () {
+    console.log('ASSETS')
+    console.log(Object.keys(new_assets).length)
+    var body = document.body;
+
+    // for (let index = 0; index < Object.keys(new_assets).length; index++) {
+    //     var img = document.createElement('img')
+    //     img.src = 
+        
+    // }
+
+    for(var elem in new_assets) {
+        var img = document.createElement('img')
+        img.src = new_assets[elem].url
+        img.className  = 'token-image'
+
+        console.log("ASSET"+elem.toString())
+        console.log(new_assets[elem].url)
+
+        
+        var btn = document.createElement('button')
+
+        // btn.classList.add('nes-btn token-btn')
+        btn.classList = 'nes-btn'
+        btn.classList.add('token-btn')
+        btn.appendChild(img)
+        body.appendChild(btn)
+
+    }
+}
+
+// appendTokenButton()
+
+
+/* CREATING MENU' */
+
+function createMenu () {
+    var menuPanel = document.createElement('div')
+    menuPanel.className = 'menu-panel'
+    var btnContainer = document.createElement('div')
+    btnContainer.className = 'token-btn-container'
+    // TODO: ciclo per creare in modo modulare i bottoni dalla struttura environment
+
+    // cycle each environment to create each row 
+    for (let env in environment) {
+        var btnDiv = document.createElement('div')
+        btnDiv.className = 'token-btn-div'    
+        // console.log(env)
+
+        // cycle every element of the environment
+        for (let asset of Object.entries(environment[env])) {
+
+            console.log('env: '+env)
+            console.log(asset[1])
+
+            var img = document.createElement('img')
+            img.src = asset[1].url
+            img.className = 'token-image'
+
+            var btn = document.createElement('button')
+            btn.className = 'nes-btn'
+            btn.classList.add('token-btn')
+            btn.classList.add(asset[0])
+            btn.classList.add(env)
+            btn.style.margin = '7px'
+            btn.style.marginLeft = 'auto'
+            btn.style.marginRight = 'auto'
+            btn.appendChild(img)
+            btnDiv.appendChild(btn)
+            // btnDiv.style.margin = 'auto'
+        }
+        btnContainer.appendChild(btnDiv)
+    }
+
+    menuPanel.appendChild(btnContainer)
+
+    generateButton.className = 'nes-btn is-success'
+    generateButton.innerText = 'GENERATE'
+    menuPanel.appendChild(generateButton)
+
+    container.appendChild(menuPanel)
+}
+
+createMenu()
 
 /* -------------------------------------------------------- */
 
@@ -314,3 +424,20 @@ document.getElementById('change').onclick = () => {
     
     initImages(state.environment)
 }
+
+document.querySelectorAll('.token-btn').forEach((btn)=>{
+    btn.addEventListener('click', ()=>{
+        var env = btn.classList[3]
+        var el = btn.classList[2]
+
+        document.querySelectorAll('.'+ el).forEach((elem)=>{elem.classList.remove('selected-btn')})
+        btn.classList.add('selected-btn')
+
+        environmentToGenerate[el] = env
+
+
+        console.log(env)
+        console.log(environmentToGenerate)
+        
+    })
+})
