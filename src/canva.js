@@ -8,6 +8,9 @@ const sky = document.getElementById('sky');
 const container = document.getElementById('container')
 
 var generateButton = document.createElement('button')
+var helpButton = document.createElement('button')
+var menuPanel = document.createElement('div')
+menuPanel.className = 'menu-panel'
 
 var factor = 8;
 var channels = ['mountain', 'seaside', 'city']
@@ -178,18 +181,18 @@ const environment = {
 }
 
 var environmentToGenerate = {
-    background: "",
-    floor: "",
-    building: "",
-    shrub: "",
+    background: "mountain",
+    floor: "mountain",
+    building: "mountain",
+    shrub: "mountain",
 }
 
 function initImages(env){
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    
-    bg.src = environment[env].background.url
-    floor.src = environment[env].floor.url
-    building.src = environment[env].building.url
+
+    bg.src = environment[env.background].background.url
+    floor.src = environment[env.floor].floor.url
+    building.src = environment[env.building].building.url
 
     moon.src = new_assets.moon.url;
     sun.src = new_assets.sun.url;
@@ -206,7 +209,8 @@ function initImages(env){
 
     console.log(state.assets.stars)
 
-    window.requestAnimationFrame(()=>{createEnvironment(env)});
+    // window.requestAnimationFrame(()=>{createEnvironment(env)});
+    window.requestAnimationFrame(()=>{createEnvironment(environmentToGenerate)});
 }
 
 
@@ -270,13 +274,14 @@ function createEnvironment(env) {
     ctx.restore()
     
     // STATIC IMAGES
-    drawThisImage(bg, environment[env].background.left, environment[env].background.bottom);
-    drawThisImage(floor, environment[env].floor.left, environment[env].floor.bottom);
-    drawThisImage(building, environment[env].building.left, environment[env].building.bottom);
+    drawThisImage(bg, environment[env.background].background.left, environment[env.background].background.bottom);
+    drawThisImage(floor, environment[env.floor].floor.left, environment[env.floor].floor.bottom);
+    drawThisImage(building, environment[env.building].building.left, environment[env.building].building.bottom);
 
     // blendBG()
 
-    window.requestAnimationFrame(() => {createEnvironment(env)});
+    // window.requestAnimationFrame(() => {createEnvironment(env)});
+    globalThis.framereq = window.requestAnimationFrame(() => {createEnvironment(environmentToGenerate)});
 }
 
 function blendBG() {
@@ -294,47 +299,14 @@ function blendBG() {
     }
 }
 
-initImages(state.environment);  
-
-function appendTokenButton () {
-    console.log('ASSETS')
-    console.log(Object.keys(new_assets).length)
-    var body = document.body;
-
-    // for (let index = 0; index < Object.keys(new_assets).length; index++) {
-    //     var img = document.createElement('img')
-    //     img.src = 
-        
-    // }
-
-    for(var elem in new_assets) {
-        var img = document.createElement('img')
-        img.src = new_assets[elem].url
-        img.className  = 'token-image'
-
-        console.log("ASSET"+elem.toString())
-        console.log(new_assets[elem].url)
-
-        
-        var btn = document.createElement('button')
-
-        // btn.classList.add('nes-btn token-btn')
-        btn.classList = 'nes-btn'
-        btn.classList.add('token-btn')
-        btn.appendChild(img)
-        body.appendChild(btn)
-
-    }
-}
-
-// appendTokenButton()
+// initImages(state.environment);  
+initImages(environmentToGenerate);  
 
 
 /* CREATING MENU' */
 
 function createMenu () {
-    var menuPanel = document.createElement('div')
-    menuPanel.className = 'menu-panel'
+    
     var btnContainer = document.createElement('div')
     btnContainer.className = 'token-btn-container'
     // TODO: ciclo per creare in modo modulare i bottoni dalla struttura environment
@@ -348,24 +320,26 @@ function createMenu () {
         // cycle every element of the environment
         for (let asset of Object.entries(environment[env])) {
 
-            console.log('env: '+env)
-            console.log(asset[1])
+            // console.log('env: '+env)
+            // console.log(asset[1])
 
             var img = document.createElement('img')
             img.src = asset[1].url
             img.className = 'token-image'
 
             var btn = document.createElement('button')
+
             btn.className = 'nes-btn'
             btn.classList.add('token-btn')
             btn.classList.add(asset[0])
             btn.classList.add(env)
+
             btn.style.margin = '7px'
             btn.style.marginLeft = 'auto'
             btn.style.marginRight = 'auto'
+
             btn.appendChild(img)
             btnDiv.appendChild(btn)
-            // btnDiv.style.margin = 'auto'
         }
         btnContainer.appendChild(btnDiv)
     }
@@ -374,7 +348,38 @@ function createMenu () {
 
     generateButton.className = 'nes-btn is-success'
     generateButton.innerText = 'GENERATE'
-    menuPanel.appendChild(generateButton)
+    generateButton.style.display = 'block'
+    generateButton.style.margin = 'auto'
+    generateButton.style.marginTop = '20px'
+    generateButton.style.verticalAlign = 'middle'
+
+    helpButton.className = 'nes-btn is-warning'
+    helpButton.innerText = '?'
+    helpButton.style.display = 'block'
+    helpButton.style.margin = 'auto' 
+    helpButton.style.marginTop = '20px'
+    helpButton.style.verticalAlign = 'middle'
+
+    var btnDiv = document.createElement('div')
+        btnDiv.style.display = 'block'
+        btnDiv.style.height = 'max-content'
+        btnDiv.style.marginTop = '10%'
+        btnDiv.style.textAlign = 'center'
+
+    var title = document.createElement('p')
+        title.innerText = 'MENU'
+        title.style.backgroundColor = 'rgb(245, 247, 99)'
+        title.style.padding = '10px'
+        title.style.borderRadius = '5px'
+        title.style.marginTop = '40%'
+        title.style.fontSize = 'x-large'
+    
+
+    btnDiv.appendChild(helpButton)
+    btnDiv.appendChild(generateButton)
+    btnDiv.appendChild(title)
+
+    menuPanel.appendChild(btnDiv)
 
     container.appendChild(menuPanel)
 }
@@ -417,14 +422,6 @@ playButton.onclick = ()=> {
         }
 }
 
-document.getElementById('change').onclick = () => {
-    var idx = channels.indexOf(state.environment)
-    idx = (idx + 1) % channels.length
-    state.environment = channels[idx]; 
-    
-    initImages(state.environment)
-}
-
 document.querySelectorAll('.token-btn').forEach((btn)=>{
     btn.addEventListener('click', ()=>{
         var env = btn.classList[3]
@@ -435,9 +432,18 @@ document.querySelectorAll('.token-btn').forEach((btn)=>{
 
         environmentToGenerate[el] = env
 
-
-        console.log(env)
         console.log(environmentToGenerate)
         
     })
 })
+
+
+generateButton.onclick = () => {
+    menuPanel.style.display = 'none'
+    cancelAnimationFrame(framereq)
+    initImages(environmentToGenerate)
+}
+
+document.getElementById('menu').onclick = () => {
+    menuPanel.style.display = 'inline-flex  '
+}

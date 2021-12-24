@@ -178,17 +178,16 @@ img {
 
 @-webkit-keyframes BLINK {
     0%, 49% {
-        background-color: rgb(231, 208, 35);
-        /* height: 70px;
-        width: 70px; */
+        background-color: rgb(245, 247, 99);
+        /* height: 70px; */
+        /* width: 70px; */
       }
       50%, 100% {
-        /* background-color: #e50000; */
       }
 }
 
 .token-btn:hover {
-    background-color: rgb(247, 239, 210);
+    /* background-color: rgb(247, 239, 210); */
     -moz-animation: BLINK 1s infinite;
 
 }
@@ -224,4 +223,16 @@ img {
 
 .selected-btn {
     background-color: lightgreen !important;
+}
+
+.arrow {
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+}
+
+.up {
+    transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
 }
