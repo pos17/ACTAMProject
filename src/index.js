@@ -10,7 +10,6 @@ export const state= {
     readyModel:false,
     readyToPlay: false,
     isPlaying:false,
-    worker: undefined,
     emitter: new Emitter(),
     key:"c", //main key of the system
     bpm:60,
@@ -26,10 +25,6 @@ export const state= {
  */
 async function initializeApp() {
   
-    var workerURL =  new URL("./worker.js", import.meta.url)
-    state.worker = await new Worker(workerURL);
-    initializeWorker();
-    state.worker.onmessage = (event)=> {workieTalkie(event)}
     //initialize the drawing values
     state.drawing = require("./base_drawing.json")
     state.isFirst = true
@@ -136,12 +131,7 @@ function constructInstrument(constructorPath) {
   }
 
 async function concatenateMelodiesFromMatrix(positionsArray,matrixSideDim) {
-toConcatenate = []/*
-for(var i = 0; i <positionsArray.length;i++) {
-    var index = positionsArray[i].x*matrixSideDim + positionsArray[i].y
-    toConcatenate.push(state.melodiesMatrix[index])
-}
-*/
+toConcatenate = []
 toConcatenate = state.melodiesMatrix
 console.log(toConcatenate)
 var waitingObj = state.emitter.waitForWorker()
@@ -190,50 +180,6 @@ window.addEventListener("keydown", function(event) {
 if(event.key=="MediaPlayPause") togglePlayPause()
 }, true);
 
-
-
-/*-----------------------Worker --------------------------------*/ 
-/**
- * function that handles the messages from the external worker, message used as routing for the switch case path
- * @param {Event} event object that wraps all the data to be 
- */
-async function workieTalkie(event) {
-    switch(event.data.message){
-        case "fyi": {
-            console.log(event.data.element);
-        } break;
-        case "interpolation": {
-            const sample = event.data.element.value;
-            const waitingIndex = event.data.waitingIndex;
-            console.log(waitingIndex)
-            console.log("response message in interpolation:"+ event.data.message)
-            state.melodiesMatrix = sample
-            console.log(sample)
-            state.emitter.waitingResolved(waitingIndex);
-        } break;
-        case "concatenate": {
-            console.log("here done")
-            console.log(event.data)
-            state.drawing.melody.sequence= event.data.element;
-            state.drawing.melody.isChanged = true;
-            const waitingIndex = event.data.waitingIndex;
-            state.emitter.waitingResolved(waitingIndex)
-            console.log("state after concatenation")
-            console.log(state)
-        } break;
-        case "modelInitialized": {
-            state.emitter.updateReadyModel()
-            console.log("model initialized")
-        } break;
-    }
-};
-  
-function initializeWorker() {
-    toSend={
-        message:"initializeWorker",
-    }
-    state.worker.postMessage(toSend)
-}
 
 /**
  * 
