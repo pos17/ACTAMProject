@@ -1,4 +1,3 @@
-import Worker from 'web-worker';
 import * as Instr from './instruments';
 import {Scale, Note,Chord,Interval} from "@tonaljs/tonal";
 import * as Tone from "tone"
@@ -15,7 +14,14 @@ export const state= {
     bpm:60,
     totalLength:"",
     drawing:undefined,
-    possibleValues:require("./possible_elements.json")
+    possibleValues:require("./possible_elements.json"),
+    master: {
+        compressor: new Tone.Compressor({
+          threshold: -15,
+          ratio: 7,
+        }),
+        gain: new Tone.Gain(0.3)
+    }
   }
 
   initializeApp()
@@ -28,9 +34,11 @@ async function initializeApp() {
     //initialize the drawing values
     state.drawing = require("./base_drawing.json")
     state.isFirst = true
+    Tone.Destination.chain(state.master.compressor,state.master.gain)
     propagateStateChanges(state.isFirst)
     Canva.playableButton(true)
 }
+
 
 /**
  * 
