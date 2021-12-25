@@ -14,7 +14,7 @@ body {
 
 #container {
     max-width: 900;
-    width: 90%;
+    width: 70%;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);

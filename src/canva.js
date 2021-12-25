@@ -44,6 +44,7 @@ var ctx = canvas.getContext('2d');
 var bg = new Image()
 var floor = new Image()
 var building = new Image()
+var shrub = new Image()
 
 var moon = new Image();
 var sun = new Image();
@@ -86,14 +87,27 @@ const new_assets = {
         index: 0
     },
 
+    desert: {
+        url: new URL('../assets/BG/Desert.png', import.meta.url),
+        left: 0,
+        bottom: 0,
+        index: 0
+    },
+
     grass: {
         url: new URL('../assets/BG/Grass.png', import.meta.url),
         left: 0,
         bottom: 0,
     },
 
-    sand: {
+    seaSand: {
         url: new URL('../assets/BG/Sand.png', import.meta.url),
+        left: 0,
+        bottom: 0,
+    },
+
+    desertSand: {
+        url: new URL('../assets/BG/Desert Sand.png', import.meta.url),
         left: 0,
         bottom: 0,
     },
@@ -104,8 +118,20 @@ const new_assets = {
         bottom: 0,
     },
 
-    house: {
-        url: new URL('../assets/HOUSE/Home.png', import.meta.url),
+    mountainHouse: {
+        url: new URL('../assets/HOUSE/Mountain Home.png', import.meta.url),
+        left: 0.7,
+        bottom: 0.1,
+    },
+    
+    seaHouse: {
+        url: new URL('../assets/HOUSE/Sea Home.png', import.meta.url),
+        left: 0.7,
+        bottom: 0.1,
+    },
+
+    cityHouse: {
+        url: new URL('../assets/HOUSE/City Home.png', import.meta.url),
         left: 0.7,
         bottom: 0.1,
     },
@@ -134,21 +160,39 @@ const new_assets = {
 
     tree1: {
         url: new URL('../assets/TREES/Tree Alt.png', import.meta.url),
-        left: 0,
-        bottom: 0,
+        left: 0.35,
+        bottom: 0.09,
     }, 
 
     tree2: {
         url: new URL('../assets/TREES/Tree Maj.png', import.meta.url),
-        left: 0,
-        bottom: 0,
+        left: 0.2,
+        bottom: 0.15,
     },
     
     tree3: {
         url: new URL('../assets/TREES/Tree Min.png', import.meta.url),
-        left: 0,
-        bottom: 0,
+        left: 0.2,
+        bottom: 0.1,
     }, 
+
+    palm: {
+        url: new URL('../assets/TREES/palm.png', import.meta.url),
+        left: 0.3,
+        bottom: 0.1,
+    }, 
+
+    streetLamp: {
+        url: new URL('../assets/TREES/Street Lamp.png', import.meta.url),
+        left: 0.3,
+        bottom: 0.1,
+    },
+
+    cactus: {
+        url: new URL('../assets/TREES/Cactus.png', import.meta.url),
+        left: 0.3,
+        bottom: 0.1,
+    },
 }
 
 // TODO: environment
@@ -157,26 +201,26 @@ const environment = {
     mountain: {
         background: new_assets.mountains,
         floor: new_assets.grass,
-        building: new_assets.house,
+        building: new_assets.mountainHouse,
         shrub: new_assets.tree1,
     },
     desert: {
-        background: new_assets.mountains,
-        floor: new_assets.concrete,
-        building: new_assets.house,
-        shrub: new_assets.tree2,
+        background: new_assets.desert,
+        floor: new_assets.desertSand,
+        building: new_assets.mountainHouse,
+        shrub: new_assets.cactus,
     },
     city: {
         background: new_assets.skyline,
         floor: new_assets.concrete,
-        building: new_assets.house,
-        shrub: new_assets.tree3,
+        building: new_assets.cityHouse,
+        shrub: new_assets.streetLamp,
     },
     seaside: {
         background: new_assets.sea,
-        floor: new_assets.sand,
-        building: new_assets.house,
-        shrub: new_assets.tree1,
+        floor: new_assets.seaSand,
+        building: new_assets.seaHouse,
+        shrub: new_assets.palm,
     }
 }
 
@@ -193,6 +237,7 @@ function initImages(env){
     bg.src = environment[env.background].background.url
     floor.src = environment[env.floor].floor.url
     building.src = environment[env.building].building.url
+    shrub.src = environment[env.shrub].shrub.url
 
     moon.src = new_assets.moon.url;
     sun.src = new_assets.sun.url;
@@ -277,6 +322,7 @@ function createEnvironment(env) {
     drawThisImage(bg, environment[env.background].background.left, environment[env.background].background.bottom);
     drawThisImage(floor, environment[env.floor].floor.left, environment[env.floor].floor.bottom);
     drawThisImage(building, environment[env.building].building.left, environment[env.building].building.bottom);
+    drawThisImage(shrub, environment[env.shrub].shrub.left, environment[env.shrub].shrub.bottom);
 
     // blendBG()
 
@@ -320,8 +366,8 @@ function createMenu () {
         // cycle every element of the environment
         for (let asset of Object.entries(environment[env])) {
 
-            // console.log('env: '+env)
-            // console.log(asset[1])
+            console.log('env: '+env)
+            console.log(asset[1])
 
             var img = document.createElement('img')
             img.src = asset[1].url
@@ -382,6 +428,20 @@ function createMenu () {
     menuPanel.appendChild(btnDiv)
 
     container.appendChild(menuPanel)
+
+    console.log('envToGen: ')
+    console.log(Object.keys(environmentToGenerate))
+
+    // selecting active buttons
+    document.querySelectorAll('.token-btn').forEach((btn)=>{
+        for(let i of Object.keys(environmentToGenerate)){
+            console.log(environmentToGenerate[i])
+            if (btn.classList.contains(i) && btn.classList.contains(environmentToGenerate[i])){
+                btn.classList.add('selected-btn')
+            }
+        }
+        
+    })
 }
 
 createMenu()
@@ -423,6 +483,7 @@ playButton.onclick = ()=> {
 }
 
 document.querySelectorAll('.token-btn').forEach((btn)=>{
+
     btn.addEventListener('click', ()=>{
         var env = btn.classList[3]
         var el = btn.classList[2]
