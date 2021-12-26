@@ -68,6 +68,7 @@ var state = {
 const new_assets = {
     mountains: {
         url: new URL('../assets/BG/Mountains.png', import.meta.url),
+        previewUrl: new URL('../assets/PREVS/Mountains prev.png', import.meta.url), 
         left: 0,
         bottom: 0,
         index: 0
@@ -75,6 +76,7 @@ const new_assets = {
 
     sea: {
         url: new URL('../assets/BG/Sea.png', import.meta.url),
+        previewUrl: new URL('../assets/PREVS/Sea prev.png', import.meta.url), 
         left: 0,
         bottom: 0,
         index: 0
@@ -82,6 +84,7 @@ const new_assets = {
 
     skyline: {
         url: new URL('../assets/BG/Skyline.png', import.meta.url),
+        previewUrl: new URL('../assets/PREVS/Skyline prev.png', import.meta.url), 
         left: 0,
         bottom: 0,
         index: 0
@@ -89,6 +92,7 @@ const new_assets = {
 
     desert: {
         url: new URL('../assets/BG/Desert.png', import.meta.url),
+        previewUrl: new URL('../assets/PREVS/Desert prev.png', import.meta.url), 
         left: 0,
         bottom: 0,
         index: 0
@@ -96,42 +100,56 @@ const new_assets = {
 
     grass: {
         url: new URL('../assets/BG/Grass.png', import.meta.url),
+        previewUrl: new URL('../assets/PREVS/Grass prev.png', import.meta.url), 
         left: 0,
         bottom: 0,
     },
 
     seaSand: {
         url: new URL('../assets/BG/Sand.png', import.meta.url),
+        previewUrl: new URL('../assets/PREVS/Sea Sand prev.png', import.meta.url), 
         left: 0,
         bottom: 0,
     },
 
     desertSand: {
         url: new URL('../assets/BG/Desert Sand.png', import.meta.url),
+        previewUrl: new URL('../assets/PREVS/Desert Sand prev.png', import.meta.url), 
         left: 0,
         bottom: 0,
     },
 
     concrete: {
         url: new URL('../assets/BG/Concrete.png', import.meta.url),
+        previewUrl: new URL('../assets/PREVS/Concrete prev.png', import.meta.url), 
         left: 0,
         bottom: 0,
     },
 
     mountainHouse: {
         url: new URL('../assets/HOUSE/Mountain Home.png', import.meta.url),
+        previewUrl: new URL('../assets/HOUSE/Mountain Home.png', import.meta.url),
         left: 0.7,
         bottom: 0.1,
     },
     
     seaHouse: {
         url: new URL('../assets/HOUSE/Sea Home.png', import.meta.url),
+        previewUrl: new URL('../assets/HOUSE/Sea Home.png', import.meta.url),
         left: 0.7,
         bottom: 0.1,
     },
 
     cityHouse: {
         url: new URL('../assets/HOUSE/City Home.png', import.meta.url),
+        previewUrl: new URL('../assets/HOUSE/City Home.png', import.meta.url),
+        left: 0.7,
+        bottom: 0.1,
+    },
+
+    desertHouse: {
+        url: new URL('../assets/HOUSE/Desert Home.png', import.meta.url),
+        previewUrl: new URL('../assets/HOUSE/Desert Home.png', import.meta.url),
         left: 0.7,
         bottom: 0.1,
     },
@@ -160,36 +178,42 @@ const new_assets = {
 
     tree1: {
         url: new URL('../assets/TREES/Tree Alt.png', import.meta.url),
+        previewUrl: new URL('../assets/TREES/Tree Alt.png', import.meta.url),
         left: 0.35,
         bottom: 0.09,
     }, 
 
     tree2: {
         url: new URL('../assets/TREES/Tree Maj.png', import.meta.url),
+        previewUrl: new URL('../assets/TREES/Tree Maj.png', import.meta.url),
         left: 0.2,
         bottom: 0.15,
     },
     
     tree3: {
         url: new URL('../assets/TREES/Tree Min.png', import.meta.url),
+        previewUrl: new URL('../assets/TREES/Tree Min.png', import.meta.url),
         left: 0.2,
         bottom: 0.1,
     }, 
 
     palm: {
-        url: new URL('../assets/TREES/palm.png', import.meta.url),
+        url: new URL('../assets/TREES/Palm.png', import.meta.url),
+        previewUrl: new URL('../assets/TREES/Palm.png', import.meta.url),
         left: 0.3,
         bottom: 0.1,
     }, 
 
     streetLamp: {
         url: new URL('../assets/TREES/Street Lamp.png', import.meta.url),
+        previewUrl: new URL('../assets/TREES/Street Lamp.png', import.meta.url),
         left: 0.3,
         bottom: 0.1,
     },
 
     cactus: {
         url: new URL('../assets/TREES/Cactus.png', import.meta.url),
+        previewUrl: new URL('../assets/TREES/Cactus.png', import.meta.url),
         left: 0.3,
         bottom: 0.1,
     },
@@ -202,12 +226,12 @@ const environment = {
         background: new_assets.mountains,
         floor: new_assets.grass,
         building: new_assets.mountainHouse,
-        shrub: new_assets.tree1,
+        shrub: new_assets.tree3,
     },
     desert: {
         background: new_assets.desert,
         floor: new_assets.desertSand,
-        building: new_assets.mountainHouse,
+        building: new_assets.desertHouse,
         shrub: new_assets.cactus,
     },
     city: {
@@ -370,7 +394,7 @@ function createMenu () {
             console.log(asset[1])
 
             var img = document.createElement('img')
-            img.src = asset[1].url
+            img.src = asset[1].previewUrl
             img.className = 'token-image'
 
             var btn = document.createElement('button')
