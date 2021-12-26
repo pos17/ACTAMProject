@@ -241,11 +241,11 @@ class Synth {
 }
 
 module.exports = {
-    Kick: Kick,
-    Snare: Snare,
-    HiHatClosed: HiHatClosed,
-    HiHatOpen: HiHatOpen,   
-    Pad: Pad,
-    Lead: Lead,
-    Synth: Synth
+    Kick: new Kick(),
+    Snare: new Snare(),
+    HiHatClosed: new HiHatClosed(),
+    HiHatOpen: new HiHatOpen(),   
+    Pad: new Pad(),
+    Lead: new Lead(),
+    Synth: new Synth()
 }

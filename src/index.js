@@ -1,9 +1,10 @@
-import * as Instr from './instruments';
+
 import {Scale, Note,Chord,Interval} from "@tonaljs/tonal";
 import * as Tone from "tone"
 import {Emitter} from "./eventEmitter.js"
 import * as Canva from './canva.js'
-
+import * as instruments from './instruments.js';
+import * as effects from './effects.js';
 export const state= {
     stateChanged:false,
     readyModel:false,
@@ -63,8 +64,9 @@ async function initializeApp() {
       }
       //FIXME: adding adapting loop
       Tone.Transport.loopEnd = state.drawing.loopLength;
-      console.log(state.drawing.chords.instrument)
-      state.playingPartChords = playChordSequence(state.drawing.chords.sequence, state.key, constructInstrument(state.drawing.chords.instrument)) 
+      //console.log(state.drawing.chords.instrument)
+      state.harmonyInstrument = createNewChannel(state.drawing.chords.instrument,state.drawing.chords.channelChain)
+      state.playingPartChords = playChordSequence(state.drawing.chords.sequence, state.key, ) 
       state.playingPartChords.loopEnd = state.drawing.chords.loopLength
       state.playingPartChords.loop = true;
       state.drawing.chords.isChanged = false
@@ -74,7 +76,7 @@ async function initializeApp() {
       if(!isFirst) {
         state.drawing.melody.playingPart.stop()
       }
-      state.drawing.melody.playingPart =addNotePartToTransport(generatePart(state.drawing.melody.sequence),/*constructInstrument(state.drawing.melody.instrument)*/new Tone.Synth().toDestination(),0)    
+      state.drawing.melody.playingPart =addNotePartToTransport(generatePart(state.drawing.melody.sequence),new instruments.Synth(),0)    
       state.drawing.melody.isChanged =  false
     }
     console.log("state after propagation")
@@ -132,11 +134,28 @@ export async function modifyState(idValue) {
     
 }
 
+
+function createNewChannel(instrument,channelEffectsStr) {
+  console.log(instrument)
+  console.log(channelEffectsStr)
+  channel = new Tone.Channel()
+  channel.debug = true 
+  //chorus = new Tone.Chorus()
+  channelEffects = []
   
-function constructInstrument(constructorPath) {
-    console.log(constructorPath.split('.'))
-    return new Instr[constructorPath]
+  for(i = 0; i<channelEffectsStr.length;i++) {
+    channelEffects.push(effects[channelEffectsStr[i]])  
   }
+  
+  //channelEffects.push(Tone.Destination)
+  console.log(channelEffects)
+  channel.connect(channelEffects[0])
+  channelEffects[0].connect(Tone.Destination)
+  
+  instruments[instrument].connect(channel)
+  return instrument
+}
+
 
 async function concatenateMelodiesFromMatrix(positionsArray,matrixSideDim) {
 toConcatenate = []

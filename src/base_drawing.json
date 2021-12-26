@@ -28,7 +28,9 @@
         {"time":"3:0:0","value":"G","length":"1m"}
       ],
       "loopLength":"4:0:0",
-      "chordsEffects":""  
+      "channelChain":[
+        "Chorus"
+      ]
     },
     "melody": {
       "isChanged":true,
@@ -89,6 +91,7 @@
         ]
       },
       "channelChain":[
+        "Chorus"
       ]
     },
     "loopLength":"4:0:0"
