@@ -28,13 +28,17 @@
         {"time":"3:0:0","value":"G","length":"1m"}
       ],
       "loopLength":"4:0:0",
-      "channelChain":[
-        "Chorus"
+      "effects":[
+        {
+          "effect":"chorus",
+          "ratio":1
+        }
+        
       ]
     },
     "melody": {
       "isChanged":true,
-      "instrument":"Lead",
+      "instrument":"Synth",
       "numOfInterpolation":20,
       "positionsArray":[
         {"x":0,"y":0},
@@ -90,8 +94,15 @@
                 {"pitch": 69, "quantizedStartStep": 56, "quantizedEndStep": 64 }
         ]
       },
-      "channelChain":[
-        "Chorus"
+      "effects":[
+        {
+          "effect":"chorus",
+          "ratio":1
+        },
+        {
+          "effect":"delay",
+          "ratio":1
+        }
       ]
     },
     "loopLength":"4:0:0"

@@ -3,9 +3,14 @@ import {Scale, Note,Chord,Interval} from "@tonaljs/tonal";
 import * as Tone from "tone"
 import {Emitter} from "./eventEmitter.js"
 import * as Canva from './canva.js'
-import * as instruments from './instruments.js';
+import * as Instr from './instruments.js';
 import * as effects from './effects.js';
 export const state= {
+    effects:{
+      melody:{},
+      harmony:{}
+    },
+    instruments:{},
     stateChanged:false,
     readyModel:false,
     readyToPlay: false,
@@ -35,7 +40,10 @@ async function initializeApp() {
     //initialize the drawing values
     state.drawing = require("./base_drawing.json")
     state.isFirst = true
+    
     Tone.Destination.chain(state.master.compressor,state.master.gain)
+    await buildInstruments()
+    console.log(state.instruments)
     propagateStateChanges(state.isFirst)
     Canva.playableButton(true)
 }
@@ -65,8 +73,17 @@ async function initializeApp() {
       //FIXME: adding adapting loop
       Tone.Transport.loopEnd = state.drawing.loopLength;
       //console.log(state.drawing.chords.instrument)
-      state.harmonyInstrument = createNewChannel(state.drawing.chords.instrument,state.drawing.chords.channelChain)
-      state.playingPartChords = playChordSequence(state.drawing.chords.sequence, state.key, ) 
+      Object.keys(state.effects.harmony).forEach(key => {
+        console.log(state.effects.harmony[key])
+        state.effects.harmony[key].wet.value = 0;
+      });
+      for(i=0; i< state.drawing.chords.effects.length;i++) {
+        console.log(state.drawing.chords.effects[i].effect)
+        console.log(state.effects.harmony)
+        
+        state.effects.harmony[state.drawing.chords.effects[i].effect].wet.value = state.drawing.chords.effects[i].ratio
+      }
+      state.playingPartChords = playChordSequence(state.drawing.chords.sequence,state.key,state.instruments[state.drawing.chords.instrument],1) 
       state.playingPartChords.loopEnd = state.drawing.chords.loopLength
       state.playingPartChords.loop = true;
       state.drawing.chords.isChanged = false
@@ -76,7 +93,14 @@ async function initializeApp() {
       if(!isFirst) {
         state.drawing.melody.playingPart.stop()
       }
-      state.drawing.melody.playingPart =addNotePartToTransport(generatePart(state.drawing.melody.sequence),new instruments.Synth(),0)    
+      Object.keys(state.effects.melody).forEach(key => {
+        state.effects.melody[key].wet.value = 0;
+      });
+      for(i=0; i< state.drawing.melody.effects.length;i++) {
+        state.effects.melody[state.drawing.melody.effects[i].effect].wet.value = state.drawing.melody.effects[i].ratio
+      }
+
+      state.drawing.melody.playingPart =addNotePartToTransport(generatePart(state.drawing.melody.sequence),state.instruments[state.drawing.melody.instrument],0)    
       state.drawing.melody.isChanged =  false
     }
     console.log("state after propagation")
@@ -134,28 +158,54 @@ export async function modifyState(idValue) {
     
 }
 
+async function buildInstruments() {
+  
+  //building audio channels
+  harmonyChannel = new Tone.Channel()
+  melodyChannel = new Tone.Channel()
 
-function createNewChannel(instrument,channelEffectsStr) {
-  console.log(instrument)
-  console.log(channelEffectsStr)
-  channel = new Tone.Channel()
-  channel.debug = true 
-  //chorus = new Tone.Chorus()
-  channelEffects = []
+
+  //build modulation effects
+  state.effects.harmony.chorus = new Tone.Chorus()
+  state.effects.melody.chorus = new Tone.Chorus()
+  state.effects.harmony.chorus.wet.value = 0
+  state.effects.melody.chorus.wet.value = 0
+
+
+  //build time effects
+  state.effects.harmony.reverb = await new Tone.Reverb()
+  state.effects.harmony.reverb.wet.value = 0
+  state.effects.melody.reverb = await new Tone.Reverb()
+  state.effects.melody.reverb.wet.value = 0
+  //TODO: set correct time for delay
+  state.effects.melody.delay = new Tone.PingPongDelay()
+  state.effects.harmony.delay = new Tone.PingPongDelay()
+  state.effects.melody.delay.wet.value = 0
+  state.effects.harmony.delay.wet.value = 0
   
-  for(i = 0; i<channelEffectsStr.length;i++) {
-    channelEffects.push(effects[channelEffectsStr[i]])  
-  }
-  
-  //channelEffects.push(Tone.Destination)
-  console.log(channelEffects)
-  channel.connect(channelEffects[0])
-  channelEffects[0].connect(Tone.Destination)
-  
-  instruments[instrument].connect(channel)
-  return instrument
+  //creating effects chain
+  harmonyChannel.chain(state.effects.harmony.chorus,
+                                      state.effects.harmony.reverb,
+                                      state.effects.harmony.delay,
+                                      Tone.Destination
+                                      )
+  melodyChannel.chain(state.effects.melody.chorus,
+                                     state.effects.melody.reverb,
+                                     state.effects.melody.delay,
+                                     Tone.Destination
+                                     )
+
+
+  //building instruments
+  state.instruments.Pad = new Instr.Pad()//.connect(state.effects.harmony.channel)
+  state.instruments.Lead = new Instr.Lead()//.connect(state.effects.melody.channel)
+  state.instruments.Synth = new Instr.Synth()//.connect(state.effects.melody.channel)
+  state.instruments.Pad.connect(harmonyChannel)
+  state.instruments.Lead.connect(melodyChannel)
+  state.instruments.Synth.connect(melodyChannel)
+  console.log(state.instruments.Pad)
+  console.log(state.effects)
 }
-
 
 async function concatenateMelodiesFromMatrix(positionsArray,matrixSideDim) {
 toConcatenate = []
