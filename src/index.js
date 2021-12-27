@@ -81,7 +81,7 @@ async function initializeApp() {
         console.log(state.drawing.chords.effects[i].effect)
         console.log(state.effects.harmony)
         
-        state.effects.harmony[state.drawing.chords.effects[i].effect].wet.value = state.drawing.chords.effects[i].ratio
+        state.effects.harmony[state.drawing.chords.effects[i].effect].set(state.drawing.chords.effects[i].setup)
       }
       state.playingPartChords = playChordSequence(state.drawing.chords.sequence,state.key,state.instruments[state.drawing.chords.instrument],1) 
       state.playingPartChords.loopEnd = state.drawing.chords.loopLength
@@ -97,7 +97,7 @@ async function initializeApp() {
         state.effects.melody[key].wet.value = 0;
       });
       for(i=0; i< state.drawing.melody.effects.length;i++) {
-        state.effects.melody[state.drawing.melody.effects[i].effect].wet.value = state.drawing.melody.effects[i].ratio
+        state.effects.melody[state.drawing.melody.effects[i].effect].set(state.drawing.melody.effects[i].setup)
       }
 
       state.drawing.melody.playingPart =addNotePartToTransport(generatePart(state.drawing.melody.sequence),state.instruments[state.drawing.melody.instrument],0)    
@@ -182,7 +182,7 @@ async function buildInstruments() {
   state.effects.harmony.delay = new Tone.PingPongDelay()
   state.effects.melody.delay.wet.value = 0
   state.effects.harmony.delay.wet.value = 0
-  
+  console.log(state.effects.harmony.delay.get())
   //creating effects chain
   harmonyChannel.chain(state.effects.harmony.chorus,
                                       state.effects.harmony.reverb,

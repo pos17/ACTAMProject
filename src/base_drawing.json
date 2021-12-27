@@ -31,7 +31,15 @@
       "effects":[
         {
           "effect":"chorus",
-          "ratio":1
+          "setup":{ 
+            "wet": 0.5,
+            "feedback": 0, 
+            "frequency": 1.5,
+            "delayTime": 3.5, 
+            "depth": 1.0, 
+            "type": "sine", 
+            "spread": 180 
+          }
         }
         
       ]
@@ -97,11 +105,19 @@
       "effects":[
         {
           "effect":"chorus",
-          "ratio":1
+          "setup":{ 
+            "wet": 0.5,
+            "feedback": 0, 
+            "frequency": 1.5,
+            "delayTime": 3.5, 
+            "depth": 1.0, 
+            "type": "sine", 
+            "spread": 180 
+          }
         },
         {
           "effect":"delay",
-          "ratio":1
+          "setup":{ "wet": 0.1, "feedback": 0.5, "delayTime": 0.75, "maxDelay": 1 }
         }
       ]
     },
