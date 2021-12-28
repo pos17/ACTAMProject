@@ -1,17 +1,15 @@
  
-  [ 
+[ 
     {
-      "id":10,
+      "id":0,
       "elementType":"background",
       "image":"../assets/BG/Background2.png",
       "sequence":[
-          {"time":"0:0:0","value":"F","length":"1m"},
-          {"time":"1:0:0","value":"Am","length":"1m"},
-          {"time":"2:0:0","value":"Am","length":"1m"},
-          {"time":"3:0:0","value":"G","length":"1m"}
+          {"time":"0:0:0","value":"F","length":"1m"}
         ],
-      "melodies":[  
-              {
+      "melodies":
+              [
+                {
                 "totalQuantizedSteps": 128,
                 "timeSignatures": [
                   {
@@ -29,279 +27,1149 @@
                 "quantizationInfo": { "stepsPerQuarter": 4 },
                 "notes":[ {"pitch": 60, "quantizedStartStep": 4, "quantizedEndStep": 6 },
                         {"pitch": 59, "quantizedStartStep": 6, "quantizedEndStep": 10 },
-                        {"pitch": 53, "quantizedStartStep": 10, "quantizedEndStep": 16 },
-                        {"pitch": 60, "quantizedStartStep": 16, "quantizedEndStep": 20 },
-                        {"pitch": 59, "quantizedStartStep": 20, "quantizedEndStep": 24 },
-                        {"pitch": 52, "quantizedStartStep": 24, "quantizedEndStep": 32 },
-                        {"pitch": 60, "quantizedStartStep": 32, "quantizedEndStep": 34 },
-                        {"pitch": 59, "quantizedStartStep": 34, "quantizedEndStep": 38 },
-                        {"pitch": 55, "quantizedStartStep": 38, "quantizedEndStep": 42 },
-                        {"pitch": 52, "quantizedStartStep": 42, "quantizedEndStep": 44 },
-                        {"pitch": 50, "quantizedStartStep": 44, "quantizedEndStep": 48 },
-                        {"pitch": 52, "quantizedStartStep": 50, "quantizedEndStep": 54 },
-                        {"pitch": 59, "quantizedStartStep": 54, "quantizedEndStep": 58},
-                        {"pitch": 59, "quantizedStartStep": 58, "quantizedEndStep": 62 }
-                ]
-              },
-              {
-                "totalQuantizedSteps": 128,
-                "timeSignatures": [
-                  {
-                    "time": 0,
-                    "numerator": 4,
-                    "denominator": 4
-                  }
-                ],
-                "tempos": [
-                  {
-                    "time": 0,
-                    "qpm":  60
-                  }
-                ],
-                "quantizationInfo": { "stepsPerQuarter": 4 },
-                "notes":[ {"pitch": 60, "quantizedStartStep": 2, "quantizedEndStep": 4 },
-                        {"pitch": 65, "quantizedStartStep": 4, "quantizedEndStep": 6 },
-                        {"pitch": 64, "quantizedStartStep": 6, "quantizedEndStep": 8 },
-                        {"pitch": 71, "quantizedStartStep": 8, "quantizedEndStep": 14 },
-                        {"pitch": 69, "quantizedStartStep": 14, "quantizedEndStep": 16 },
-                        {"pitch": 72, "quantizedStartStep": 16, "quantizedEndStep": 18 },
-                        {"pitch": 60, "quantizedStartStep": 18, "quantizedEndStep": 20 },
-                        {"pitch": 65, "quantizedStartStep": 22, "quantizedEndStep": 24 },
-                        {"pitch": 64, "quantizedStartStep": 24, "quantizedEndStep": 26 },
-                        {"pitch": 67, "quantizedStartStep": 26, "quantizedEndStep": 32 },
-                        {"pitch": 69, "quantizedStartStep": 32, "quantizedEndStep": 34 },
-                        {"pitch": 72, "quantizedStartStep": 34, "quantizedEndStep": 36 },
-                        {"pitch": 60, "quantizedStartStep": 36, "quantizedEndStep": 38 },
-                        {"pitch": 62, "quantizedStartStep": 38, "quantizedEndStep": 40 },
-                        {"pitch": 65, "quantizedStartStep": 42, "quantizedEndStep": 48 },
-                        {"pitch": 71, "quantizedStartStep": 48, "quantizedEndStep": 56 },
-                        {"pitch": 71, "quantizedStartStep": 56, "quantizedEndStep": 60 },
-                        {"pitch": 69, "quantizedStartStep": 60, "quantizedEndStep": 64 }
-                ]
-              },
-              {
-                "totalQuantizedSteps": 128,
-                "timeSignatures": [
-                  {
-                    "time": 0,
-                    "numerator": 4,
-                    "denominator": 4
-                  }
-                ],
-                "tempos": [
-                  {
-                    "time": 0,
-                    "qpm":  60
-                  }
-                ],
-                "quantizationInfo": { "stepsPerQuarter": 4 },
-                "notes":[ {"pitch": 72, "quantizedStartStep": 0, "quantizedEndStep": 2 },
-                        {"pitch": 60, "quantizedStartStep": 2, "quantizedEndStep": 4 },
-                        {"pitch": 62, "quantizedStartStep": 4, "quantizedEndStep": 6 },
-                        {"pitch": 60, "quantizedStartStep": 6, "quantizedEndStep": 8 },
-                        {"pitch": 69, "quantizedStartStep": 8, "quantizedEndStep": 10 },
-                        {"pitch": 67, "quantizedStartStep": 10, "quantizedEndStep": 12 },
-                        {"pitch": 72, "quantizedStartStep": 12, "quantizedEndStep": 14 },
-                        {"pitch": 60, "quantizedStartStep": 14, "quantizedEndStep": 16 },
-                        {"pitch": 62, "quantizedStartStep": 16, "quantizedEndStep": 18 },
-                        {"pitch": 60, "quantizedStartStep": 18, "quantizedEndStep": 20 },
-                        {"pitch": 65, "quantizedStartStep": 20, "quantizedEndStep": 22 },
-                        {"pitch": 64, "quantizedStartStep": 22, "quantizedEndStep": 24 },
-                        {"pitch": 70, "quantizedStartStep": 24, "quantizedEndStep": 26 },
-                        {"pitch": 60, "quantizedStartStep": 26, "quantizedEndStep": 28 },
-                        {"pitch": 62, "quantizedStartStep": 28, "quantizedEndStep": 30 },
-                        {"pitch": 60, "quantizedStartStep": 30, "quantizedEndStep": 32 },
-                        {"pitch": 72, "quantizedStartStep": 32, "quantizedEndStep": 34 },
-                        {"pitch": 60, "quantizedStartStep": 34, "quantizedEndStep": 36 },
-                        {"pitch": 65, "quantizedStartStep": 36, "quantizedEndStep": 38 },
-                        {"pitch": 64, "quantizedStartStep": 38, "quantizedEndStep": 40 },
-                        {"pitch": 62, "quantizedStartStep": 40, "quantizedEndStep": 42 },
-                        {"pitch": 64, "quantizedStartStep": 42, "quantizedEndStep": 44 },
-                        {"pitch": 72, "quantizedStartStep": 44, "quantizedEndStep": 48 },
-                        {"pitch": 71, "quantizedStartStep": 48, "quantizedEndStep": 50 },
-                        {"pitch": 60, "quantizedStartStep": 50, "quantizedEndStep": 52 },
-                        {"pitch": 62, "quantizedStartStep": 52, "quantizedEndStep": 54 },
-                        {"pitch": 60, "quantizedStartStep": 54, "quantizedEndStep": 56 },
-                        {"pitch": 69, "quantizedStartStep": 56, "quantizedEndStep": 64 }
-                ]
-              },
-              {
-                "totalQuantizedSteps": 128,
-                "timeSignatures": [
-                  {
-                    "time": 0,
-                    "numerator": 4,
-                    "denominator": 4
-                  }
-                ],
-                "tempos": [
-                  {
-                    "time": 0,
-                    "qpm":  60
-                  }
-                ],
-                "quantizationInfo": { "stepsPerQuarter": 4 },
-                "notes":[ {"pitch": 65, "quantizedStartStep": 2, "quantizedEndStep": 10 },
-                        {"pitch": 57, "quantizedStartStep": 10, "quantizedEndStep": 14 },
-                        {"pitch": 67, "quantizedStartStep": 18, "quantizedEndStep": 26 },
-                        {"pitch": 57, "quantizedStartStep": 26, "quantizedEndStep": 30 },
-                        {"pitch": 72, "quantizedStartStep": 34, "quantizedEndStep": 42 },
-                        {"pitch": 62, "quantizedStartStep": 42, "quantizedEndStep": 48 },
-                        {"pitch": 76, "quantizedStartStep": 50, "quantizedEndStep": 60 },
-                        {"pitch": 72, "quantizedStartStep": 60, "quantizedEndStep": 62 },
-                        {"pitch": 71, "quantizedStartStep": 62, "quantizedEndStep": 64 }
-                ]
-              }
-      ]
+                        {"pitch": 53, "quantizedStartStep": 10, "quantizedEndStep": 16 }
+              ]
+            }         
+                
     },
-    {
-  "id":11,
-  "elementType":"background",
-  "image":"../assets/BG/Background2.png",
-  "sequence":[
-      {"time":"0:0:0","value":"Dm","length":"1m"},
-      {"time":"1:0:0","value":"F","length":"1m"},
-      {"time":"2:0:0","value":"C","length":"1m"},
-      {"time":"3:0:0","value":"G","length":"1m"}
-    ],
-  "melodies":[  
-          {
-            "totalQuantizedSteps": 128,
-            "timeSignatures": [
+    
+            
+ 
+ 
+   {
+      "id":1,
+      "elementType":"background",
+      "image":"../assets/BG/Background2.png",
+      "sequence":[
+         {"time":"0:0:0","value":"Am","length":"1m"}
+        ],           
+      "melodies":[  
               {
-                "time": 0,
-                "numerator": 4,
-                "denominator": 4
-              }
-            ],
-            "tempos": [
-              {
-                "time": 0,
-                "qpm":  60
-              }
-            ],
-            "quantizationInfo": { "stepsPerQuarter": 4 },
-            "notes":[ {"pitch": 62, "quantizedStartStep":2, "quantizedEndStep": 4 },
-                    {"pitch": 64, "quantizedStartStep": 4, "quantizedEndStep": 6 },
-                    {"pitch": 69, "quantizedStartStep": 6, "quantizedEndStep": 10 },
-                    {"pitch": 72, "quantizedStartStep": 10, "quantizedEndStep": 16 },
-                    {"pitch": 69, "quantizedStartStep": 16, "quantizedEndStep": 18 },
-                    {"pitch": 67, "quantizedStartStep": 18, "quantizedEndStep": 30 },
-                    {"pitch": 60, "quantizedStartStep": 34, "quantizedEndStep": 36 },
-                    {"pitch": 64, "quantizedStartStep": 36, "quantizedEndStep": 38 },
-                    {"pitch": 69, "quantizedStartStep": 38, "quantizedEndStep": 42 },
-                    {"pitch": 72, "quantizedStartStep": 42, "quantizedEndStep": 48 },
-                    {"pitch": 71, "quantizedStartStep": 48, "quantizedEndStep": 50 }
-            ]
-          },
-          {
-            "totalQuantizedSteps": 128,
-            "timeSignatures": [
-              {
-                "time": 0,
-                "numerator": 4,
-                "denominator": 4
-              }
-            ],
-            "tempos": [
-              {
-                "time": 0,
-                "qpm":  60
-              }
-            ],
-            "quantizationInfo": { "stepsPerQuarter": 4 },
-            "notes":[ {"pitch": 69, "quantizedStartStep": 0, "quantizedEndStep": 6 },
-                    {"pitch": 65, "quantizedStartStep": 6, "quantizedEndStep": 8 },
-                    {"pitch": 71, "quantizedStartStep": 8, "quantizedEndStep": 12 },
-                    {"pitch": 76, "quantizedStartStep": 14, "quantizedEndStep": 16 },
-                    {"pitch": 69, "quantizedStartStep": 16, "quantizedEndStep": 20 },
-                    {"pitch": 72, "quantizedStartStep": 22, "quantizedEndStep": 24},
-                    {"pitch": 65, "quantizedStartStep": 24, "quantizedEndStep": 28 },
-                    {"pitch": 67, "quantizedStartStep": 30, "quantizedEndStep": 32},
-                    {"pitch": 67, "quantizedStartStep": 32, "quantizedEndStep": 38 },
-                    {"pitch": 60, "quantizedStartStep": 38, "quantizedEndStep": 40 },
-                    {"pitch": 62, "quantizedStartStep": 40, "quantizedEndStep": 44 },
-                    {"pitch": 76, "quantizedStartStep": 46, "quantizedEndStep": 48 },
-                    {"pitch": 69, "quantizedStartStep": 48, "quantizedEndStep": 52 },
-                    {"pitch": 70, "quantizedStartStep": 54, "quantizedEndStep": 56 },
-                    {"pitch": 65, "quantizedStartStep": 56, "quantizedEndStep": 60 },
-                    {"pitch": 67, "quantizedStartStep": 62, "quantizedEndStep": 64 }
-            ]
-          },
-          {
-            "totalQuantizedSteps": 128,
-            "timeSignatures": [
-              {
-                "time": 0,
-                "numerator": 4,
-                "denominator": 4
-              }
-            ],
-            "tempos": [
-              {
-                "time": 0,
-                "qpm":  60
-              }
-            ],
-            "quantizationInfo": { "stepsPerQuarter": 4 },
-            "notes":[ {"pitch": 72, "quantizedStartStep": 0, "quantizedEndStep": 2 },
-                    {"pitch": 60, "quantizedStartStep": 2, "quantizedEndStep": 4 },
-                    {"pitch": 62, "quantizedStartStep": 4, "quantizedEndStep": 6 },
-                    {"pitch": 60, "quantizedStartStep": 6, "quantizedEndStep": 8 },
-                    {"pitch": 69, "quantizedStartStep": 8, "quantizedEndStep": 10 },
-                    {"pitch": 67, "quantizedStartStep": 10, "quantizedEndStep": 12 },
-                    {"pitch": 72, "quantizedStartStep": 12, "quantizedEndStep": 14 },
-                    {"pitch": 60, "quantizedStartStep": 14, "quantizedEndStep": 16 },
-                    {"pitch": 62, "quantizedStartStep": 16, "quantizedEndStep": 18 },
-                    {"pitch": 60, "quantizedStartStep": 18, "quantizedEndStep": 20 },
-                    {"pitch": 65, "quantizedStartStep": 20, "quantizedEndStep": 22 },
-                    {"pitch": 64, "quantizedStartStep": 22, "quantizedEndStep": 24 },
-                    {"pitch": 70, "quantizedStartStep": 24, "quantizedEndStep": 26 },
-                    {"pitch": 60, "quantizedStartStep": 26, "quantizedEndStep": 28 },
-                    {"pitch": 62, "quantizedStartStep": 28, "quantizedEndStep": 30 },
-                    {"pitch": 60, "quantizedStartStep": 30, "quantizedEndStep": 32 },
-                    {"pitch": 72, "quantizedStartStep": 32, "quantizedEndStep": 34 },
-                    {"pitch": 60, "quantizedStartStep": 34, "quantizedEndStep": 36 },
-                    {"pitch": 65, "quantizedStartStep": 36, "quantizedEndStep": 38 },
-                    {"pitch": 64, "quantizedStartStep": 38, "quantizedEndStep": 40 },
-                    {"pitch": 62, "quantizedStartStep": 40, "quantizedEndStep": 42 },
-                    {"pitch": 64, "quantizedStartStep": 42, "quantizedEndStep": 44 },
-                    {"pitch": 72, "quantizedStartStep": 44, "quantizedEndStep": 48 },
-                    {"pitch": 71, "quantizedStartStep": 48, "quantizedEndStep": 50 },
-                    {"pitch": 60, "quantizedStartStep": 50, "quantizedEndStep": 52 },
-                    {"pitch": 62, "quantizedStartStep": 52, "quantizedEndStep": 54 },
-                    {"pitch": 60, "quantizedStartStep": 54, "quantizedEndStep": 56 },
-                    {"pitch": 69, "quantizedStartStep": 56, "quantizedEndStep": 64 }
-            ]
-          },
-          {
-            "totalQuantizedSteps": 128,
-            "timeSignatures": [
-              {
-                "time": 0,
-                "numerator": 4,
-                "denominator": 4
-              }
-            ],
-            "tempos": [
-              {
-                "time": 0,
-                "qpm":  60
-              }
-            ],
-            "quantizationInfo": { "stepsPerQuarter": 4 },
-            "notes":[ {"pitch": 65, "quantizedStartStep": 2, "quantizedEndStep": 10 },
-                    {"pitch": 57, "quantizedStartStep": 10, "quantizedEndStep": 14 },
-                    {"pitch": 67, "quantizedStartStep": 18, "quantizedEndStep": 26 },
-                    {"pitch": 57, "quantizedStartStep": 26, "quantizedEndStep": 30 },
-                    {"pitch": 72, "quantizedStartStep": 34, "quantizedEndStep": 42 },
-                    {"pitch": 62, "quantizedStartStep": 42, "quantizedEndStep": 48 },
-                    {"pitch": 76, "quantizedStartStep": 50, "quantizedEndStep": 60 },
-                    {"pitch": 72, "quantizedStartStep": 60, "quantizedEndStep": 62 },
-                    {"pitch": 71, "quantizedStartStep": 62, "quantizedEndStep": 64 }
-            ]
-          }
-      ]
-    }
-  ]
+                "totalQuantizedSteps": 128,
+                "timeSignatures": [
+                  {
+                    "time": 0,
+                    "numerator": 4,
+                    "denominator": 4
+                   }
+                    ],
+                    "tempos": [
+                      {
+                        "time": 0,
+                        "qpm":  60
+                      }
+                    ],
+                    "quantizationInfo": { "stepsPerQuarter": 4 },
+                       "notes":[{"pitch": 60, "quantizedStartStep": 0, "quantizedEndStep": 4 },
+                                {"pitch": 59, "quantizedStartStep": 4, "quantizedEndStep": 8 },
+                                {"pitch": 52, "quantizedStartStep": 8, "quantizedEndStep": 16 }
+                          
+                    ]
+                  },
 
+ 
+    {
+      "id":2,
+      "elementType":"background",
+      "image":"../assets/BG/Background2.png",
+      "sequence":[
+          {"time":"0:0:0","value":"Am","length":"1m"}
+        ], 
+      "melodies":[  
+              {
+                "totalQuantizedSteps": 128,
+                "timeSignatures": [
+                  {
+                    "time": 0,
+                    "numerator": 4,
+                    "denominator": 4
+                  }
+                ],
+                "tempos": [
+                  {
+                    "time": 0,
+                    "qpm":  60
+                  }
+                ],
+                "quantizationInfo": { "stepsPerQuarter": 4 },
+                "notes": [{"pitch": 60, "quantizedStartStep": 0, "quantizedEndStep": 2 },
+                  {"pitch": 59, "quantizedStartStep": 2, "quantizedEndStep": 6 },
+                  {"pitch": 55, "quantizedStartStep": 6, "quantizedEndStep": 10 },
+                  {"pitch": 52, "quantizedStartStep": 10, "quantizedEndStep": 12 },
+                  {"pitch": 50, "quantizedStartStep": 12, "quantizedEndStep": 16 }
+                      
+                ]
+              },
+                
+    {
+      "id":3,
+      "elementType":"background",
+      "image":"../assets/BG/Background2.png",
+      "sequence":[
+          {"time":"0:0:0","value":"G7","length":"1m"}
+        ], 
+      "melodies":[  
+              {
+                "totalQuantizedSteps": 128,
+                "timeSignatures": [
+                  {
+                    "time": 0,
+                    "numerator": 4,
+                    "denominator": 4
+                  }
+                ],
+                "tempos": [
+                  {
+                    "time": 0,
+                    "qpm":  60
+                  }
+                ],
+                "quantizationInfo": { "stepsPerQuarter": 4 },
+                "notes": [{"pitch": 52, "quantizedStartStep": 2, "quantizedEndStep": 4 },
+                  {"pitch": 55, "quantizedStartStep": 4, "quantizedEndStep": 8 },
+                  {"pitch": 55, "quantizedStartStep": 8, "quantizedEndStep": 14 },
+            
+                      
+                ]
+              },
+  
+    {
+      "id":4,
+      "elementType":"background",
+      "image":"../assets/BG/Background2.png",
+      "sequence":[
+          {"time":"0:0:0","value":"Am","length":"1m"}
+      ],
+      "melodies":[  
+              {
+                "totalQuantizedSteps": 128,
+                "timeSignatures": [
+                  {
+                    "time": 0,
+                    "numerator": 4,
+                    "denominator": 4
+                  }
+                ],
+                "tempos": [
+                  {
+                    "time": 0,
+                    "qpm":  60
+                  }
+                ],
+                "quantizationInfo": { "stepsPerQuarter": 4 },
+                "notes": [{"pitch": 64, "quantizedStartStep": 4, "quantizedEndStep": 6 },
+                  {"pitch": 62, "quantizedStartStep": 6, "quantizedEndStep": 10 },
+                  {"pitch": 55, "quantizedStartStep": 10, "quantizedEndStep": 16 }
+                
+                      
+                ]
+              },
+
+  
+
+  {
+      "id":5,
+     "elementType":"background",
+      "image":"../assets/BG/Background2.png",
+     "sequence":[
+         {"time":"0:0:0","value":"F","length":"1m"}
+     ],        
+     "melodies":[  
+              {
+                  "totalQuantizedSteps": 128,
+                  "timeSignatures": [
+                      {
+                       "time": 0,
+                       "numerator": 4,
+                       "denominator": 4
+                      }
+                          ],
+                  "tempos": [
+                      {
+                       "time": 0,
+                       "qpm":  60
+                       }
+                      ],
+                          "quantizationInfo": { "stepsPerQuarter": 4 },
+                          "notes": [{"pitch": 62, "quantizedStartStep": 0, "quantizedEndStep": 4 },
+                            {"pitch": 60, "quantizedStartStep": 4, "quantizedEndStep": 8 },
+                            {"pitch": 53, "quantizedStartStep": 8, "quantizedEndStep": 16 }
+                          
+                                
+                      ]
+               },
+
+   
+[ 
+  {
+    "id":0,
+    "sequence":[
+        {"time":"0:0:0","value":"F","length":"1m"}
+      ],
+    "melodies":
+            [
+              {
+              "totalQuantizedSteps": 128,
+              "timeSignatures": [
+                {
+                  "time": 0,
+                  "numerator": 4,
+                  "denominator": 4
+                }
+              ],
+              "tempos": [
+                {
+                  "time": 0,
+                  "qpm":  60
+                }
+              ],
+              "quantizationInfo": { "stepsPerQuarter": 4 },
+              "notes":[ {"pitch": 60, "quantizedStartStep": 4, "quantizedEndStep": 6 },
+                      {"pitch": 59, "quantizedStartStep": 6, "quantizedEndStep": 10 },
+                      {"pitch": 53, "quantizedStartStep": 10, "quantizedEndStep": 16 }
+            ]
+          }         
+              
+  },
+  
+          
+
+
+ {
+    "id":1,
+    "sequence":[
+       {"time":"0:0:0","value":"Am","length":"1m"}
+      ],           
+    "melodies":[  
+            {
+              "totalQuantizedSteps": 128,
+              "timeSignatures": [
+                {
+                  "time": 0,
+                  "numerator": 4,
+                  "denominator": 4
+                 }
+                  ],
+                  "tempos": [
+                    {
+                      "time": 0,
+                      "qpm":  60
+                    }
+                  ],
+                  "quantizationInfo": { "stepsPerQuarter": 4 },
+                     "notes":[{"pitch": 60, "quantizedStartStep": 0, "quantizedEndStep": 4 },
+                              {"pitch": 59, "quantizedStartStep": 4, "quantizedEndStep": 8 },
+                              {"pitch": 52, "quantizedStartStep": 8, "quantizedEndStep": 16 }
+                        
+                  ]
+                },
+
+
+  {
+    "id":2,
+    "sequence":[
+        {"time":"0:0:0","value":"Am","length":"1m"}
+      ], 
+    "melodies":[  
+            {
+              "totalQuantizedSteps": 128,
+              "timeSignatures": [
+                {
+                  "time": 0,
+                  "numerator": 4,
+                  "denominator": 4
+                }
+              ],
+              "tempos": [
+                {
+                  "time": 0,
+                  "qpm":  60
+                }
+              ],
+              "quantizationInfo": { "stepsPerQuarter": 4 },
+              "notes": [{"pitch": 60, "quantizedStartStep": 0, "quantizedEndStep": 2 },
+                {"pitch": 59, "quantizedStartStep": 2, "quantizedEndStep": 6 },
+                {"pitch": 55, "quantizedStartStep": 6, "quantizedEndStep": 10 },
+                {"pitch": 52, "quantizedStartStep": 10, "quantizedEndStep": 12 },
+                {"pitch": 50, "quantizedStartStep": 12, "quantizedEndStep": 16 }
+                    
+              ]
+            },
+              
+  {
+    "id":3,
+    "sequence":[
+        {"time":"0:0:0","value":"G7","length":"1m"}
+      ], 
+    "melodies":[  
+            {
+              "totalQuantizedSteps": 128,
+              "timeSignatures": [
+                {
+                  "time": 0,
+                  "numerator": 4,
+                  "denominator": 4
+                }
+              ],
+              "tempos": [
+                {
+                  "time": 0,
+                  "qpm":  60
+                }
+              ],
+              "quantizationInfo": { "stepsPerQuarter": 4 },
+              "notes": [{"pitch": 52, "quantizedStartStep": 2, "quantizedEndStep": 4 },
+                {"pitch": 55, "quantizedStartStep": 4, "quantizedEndStep": 8 },
+                {"pitch": 55, "quantizedStartStep": 8, "quantizedEndStep": 14 },
+          
+                    
+              ]
+            },
+
+  {
+    "id":4,
+    "sequence":[
+        {"time":"0:0:0","value":"Am","length":"1m"}
+    ],
+    "melodies":[  
+            {
+              "totalQuantizedSteps": 128,
+              "timeSignatures": [
+                {
+                  "time": 0,
+                  "numerator": 4,
+                  "denominator": 4
+                }
+              ],
+              "tempos": [
+                {
+                  "time": 0,
+                  "qpm":  60
+                }
+              ],
+              "quantizationInfo": { "stepsPerQuarter": 4 },
+              "notes": [{"pitch": 64, "quantizedStartStep": 4, "quantizedEndStep": 6 },
+                {"pitch": 62, "quantizedStartStep": 6, "quantizedEndStep": 10 },
+                {"pitch": 55, "quantizedStartStep": 10, "quantizedEndStep": 16 }
+              
+                    
+              ]
+            },
+
+
+
+{
+    "id":5,
+   "sequence":[
+       {"time":"0:0:0","value":"F","length":"1m"}
+   ],        
+   "melodies":[  
+            {
+                "totalQuantizedSteps": 128,
+                "timeSignatures": [
+                    {
+                     "time": 0,
+                     "numerator": 4,
+                     "denominator": 4
+                    }
+                        ],
+                "tempos": [
+                    {
+                     "time": 0,
+                     "qpm":  60
+                     }
+                    ],
+                        "quantizationInfo": { "stepsPerQuarter": 4 },
+                        "notes": [{"pitch": 62, "quantizedStartStep": 0, "quantizedEndStep": 4 },
+                          {"pitch": 60, "quantizedStartStep": 4, "quantizedEndStep": 8 },
+                          {"pitch": 53, "quantizedStartStep": 8, "quantizedEndStep": 16 }
+                        
+                              
+                    ]
+             },
+
+
+
+ 
+
+             {
+              "id":6,
+             "sequence":[
+                 {"time":"0:0:0","value":"F","length":"1m"}
+             ],        
+             "melodies":[  
+                      {
+                          "totalQuantizedSteps": 128,
+                          "timeSignatures": [
+                              {
+                               "time": 0,
+                               "numerator": 4,
+                               "denominator": 4
+                              }
+                                  ],
+                          "tempos": [
+                              {
+                               "time": 0,
+                               "qpm":  60
+                               }
+                              ],
+                                  "quantizationInfo": { "stepsPerQuarter": 4 },
+                                  "notes": [{"pitch": 60, "quantizedStartStep": 0, "quantizedEndStep": 2},
+                                    {"pitch": 48, "quantizedStartStep": 2, "quantizedEndStep": 4 },
+                                    {"pitch": 50, "quantizedStartStep": 4, "quantizedEndStep": 6 },
+                                    {"pitch": 48, "quantizedStartStep": 6, "quantizedEndStep": 8 },
+                                    {"pitch": 57, "quantizedStartStep": 8, "quantizedEndStep": 10 },
+                                    {"pitch": 55, "quantizedStartStep": 10, "quantizedEndStep": 12 },
+                                    {"pitch": 60, "quantizedStartStep": 12, "quantizedEndStep": 14 },
+                                    {"pitch": 48, "quantizedStartStep": 14, "quantizedEndStep": 16 }
+                                  
+                                        
+                              ]
+                       },
+                                      {
+              "id":7,
+             "sequence":[
+                 {"time":"0:0:0","value":"Am","length":"1m"}
+             ],        
+             "melodies":[  
+                      {
+                          "totalQuantizedSteps": 128,
+                          "timeSignatures": [
+                              {
+                               "time": 0,
+                               "numerator": 4,
+                               "denominator": 4
+                              }
+                                  ],
+                          "tempos": [
+                              {
+                               "time": 0,
+                               "qpm":  60
+                               }
+                              ],
+                                  "quantizationInfo": { "stepsPerQuarter": 4 },
+                                  "notes": [{"pitch": 50, "quantizedStartStep": 0, "quantizedEndStep": 2},
+                                    {"pitch": 48, "quantizedStartStep": 2, "quantizedEndStep": 4 },
+                                    {"pitch": 53, "quantizedStartStep": 4, "quantizedEndStep": 6 },
+                                    {"pitch": 42, "quantizedStartStep": 6, "quantizedEndStep": 8 },
+                                    {"pitch": 60, "quantizedStartStep": 8, "quantizedEndStep": 10 },
+                                    {"pitch": 48, "quantizedStartStep": 10, "quantizedEndStep": 12 },
+                                    {"pitch": 50, "quantizedStartStep": 12, "quantizedEndStep": 14 },
+                                    {"pitch": 48, "quantizedStartStep": 14, "quantizedEndStep": 16 }
+                                  
+                                        
+                              ]
+                       },
+               {
+              "id":8,
+             "sequence":[
+                 {"time":"0:0:0","value":"Am","length":"1m"}
+             ],        
+             "melodies":[  
+                      {
+                          "totalQuantizedSteps": 128,
+                          "timeSignatures": [
+                              {
+                               "time": 0,
+                               "numerator": 4,
+                               "denominator": 4
+                              }
+                                  ],
+                          "tempos": [
+                              {
+                               "time": 0,
+                               "qpm":  60
+                               }
+                              ],
+                                  "quantizationInfo": { "stepsPerQuarter": 4 },
+                                  "notes": [{"pitch": 60, "quantizedStartStep": 0, "quantizedEndStep": 2},
+                                    {"pitch": 48, "quantizedStartStep": 2, "quantizedEndStep": 4 },
+                                    {"pitch": 53, "quantizedStartStep": 4, "quantizedEndStep": 6 },
+                                    {"pitch": 52, "quantizedStartStep": 6, "quantizedEndStep": 8 },
+                                    {"pitch": 50, "quantizedStartStep": 8, "quantizedEndStep": 10 },
+                                    {"pitch": 52, "quantizedStartStep": 10, "quantizedEndStep": 12 },
+                                    {"pitch": 60, "quantizedStartStep": 12, "quantizedEndStep": 16 }                                   
+                                                                         
+                              ]
+                       },
+  
+                       {
+                        "id":9,
+                       "sequence":[
+                           {"time":"0:0:0","value":"G7","length":"1m"}
+                       ],        
+                       "melodies":[  
+                                {
+                                    "totalQuantizedSteps": 128,
+                                    "timeSignatures": [
+                                        {
+                                         "time": 0,
+                                         "numerator": 4,
+                                         "denominator": 4
+                                        }
+                                            ],
+                                    "tempos": [
+                                        {
+                                         "time": 0,
+                                         "qpm":  60
+                                         }
+                                        ],
+                                            "quantizationInfo": { "stepsPerQuarter": 4 },
+                                            "notes": [{"pitch": 59, "quantizedStartStep": 0, "quantizedEndStep": 2},
+                                              {"pitch": 48, "quantizedStartStep": 2, "quantizedEndStep": 4 },
+                                              {"pitch": 50, "quantizedStartStep": 4, "quantizedEndStep": 6 },
+                                              {"pitch": 48, "quantizedStartStep": 6, "quantizedEndStep": 8 },
+                                              {"pitch": 57, "quantizedStartStep": 8, "quantizedEndStep": 16 },                                  
+                                                                                   
+                                        ]
+                                 },
+                            
+                                 {
+                                  "id":10,
+                                 "sequence":[
+                                     {"time":"0:0:0","value":"C7","length":"1m"}
+                                 ],        
+                                 "melodies":[  
+                                          {
+                                              "totalQuantizedSteps": 128,
+                                              "timeSignatures": [
+                                                  {
+                                                   "time": 0,
+                                                   "numerator": 4,
+                                                   "denominator": 4
+                                                  }
+                                                      ],
+                                              "tempos": [
+                                                  {
+                                                   "time": 0,
+                                                   "qpm":  60
+                                                   }
+                                                  ],
+                                                      "quantizationInfo": { "stepsPerQuarter": 4 },
+                                                      "notes": [{"pitch": 55, "quantizedStartStep": 0, "quantizedEndStep": 2},
+                                                        {"pitch": 48, "quantizedStartStep": 2, "quantizedEndStep": 4 },
+                                                        {"pitch": 52, "quantizedStartStep": 4, "quantizedEndStep": 6 },
+                                                        {"pitch": 53, "quantizedStartStep": 6, "quantizedEndStep": 8 },
+                                                        {"pitch": 60, "quantizedStartStep": 8, "quantizedEndStep": 16 }                               
+                                                                                             
+                                                  ]
+                                           },
+                          
+
+                                           {
+                                            "id":11,
+                                           "sequence":[
+                                               {"time":"0:0:0","value":"F","length":"1m"},
+                                           ],        
+                                           "melodies":[  
+                                                    {
+                                                        "totalQuantizedSteps": 128,
+                                                        "timeSignatures": [
+                                                            {
+                                                             "time": 0,
+                                                             "numerator": 4,
+                                                             "denominator": 4
+                                                            }
+                                                                ],
+                                                        "tempos": [
+                                                            {
+                                                             "time": 0,
+                                                             "qpm":  60
+                                                             }
+                                                            ],
+                                                                "quantizationInfo": { "stepsPerQuarter": 4 },
+                                                                "notes": [{"pitch": 60, "quantizedStartStep": 0, "quantizedEndStep": 2},
+                                                                  {"pitch": 53, "quantizedStartStep": 2, "quantizedEndStep": 4 },
+                                                                  {"pitch": 55, "quantizedStartStep": 4, "quantizedEndStep": 6 },
+                                                                  {"pitch": 53, "quantizedStartStep": 6, "quantizedEndStep": 8 },
+                                                                  {"pitch": 57, "quantizedStartStep": 8, "quantizedEndStep": 10 },
+                                                                  {"pitch": 53, "quantizedStartStep": 10, "quantizedEndStep": 12 },
+                                                                  {"pitch": 58, "quantizedStartStep": 12, "quantizedEndStep": 16 }  
+                                                                  {"pitch": 53, "quantizedStartStep": 16, "quantizedEndStep": 18 }                                  
+                                                                                                       
+                                                            ]
+                                                     }
+
+
+                                                     {"pitch": 58, "quantizedStartStep": 12, "quantizedEndStep": 16 } 
+                                           ]
+                                          }, 
+
+   
+
+  {
+    "id":12,
+    "sequence":[
+        {"time":"0:0:0","value":"F","length":"1m"}
+      ],
+    "melodies":
+            [
+              {
+              "totalQuantizedSteps": 128,
+              "timeSignatures": [
+                {
+                  "time": 0,
+                  "numerator": 4,
+                  "denominator": 4
+                }
+              ],
+              "tempos": [
+                {
+                  "time": 0,
+                  "qpm":  60
+                }
+              ],
+              "quantizationInfo": { "stepsPerQuarter": 4 },
+              "notes":[ {"pitch": 48, "quantizedStartStep": 2, "quantizedEndStep": 4 },
+                      {"pitch": 53, "quantizedStartStep": 4, "quantizedEndStep": 6 },
+                      {"pitch": 52, "quantizedStartStep": 6, "quantizedEndStep": 8 },
+                      {"pitch": 59, "quantizedStartStep": 8, "quantizedEndStep": 14 },
+                      {"pitch": 57, "quantizedStartStep": 14, "quantizedEndStep": 16 },
+            ]
+          },      
+  
+          {
+            "id":13,
+            "sequence":[
+                {"time":"0:0:0","value":"Am","length":"1m"}
+              ],
+            "melodies":
+                    [
+                      {
+                      "totalQuantizedSteps": 128,
+                      "timeSignatures": [
+                        {
+                          "time": 0,
+                          "numerator": 4,
+                          "denominator": 4
+                        }
+                      ],
+                      "tempos": [
+                        {
+                          "time": 0,
+                          "qpm":  60
+                        }
+                      ],
+                      "quantizationInfo": { "stepsPerQuarter": 4 },
+                      "notes":[ {"pitch": 60, "quantizedStartStep": 0, "quantizedEndStep": 2 },
+                              {"pitch": 48, "quantizedStartStep": 2, "quantizedEndStep": 4 },
+                              {"pitch": 53, "quantizedStartStep": 4, "quantizedEndStep": 6 },
+                              {"pitch": 52, "quantizedStartStep": 6, "quantizedEndStep": 8 },
+                              {"pitch": 50, "quantizedStartStep": 8, "quantizedEndStep": 14 },
+                              {"pitch": 52, "quantizedStartStep": 14, "quantizedEndStep": 16 }
+                    ]
+                  },
+                  
+                  {
+                    "id":14,
+                    "sequence":[
+                        {"time":"0:0:0","value":"Am","length":"1m"}
+                      ],
+                    "melodies":
+                            [
+                              {
+                              "totalQuantizedSteps": 128,
+                              "timeSignatures": [
+                                {
+                                  "time": 0,
+                                  "numerator": 4,
+                                  "denominator": 4
+                                }
+                              ],
+                              "tempos": [
+                                {
+                                  "time": 0,
+                                  "qpm":  60
+                                }
+                              ],
+                              "quantizationInfo": { "stepsPerQuarter": 4 },
+                              "notes":[ {"pitch": 57, "quantizedStartStep": 0, "quantizedEndStep": 2 },
+                                      {"pitch": 60, "quantizedStartStep": 2, "quantizedEndStep": 4 },
+                                      {"pitch": 48, "quantizedStartStep": 4, "quantizedEndStep": 6 },
+                                      {"pitch": 50, "quantizedStartStep": 6, "quantizedEndStep": 8 },
+                                      {"pitch": 53, "quantizedStartStep": 10, "quantizedEndStep": 16 }
+      
+                              ]
+                            },                  
+   {
+    "id":15,
+    "sequence":[
+        {"time":"0:0:0","value":"G7","length":"1m"}
+      ],
+    "melodies":
+            [
+              {
+              "totalQuantizedSteps": 128,
+              "timeSignatures": [
+                {
+                  "time": 0,
+                  "numerator": 4,
+                  "denominator": 4
+                }
+              ],
+              "tempos": [
+                {
+                  "time": 0,
+                  "qpm":  60
+                }
+              ],
+              "quantizationInfo": { "stepsPerQuarter": 4 },
+              "notes":[ {"pitch": 59, "quantizedStartStep": 0, "quantizedEndStep": 2 },
+                      {"pitch": 60, "quantizedStartStep": 2, "quantizedEndStep": 4 },
+                      {"pitch": 50, "quantizedStartStep": 4, "quantizedEndStep": 6 },
+                      {"pitch": 52, "quantizedStartStep": 6, "quantizedEndStep": 8 },
+                      {"pitch": 55, "quantizedStartStep": 10, "quantizedEndStep": 16 },
+
+              ]
+            },
+
+
+ {
+                        "id":16,
+                        "sequence":[
+                            {"time":"0:0:0","value":"C7","length":"1m"}
+                          ],
+                        "melodies":
+                                [
+                                  {
+                                  "totalQuantizedSteps": 128,
+                                  "timeSignatures": [
+                                    {
+                                      "time": 0,
+                                      "numerator": 4,
+                                      "denominator": 4
+                                    }
+                                  ],
+                                  "tempos": [
+                                    {
+                                      "time": 0,
+                                      "qpm":  60
+                                    }
+                                  ],
+                                  "quantizationInfo": { "stepsPerQuarter": 4 },
+                                  "notes":[ {"pitch": 60, "quantizedStartStep": 0, "quantizedEndStep": 2 },
+                                          {"pitch": 64, "quantizedStartStep": 2, "quantizedEndStep": 4 },
+                                          {"pitch": 55, "quantizedStartStep": 4, "quantizedEndStep": 6 },
+                                          {"pitch": 57, "quantizedStartStep": 6, "quantizedEndStep": 8 },
+                                          {"pitch": 60, "quantizedStartStep": 10, "quantizedEndStep": 16 }
+
+                                  ]
+                                },
+  {
+                                  "id":17,
+                                  "sequence":[
+                                      {"time":"0:0:0","value":"F","length":"1m"}
+                                    ],
+                                  "melodies":
+                                          [
+                                            {
+                                            "totalQuantizedSteps": 128,
+                                            "timeSignatures": [
+                                              {
+                                                "time": 0,
+                                                "numerator": 4,
+                                                "denominator": 4
+                                              }
+                                            ],
+                                            "tempos": [
+                                              {
+                                                "time": 0,
+                                                "qpm":  60
+                                              }
+                                            ],
+                                            "quantizationInfo": { "stepsPerQuarter": 4 },
+                                            "notes":[ {"pitch": 57, "quantizedStartStep": 2, "quantizedEndStep": 12 },
+                                                    {"pitch": 53, "quantizedStartStep": 12, "quantizedEndStep": 14 },
+                                                    {"pitch": 52, "quantizedStartStep": 14, "quantizedEndStep": 16 }
+                                            ]
+
+                                          },
+  
+                                          {
+                                            "id":18,
+                                            "sequence":[
+                                                {"time":"0:0:0","value":"F7","length":"1m"}
+                                              ],
+                                            "melodies":
+                                                    [
+                                                      {
+                                                      "totalQuantizedSteps": 128,
+                                                      "timeSignatures": [
+                                                        {
+                                                          "time": 0,
+                                                          "numerator": 4,
+                                                          "denominator": 4
+                                                        }
+                                                      ],
+                                                      "tempos": [
+                                                        {
+                                                          "time": 0,
+                                                          "qpm":  60
+                                                        }
+                                                      ],
+                                                      "quantizationInfo": { "stepsPerQuarter": 4 },
+                                                      "notes":[ {"pitch": 53, "quantizedStartStep": 2, "quantizedEndStep": 10 },
+                                                         {"pitch": 45, "quantizedStartStep": 10, "quantizedEndStep": 14 }
+                                                      ]
+                                                    },
+                          
+                                                
+
+{
+    "id":19,
+    "sequence":[
+        {"time":"0:0:0","value":"Am","length":"1m"}
+      ],
+    "melodies":
+            [
+              {
+              "totalQuantizedSteps": 128,
+              "timeSignatures": [
+                {
+                  "time": 0,
+                  "numerator": 4,
+                  "denominator": 4
+                }
+              ],
+              "tempos": [
+                {
+                  "time": 0,
+                  "qpm":  60
+                }
+              ],
+              "quantizationInfo": { "stepsPerQuarter": 4 },
+              "notes":[ {"pitch": 55, "quantizedStartStep": 2, "quantizedEndStep": 10 },
+                      {"pitch": 45, "quantizedStartStep": 10, "quantizedEndStep": 14 }
+            
+            ]
+          },  
+    
+          {
+            "id":20,
+            "sequence":[
+                {"time":"0:0:0","value":"Am","length":"1m"}
+              ],
+            "melodies":
+                    [
+                      {
+                      "totalQuantizedSteps": 128,
+                      "timeSignatures": [
+                        {
+                          "time": 0,
+                          "numerator": 4,
+                          "denominator": 4
+                        }
+                      ],
+                      "tempos": [
+                        {
+                          "time": 0,
+                          "qpm":  60
+                        }
+                      ],
+                      "quantizationInfo": { "stepsPerQuarter": 4 },
+                      "notes":[ {"pitch": 60, "quantizedStartStep": 2, "quantizedEndStep": 10 },
+                        {"pitch": 52, "quantizedStartStep": 10, "quantizedEndStep": 14 }
+                    
+                    ]
+                  },  
+                  {
+                    "id":21,
+                    "sequence":[
+                        {"time":"0:0:0","value":"G7","length":"1m"}
+                      ],
+                    "melodies":
+                            [
+                              {
+                              "totalQuantizedSteps": 128,
+                              "timeSignatures": [
+                                {
+                                  "time": 0,
+                                  "numerator": 4,
+                                  "denominator": 4
+                                }
+                              ],
+                              "tempos": [
+                                {
+                                  "time": 0,
+                                  "qpm":  60
+                                }
+                              ],
+                              "quantizationInfo": { "stepsPerQuarter": 4 },
+                              "notes":[ {"pitch": 59, "quantizedStartStep": 2, "quantizedEndStep": 10 },
+                                      {"pitch": 50, "quantizedStartStep": 10, "quantizedEndStep": 14 }
+                            
+                            ]
+                          }, 
+                          {
+                            "id":22,
+                            "sequence":[
+                                {"time":"0:0:0","value":"C7","length":"1m"}
+                              ],
+                            "melodies":
+                                    [
+                                      {
+                                      "totalQuantizedSteps": 128,
+                                      "timeSignatures": [
+                                        {
+                                          "time": 0,
+                                          "numerator": 4,
+                                          "denominator": 4
+                                        }
+                                      ],
+                                      "tempos": [
+                                        {
+                                          "time": 0,
+                                          "qpm":  60
+                                        }
+                                      ],
+                                      "quantizationInfo": { "stepsPerQuarter": 4 },
+                                      "notes":[ {"pitch": 55, "quantizedStartStep": 2, "quantizedEndStep": 10 },
+                                              {"pitch": 52, "quantizedStartStep": 10, "quantizedEndStep": 14 }
+                                    
+                                    ]
+                                  },
+                                  
+                                  
+                                  {
+                                    "id":23,
+                                    "sequence":[
+                                        {"time":"0:0:0","value":"F","length":"1m"}
+                                      ],
+                                    "melodies":
+                                            [
+                                              {
+                                              "totalQuantizedSteps": 128,
+                                              "timeSignatures": [
+                                                {
+                                                  "time": 0,
+                                                  "numerator": 4,
+                                                  "denominator": 4
+                                                }
+                                              ],
+                                              "tempos": [
+                                                {
+                                                  "time": 0,
+                                                  "qpm":  60
+                                                }
+                                              ],
+                                              "quantizationInfo": { "stepsPerQuarter": 4 },
+                                              "notes":[ {"pitch": 57, "quantizedStartStep": 2, "quantizedEndStep": 12 },
+                                                      {"pitch": 53, "quantizedStartStep": 12, "quantizedEndStep": 14 },
+                                                      {"pitch": 52, "quantizedStartStep": 14, "quantizedEndStep": 16 }
+                                            
+                                            ]
+                                          },  
+
+                                          {
+                                            "id":24,
+                                           "sequence":[
+                                               {"time":"0:0:0","value":"F7","length":"1m"},
+                                           ],        
+                                           "melodies":[  
+                                                    {
+                                                        "totalQuantizedSteps": 128,
+                                                        "timeSignatures": [
+                                                            {
+                                                             "time": 0,
+                                                             "numerator": 4,
+                                                             "denominator": 4
+                                                            }
+                                                                ],
+                                                        "tempos": [
+                                                            {
+                                                             "time": 0,
+                                                             "qpm":  60
+                                                             }
+                                                            ],
+                                                                "quantizationInfo": { "stepsPerQuarter": 4 },
+                                                                "notes": [{"pitch": 53, "quantizedStartStep": 0, "quantizedEndStep": 2},
+                                                                  {"pitch": 52, "quantizedStartStep": 2, "quantizedEndStep": 4 },
+                                                                  {"pitch": 48, "quantizedStartStep": 4, "quantizedEndStep": 6 },
+                                                                  {"pitch": 45, "quantizedStartStep": 6, "quantizedEndStep": 8 },
+                                                                  {"pitch": 45, "quantizedStartStep": 8, "quantizedEndStep": 10 },
+                                                                  {"pitch": 48, "quantizedStartStep": 10, "quantizedEndStep": 12 },
+                                                                  {"pitch": 53, "quantizedStartStep": 12, "quantizedEndStep": 16 }, 
+                                                                  {"pitch": 57, "quantizedStartStep": 16, "quantizedEndStep": 18 }                                  
+                                                                                                       
+                                                            ]
+                                                     },
+
+                                                     {
+                                                      "id":25,
+                                                     "elementType":"background",
+                                                      "image":"../assets/BG/Background2.png",
+                                                     "sequence":[
+                                                         {"time":"0:0:0","value":"Am","length":"1m"},
+                                                     ],        
+                                                     "melodies":[  
+                                                              {
+                                                                  "totalQuantizedSteps": 128,
+                                                                  "timeSignatures": [
+                                                                      {
+                                                                       "time": 0,
+                                                                       "numerator": 4,
+                                                                       "denominator": 4
+                                                                      }
+                                                                          ],
+                                                                  "tempos": [
+                                                                      {
+                                                                       "time": 0,
+                                                                       "qpm":  60
+                                                                       }
+                                                                      ],
+                                                                          "quantizationInfo": { "stepsPerQuarter": 4 },
+                                                                          "notes": [{"pitch": 52, "quantizedStartStep": 0, "quantizedEndStep": 2},
+                                                                            {"pitch": 50, "quantizedStartStep": 2, "quantizedEndStep": 4 },
+                                                                            {"pitch": 48, "quantizedStartStep": 4, "quantizedEndStep": 6 },
+                                                                            {"pitch": 45, "quantizedStartStep": 6, "quantizedEndStep": 8 },
+                                                                            {"pitch": 45, "quantizedStartStep": 8, "quantizedEndStep": 10 },
+                                                                            {"pitch": 48, "quantizedStartStep": 10, "quantizedEndStep": 12 },
+                                                                            {"pitch": 52, "quantizedStartStep": 12, "quantizedEndStep": 16 },
+                                                                            {"pitch": 57, "quantizedStartStep": 16, "quantizedEndStep": 18 }                                  
+                                                                                                                 
+                                                                      ]
+                                                               },
+                                                               {
+                                                                "id":26,
+                                                               "elementType":"background",
+                                                                "image":"../assets/BG/Background2.png",
+                                                               "sequence":[
+                                                                   {"time":"0:0:0","value":"Am","length":"1m"},
+                                                               ],        
+                                                               "melodies":[  
+                                                                        {
+                                                                            "totalQuantizedSteps": 128,
+                                                                            "timeSignatures": [
+                                                                                {
+                                                                                 "time": 0,
+                                                                                 "numerator": 4,
+                                                                                 "denominator": 4
+                                                                                }
+                                                                                    ],
+                                                                            "tempos": [
+                                                                                {
+                                                                                 "time": 0,
+                                                                                 "qpm":  60
+                                                                                 }
+                                                                                ],
+                                                                                    "quantizationInfo": { "stepsPerQuarter": 4 },
+                                                                                    "notes": [{"pitch": 57, "quantizedStartStep": 0, "quantizedEndStep": 2},
+                                                                                      {"pitch": 52, "quantizedStartStep": 2, "quantizedEndStep": 4 },
+                                                                                      {"pitch": 50, "quantizedStartStep": 4, "quantizedEndStep": 6 },
+                                                                                      {"pitch": 48, "quantizedStartStep": 6, "quantizedEndStep": 8 },
+                                                                                      {"pitch": 48, "quantizedStartStep": 8, "quantizedEndStep": 10 },
+                                                                                      {"pitch": 52, "quantizedStartStep": 10, "quantizedEndStep": 12 },
+                                                                                      {"pitch": 57, "quantizedStartStep": 12, "quantizedEndStep": 16 },  
+                                                                                      {"pitch": 60, "quantizedStartStep": 16, "quantizedEndStep": 18 }                                  
+                                                                                                                           
+                                                                                ]
+                                                                         },
+
+                                                               {
+                                            "id":27,
+                                           "elementType":"background",
+                                            "image":"../assets/BG/Background2.png",
+                                           "sequence":[
+                                               {"time":"0:0:0","value":"F","length":"1m"},
+                                           ],        
+                                           "melodies":[  
+                                                    {
+                                                        "totalQuantizedSteps": 128,
+                                                        "timeSignatures": [
+                                                            {
+                                                             "time": 0,
+                                                             "numerator": 4,
+                                                             "denominator": 4
+                                                            }
+                                                                ],
+                                                        "tempos": [
+                                                            {
+                                                             "time": 0,
+                                                             "qpm":  60
+                                                             }
+                                                            ],
+                                                                "quantizationInfo": { "stepsPerQuarter": 4 },
+                                                                "notes": [{"pitch": 59, "quantizedStartStep": 0, "quantizedEndStep": 2},
+                                                                  {"pitch": 55, "quantizedStartStep": 2, "quantizedEndStep": 4 },
+                                                                  {"pitch": 53, "quantizedStartStep": 4, "quantizedEndStep": 6 },
+                                                                  {"pitch": 50, "quantizedStartStep": 6, "quantizedEndStep": 8 },
+                                                                  {"pitch": 50, "quantizedStartStep": 8, "quantizedEndStep": 10 },
+                                                                  {"pitch": 55, "quantizedStartStep": 10, "quantizedEndStep": 12 },
+                                                                  {"pitch": 57, "quantizedStartStep": 12, "quantizedEndStep": 16 },  
+                                                                  {"pitch": 59, "quantizedStartStep": 16, "quantizedEndStep": 18 }                                  
+                                                                                                       
+                                                            ]
+                                                     },
+                                                     
+                                                     {
+                                                      "id":28,
+                                                     "elementType":"background",
+                                                      "image":"../assets/BG/Background2.png",
+                                                     "sequence":[
+                                                         {"time":"0:0:0","value":"F","length":"1m"},
+                                                     ],        
+                                                     "melodies":[  
+                                                              {
+                                                                  "totalQuantizedSteps": 128,
+                                                                  "timeSignatures": [
+                                                                      {
+                                                                       "time": 0,
+                                                                       "numerator": 4,
+                                                                       "denominator": 4
+                                                                      }
+                                                                          ],
+                                                                  "tempos": [
+                                                                      {
+                                                                       "time": 0,
+                                                                       "qpm":  60
+                                                                       }
+                                                                      ],
+                                                                          "quantizationInfo": { "stepsPerQuarter": 4 },
+                                                                          "notes": [{"pitch": 60, "quantizedStartStep": 0, "quantizedEndStep": 2},
+                                                                            {"pitch": 55, "quantizedStartStep": 2, "quantizedEndStep": 4 },
+                                                                            {"pitch": 52, "quantizedStartStep": 4, "quantizedEndStep": 6 },
+                                                                            {"pitch": 50, "quantizedStartStep": 6, "quantizedEndStep": 8 },
+                                                                            {"pitch": 48, "quantizedStartStep": 8, "quantizedEndStep": 10 },
+                                                                            {"pitch": 52, "quantizedStartStep": 10, "quantizedEndStep": 12 },
+                                                                            {"pitch": 55, "quantizedStartStep": 12, "quantizedEndStep": 16 },  
+                                                                            {"pitch": 57, "quantizedStartStep": 16, "quantizedEndStep": 18 }                                  
+                                                                                                                 
+                                                                      ]
+                                                               },
+                                                               {
+                                                                "id":29,
+                                                               "elementType":"background",
+                                                                "image":"../assets/BG/Background2.png",
+                                                               "sequence":[
+                                                                   {"time":"0:0:0","value":"F","length":"1m"},
+                                                               ],        
+                                                               "melodies":[  
+                                                                        {
+                                                                            "totalQuantizedSteps": 128,
+                                                                            "timeSignatures": [
+                                                                                {
+                                                                                 "time": 0,
+                                                                                 "numerator": 4,
+                                                                                 "denominator": 4
+                                                                                }
+                                                                                    ],
+                                                                            "tempos": [
+                                                                                {
+                                                                                 "time": 0,
+                                                                                 "qpm":  60
+                                                                                 }
+                                                                                ],
+                                                                                    "quantizationInfo": { "stepsPerQuarter": 4 },
+                                                                                    "notes": [{"pitch": 57, "quantizedStartStep": 0, "quantizedEndStep": 2},
+                                                                                      {"pitch": 53, "quantizedStartStep": 2, "quantizedEndStep": 4 },
+                                                                                      {"pitch": 50, "quantizedStartStep": 4, "quantizedEndStep": 6 },
+                                                                                      {"pitch": 48, "quantizedStartStep": 6, "quantizedEndStep": 8 },
+                                                                                      {"pitch": 48, "quantizedStartStep": 8, "quantizedEndStep": 10 },
+                                                                                      {"pitch": 50, "quantizedStartStep": 10, "quantizedEndStep": 12 },
+                                                                                      {"pitch": 53, "quantizedStartStep": 12, "quantizedEndStep": 16 },  
+                                                                                      {"pitch": 55, "quantizedStartStep": 16, "quantizedEndStep": 18 }                                  
+                                                                                                                           
+                                                                                ]
+                                                                         }
+ 
+  ]
