@@ -2,9 +2,11 @@
 import {Scale, Note,Chord,Interval} from "@tonaljs/tonal";
 import * as Tone from "tone"
 import {Emitter} from "./eventEmitter.js"
+import {MarkovMelody} from "./markov_melody.js"
 import * as Canva from './canva.js'
 import * as Instr from './instruments.js';
 import * as effects from './effects.js';
+
 export const state= {
     effects:{
       melody:{},
@@ -28,9 +30,17 @@ export const state= {
         }),
         gain: new Tone.Gain(0.3)
     }
-  }
+}
 
-  initializeApp()
+var markovChain = require("./markov_nodes.json")
+//console.log(markovChain)
+var mm = new MarkovMelody(tree = markovChain)
+
+console.log(mm.generatePath(2))
+
+
+
+initializeApp()
 
   /**
  *  Function to initialize the main settings of the player 
