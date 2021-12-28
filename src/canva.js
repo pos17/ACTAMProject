@@ -1,13 +1,17 @@
 import * as Model from "./index.js"
 import * as Tone from 'tone'
-import {Emitter} from "./eventEmitter.js"
-//TODO: create modular structure for various environments
 
 const canvasDiv = document.getElementById('canvas-div');
 // const canva = document.getElementById('main-canvas');
 const sky = document.getElementById('sky');
+const container = document.getElementById('container')
 
-var factor = 1;
+var generateButton = document.createElement('button')
+var helpButton = document.createElement('button')
+var menuPanel = document.createElement('div')
+menuPanel.className = 'menu-panel'
+
+var factor = 8;
 var channels = ['mountain', 'seaside', 'city']
 
 
@@ -39,6 +43,7 @@ var ctx = canvas.getContext('2d');
 var bg = new Image()
 var floor = new Image()
 var building = new Image()
+var shrub = new Image()
 
 var moon = new Image();
 var sun = new Image();
@@ -62,6 +67,7 @@ var state = {
 const new_assets = {
     mountains: {
         url: new URL('../assets/BG/Mountains.png', import.meta.url),
+        previewUrl: new URL('../assets/PREVS/Mountains prev.png', import.meta.url), 
         left: 0,
         bottom: 0,
         index: 0
@@ -69,6 +75,7 @@ const new_assets = {
 
     sea: {
         url: new URL('../assets/BG/Sea.png', import.meta.url),
+        previewUrl: new URL('../assets/PREVS/Sea prev.png', import.meta.url), 
         left: 0,
         bottom: 0,
         index: 0
@@ -76,6 +83,15 @@ const new_assets = {
 
     skyline: {
         url: new URL('../assets/BG/Skyline.png', import.meta.url),
+        previewUrl: new URL('../assets/PREVS/Skyline prev.png', import.meta.url), 
+        left: 0,
+        bottom: 0,
+        index: 0
+    },
+
+    desert: {
+        url: new URL('../assets/BG/Desert.png', import.meta.url),
+        previewUrl: new URL('../assets/PREVS/Desert prev.png', import.meta.url), 
         left: 0,
         bottom: 0,
         index: 0
@@ -83,24 +99,56 @@ const new_assets = {
 
     grass: {
         url: new URL('../assets/BG/Grass.png', import.meta.url),
+        previewUrl: new URL('../assets/PREVS/Grass prev.png', import.meta.url), 
         left: 0,
         bottom: 0,
     },
 
-    sand: {
+    seaSand: {
         url: new URL('../assets/BG/Sand.png', import.meta.url),
+        previewUrl: new URL('../assets/PREVS/Sea Sand prev.png', import.meta.url), 
+        left: 0,
+        bottom: 0,
+    },
+
+    desertSand: {
+        url: new URL('../assets/BG/Desert Sand.png', import.meta.url),
+        previewUrl: new URL('../assets/PREVS/Desert Sand prev.png', import.meta.url), 
         left: 0,
         bottom: 0,
     },
 
     concrete: {
         url: new URL('../assets/BG/Concrete.png', import.meta.url),
+        previewUrl: new URL('../assets/PREVS/Concrete prev.png', import.meta.url), 
         left: 0,
         bottom: 0,
     },
 
-    house: {
-        url: new URL('../assets/HOUSE/Home.png', import.meta.url),
+    mountainHouse: {
+        url: new URL('../assets/HOUSE/Mountain Home.png', import.meta.url),
+        previewUrl: new URL('../assets/HOUSE/Mountain Home.png', import.meta.url),
+        left: 0.7,
+        bottom: 0.1,
+    },
+    
+    seaHouse: {
+        url: new URL('../assets/HOUSE/Sea Home.png', import.meta.url),
+        previewUrl: new URL('../assets/HOUSE/Sea Home.png', import.meta.url),
+        left: 0.7,
+        bottom: 0.1,
+    },
+
+    cityHouse: {
+        url: new URL('../assets/HOUSE/City Home.png', import.meta.url),
+        previewUrl: new URL('../assets/HOUSE/City Home.png', import.meta.url),
+        left: 0.7,
+        bottom: 0.1,
+    },
+
+    desertHouse: {
+        url: new URL('../assets/HOUSE/Desert Home.png', import.meta.url),
+        previewUrl: new URL('../assets/HOUSE/Desert Home.png', import.meta.url),
         left: 0.7,
         bottom: 0.1,
     },
@@ -127,45 +175,92 @@ const new_assets = {
         url: [new URL('../assets/Small Star.png', import.meta.url), new URL('../assets/Big Star.png', import.meta.url),],  
     },
 
-    trees: {
-        url: {
-            Maj: new URL('../assets/TREES/Tree Maj.png', import.meta.url),
-            Min: new URL('../assets/TREES/Tree Min.png', import.meta.url),
-            Alt: new URL('../assets/TREES/Tree Alt.png', import.meta.url),
-        },
-        left: 0,
-        bottom: 0,
-    }  
+    tree1: {
+        url: new URL('../assets/TREES/Tree Alt.png', import.meta.url),
+        previewUrl: new URL('../assets/TREES/Tree Alt.png', import.meta.url),
+        left: 0.35,
+        bottom: 0.09,
+    }, 
+
+    tree2: {
+        url: new URL('../assets/TREES/Tree Maj.png', import.meta.url),
+        previewUrl: new URL('../assets/TREES/Tree Maj.png', import.meta.url),
+        left: 0.2,
+        bottom: 0.15,
+    },
+    
+    tree3: {
+        url: new URL('../assets/TREES/Tree Min.png', import.meta.url),
+        previewUrl: new URL('../assets/TREES/Tree Min.png', import.meta.url),
+        left: 0.2,
+        bottom: 0.1,
+    }, 
+
+    palm: {
+        url: new URL('../assets/TREES/Palm.png', import.meta.url),
+        previewUrl: new URL('../assets/TREES/Palm.png', import.meta.url),
+        left: 0.3,
+        bottom: 0.1,
+    }, 
+
+    streetLamp: {
+        url: new URL('../assets/TREES/Street Lamp.png', import.meta.url),
+        previewUrl: new URL('../assets/TREES/Street Lamp.png', import.meta.url),
+        left: 0.3,
+        bottom: 0.1,
+    },
+
+    cactus: {
+        url: new URL('../assets/TREES/Cactus.png', import.meta.url),
+        previewUrl: new URL('../assets/TREES/Cactus.png', import.meta.url),
+        left: 0.3,
+        bottom: 0.1,
+    },
 }
+
+// TODO: environment
 
 const environment = {
     mountain: {
         background: new_assets.mountains,
         floor: new_assets.grass,
-        building: new_assets.house,
+        building: new_assets.mountainHouse,
+        shrub: new_assets.tree3,
     },
     desert: {
-        background: new_assets.desertMountains,
-        floor: {},
-        building: {},
+        background: new_assets.desert,
+        floor: new_assets.desertSand,
+        building: new_assets.desertHouse,
+        shrub: new_assets.cactus,
     },
     city: {
         background: new_assets.skyline,
         floor: new_assets.concrete,
-        building: new_assets.house,
+        building: new_assets.cityHouse,
+        shrub: new_assets.streetLamp,
     },
     seaside: {
         background: new_assets.sea,
-        floor: new_assets.sand,
-        building: new_assets.house,
+        floor: new_assets.seaSand,
+        building: new_assets.seaHouse,
+        shrub: new_assets.palm,
     }
+}
+
+var environmentToGenerate = {
+    background: "mountain",
+    floor: "mountain",
+    building: "mountain",
+    shrub: "mountain",
 }
 
 function initImages(env){
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    bg.src = environment[env].background.url
-    floor.src = environment[env].floor.url
-    building.src = environment[env].building.url
+
+    bg.src = environment[env.background].background.url
+    floor.src = environment[env.floor].floor.url
+    building.src = environment[env.building].building.url
+    shrub.src = environment[env.shrub].shrub.url
 
     moon.src = new_assets.moon.url;
     sun.src = new_assets.sun.url;
@@ -176,14 +271,17 @@ function initImages(env){
 
     state.assets.stars = []
 
-    for (i=0; i<250; i++){
+    var numOfStars = 32
+
+    for (i=0; i<numOfStars; i++){
         var aStar = {img: star, left: Math.random(), bottom: 1-(Math.random()*0.7)}
         state.assets.stars.push(aStar);
     }
 
     console.log(state.assets.stars)
 
-    window.requestAnimationFrame(()=>{createEnvironment(env)});
+    // window.requestAnimationFrame(()=>{createEnvironment(env)});
+    window.requestAnimationFrame(()=>{createEnvironment(environmentToGenerate)});
 }
 
 
@@ -247,13 +345,15 @@ function createEnvironment(env) {
     ctx.restore()
     
     // STATIC IMAGES
-    drawThisImage(bg, environment[env].background.left, environment[env].background.bottom);
-    drawThisImage(floor, environment[env].floor.left, environment[env].floor.bottom);
-    drawThisImage(building, environment[env].building.left, environment[env].building.bottom);
+    drawThisImage(bg, environment[env.background].background.left, environment[env.background].background.bottom);
+    drawThisImage(floor, environment[env.floor].floor.left, environment[env.floor].floor.bottom);
+    drawThisImage(building, environment[env.building].building.left, environment[env.building].building.bottom);
+    drawThisImage(shrub, environment[env.shrub].shrub.left, environment[env.shrub].shrub.bottom);
 
     // blendBG()
 
-    window.requestAnimationFrame(() => {createEnvironment(env)});
+    // window.requestAnimationFrame(() => {createEnvironment(env)});
+    globalThis.framereq = window.requestAnimationFrame(() => {createEnvironment(environmentToGenerate)});
 }
 
 function blendBG() {
@@ -271,8 +371,106 @@ function blendBG() {
     }
 }
 
-initImages(state.environment);  
+// initImages(state.environment);  
+initImages(environmentToGenerate);  
 
+
+/* CREATING MENU' */
+
+function createMenu () {
+    
+    var btnContainer = document.createElement('div')
+    btnContainer.className = 'token-btn-container'
+    // TODO: ciclo per creare in modo modulare i bottoni dalla struttura environment
+
+    // cycle each environment to create each row 
+    for (let env in environment) {
+        var btnDiv = document.createElement('div')
+        btnDiv.className = 'token-btn-div'    
+        // console.log(env)
+
+        // cycle every element of the environment
+        for (let asset of Object.entries(environment[env])) {
+
+            console.log('env: '+env)
+            console.log(asset[1])
+
+            var img = document.createElement('img')
+            img.src = asset[1].previewUrl
+            img.className = 'token-image'
+
+            var btn = document.createElement('button')
+
+            btn.className = 'nes-btn'
+            btn.classList.add('token-btn')
+            btn.classList.add(asset[0])
+            btn.classList.add(env)
+
+            btn.style.margin = '7px'
+            btn.style.marginLeft = 'auto'
+            btn.style.marginRight = 'auto'
+
+            btn.appendChild(img)
+            btnDiv.appendChild(btn)
+        }
+        btnContainer.appendChild(btnDiv)
+    }
+
+    menuPanel.appendChild(btnContainer)
+
+    generateButton.className = 'nes-btn is-success'
+    generateButton.innerText = 'GENERATE'
+    generateButton.style.display = 'block'
+    generateButton.style.margin = 'auto'
+    generateButton.style.marginTop = '20px'
+    generateButton.style.verticalAlign = 'middle'
+
+    helpButton.className = 'nes-btn is-warning'
+    helpButton.innerText = '?'
+    helpButton.style.display = 'block'
+    helpButton.style.margin = 'auto' 
+    helpButton.style.marginTop = '20px'
+    helpButton.style.verticalAlign = 'middle'
+
+    var btnDiv = document.createElement('div')
+        btnDiv.style.display = 'block'
+        btnDiv.style.height = 'max-content'
+        btnDiv.style.marginTop = '10%'
+        btnDiv.style.textAlign = 'center'
+
+    var title = document.createElement('p')
+        title.innerText = 'MENU'
+        title.style.backgroundColor = 'rgb(245, 247, 99)'
+        title.style.padding = '10px'
+        title.style.borderRadius = '5px'
+        title.style.marginTop = '40%'
+        title.style.fontSize = 'x-large'
+    
+
+    btnDiv.appendChild(helpButton)
+    btnDiv.appendChild(generateButton)
+    btnDiv.appendChild(title)
+
+    menuPanel.appendChild(btnDiv)
+
+    container.appendChild(menuPanel)
+
+    console.log('envToGen: ')
+    console.log(Object.keys(environmentToGenerate))
+
+    // selecting active buttons
+    document.querySelectorAll('.token-btn').forEach((btn)=>{
+        for(let i of Object.keys(environmentToGenerate)){
+            console.log(environmentToGenerate[i])
+            if (btn.classList.contains(i) && btn.classList.contains(environmentToGenerate[i])){
+                btn.classList.add('selected-btn')
+            }
+        }
+        
+    })
+}
+
+createMenu()
 
 /* -------------------------------------------------------- */
 
@@ -312,10 +510,29 @@ playButton.onclick = ()=> {
         }
 }
 
-document.getElementById('change').onclick = () => {
-    var idx = channels.indexOf(state.environment)
-    idx = (idx + 1) % channels.length
-    state.environment = channels[idx]; 
-    
-    initImages(state.environment)
+document.querySelectorAll('.token-btn').forEach((btn)=>{
+
+    btn.addEventListener('click', ()=>{
+        var env = btn.classList[3]
+        var el = btn.classList[2]
+
+        document.querySelectorAll('.'+ el).forEach((elem)=>{elem.classList.remove('selected-btn')})
+        btn.classList.add('selected-btn')
+
+        environmentToGenerate[el] = env
+
+        console.log(environmentToGenerate)
+        
+    })
+})
+
+
+generateButton.onclick = () => {
+    menuPanel.style.display = 'none'
+    cancelAnimationFrame(framereq)
+    initImages(environmentToGenerate)
+}
+
+document.getElementById('menu').onclick = () => {
+    menuPanel.style.display = 'inline-flex  '
 }
