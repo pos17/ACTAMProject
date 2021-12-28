@@ -12,20 +12,19 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@babel/core": "^7.16.0",
-    "@babel/plugin-transform-runtime": "^7.16.0",
-    "@babel/runtime-corejs2": "^7.16.3",
+    "@babel/core": "^7.16.5",
+    "@babel/plugin-transform-runtime": "^7.16.5",
+    "@babel/runtime-corejs2": "^7.16.5",
     "babel-cli": "^6.26.0",
     "parcel": "^2.0.1",
     "rimraf": "^3.0.2"
   },
   "dependencies": {
-    "@magenta/music": "^1.23.1",
     "@parcel/fs": "^2.0.1",
-    "@tensorflow/tfjs": "^3.11.0",
     "@tonaljs/tonal": "^4.6.5",
     "eventemitter3": "^4.0.7",
     "nes.css": "^2.3.0",
+    "tone": "^14.7.77",
     "web-worker": "^1.2.0"
   }
 }

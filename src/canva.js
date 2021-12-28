@@ -496,7 +496,8 @@ okButton.onclick = () => {
         document.getElementById('start-panel').hidden = false;
         Model.state.emitter.updateReadyToPlay()
         Tone.start()
-        Tone.setContext(new Tone.Context({ latencyHint : "playback" }))
+        //Tone.setContext(new Tone.Context({ latencyHint : "balanced" }))
+        Tone.context.latencyHint = "playback"
     }    
 }
 

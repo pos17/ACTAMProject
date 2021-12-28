@@ -1,0 +1,29 @@
+[
+    {
+        "id":0,
+        "sequence":[
+            {"time":"0:0:0","value":"F","length":"1m"}
+        ],
+        "melody": {
+                    "totalQuantizedSteps": 16,
+                    "timeSignatures": [
+                    {
+                        "time": 0,
+                        "numerator": 4,
+                        "denominator": 4
+                    }
+                    ],
+                    "tempos": [
+                    {
+                        "time": 0,
+                        "qpm":  60
+                    }
+                    ],
+                    "quantizationInfo": { "stepsPerQuarter": 4 },
+                    "notes":[ {"pitch": 60, "quantizedStartStep": 4, "quantizedEndStep": 6 },
+                            {"pitch": 59, "quantizedStartStep": 6, "quantizedEndStep": 10 },
+                            {"pitch": 53, "quantizedStartStep": 10, "quantizedEndStep": 16 }
+                    ]
+                }
+    }
+]

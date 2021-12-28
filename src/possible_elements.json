@@ -1,0 +1,120 @@
+[
+  {
+    "id":10,
+    "elementType":"background",
+    "image":"../assets/BG/Background2.png",
+    "sequence":[
+        {"time":"0:0:0","value":"F","length":"1m"},
+        {"time":"1:0:0","value":"Am","length":"1m"},
+        {"time":"2:0:0","value":"Am","length":"1m"},
+        {"time":"3:0:0","value":"G","length":"1m"}
+      ],
+    "melodies":[  
+            {
+              "totalQuantizedSteps": 64,
+              "timeSignatures": [
+                {
+                  "time": 0,
+                  "numerator": 4,
+                  "denominator": 4
+                }
+              ],
+              "tempos": [
+                {
+                  "time": 0,
+                  "qpm":  60
+                }
+              ],
+              "quantizationInfo": { "stepsPerQuarter": 4 },
+              "notes":[ {"pitch": 60, "quantizedStartStep": 4, "quantizedEndStep": 6 },
+                      {"pitch": 59, "quantizedStartStep": 6, "quantizedEndStep": 10 },
+                      {"pitch": 53, "quantizedStartStep": 10, "quantizedEndStep": 16 },
+                      {"pitch": 60, "quantizedStartStep": 16, "quantizedEndStep": 20 },
+                      {"pitch": 59, "quantizedStartStep": 20, "quantizedEndStep": 24 },
+                      {"pitch": 52, "quantizedStartStep": 24, "quantizedEndStep": 32 },
+                      {"pitch": 60, "quantizedStartStep": 32, "quantizedEndStep": 34 },
+                      {"pitch": 59, "quantizedStartStep": 34, "quantizedEndStep": 38 },
+                      {"pitch": 55, "quantizedStartStep": 38, "quantizedEndStep": 42 },
+                      {"pitch": 52, "quantizedStartStep": 42, "quantizedEndStep": 44 },
+                      {"pitch": 50, "quantizedStartStep": 44, "quantizedEndStep": 48 },
+                      {"pitch": 52, "quantizedStartStep": 50, "quantizedEndStep": 54 },
+                      {"pitch": 59, "quantizedStartStep": 54, "quantizedEndStep": 58},
+                      {"pitch": 59, "quantizedStartStep": 58, "quantizedEndStep": 64 }
+              ]
+            },
+            {
+              "totalQuantizedSteps": 64,
+              "timeSignatures": [
+                {
+                  "time": 0,
+                  "numerator": 4,
+                  "denominator": 4
+                }
+              ],
+              "tempos": [
+                {
+                  "time": 0,
+                  "qpm":  60
+                }
+              ],
+              "quantizationInfo": { "stepsPerQuarter": 4 },
+              "notes":[ {"pitch": 65, "quantizedStartStep": 2, "quantizedEndStep": 10 },
+                      {"pitch": 57, "quantizedStartStep": 10, "quantizedEndStep": 14 },
+                      {"pitch": 67, "quantizedStartStep": 18, "quantizedEndStep": 26 },
+                      {"pitch": 57, "quantizedStartStep": 26, "quantizedEndStep": 30 },
+                      {"pitch": 72, "quantizedStartStep": 34, "quantizedEndStep": 42 },
+                      {"pitch": 62, "quantizedStartStep": 42, "quantizedEndStep": 48 },
+                      {"pitch": 76, "quantizedStartStep": 50, "quantizedEndStep": 60 },
+                      {"pitch": 72, "quantizedStartStep": 60, "quantizedEndStep": 62 },
+                      {"pitch": 71, "quantizedStartStep": 62, "quantizedEndStep": 64 }
+              ]
+            }
+    ]
+  },
+
+    {
+        "id":20,
+        "elementType":"landscape",
+        "image":"../assets/BG/Mountains.png",
+        "instrument":"pad",
+        "effect":"chorus"
+    },
+    {
+        "id":30,
+        "elementType":"building",
+        "image":"../assets/HOUSE/Home.png",
+        "instrument":"lead"
+    },
+    {
+        "id":40,
+        "elementType":"plant",
+        "image":"../assets/TREES/Tree Maj.png",
+        "modEffect":"chorus"
+    },
+    {
+        "id":41,
+        "elementType":"plant",
+        "image":"../assets/TREES/Tree Min.png",
+        "modEffect":"chorus"
+    },
+    {
+        "id":42,
+        "elementType":"plant",
+        "image":"../assets/TREES/Tree Alt.png",
+        "modEffect":"chorus"
+    },
+    {
+      "id":50,
+      "elementType":"astrum",
+      "image":"../assets/MOON/Moon1.png",
+      "positionsArray":[
+        { "x":0, "y":0},
+        { "x":1, "y":1},
+        { "x":2, "y":2},
+        { "x":3, "y":3},
+        { "x":4, "y":4},
+        { "x":5, "y":5}
+      ]
+  }
+
+]
