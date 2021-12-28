@@ -815,65 +815,62 @@
                     }
                 ]
             },
+    {
+        "id":"28",
+        "links":[
             {
                 "id":"28",
-                "links":[
-                    {
-                        "id":"28",
-                        "probability":"0.24"
-                    },
-                    {
-                        "id":"29",
-                        "probability":"0.24"
-                    },
-                    {
-                        "id":"5",
-                        "probability":"0.13"
-                    },
-                    {
-                        "id":"11",
-                        "probability":"0.13"
-                    },
-                    {
-                        "id":"17",
-                        "probability":"0.13"
-                    },
-                    {
-                        "id":"23",
-                        "probability":"0.13"
-                    }
-                ]
+                "probability":"0.24"
             },
             {
                 "id":"29",
-                "links":[
-                    {
-                        "id":"29",
-                        "probability":"0.24"
-                    },
-                    {
-                        "id":"24",
-                        "probability":"0.24"
-                    },
-                    {
-                        "id":"0",
-                        "probability":"0.13"
-                    },
-                    {
-                        "id":"6",
-                        "probability":"0.13"
-                    },
-                    {
-                        "id":"12",
-                        "probability":"0.13"
-                    },
-                    {
-                        "id":"18",
-                        "probability":"0.13"
-                    }
-                ]
+                "probability":"0.24"
+            },
+            {
+                "id":"5",
+                "probability":"0.13"
+            },
+            {
+                "id":"11",
+                "probability":"0.13"
+            },
+            {
+                "id":"17",
+                "probability":"0.13"
+            },
+            {
+                "id":"23",
+                "probability":"0.13"
             }
-        
-        
-
+        ]
+    },
+    {
+        "id":"29",
+        "links":[
+            {
+                "id":"29",
+                "probability":"0.24"
+            },
+            {
+                "id":"24",
+                "probability":"0.24"
+            },
+            {
+                "id":"0",
+                "probability":"0.13"
+            },
+            {
+                "id":"6",
+                "probability":"0.13"
+            },
+            {
+                "id":"12",
+                "probability":"0.13"
+            },
+            {
+                "id":"18",
+                "probability":"0.13"
+            }
+        ]
+    }
 ]
