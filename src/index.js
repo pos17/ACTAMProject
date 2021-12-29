@@ -22,7 +22,7 @@ export const state= {
     bpm:60,
     totalLength:"",
     drawing:undefined,
-    possibleValues:require("./possible_elements.json"),
+    possibleValues: require("./possible_elements.json"),
     master: {
         compressor: new Tone.Compressor({
           threshold: -15,

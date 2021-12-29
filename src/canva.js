@@ -381,8 +381,6 @@ function createMenu () {
     
     var btnContainer = document.createElement('div')
     btnContainer.className = 'token-btn-container'
-    // TODO: ciclo per creare in modo modulare i bottoni dalla struttura environment
-
     // cycle each environment to create each row 
     for (let env in environment) {
         var btnDiv = document.createElement('div')

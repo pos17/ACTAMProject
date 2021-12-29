@@ -2,7 +2,13 @@
   {
     "id":10,
     "elementType":"background",
-    "image":"../assets/BG/Background2.png",
+    "image": {
+      "url": "../assets/BG/Background2.png",
+      "previewUrl": "", 
+      "left": 0,
+      "bottom": 0,
+      "index": 0
+    },
     "sequence":[
         {"time":"0:0:0","value":"F","length":"1m"},
         {"time":"1:0:0","value":"Am","length":"1m"},
@@ -72,49 +78,55 @@
     ]
   },
 
-    {
-        "id":20,
-        "elementType":"landscape",
-        "image":"../assets/BG/Mountains.png",
-        "instrument":"pad",
-        "effect":"chorus"
-    },
-    {
-        "id":30,
-        "elementType":"building",
-        "image":"../assets/HOUSE/Home.png",
-        "instrument":"lead"
-    },
-    {
-        "id":40,
-        "elementType":"plant",
-        "image":"../assets/TREES/Tree Maj.png",
-        "modEffect":"chorus"
-    },
-    {
-        "id":41,
-        "elementType":"plant",
-        "image":"../assets/TREES/Tree Min.png",
-        "modEffect":"chorus"
-    },
-    {
-        "id":42,
-        "elementType":"plant",
-        "image":"../assets/TREES/Tree Alt.png",
-        "modEffect":"chorus"
-    },
-    {
-      "id":50,
-      "elementType":"astrum",
-      "image":"../assets/MOON/Moon1.png",
-      "positionsArray":[
-        { "x":0, "y":0},
-        { "x":1, "y":1},
-        { "x":2, "y":2},
-        { "x":3, "y":3},
-        { "x":4, "y":4},
-        { "x":5, "y":5}
-      ]
-  }
+  {
+      "id":20,
+      "elementType":"landscape",
+      "environment": "mountain",
+      "image":"../assets/BG/Mountains.png",
+      "instrument":"pad",
+      "effect":"chorus"
+  },
+
+  {
+      "id":30,
+      "elementType":"building",
+      "image":"../assets/HOUSE/Home.png",
+      "instrument":"lead"
+  },
+
+  {
+      "id":40,
+      "elementType":"plant",
+      "image":"../assets/TREES/Tree Maj.png",
+      "modEffect":"chorus"
+  },
+
+  {
+      "id":41,
+      "elementType":"plant",
+      "image":"../assets/TREES/Tree Min.png",
+      "modEffect":"chorus"
+  },
+
+  {
+      "id":42,
+      "elementType":"plant",
+      "image":"../assets/TREES/Tree Alt.png",
+      "modEffect":"chorus"
+  },
+  
+  {
+    "id":50,
+    "elementType":"astrum",
+    "image":"../assets/MOON/Moon1.png",
+    "positionsArray":[
+      { "x":0, "y":0},
+      { "x":1, "y":1},
+      { "x":2, "y":2},
+      { "x":3, "y":3},
+      { "x":4, "y":4},
+      { "x":5, "y":5}
+    ]
+}
 
 ]
