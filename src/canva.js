@@ -248,12 +248,16 @@ const environment = {
     }
 }
 
+// -------------------------------
+
 var environmentToGenerate = {
     background: "mountain",
     floor: "mountain",
     building: "mountain",
     shrub: "mountain",
 }
+
+// --------------------------------
 
 function initImages(env){
     ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -391,7 +395,7 @@ function createMenu () {
         for (let asset of Object.entries(environment[env])) {
 
             console.log('env: '+env)
-            console.log(asset[1])
+            console.log(asset)
 
             var img = document.createElement('img')
             img.src = asset[1].previewUrl
@@ -452,9 +456,6 @@ function createMenu () {
     menuPanel.appendChild(btnDiv)
 
     container.appendChild(menuPanel)
-
-    console.log('envToGen: ')
-    console.log(Object.keys(environmentToGenerate))
 
     // selecting active buttons
     document.querySelectorAll('.token-btn').forEach((btn)=>{
@@ -517,11 +518,8 @@ document.querySelectorAll('.token-btn').forEach((btn)=>{
 
         environmentToGenerate[el] = env
 
-        console.log(environmentToGenerate)
-        
     })
 })
-
 
 generateButton.onclick = () => {
     menuPanel.style.display = 'none'
