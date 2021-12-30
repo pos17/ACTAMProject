@@ -3,7 +3,7 @@
         "isChanged":true,
         "background":"../assets/BG/Background2.png",
         "landscape":"../assets/BG/Mountains.png",
-        "bottom":"../assets/BG/Grass.png",
+        "floor":"../assets/BG/Grass.png",
         "building":"../assets/HOUSE/Home.png",
         "plants":[
             "../assets/TREES/Tree Maj.png",
