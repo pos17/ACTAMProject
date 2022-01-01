@@ -54,11 +54,15 @@ async function initializeApp() {
     Tone.Destination.chain(state.master.compressor,state.master.gain)
     await buildInstruments()
     console.log(state.instruments)
+    await Canva.createMenu()
     propagateStateChanges(state.isFirst)
     Canva.playableButton(true)
 }
 
-
+// {
+//   "__idEnvStructure": "1x -> mountain, 2x -> desert, 3x -> city, 4x -> seaside, 5x -> skyelement",
+//   "__idElemStructure": "x1 -> background, x2 -> landscape, x3 -> floor, x4 -> building, x5 -> shrub"
+// },
 /**
  * 
  * @param {bool} isFirst values that states if the function is called during the initialization 

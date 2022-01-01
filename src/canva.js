@@ -218,6 +218,7 @@ const new_assets = {
     },
 }
 
+
 // TODO: environment
 
 const environment = {
@@ -377,32 +378,43 @@ initImages(environmentToGenerate);
 
 /* CREATING MENU' */
 
-function createMenu () {
-    
+export async function createMenu () {
+    console.log("menu Creation")
     var btnContainer = document.createElement('div')
     btnContainer.className = 'token-btn-container'
     // cycle each environment to create each row 
-    for (let env in environment) {
+
+    console.log(Model.state.possibleValues.elementTypes)
+    for (let elType of Model.state.possibleValues.elementTypes) {
+        console.log(elType)
         var btnDiv = document.createElement('div')
         btnDiv.className = 'token-btn-div'    
-        // console.log(env)
-
+        
+        let toPutIn = []
+        for(let datum of Model.state.possibleValues.data) {
+            if(datum.elementType === elType) {
+                toPutIn.push(datum)
+            }
+        }
         // cycle every element of the environment
-        for (let asset of Object.entries(environment[env])) {
-
-            console.log('env: '+env)
-            console.log(asset[1])
-
+        console.log("toPutIn:")
+        console.log(toPutIn)
+        for (let datum of toPutIn) {
+            console.log('datum: ')
+            console.log(datum)
+            //console.log(asset[1])
+            console.log(datum.image.previewUrl)
+            aNewSrc = new URL(datum.image.previewUrl, import.meta.url);
             var img = document.createElement('img')
-            img.src = asset[1].previewUrl
+            img.src = aNewSrc//asset[1].previewUrl
             img.className = 'token-image'
 
             var btn = document.createElement('button')
 
             btn.className = 'nes-btn'
             btn.classList.add('token-btn')
-            btn.classList.add(asset[0])
-            btn.classList.add(env)
+            btn.classList.add(datum.elementType)//asset[0])
+            btn.classList.add(datum.environment)
 
             btn.style.margin = '7px'
             btn.style.marginLeft = 'auto'
@@ -468,7 +480,7 @@ function createMenu () {
     })
 }
 
-createMenu()
+//createMenu()
 
 /* -------------------------------------------------------- */
 

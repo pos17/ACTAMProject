@@ -1,380 +1,259 @@
-[
-  {
-    "__idEnvStructure": "1x -> mountain, 2x -> desert, 3x -> city, 4x -> seaside, 5x -> skyelement",
-    "__idElemStructure": "x1 -> background, x2 -> landscape, x3 -> floor, x4 -> building, x5 -> shrub"
-  },
-  {
-    "id": 11,
-    "elementType":"background",
-    "image": {
-      "url": "../assets/BG/Background1.png",
-      "previewUrl": "", 
-      "left": 0,
-      "bottom": 0,
-      "index": 0
+{
+  "elementTypes":[
+    "landscape",
+    "floor",
+    "building",
+    "shrub"
+  ],
+  "data":[
+    {
+      "id": 11,
+      "elementType": "background",
+      "image": {
+        "url": "../assets/BG/Background1.png",
+        "previewUrl": "",
+        "left": 0,
+        "bottom": 0,
+        "index": 0
+      }
     },
-    "sequence":[
-        {"time":"0:0:0","value":"F","length":"1m"},
-        {"time":"1:0:0","value":"Am","length":"1m"},
-        {"time":"2:0:0","value":"Am","length":"1m"},
-        {"time":"3:0:0","value":"G","length":"1m"}
-      ],
-    "melodies":[  
-            {
-              "totalQuantizedSteps": 64,
-              "timeSignatures": [
-                {
-                  "time": 0,
-                  "numerator": 4,
-                  "denominator": 4
-                }
-              ],
-              "tempos": [
-                {
-                  "time": 0,
-                  "qpm":  60
-                }
-              ],
-              "quantizationInfo": { "stepsPerQuarter": 4 },
-              "notes":[ {"pitch": 60, "quantizedStartStep": 4, "quantizedEndStep": 6 },
-                      {"pitch": 59, "quantizedStartStep": 6, "quantizedEndStep": 10 },
-                      {"pitch": 53, "quantizedStartStep": 10, "quantizedEndStep": 16 },
-                      {"pitch": 60, "quantizedStartStep": 16, "quantizedEndStep": 20 },
-                      {"pitch": 59, "quantizedStartStep": 20, "quantizedEndStep": 24 },
-                      {"pitch": 52, "quantizedStartStep": 24, "quantizedEndStep": 32 },
-                      {"pitch": 60, "quantizedStartStep": 32, "quantizedEndStep": 34 },
-                      {"pitch": 59, "quantizedStartStep": 34, "quantizedEndStep": 38 },
-                      {"pitch": 55, "quantizedStartStep": 38, "quantizedEndStep": 42 },
-                      {"pitch": 52, "quantizedStartStep": 42, "quantizedEndStep": 44 },
-                      {"pitch": 50, "quantizedStartStep": 44, "quantizedEndStep": 48 },
-                      {"pitch": 52, "quantizedStartStep": 50, "quantizedEndStep": 54 },
-                      {"pitch": 59, "quantizedStartStep": 54, "quantizedEndStep": 58},
-                      {"pitch": 59, "quantizedStartStep": 58, "quantizedEndStep": 64 }
-              ]
-            },
-            {
-              "totalQuantizedSteps": 64,
-              "timeSignatures": [
-                {
-                  "time": 0,
-                  "numerator": 4,
-                  "denominator": 4
-                }
-              ],
-              "tempos": [
-                {
-                  "time": 0,
-                  "qpm":  60
-                }
-              ],
-              "quantizationInfo": { "stepsPerQuarter": 4 },
-              "notes":[ {"pitch": 65, "quantizedStartStep": 2, "quantizedEndStep": 10 },
-                      {"pitch": 57, "quantizedStartStep": 10, "quantizedEndStep": 14 },
-                      {"pitch": 67, "quantizedStartStep": 18, "quantizedEndStep": 26 },
-                      {"pitch": 57, "quantizedStartStep": 26, "quantizedEndStep": 30 },
-                      {"pitch": 72, "quantizedStartStep": 34, "quantizedEndStep": 42 },
-                      {"pitch": 62, "quantizedStartStep": 42, "quantizedEndStep": 48 },
-                      {"pitch": 76, "quantizedStartStep": 50, "quantizedEndStep": 60 },
-                      {"pitch": 72, "quantizedStartStep": 60, "quantizedEndStep": 62 },
-                      {"pitch": 71, "quantizedStartStep": 62, "quantizedEndStep": 64 }
-              ]
-            }
-    ]
-  },
-
-  {
-    "id": 12,
-    "elementType":"background",
-    "image": {
-      "url": "../assets/BG/Background2.png",
-      "previewUrl": "", 
-      "left": 0,
-      "bottom": 0,
-      "index": 0
+    {
+      "id": 12,
+      "elementType": "background",
+      "image": {
+        "url": "../assets/BG/Background2.png",
+        "previewUrl": "",
+        "left": 0,
+        "bottom": 0,
+        "index": 0
+      }
+    },
+    {
+      "id": 13,
+      "elementType": "background",
+      "image": {
+        "url": "../assets/BG/Background3.png",
+        "previewUrl": "",
+        "left": 0,
+        "bottom": 0,
+        "index": 0
+      }
+    },
+    {
+      "id": 14,
+      "elementType": "background",
+      "image": {
+        "url": "../assets/BG/Background4.png",
+        "previewUrl": "",
+        "left": 0,
+        "bottom": 0,
+        "index": 0
+      }
+    },
+    {
+      "id": 12,
+      "elementType": "landscape",
+      "environment": "mountain",
+      "image": {
+        "url": "../assets/BG/Mountains.png",
+        "previewUrl": "../assets/PREVS/Mountains prev.png",
+        "left": 0,
+        "bottom": 0,
+        "index": 0
+      },
+      "instrument": "pad",
+      "effect": "chorus"
+    },
+    {
+      "id": 22,
+      "elementType": "landscape",
+      "environment": "desert",
+      "image": {
+        "url": "../assets/BG/Desert.png",
+        "previewUrl": "../assets/PREVS/Desert prev.png",
+        "left": 0,
+        "bottom": 0,
+        "index": 0
+      },
+      "instrument": "",
+      "effect": ""
+    },
+    {
+      "id": 32,
+      "elementType": "landscape",
+      "environment": "city",
+      "image": {
+        "url": "../assets/BG/Skyline.png",
+        "previewUrl": "../assets/PREVS/Skyline prev.png",
+        "left": 0,
+        "bottom": 0,
+        "index": 0
+      },
+      "instrument": "",
+      "effect": ""
+    },
+    {
+      "id": 42,
+      "elementType": "landscape",
+      "environment": "seaside",
+      "image": {
+        "url": "../assets/BG/Sea.png",
+        "previewUrl": "../assets/PREVS/Sea prev.png",
+        "left": 0,
+        "bottom": 0,
+        "index": 0
+      },
+      "instrument": "",
+      "effect": ""
+    },
+    {
+      "id": 13,
+      "elementType": "floor",
+      "environment": "mountain",
+      "image": {
+        "url": "../assets/BG/Grass.png",
+        "previewUrl": "../assets/BG/Grass prev.png",
+        "left": 0,
+        "bottom": 0
+      },
+      "instrument": ""
+    },
+    {
+      "id": 23,
+      "elementType": "floor",
+      "environment": "desert",
+      "image": {
+        "url": "../assets/BG/Desert Sand.png",
+        "previewUrl": "../assets/BG/Desert Sand prev.png",
+        "left": 0,
+        "bottom": 0
+      },
+      "instrument": ""
+    },
+    {
+      "id": 33,
+      "elementType": "floor",
+      "environment": "city",
+      "image": {
+        "url": "../assets/BG/Concrete.png",
+        "previewUrl": "../assets/BG/Concrete prev.png",
+        "left": 0,
+        "bottom": 0
+      },
+      "instrument": ""
+    },
+    {
+      "id": 43,
+      "elementType": "floor",
+      "environment": "seaside",
+      "image": {
+        "url": "../assets/BG/Sand.png",
+        "previewUrl": "../assets/BG/Sea Sand prev.png",
+        "left": 0,
+        "bottom": 0
+      },
+      "instrument": ""
+    },
+    {
+      "id": 14,
+      "elementType": "building",
+      "environment": "mountain",
+      "image": {
+        "url": "../assets/HOUSE/Mountain Home.png",
+        "previewUrl": "../assets/HOUSE/Mountain Home.png",
+        "left": 0.7,
+        "bottom": 0.1
+      },
+      "instrument": "lead"
+    },
+    {
+      "id": 24,
+      "elementType": "building",
+      "environment": "desert",
+      "image": {
+        "url": "../assets/HOUSE/Desert Home.png",
+        "previewUrl": "../assets/HOUSE/Desert Home.png",
+        "left": 0.7,
+        "bottom": 0.1
+      },
+      "instrument": "lead"
+    },
+    {
+      "id": 34,
+      "elementType": "building",
+      "environment": "city",
+      "image": {
+        "url": "../assets/HOUSE/City Home.png",
+        "previewUrl": "../assets/HOUSE/City Home.png",
+        "left": 0.7,
+        "bottom": 0.1
+      },
+      "instrument": "lead"
+    },
+    {
+      "id": 44,
+      "elementType": "building",
+      "environment": "seaside",
+      "image": {
+        "url": "../assets/HOUSE/Sea Home.png",
+        "previewUrl": "../assets/HOUSE/Sea Home.png",
+        "left": 0.7,
+        "bottom": 0.1
+      },
+      "instrument": "lead"
+    },
+    {
+      "id": 15,
+      "elementType": "shrub",
+      "environment": "mountain",
+      "image": {
+        "url": "../assets/TREES/Tree Alt.png",
+        "previewUrl": "../assets/TREES/Tree Alt.png",
+        "left": 0.35,
+        "bottom": 0.09
+      },
+      "modEffect": "chorus"
+    },
+    {
+      "id": 25,
+      "elementType": "shrub",
+      "environment": "desert",
+      "image": {
+        "url": "../assets/TREES/Cactus.png",
+        "previewUrl": "../assets/TREES/Cactus.png",
+        "left": 0.4,
+        "bottom": 0.1
+      },
+      "modEffect": "chorus"
+    },
+    {
+      "id": 35,
+      "elementType": "shrub",
+      "environment": "city",
+      "image": {
+        "url": "../assets/TREES/Street Lamp.png",
+        "previewUrl": "../assets/TREES/Street Lamp.png",
+        "left": 0.3,
+        "bottom": 0.15
+      },
+      "modEffect": "chorus"
+    },
+    {
+      "id": 45,
+      "elementType": "shrub",
+      "environment": "seaside",
+      "image": {
+        "url": "../assets/TREES/Palm.png",
+        "previewUrl": "../assets/TREES/Palm.png",
+        "left": 0.2,
+        "bottom": 0.05
+      },
+      "modEffect": "chorus"
+    },
+    {
+      "id": 50,
+      "elementType": "astrum",
+      "image": "../assets/MOON/Moon1.png"
     }
-  },
-  
-  {
-    "id": 13,
-    "elementType":"background",
-    "image": {
-      "url": "../assets/BG/Background3.png",
-      "previewUrl": "", 
-      "left": 0,
-      "bottom": 0,
-      "index": 0
-    }
-  },
-
-  {
-    "id": 14,
-    "elementType":"background",
-    "image": {
-      "url": "../assets/BG/Background4.png",
-      "previewUrl": "", 
-      "left": 0,
-      "bottom": 0,
-      "index": 0
-    }
-  },
-
-
-
-
-
-  {
-    "id":12,
-    "elementType":"landscape",
-    "environment": "mountain",
-    "image": {
-      "url": "../assets/BG/Mountains.png",
-      "previewUrl": "../assets/PREVS/Mountains prev.png", 
-      "left": 0,
-      "bottom": 0,
-      "index": 0
-    },
-    "instrument":"pad",
-    "effect":"chorus"
-  },
-
-  {
-    "id":22,
-    "elementType":"landscape",
-    "environment": "desert",
-    "image": {
-      "url": "../assets/BG/Desert.png",
-      "previewUrl": "../assets/PREVS/Desert prev.png", 
-      "left": 0,
-      "bottom": 0,
-      "index": 0
-    },
-    "instrument":"",
-    "effect":""
-  },
-
-  {
-    "id":32,
-    "elementType":"landscape",
-    "environment": "city",
-    "image": {
-      "url": "../assets/BG/Skyline.png",
-      "previewUrl": "../assets/PREVS/Skyline prev.png", 
-      "left": 0,
-      "bottom": 0,
-      "index": 0
-    },
-    "instrument":"",
-    "effect":""
-  },
-
-  {
-    "id":42,
-    "elementType":"landscape",
-    "environment": "seaside",
-    "image": {
-      "url": "../assets/BG/Sea.png",
-      "previewUrl": "../assets/PREVS/Sea prev.png", 
-      "left": 0,
-      "bottom": 0,
-      "index": 0
-    },
-    "instrument":"",
-    "effect":""
-  },
-
-
-
-
-
-
-
-  {
-    "id": 13,
-    "elementType":"floor",
-    "environment": "mountain",
-    "image": {
-      "url": "../assets/BG/Grass.png",
-      "previewUrl": "../assets/BG/Grass prev.png", 
-      "left": 0,
-      "bottom": 0
-    },
-    "instrument":""
-  },
-
-  {
-    "id": 23,
-    "elementType":"floor",
-    "environment": "desert",
-    "image": {
-      "url": "../assets/BG/Desert Sand.png",
-      "previewUrl": "../assets/BG/Desert Sand prev.png", 
-      "left": 0,
-      "bottom": 0
-    },
-    "instrument":""
-  },
-
-  {
-    "id": 33,
-    "elementType":"floor",
-    "environment": "city",
-    "image": {
-      "url": "../assets/BG/Concrete.png",
-      "previewUrl": "../assets/BG/Concrete prev.png", 
-      "left": 0,
-      "bottom": 0
-    },
-    "instrument":""
-  },
-
-  {
-    "id": 43,
-    "elementType":"floor",
-    "environment": "seaside",
-    "image": {
-      "url": "../assets/BG/Sand.png",
-      "previewUrl": "../assets/BG/Sea Sand prev.png", 
-      "left": 0,
-      "bottom": 0
-    },
-    "instrument":""
-  },
-
-
-
-
-
-
-
-  {
-    "id": 14,
-    "elementType":"building",
-    "environment": "mountain",
-    "image": {
-      "url": "../assets/HOUSE/Mountain Home.png",
-      "previewUrl": "../assets/HOUSE/Mountain Home.png", 
-      "left": 0.7,
-      "bottom": 0.1
-    },
-    "instrument":"lead"
-  },
-
-  {
-    "id": 24,
-    "elementType":"building",
-    "environment": "desert",
-    "image": {
-      "url": "../assets/HOUSE/Desert Home.png",
-      "previewUrl": "../assets/HOUSE/Desert Home.png", 
-      "left": 0.7,
-      "bottom": 0.1
-    },
-    "instrument":"lead"
-  },
-
-  {
-    "id": 34,
-    "elementType":"building",
-    "environment": "city",
-    "image": {
-      "url": "../assets/HOUSE/City Home.png",
-      "previewUrl": "../assets/HOUSE/City Home.png", 
-      "left": 0.7,
-      "bottom": 0.1
-    },
-    "instrument":"lead"
-  },
-
-  {
-    "id": 44,
-    "elementType":"building",
-    "environment": "seaside",
-    "image": {
-      "url": "../assets/HOUSE/Sea Home.png",
-      "previewUrl": "../assets/HOUSE/Sea Home.png", 
-      "left": 0.7,
-      "bottom": 0.1
-    },
-    "instrument":"lead"
-  },
-
-
-
-
-
-
-
-
-  {
-    "id": 15,
-    "elementType": "shrub",
-    "environment": "mountain",
-    "image": {
-      "url": "../assets/TREES/Tree Alt.png",
-      "previewUrl": "../assets/TREES/Tree Alt.png", 
-      "left": 0.35,
-      "bottom": 0.09
-    },
-    "modEffect":"chorus"
-  },
-
-  {
-    "id": 25,
-    "elementType": "shrub",
-    "environment": "desert",
-    "image": {
-      "url": "../assets/TREES/Cactus.png",
-      "previewUrl": "../assets/TREES/Cactus.png", 
-      "left": 0.4,
-      "bottom": 0.1
-    },
-    "modEffect":"chorus"
-  },
-
-  {
-    "id": 35,
-    "elementType": "shrub",
-    "environment": "city",
-    "image": {
-      "url": "../assets/TREES/Street Lamp.png",
-      "previewUrl": "../assets/TREES/Street Lamp.png", 
-      "left": 0.3,
-      "bottom": 0.15
-    },
-    "modEffect":"chorus"
-  },
-
-  {
-    "id": 45,
-    "elementType": "shrub",
-    "environment": "seaside",
-    "image": {
-      "url": "../assets/TREES/Palm.png",
-      "previewUrl": "../assets/TREES/Palm.png", 
-      "left": 0.2,
-      "bottom": 0.05
-    },
-    "modEffect":"chorus"
-  },
-
-  
-
-
-
-
-  
-  {
-    "id":50,
-    "elementType":"astrum",
-    "image":"../assets/MOON/Moon1.png",
-    "positionsArray":[
-      { "x":0, "y":0},
-      { "x":1, "y":1},
-      { "x":2, "y":2},
-      { "x":3, "y":3},
-      { "x":4, "y":4},
-      { "x":5, "y":5}
-    ]
+  ]
 }
-
-]
