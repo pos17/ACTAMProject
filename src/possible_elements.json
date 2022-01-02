@@ -54,6 +54,7 @@
       "id": 12,
       "elementType": "landscape",
       "environment": "mountain",
+      "imageName":"mountains",
       "image": {
         "url": "../assets/BG/Mountains.png",
         "previewUrl": "../assets/PREVS/Mountains prev.png",
@@ -68,9 +69,10 @@
       "id": 22,
       "elementType": "landscape",
       "environment": "desert",
+      "imageName":"desert",
       "image": {
         "url": "../assets/BG/Desert.png",
-        "previewUrl": "../assets/PREVS/Desert prev.png",
+        "previewUrl":"..\/assets\/PREVS\/Desert prev.png",
         "left": 0,
         "bottom": 0,
         "index": 0
@@ -82,6 +84,7 @@
       "id": 32,
       "elementType": "landscape",
       "environment": "city",
+      "imageName":"skyline",
       "image": {
         "url": "../assets/BG/Skyline.png",
         "previewUrl": "../assets/PREVS/Skyline prev.png",
@@ -96,6 +99,7 @@
       "id": 42,
       "elementType": "landscape",
       "environment": "seaside",
+      "imageName":"sea",
       "image": {
         "url": "../assets/BG/Sea.png",
         "previewUrl": "../assets/PREVS/Sea prev.png",
@@ -110,6 +114,7 @@
       "id": 13,
       "elementType": "floor",
       "environment": "mountain",
+      "imageName":"grass",
       "image": {
         "url": "../assets/BG/Grass.png",
         "previewUrl": "../assets/BG/Grass prev.png",
@@ -122,6 +127,7 @@
       "id": 23,
       "elementType": "floor",
       "environment": "desert",
+      "imageName":"desertSand",
       "image": {
         "url": "../assets/BG/Desert Sand.png",
         "previewUrl": "../assets/BG/Desert Sand prev.png",
@@ -134,6 +140,7 @@
       "id": 33,
       "elementType": "floor",
       "environment": "city",
+      "imageName":"concrete",
       "image": {
         "url": "../assets/BG/Concrete.png",
         "previewUrl": "../assets/BG/Concrete prev.png",
@@ -146,6 +153,7 @@
       "id": 43,
       "elementType": "floor",
       "environment": "seaside",
+      "imageName":"seaSand",
       "image": {
         "url": "../assets/BG/Sand.png",
         "previewUrl": "../assets/BG/Sea Sand prev.png",
@@ -158,6 +166,7 @@
       "id": 14,
       "elementType": "building",
       "environment": "mountain",
+      "imageName":"mountainHouse",
       "image": {
         "url": "../assets/HOUSE/Mountain Home.png",
         "previewUrl": "../assets/HOUSE/Mountain Home.png",
@@ -170,6 +179,7 @@
       "id": 24,
       "elementType": "building",
       "environment": "desert",
+      "imageName":"desertHouse",
       "image": {
         "url": "../assets/HOUSE/Desert Home.png",
         "previewUrl": "../assets/HOUSE/Desert Home.png",
@@ -182,6 +192,7 @@
       "id": 34,
       "elementType": "building",
       "environment": "city",
+      "imageName":"cityHouse",
       "image": {
         "url": "../assets/HOUSE/City Home.png",
         "previewUrl": "../assets/HOUSE/City Home.png",
@@ -194,6 +205,7 @@
       "id": 44,
       "elementType": "building",
       "environment": "seaside",
+      "imageName":"seaHouse",
       "image": {
         "url": "../assets/HOUSE/Sea Home.png",
         "previewUrl": "../assets/HOUSE/Sea Home.png",
@@ -206,6 +218,7 @@
       "id": 15,
       "elementType": "shrub",
       "environment": "mountain",
+      "imageName":"tree1",
       "image": {
         "url": "../assets/TREES/Tree Alt.png",
         "previewUrl": "../assets/TREES/Tree Alt.png",
@@ -218,6 +231,7 @@
       "id": 25,
       "elementType": "shrub",
       "environment": "desert",
+      "imageName":"cactus",
       "image": {
         "url": "../assets/TREES/Cactus.png",
         "previewUrl": "../assets/TREES/Cactus.png",
@@ -230,6 +244,7 @@
       "id": 35,
       "elementType": "shrub",
       "environment": "city",
+      "imageName":"streetLamp",
       "image": {
         "url": "../assets/TREES/Street Lamp.png",
         "previewUrl": "../assets/TREES/Street Lamp.png",
@@ -242,6 +257,7 @@
       "id": 45,
       "elementType": "shrub",
       "environment": "seaside",
+      "imageName":"palm",
       "image": {
         "url": "../assets/TREES/Palm.png",
         "previewUrl": "../assets/TREES/Palm.png",
@@ -253,6 +269,7 @@
     {
       "id": 50,
       "elementType": "astrum",
+      "imageName":"moon1",
       "image": "../assets/MOON/Moon1.png"
     }
   ]

@@ -52,6 +52,7 @@ async function initializeApp() {
     state.isFirst = true
     
     Tone.Destination.chain(state.master.compressor,state.master.gain)
+    await Canva.initJSON()
     await buildInstruments()
     console.log(state.instruments)
     await Canva.createMenu()

@@ -164,7 +164,11 @@ const new_assets = {
         left: 0,
         bottom: 0,
     },
-
+    moon1: {
+        url: new URL('../assets/MOON/Moon1.png', import.meta.url),
+        left: 0,
+        bottom: 0,
+    },
     sun: {
         url: new URL('../assets/MOON/Sole.png', import.meta.url),
         left: 0,
@@ -377,7 +381,11 @@ initImages(environmentToGenerate);
 
 
 /* CREATING MENU' */
-
+export  async function initJSON() {
+    for(let datum of Model.state.possibleValues.data) {
+        datum.image = new_assets[datum.imageName]
+    }
+}
 export async function createMenu () {
     console.log("menu Creation")
     var btnContainer = document.createElement('div')
@@ -396,6 +404,7 @@ export async function createMenu () {
                 toPutIn.push(datum)
             }
         }
+        console.log(new_assets["mountains"].previewUrl)
         // cycle every element of the environment
         console.log("toPutIn:")
         console.log(toPutIn)
@@ -404,7 +413,7 @@ export async function createMenu () {
             console.log(datum)
             //console.log(asset[1])
             console.log(datum.image.previewUrl)
-            aNewSrc = new URL(datum.image.previewUrl, import.meta.url);
+            var aNewSrc = datum.image.previewUrl
             var img = document.createElement('img')
             img.src = aNewSrc//asset[1].previewUrl
             img.className = 'token-image'
