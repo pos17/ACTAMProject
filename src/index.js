@@ -42,13 +42,13 @@ console.log(mm.generatePath(2))
 
 initializeApp()
 
-  /**
+/**
  *  Function to initialize the main settings of the player 
  */
 async function initializeApp() {
   
     //initialize the drawing values
-    state.drawing = require("./base_drawing.json")
+    state.drawing = require("./myDrawing.json")
     state.isFirst = true
     
     Tone.Destination.chain(state.master.compressor,state.master.gain)
@@ -56,7 +56,9 @@ async function initializeApp() {
     await buildInstruments()
     console.log(state.instruments)
     await Canva.createMenu()
+    Canva.assignClick()
     propagateStateChanges(state.isFirst)
+    Canva.initImages()
     Canva.playableButton(true)
 }
 
@@ -122,45 +124,25 @@ async function initializeApp() {
     console.log(state)
   }
 
-export async function modifyState(idValue) {
-    modifyingValue = state.possibleValues.find(element => element.id==idValue)
+export function modifyState(idValue) {
+    modifyingValue = state.possibleValues.data.find(element => element.id==idValue)
+
     console.log("modifying value")
     console.log(modifyingValue)
+    
+    state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
+    state.drawing.image[modifyingValue.elementType] = modifyingValue.image
+
     switch(modifyingValue.elementType) {
         case("background"):{
-            console.log("arrivo a background")
-            state.drawing.melody.seedMelodies = modifyingValue.melodies
-            waitingObj = state.emitter.waitForWorker()
-            state.worker.postMessage({
-                message:"interpolate",
-                seedMelodies:state.drawing.melody.seedMelodies,
-                numOfInterpolations:state.drawing.melody.numOfInterpolation,
-                waitingIndex:waitingObj.waitingIndex
-            })
-            console.log("sto Interpolando ")
-            console.log(waitingObj.waitingIndex)
-            console.log(waitingObj.promise)
-            await waitingObj.promise
-            console.log("voglio morire")
-            await concatenateMelodiesFromMatrix(state.drawing.melody.positionsArray,6)
-            console.log(state.drawing.melody.sequence.totalQuantizedSteps)
-            console.log(state.drawing.melody.sequence.tempos[0].qpm)
-            state.drawing.loopLength = Tone.Time((state.drawing.melody.sequence.totalQuantizedSteps*60)/
-                                                    (state.drawing.melody.sequence.tempos[0].qpm*
-                                                    state.drawing.melody.sequence.quantizationInfo.stepsPerQuarter)).toBarsBeatsSixteenths()
-            console.log("loopLength")
-            console.log(state.drawing.loopLength)
-            state.drawing.chords.sequence = modifyingValue.sequence
-            state.drawing.chords.isChanged = true
-            console.log(state)
-            propagateStateChanges(false)
+          
         } break;
         case("landscape"):{
-
+          state.drawing.chords.instrument = modifyingValue.instrument
+          state.drawing.chords.effect = modifyingValue.effect
         } break;
         case("building"):{
-        state.drawing.image.building = modifyingState.image
-        state.drawing.melody.instrument = modifyingValue.instrument
+
         } break;
         case("plant"):{
 
@@ -170,7 +152,7 @@ export async function modifyState(idValue) {
         } break;
 
     }
-    
+    console.log(state.drawing)
 }
 
 async function buildInstruments() {

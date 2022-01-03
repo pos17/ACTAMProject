@@ -1,5 +1,6 @@
 import * as Model from "./index.js"
 import * as Tone from 'tone'
+import { saveAs } from 'file-saver';
 
 const canvasDiv = document.getElementById('canvas-div');
 // const canva = document.getElementById('main-canvas');
@@ -65,6 +66,34 @@ var state = {
 } 
 
 const new_assets = {
+    night:{
+        url: new URL('../assets/BG/Background1.png', import.meta.url),
+        previewUrl: new URL('../assets/BG/Background1.png', import.meta.url), 
+        left: 0,
+        bottom: 0,
+        index: 0
+    },
+    day:{
+        url: new URL('../assets/BG/Background3.png', import.meta.url),
+        previewUrl: new URL('../assets/BG/Background3.png', import.meta.url), 
+        left: 0,
+        bottom: 0,
+        index: 0
+    },
+    sunset:{
+        url: new URL('../assets/BG/Background4.png', import.meta.url),
+        previewUrl: new URL('../assets/BG/Background4.png', import.meta.url), 
+        left: 0,
+        bottom: 0,
+        index: 0
+    },
+    sunrise:{
+        url: new URL('../assets/BG/Background2.png', import.meta.url),
+        previewUrl: new URL('../assets/BG/Background2.png', import.meta.url), 
+        left: 0,
+        bottom: 0,
+        index: 0
+    },
     mountains: {
         url: new URL('../assets/BG/Mountains.png', import.meta.url),
         previewUrl: new URL('../assets/PREVS/Mountains prev.png', import.meta.url), 
@@ -251,25 +280,25 @@ const environment = {
         shrub: new_assets.palm,
     }
 }
-
+/*
 var environmentToGenerate = {
     background: "mountain",
     floor: "mountain",
     building: "mountain",
     shrub: "mountain",
 }
-
-function initImages(env){
+*/
+export function initImages(){
     ctx.clearRect(0, 0, canvas.width, canvas.height)
+    
+    bg.src = Model.state.drawing.image.background.url
+    floor.src = Model.state.drawing.image.floor.url
+    building.src = Model.state.drawing.image.building.url
+    shrub.src = Model.state.drawing.image.shrub.url
 
-    bg.src = environment[env.background].background.url
-    floor.src = environment[env.floor].floor.url
-    building.src = environment[env.building].building.url
-    shrub.src = environment[env.shrub].shrub.url
-
-    moon.src = new_assets.moon.url;
-    sun.src = new_assets.sun.url;
-    star.src = new_assets.star.url[0];
+    moon.src = Model.state.drawing.image.moon.url
+    sun.src = Model.state.drawing.image.sun.url
+    //star.src = new_assets.star.url[0];
 
     moon.classList.add('invert');
     console.log(moon)
@@ -286,7 +315,7 @@ function initImages(env){
     console.log(state.assets.stars)
 
     // window.requestAnimationFrame(()=>{createEnvironment(env)});
-    window.requestAnimationFrame(()=>{createEnvironment(environmentToGenerate)});
+    window.requestAnimationFrame(()=>{createEnvironment()});
 }
 
 
@@ -298,7 +327,7 @@ function drawThisImage (img, left, bottom) {
     ctx.drawImage(img, x, y-h, w, h)
 }
 
-function createEnvironment(env) {
+function createEnvironment() {
     var time = Date.now()
 
     var h = canvas.height;
@@ -350,15 +379,21 @@ function createEnvironment(env) {
     ctx.restore()
     
     // STATIC IMAGES
+    drawThisImage(bg, Model.state.drawing.image.background.left,Model.state.drawing.image.background.bottom);
+    drawThisImage(floor, Model.state.drawing.image.floor.left, Model.state.drawing.image.floor.bottom);
+    drawThisImage(building, Model.state.drawing.image.building.left, Model.state.drawing.image.building.bottom);
+    drawThisImage(shrub, Model.state.drawing.image.shrub.left, Model.state.drawing.image.shrub.bottom);
+    
+    /*
     drawThisImage(bg, environment[env.background].background.left, environment[env.background].background.bottom);
     drawThisImage(floor, environment[env.floor].floor.left, environment[env.floor].floor.bottom);
     drawThisImage(building, environment[env.building].building.left, environment[env.building].building.bottom);
     drawThisImage(shrub, environment[env.shrub].shrub.left, environment[env.shrub].shrub.bottom);
-
+    */
     // blendBG()
 
     // window.requestAnimationFrame(() => {createEnvironment(env)});
-    globalThis.framereq = window.requestAnimationFrame(() => {createEnvironment(environmentToGenerate)});
+    globalThis.framereq = window.requestAnimationFrame(() => {createEnvironment()});
 }
 
 function blendBG() {
@@ -377,7 +412,8 @@ function blendBG() {
 }
 
 // initImages(state.environment);  
-initImages(environmentToGenerate);  
+//initImages(
+//);  
 
 
 /* CREATING MENU' */
@@ -386,6 +422,7 @@ export  async function initJSON() {
         datum.image = new_assets[datum.imageName]
     }
 }
+
 export async function createMenu () {
     console.log("menu Creation")
     var btnContainer = document.createElement('div')
@@ -408,6 +445,8 @@ export async function createMenu () {
         // cycle every element of the environment
         console.log("toPutIn:")
         console.log(toPutIn)
+
+
         for (let datum of toPutIn) {
             console.log('datum: ')
             console.log(datum)
@@ -419,7 +458,7 @@ export async function createMenu () {
             img.className = 'token-image'
 
             var btn = document.createElement('button')
-
+            btn.id = datum.id
             btn.className = 'nes-btn'
             btn.classList.add('token-btn')
             btn.classList.add(datum.elementType)//asset[0])
@@ -475,17 +514,16 @@ export async function createMenu () {
     container.appendChild(menuPanel)
 
     console.log('envToGen: ')
-    console.log(Object.keys(environmentToGenerate))
+    visualizeSelectedTokens()
+}
 
-    // selecting active buttons
+function visualizeSelectedTokens() {
     document.querySelectorAll('.token-btn').forEach((btn)=>{
-        for(let i of Object.keys(environmentToGenerate)){
-            console.log(environmentToGenerate[i])
-            if (btn.classList.contains(i) && btn.classList.contains(environmentToGenerate[i])){
-                btn.classList.add('selected-btn')
-            }
+        if (Object.values(Model.state.drawing.idList).indexOf(parseInt(btn.id)) > -1) {
+            console.log("it is here num 2")
+            console.log(btn);
+            btn.classList.add('selected-btn')
         }
-        
     })
 }
 
@@ -530,27 +568,38 @@ playButton.onclick = ()=> {
         }
 }
 
-document.querySelectorAll('.token-btn').forEach((btn)=>{
+export function assignClick() {
+    document.querySelectorAll('.token-btn').forEach((btn)=>{
 
-    btn.addEventListener('click', ()=>{
-        var env = btn.classList[3]
-        var el = btn.classList[2]
-
-        document.querySelectorAll('.'+ el).forEach((elem)=>{elem.classList.remove('selected-btn')})
-        btn.classList.add('selected-btn')
-
-        environmentToGenerate[el] = env
-
-        console.log(environmentToGenerate)
-        
+        btn.addEventListener('click', ()=>{
+            var id = btn.id
+            var env = btn.classList[3]
+            var el = btn.classList[2]
+            console.log("elements")
+            console.log(env)
+            console.log(el)
+            //Model.state.drawing.
+            document.querySelectorAll('.'+ el).forEach((elem)=>{elem.classList.remove('selected-btn')})
+            Model.modifyState(id)
+            visualizeSelectedTokens()
+            
+        })
     })
-})
-
-
+}
 generateButton.onclick = () => {
     menuPanel.style.display = 'none'
+    var fileName = 'myDrawing.json';
+
+    // Create a blob of the data
+    var fileToSave = new Blob([JSON.stringify(Model.state.drawing)], {
+        type: 'application/json'
+    });
+
+    // Save the file
+    saveAs(fileToSave, fileName);
     cancelAnimationFrame(framereq)
-    initImages(environmentToGenerate)
+    
+    initImages()
 }
 
 document.getElementById('menu').onclick = () => {

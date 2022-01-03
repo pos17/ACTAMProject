@@ -7,8 +7,9 @@
   ],
   "data":[
     {
-      "id": 11,
+      "id": 0,
       "elementType": "background",
+      "imageName":"night",
       "image": {
         "url": "../assets/BG/Background1.png",
         "previewUrl": "",
@@ -18,8 +19,9 @@
       }
     },
     {
-      "id": 12,
+      "id": 1,
       "elementType": "background",
+      "imageName":"sunrise",
       "image": {
         "url": "../assets/BG/Background2.png",
         "previewUrl": "",
@@ -29,8 +31,9 @@
       }
     },
     {
-      "id": 13,
+      "id": 2,
       "elementType": "background",
+      "imageName":"day",
       "image": {
         "url": "../assets/BG/Background3.png",
         "previewUrl": "",
@@ -40,8 +43,9 @@
       }
     },
     {
-      "id": 14,
+      "id": 3,
       "elementType": "background",
+      "imageName":"sunset",
       "image": {
         "url": "../assets/BG/Background4.png",
         "previewUrl": "",
@@ -51,7 +55,7 @@
       }
     },
     {
-      "id": 12,
+      "id": 4,
       "elementType": "landscape",
       "environment": "mountain",
       "imageName":"mountains",
@@ -62,11 +66,11 @@
         "bottom": 0,
         "index": 0
       },
-      "instrument": "pad",
+      "instrument": "Pad",
       "effect": "chorus"
     },
     {
-      "id": 22,
+      "id": 5,
       "elementType": "landscape",
       "environment": "desert",
       "imageName":"desert",
@@ -77,11 +81,11 @@
         "bottom": 0,
         "index": 0
       },
-      "instrument": "",
+      "instrument": "Pad",
       "effect": ""
     },
     {
-      "id": 32,
+      "id": 6,
       "elementType": "landscape",
       "environment": "city",
       "imageName":"skyline",
@@ -92,11 +96,11 @@
         "bottom": 0,
         "index": 0
       },
-      "instrument": "",
+      "instrument": "Pad",
       "effect": ""
     },
     {
-      "id": 42,
+      "id": 7,
       "elementType": "landscape",
       "environment": "seaside",
       "imageName":"sea",
@@ -107,11 +111,11 @@
         "bottom": 0,
         "index": 0
       },
-      "instrument": "",
+      "instrument": "Pad",
       "effect": ""
     },
     {
-      "id": 13,
+      "id": 8,
       "elementType": "floor",
       "environment": "mountain",
       "imageName":"grass",
@@ -124,7 +128,7 @@
       "instrument": ""
     },
     {
-      "id": 23,
+      "id": 9,
       "elementType": "floor",
       "environment": "desert",
       "imageName":"desertSand",
@@ -137,7 +141,7 @@
       "instrument": ""
     },
     {
-      "id": 33,
+      "id": 10,
       "elementType": "floor",
       "environment": "city",
       "imageName":"concrete",
@@ -150,7 +154,7 @@
       "instrument": ""
     },
     {
-      "id": 43,
+      "id": 11,
       "elementType": "floor",
       "environment": "seaside",
       "imageName":"seaSand",
@@ -163,7 +167,7 @@
       "instrument": ""
     },
     {
-      "id": 14,
+      "id": 12,
       "elementType": "building",
       "environment": "mountain",
       "imageName":"mountainHouse",
@@ -176,7 +180,7 @@
       "instrument": "lead"
     },
     {
-      "id": 24,
+      "id": 13,
       "elementType": "building",
       "environment": "desert",
       "imageName":"desertHouse",
@@ -189,7 +193,7 @@
       "instrument": "lead"
     },
     {
-      "id": 34,
+      "id": 14,
       "elementType": "building",
       "environment": "city",
       "imageName":"cityHouse",
@@ -202,7 +206,7 @@
       "instrument": "lead"
     },
     {
-      "id": 44,
+      "id": 15,
       "elementType": "building",
       "environment": "seaside",
       "imageName":"seaHouse",
@@ -215,7 +219,7 @@
       "instrument": "lead"
     },
     {
-      "id": 15,
+      "id": 16,
       "elementType": "shrub",
       "environment": "mountain",
       "imageName":"tree1",
@@ -228,7 +232,7 @@
       "modEffect": "chorus"
     },
     {
-      "id": 25,
+      "id": 17,
       "elementType": "shrub",
       "environment": "desert",
       "imageName":"cactus",
@@ -241,7 +245,7 @@
       "modEffect": "chorus"
     },
     {
-      "id": 35,
+      "id": 18,
       "elementType": "shrub",
       "environment": "city",
       "imageName":"streetLamp",
@@ -254,7 +258,7 @@
       "modEffect": "chorus"
     },
     {
-      "id": 45,
+      "id": 19,
       "elementType": "shrub",
       "environment": "seaside",
       "imageName":"palm",
@@ -267,10 +271,16 @@
       "modEffect": "chorus"
     },
     {
-      "id": 50,
+      "id": 20,
       "elementType": "astrum",
       "imageName":"moon1",
       "image": "../assets/MOON/Moon1.png"
+    },
+    {
+      "id": 21,
+      "elementType": "astrum",
+      "imageName":"sun",
+      "image": "../assets/MOON/sole.png"
     }
   ]
 }

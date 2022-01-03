@@ -23,6 +23,7 @@
     "@parcel/fs": "^2.0.1",
     "@tonaljs/tonal": "^4.6.5",
     "eventemitter3": "^4.0.7",
+    "file-saver": "^2.0.5",
     "nes.css": "^2.3.0",
     "tone": "^14.7.77",
     "web-worker": "^1.2.0"

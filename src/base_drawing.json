@@ -1,22 +1,14 @@
 {
+    "idList": {
+      "background":0,
+      "landscape":4,
+      "floor":8,
+      "building":12,
+      "shrub":16,
+      "moon":20,
+      "sun":21
+    },
     "image": {
-        "isChanged":true,
-        "background":"../assets/BG/Background2.png",
-        "landscape":"../assets/BG/Mountains.png",
-        "floor":"../assets/BG/Grass.png",
-        "building":"../assets/HOUSE/Home.png",
-        "plants":[
-            "../assets/TREES/Tree Maj.png",
-            "../assets/TREES/Tree Min.png",
-            "../assets/TREES/Tree Alt.png"
-        ],
-        "astrum":"",
-        "starsMap":"",
-        "flyingObjects":[
-            "",
-            "",
-            ""
-        ]
     },
     "chords":{
       "isChanged":true,
@@ -47,14 +39,6 @@
     "melody": {
       "isChanged":true,
       "instrument":"Synth",
-      "numOfInterpolation":20,
-      "positionsArray":[
-        {"x":0,"y":0},
-        {"x":1,"y":1},
-        {"x":2,"y":2},
-        {"x":3,"y":3},
-        {"x":4,"y":4}
-      ],
       "sequence":{
         "totalQuantizedSteps": 64,
         "timeSignatures": [
