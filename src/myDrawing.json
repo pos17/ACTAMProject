@@ -10,33 +10,50 @@
     },
     "image": {
         "landscape": {
-            "url": "http://localhost:1234/Mountains.ed430dae.png?1641253903181",
-            "previewUrl": "http://localhost:1234/Mountains%20prev.30ab7dec.png?1641253903181",
+            "url": "http://localhost:1234/Mountains.ed430dae.png?1641279753372",
+            "previewUrl": "http://localhost:1234/Mountains%20prev.30ab7dec.png?1641279753372",
             "left": 0,
             "bottom": 0,
             "index": 0
         },
         "floor": {
-            "url": "http://localhost:1234/Grass.93676fb1.png?1641253903182",
-            "previewUrl": "http://localhost:1234/Grass%20prev.b0e0afc7.png?1641253903182",
+            "url": "http://localhost:1234/Grass.93676fb1.png?1641279753372",
+            "previewUrl": "http://localhost:1234/Grass%20prev.b0e0afc7.png?1641279753372",
             "left": 0,
             "bottom": 0
         },
         "building": {
-            "url": "http://localhost:1234/Mountain%20Home.17181278.png?1641253903182",
-            "previewUrl": "http://localhost:1234/Mountain%20Home.17181278.png?1641253903182",
+            "url": "http://localhost:1234/Mountain%20Home.17181278.png?1641279753372",
+            "previewUrl": "http://localhost:1234/Mountain%20Home.17181278.png?1641279753372",
             "left": 0.7,
             "bottom": 0.1
         },
         "shrub": {
-            "url": "http://localhost:1234/Tree%20Alt.38a2d9a6.png?1641253903182",
-            "previewUrl": "http://localhost:1234/Tree%20Alt.38a2d9a6.png?1641253903182",
+            "url": "http://localhost:1234/Tree%20Alt.38a2d9a6.png?1641279753372",
+            "previewUrl": "http://localhost:1234/Tree%20Alt.38a2d9a6.png?1641279753372",
             "left": 0.35,
             "bottom": 0.09
+        },
+        "moon": {
+            "url": "http://localhost:1234/Moon1.b42a48c7.png?1641279753372",
+            "left": 0,
+            "bottom": 0
+        },
+        "sun": {
+            "url": "http://localhost:1234/Sole.2aa9c570.png?1641279753372",
+            "left": 0,
+            "bottom": 0
+        },
+        "background": {
+            "url": "http://localhost:1234/Background1.5cd4a057.png?1641279753372",
+            "previewUrl": "http://localhost:1234/Background1.5cd4a057.png?1641279753372",
+            "left": 0,
+            "bottom": 0,
+            "index": 0
         }
     },
     "chords": {
-        "isChanged": false,
+        "isChanged": true,
         "instrument": "Pad",
         "sequence": [
             {
@@ -98,7 +115,7 @@
         "effect": "chorus"
     },
     "melody": {
-        "isChanged": false,
+        "isChanged": true,
         "instrument": "Synth",
         "sequence": {
             "totalQuantizedSteps": 64,

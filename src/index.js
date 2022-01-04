@@ -70,7 +70,7 @@ async function initializeApp() {
  * 
  * @param {bool} isFirst values that states if the function is called during the initialization 
  */
- async function propagateStateChanges(isFirst) { 
+ export async function propagateStateChanges(isFirst) { 
   
     console.log("state before propagation")
     console.log(state)

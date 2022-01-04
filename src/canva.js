@@ -41,7 +41,9 @@ canvasDiv.appendChild(canvas);
 
 var ctx = canvas.getContext('2d');
 
+//fintanto che non capisco come gira il discorso background, il bg è notturno, si cambia poi in caso 
 var bg = new Image()
+var landscape = new Image()
 var floor = new Image()
 var building = new Image()
 var shrub = new Image()
@@ -292,10 +294,11 @@ export function initImages(){
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     
     bg.src = Model.state.drawing.image.background.url
+    landscape.src = Model.state.drawing.image.landscape.url
     floor.src = Model.state.drawing.image.floor.url
     building.src = Model.state.drawing.image.building.url
     shrub.src = Model.state.drawing.image.shrub.url
-
+    shrub.src = Model.state.drawing.image.shrub.url
     moon.src = Model.state.drawing.image.moon.url
     sun.src = Model.state.drawing.image.sun.url
     //star.src = new_assets.star.url[0];
@@ -380,6 +383,7 @@ function createEnvironment() {
     
     // STATIC IMAGES
     drawThisImage(bg, Model.state.drawing.image.background.left,Model.state.drawing.image.background.bottom);
+    drawThisImage(landscape, Model.state.drawing.image.landscape.left, Model.state.drawing.image.landscape.bottom);
     drawThisImage(floor, Model.state.drawing.image.floor.left, Model.state.drawing.image.floor.bottom);
     drawThisImage(building, Model.state.drawing.image.building.left, Model.state.drawing.image.building.bottom);
     drawThisImage(shrub, Model.state.drawing.image.shrub.left, Model.state.drawing.image.shrub.bottom);
@@ -393,7 +397,7 @@ function createEnvironment() {
     // blendBG()
 
     // window.requestAnimationFrame(() => {createEnvironment(env)});
-    globalThis.framereq = window.requestAnimationFrame(() => {createEnvironment()});
+    //globalThis.framereq = window.requestAnimationFrame(() => {createEnvironment()});
 }
 
 function blendBG() {
@@ -588,20 +592,27 @@ export function assignClick() {
 }
 generateButton.onclick = () => {
     menuPanel.style.display = 'none'
+    Tone.start()
+    /*
+    Model.state.drawing.image.moon = Model.state.possibleValues.data.find(x=>x.imageName==="moon1").image
+    Model.state.drawing.image.sun = Model.state.possibleValues.data.find(x=>x.imageName==="sun").image
+    Model.state.drawing.image.background = Model.state.possibleValues.data.find(x=>x.imageName==="night").image
     var fileName = 'myDrawing.json';
-
     // Create a blob of the data
     var fileToSave = new Blob([JSON.stringify(Model.state.drawing)], {
         type: 'application/json'
     });
-
+    
     // Save the file
     saveAs(fileToSave, fileName);
-    cancelAnimationFrame(framereq)
-    
+    */
+    //cancelAnimationFrame(framereq)
+    //Model.propagateStateChanges(false)
+    Model.startMusic()
     initImages()
 }
 
 document.getElementById('menu').onclick = () => {
+    Model.stopMusic()
     menuPanel.style.display = 'inline-flex  '
 }
