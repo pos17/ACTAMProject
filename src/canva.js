@@ -298,7 +298,6 @@ export function initImages(){
     floor.src = Model.state.drawing.image.floor.url
     building.src = Model.state.drawing.image.building.url
     shrub.src = Model.state.drawing.image.shrub.url
-    shrub.src = Model.state.drawing.image.shrub.url
     moon.src = Model.state.drawing.image.moon.url
     sun.src = Model.state.drawing.image.sun.url
     //star.src = new_assets.star.url[0];
@@ -401,6 +400,7 @@ function createEnvironment() {
     //globalThis.framereq = window.requestAnimationFrame(() => {createEnvironment()});
 }
 
+const fps = 10;
 function countFPS() {
     if(Date.now() - Model.state.now > 1000 / fps) {
         window.requestAnimationFrame(() => {createEnvironment()});
@@ -409,7 +409,7 @@ function countFPS() {
     globalThis.framereq = window.requestAnimationFrame(() => {countFPS()});
 }
 
-const fps = 1;
+
 /*
 function animate() {
   // perform some animation task here
