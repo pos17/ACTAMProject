@@ -318,7 +318,7 @@ export function initImages(){
     console.log(state.assets.stars)
 
     // window.requestAnimationFrame(()=>{createEnvironment(env)});
-    window.requestAnimationFrame(()=>{createEnvironment()});
+    window.requestAnimationFrame(()=>{countFPS()});
 }
 
 
@@ -397,10 +397,16 @@ function createEnvironment() {
     // blendBG()
 
     // window.requestAnimationFrame(() => {createEnvironment(env)});
-    setTimeout(() => {
-        globalThis.framereq = window.requestAnimationFrame(() => {createEnvironment()});
-      }, 1000 / fps);
+    
     //globalThis.framereq = window.requestAnimationFrame(() => {createEnvironment()});
+}
+
+function countFPS() {
+    if(Date.now() - Model.state.now > 1000 / fps) {
+        window.requestAnimationFrame(() => {createEnvironment()});
+        Model.state.now = Date.now()
+    } 
+    globalThis.framereq = window.requestAnimationFrame(() => {countFPS()});
 }
 
 const fps = 1;

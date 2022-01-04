@@ -8,6 +8,7 @@ import * as Instr from './instruments.js';
 import * as effects from './effects.js';
 
 export const state= {
+    now:Date.now(),
     effects:{
       melody:{},
       harmony:{}
