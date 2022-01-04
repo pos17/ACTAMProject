@@ -21,7 +21,7 @@ skySunSet.src = new URL('../assets/BG/Background2.png', import.meta.url)
 skySunSet.classList.add('sky')
 skySunSet.style.opacity = '0';
 skySunSet.style.position = 'absolute';
-skySunSet.style.zIndex = '1'
+// skySunSet.style.zIndex = '1'
 canvasDiv.appendChild(skySunSet)
 
 var skyDay = new Image()
@@ -29,7 +29,7 @@ skyDay.src = new URL('../assets/BG/Background3.png', import.meta.url)
 skyDay.classList.add('sky')
 skyDay.style.opacity = '0';
 skyDay.style.position = 'absolute';
-skyDay.style.zIndex = '1'
+// skyDay.style.zIndex = '1'
 canvasDiv.appendChild(skyDay)
 
 var canvas = document.createElement("canvas")
@@ -303,7 +303,8 @@ export function initImages(){
     sun.src = Model.state.drawing.image.sun.url
     //star.src = new_assets.star.url[0];
 
-    moon.classList.add('invert');
+    // moon.classList.add('invert');
+    console.log('moon: ')
     console.log(moon)
 
     state.assets.stars = []
@@ -339,9 +340,14 @@ function createEnvironment() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.imageSmoothingEnabled = false;
 
+
+    // BACKGOUND IMAGE
+    drawThisImage(bg, Model.state.drawing.image.background.left, Model.state.drawing.image.background.bottom);
+    
     state.assets.stars.forEach((star)=>{
         drawThisImage(star.img, star.left, star.bottom)
     })
+
 
     // ANIMATED IMAGES
     var s = moonRadius - Math.sqrt(Math.pow(moonRadius,2)-(Math.pow(canvas.width,2)/4))
@@ -380,13 +386,15 @@ function createEnvironment() {
     ctx.restore()
 
     ctx.restore()
-    
-    // STATIC IMAGES
-    drawThisImage(bg, Model.state.drawing.image.background.left,Model.state.drawing.image.background.bottom);
+
+
+    // STATIC ELEMENTS
     drawThisImage(landscape, Model.state.drawing.image.landscape.left, Model.state.drawing.image.landscape.bottom);
     drawThisImage(floor, Model.state.drawing.image.floor.left, Model.state.drawing.image.floor.bottom);
     drawThisImage(building, Model.state.drawing.image.building.left, Model.state.drawing.image.building.bottom);
     drawThisImage(shrub, Model.state.drawing.image.shrub.left, Model.state.drawing.image.shrub.bottom);
+    
+    
     
     /*
     drawThisImage(bg, environment[env.background].background.left, environment[env.background].background.bottom);
@@ -409,7 +417,7 @@ function countFPS() {
     globalThis.framereq = window.requestAnimationFrame(() => {countFPS()});
 }
 
-const fps = 1;
+const fps = 15;
 /*
 function animate() {
   // perform some animation task here
@@ -446,6 +454,8 @@ export  async function initJSON() {
         datum.image = new_assets[datum.imageName]
     }
 }
+
+
 
 export async function createMenu () {
     console.log("menu Creation")
