@@ -240,6 +240,38 @@ class Synth {
     }
 }
 
+
+class samples {
+    constructor() {
+        var sampler = new Tone.Sampler(
+            {
+                "lamp_sound": "\music coding\ACTAMProject\recSounds\Lampg.mp3",
+                "palm_sound": "\music coding\ACTAMProject\recSounds\Tree1c.mp3",
+                "treeOne_sound":"\music coding\ACTAMProject\recSounds\city.mp3",
+                "treeTwo_sound":"\music coding\ACTAMProject\recSounds\ocean.mp3",
+                "treeThree_sound":
+                "cactusSound_sound":
+               
+            }
+            );
+        
+        var amp = new Tone.Gain()
+        sampler.chain(amp)
+        this.sampler = sampler;
+        this.amp=amp
+    }    
+    connect(node) {
+        this.sampler.connect(node)
+    }
+    triggerAttackRelease(note, duration, time, velocity) {
+        this.sampler.setInterval(triggerAttackRelease(note, duration, time, velocity))
+    }
+
+    setVolume(volValue) {
+        this.sampler.volume.value = volValue
+    }
+}
+
 module.exports = {
     Kick: Kick,
     Snare: Snare,
