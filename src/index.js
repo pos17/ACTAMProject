@@ -50,7 +50,9 @@ async function initializeApp() {
     //initialize the drawing values
     state.drawing = require("./myDrawing.json")
     state.isFirst = true
-    
+    //const context = new Tone.Context({ latencyHint: "playback" });
+    // set this context as the global Context
+    Tone.context.lookAhead = 1;
     Tone.Destination.chain(state.master.compressor,state.master.gain)
     await Canva.initJSON()
     await buildInstruments()
@@ -182,12 +184,12 @@ async function buildInstruments() {
   console.log(state.effects.harmony.delay.get())
   //creating effects chain
   harmonyChannel.chain(state.effects.harmony.chorus,
-                                      state.effects.harmony.reverb,
+                                      //state.effects.harmony.reverb,
                                       state.effects.harmony.delay,
                                       Tone.Destination
                                       )
   melodyChannel.chain(state.effects.melody.chorus,
-                                     state.effects.melody.reverb,
+                                     //state.effects.melody.reverb,
                                      state.effects.melody.delay,
                                      Tone.Destination
                                      )

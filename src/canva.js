@@ -397,9 +397,23 @@ function createEnvironment() {
     // blendBG()
 
     // window.requestAnimationFrame(() => {createEnvironment(env)});
+    setTimeout(() => {
+        globalThis.framereq = window.requestAnimationFrame(() => {createEnvironment()});
+      }, 1000 / fps);
     //globalThis.framereq = window.requestAnimationFrame(() => {createEnvironment()});
 }
 
+const fps = 1;
+/*
+function animate() {
+  // perform some animation task here
+
+  setTimeout(() => {
+    requestAnimationFrame(animate);
+  }, 1000 / fps);
+}
+animate();
+*/
 function blendBG() {
     var opaSunSet = parseFloat(skySunSet.style.opacity.split()[0])
     var opaDay = parseFloat(skyDay.style.opacity.split()[0])
@@ -607,7 +621,7 @@ generateButton.onclick = () => {
     saveAs(fileToSave, fileName);
     */
     //cancelAnimationFrame(framereq)
-    //Model.propagateStateChanges(false)
+    Model.propagateStateChanges(false)
     Model.startMusic()
     initImages()
 }
