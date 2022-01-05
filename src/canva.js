@@ -408,16 +408,15 @@ function createEnvironment() {
     //globalThis.framereq = window.requestAnimationFrame(() => {createEnvironment()});
 }
 
-const fps = 10;
 function countFPS() {
-    if(Date.now() - Model.state.now > 1000 / fps) {
+    if(Date.now() - Model.state.now > 1000 / Model.state.fps) {
         window.requestAnimationFrame(() => {createEnvironment()});
         Model.state.now = Date.now()
     } 
     globalThis.framereq = window.requestAnimationFrame(() => {countFPS()});
 }
 
-const fps = 15;
+
 /*
 function animate() {
   // perform some animation task here
@@ -428,6 +427,7 @@ function animate() {
 }
 animate();
 */
+
 function blendBG() {
     var opaSunSet = parseFloat(skySunSet.style.opacity.split()[0])
     var opaDay = parseFloat(skyDay.style.opacity.split()[0])

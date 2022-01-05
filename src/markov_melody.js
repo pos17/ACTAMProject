@@ -5,6 +5,8 @@ export class MarkovMelody {
         //console.log(this.tree)
     }
 
+    
+
     generatePath(anId) {
         console.log(this.tree)
         var startingNode = this.tree.find(x => x.id == anId)
