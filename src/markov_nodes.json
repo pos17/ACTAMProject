@@ -1,6 +1,6 @@
 [
     {
-        "id":"0",
+        "id":0,
         "links":[
             {
                 "id":"3",
@@ -107,12 +107,12 @@
                 "probability":"0.5"
             },
             {
-                "id":"3",
-                "probability":"12"
+                "id":3,
+                "probability":12
             },
             {
-                "id":"2",
-                "probability":"5"
+                "id":2,
+                "probability":5
             }
         ]
     }

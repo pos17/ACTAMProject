@@ -1,3 +1,4 @@
+//const core = require('@magenta/music/node/core');
 export class MarkovMelody {
     constructor(tree, nodes=undefined) {
         this.tree = tree
@@ -5,9 +6,15 @@ export class MarkovMelody {
         //console.log(this.tree)
     }
 
-    
+    generateMelody(startId) {
+        path = this.generatePath(startId)
+        for(let id of path) {
+            
+        }
+        //core.sequences.concatenate()
+    }
 
-    generatePath(anId) {
+    generatePath(anId = 0) {
         console.log(this.tree)
         var startingNode = this.tree.find(x => x.id == anId)
         var startingNodeId = startingNode.id
