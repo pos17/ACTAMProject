@@ -7,14 +7,17 @@ export class MarkovMelody {
     }
 
     generateMelody(startId) {
-        path = this.generatePath(startId)
+        var path = this.generatePath(startId)
+        var musicSequence = []
         for(let id of path) {
-            
+            musicSequence.push(this.nodes.find(x => x.id == id))
         }
-        //core.sequences.concatenate()
+        
+        return musicSequence
     }
 
     generatePath(anId = 0) {
+        //anId = anId.toString()
         console.log(this.tree)
         var startingNode = this.tree.find(x => x.id == anId)
         var startingNodeId = startingNode.id
@@ -25,6 +28,7 @@ export class MarkovMelody {
             path.push(thisNode.id)
             console.log(thisNode)
             var nextNodeId = this._nextRandomNode(thisNode)
+            console.log(nextNodeId)
             thisNodeId = nextNodeId
             thisNode = this.tree.find(x => x.id == nextNodeId)
         }
@@ -37,7 +41,9 @@ export class MarkovMelody {
         for(var i = 0; i < possibleNodes.length;i++) {
             totalWeights = totalWeights + possibleNodes[i].probability
         }
-        var random = Math.floor(Math.random() * 6);
+        var random = Math.random() * totalWeights;
+        //console.log(totalWeights)
+        //console.log(random)
         for (var i = 0; i < possibleNodes.length; i++) {
             random -= possibleNodes[i].probability;
     
