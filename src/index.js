@@ -24,6 +24,7 @@ export const state= {
     bpm:60,
     totalLength:"",
     drawing:undefined,
+    navigationPage:0,
     possibleValues: require("./possible_elements.json"),
     master: {
         compressor: new Tone.Compressor({
@@ -65,6 +66,7 @@ async function initializeApp() {
     propagateStateChanges(state.isFirst)
     Canva.initImages()
     Canva.playableButton(true)
+    Canva.updatePage()
 }
 
 // {

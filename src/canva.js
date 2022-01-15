@@ -5,12 +5,16 @@ import { saveAs } from 'file-saver';
 const canvasDiv = document.getElementById('canvas-div');
 // const canva = document.getElementById('main-canvas');
 const sky = document.getElementById('sky');
-const container = document.getElementById('container')
+const container = document.getElementById('canva-container')
 
 var generateButton = document.createElement('button')
 var helpButton = document.createElement('button')
 var menuPanel = document.createElement('div')
 menuPanel.className = 'menu-panel'
+
+var btn_left = document.getElementById('btn-sx')
+var btn_center =  document.getElementById('btn-ct')
+var btn_right =  document.getElementById('btn-dx')
 
 var factor = 8;
 var channels = ['mountain', 'seaside', 'city']
@@ -620,6 +624,7 @@ export function assignClick() {
         })
     })
 }
+
 generateButton.onclick = () => {
     menuPanel.style.display = 'none'
     Tone.start()
@@ -639,10 +644,53 @@ generateButton.onclick = () => {
     //cancelAnimationFrame(framereq)
     Model.propagateStateChanges(false)
     Model.startMusic()
-    initImages()
+    initImages( )
 }
 
 document.getElementById('menu').onclick = () => {
     Model.stopMusic()
     menuPanel.style.display = 'inline-flex  '
 }
+
+
+
+export function updatePage() {
+    var page = Model.state.navigationPage
+    console.log("page")
+    console.log(page)
+
+    switch (page) {
+        case 0:
+            homePage()
+            break;
+        
+        case 1:
+            menuPage()
+            Model.stopMusic()
+            menuPanel.style.display = 'inline-flex  '
+            break;
+    
+        default:
+            break;
+    }
+}
+
+function homePage(){
+    btn_left.innerHTML = "menu"
+    btn_center.innerHTML = "map"
+    btn_right.innerHTML = "help"
+
+    btn_left.onclick = ()=>{
+        Model.state.navigationPage=1;
+        updatePage()
+        console.log(Model.state.navigationPage)
+    }
+
+}
+
+function menuPage(){
+    btn_left.innerHTML = "ciao"
+    btn_center.innerHTML = "ciao"
+    btn_right.innerHTML = "ciao"
+}
+
