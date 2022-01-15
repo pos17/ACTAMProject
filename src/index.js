@@ -8,12 +8,13 @@ import * as Instr from './instruments.js';
 import * as effects from './effects.js';
 
 export const state= {
+    framereq:undefined,
     now:Date.now(),
     effects:{
       melody:{},
       harmony:{}
     },
-    fps:15,
+    fps:20,
     instruments:{},
     stateChanged:false,
     readyModel:false,
@@ -38,7 +39,7 @@ var markovChain = require("./markov_nodes.json")
 var markov_music_elements = require("./markov_music_elements.json")
 //console.log(markovChain)
 var mm = new MarkovMelody(tree = markovChain,nodes = markov_music_elements)
-console.log(mm.generateMelody(1))
+// console.log(mm.generateMelody(1))
 //console.log(mm.generatePath(2))
 
 
@@ -75,7 +76,7 @@ async function initializeApp() {
  * 
  * @param {bool} isFirst values that states if the function is called during the initialization 
  */
- export async function propagateStateChanges(isFirst) { 
+export async function propagateStateChanges(isFirst) { 
   
     console.log("state before propagation")
     console.log(state)

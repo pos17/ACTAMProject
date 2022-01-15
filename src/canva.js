@@ -318,7 +318,8 @@ export function initImages(){
     console.log(state.assets.stars)
 
     // window.requestAnimationFrame(()=>{createEnvironment(env)});
-    window.requestAnimationFrame(()=>{countFPS()});
+    Model.state.framereq = window.requestAnimationFrame(countFPS);
+    console.log(Model.state.framereq)
 }
 
 
@@ -330,7 +331,7 @@ function drawThisImage (img, left, bottom) {
     ctx.drawImage(img, x, y-h, w, h)
 }
 
-function createEnvironment() {
+function createEnvironment(timestamp) {
     var time = Date.now()
 
     var h = canvas.height;
@@ -405,15 +406,23 @@ function createEnvironment() {
 
     // window.requestAnimationFrame(() => {createEnvironment(env)});
     
-    //globalThis.framereq = window.requestAnimationFrame(() => {createEnvironment()});
+    Model.state.framereq = window.requestAnimationFrame(countFPS);
+    console.log(Model.state.framereq)
 }
 
-function countFPS() {
-    if(Date.now() - Model.state.now > 1000 / Model.state.fps) {
-        window.requestAnimationFrame(() => {createEnvironment()});
-        Model.state.now = Date.now()
-    } 
-    globalThis.framereq = window.requestAnimationFrame(() => {countFPS()});
+function countFPS(timestamp) {
+    if(Model.state.isPlaying) {
+        if(Date.now() - Model.state.now > 1000 / Model.state.fps) {
+            console.log("print")
+            Model.state.now = Date.now()
+            Model.state.framereq = window.requestAnimationFrame(createEnvironment);
+            console.log(Model.state.framereq)
+        } else {
+            
+            Model.state.framereq = window.requestAnimationFrame(countFPS);
+            console.log(Model.state.framereq)
+        }
+    }
 }
 
 
@@ -644,5 +653,9 @@ generateButton.onclick = () => {
 
 document.getElementById('menu').onclick = () => {
     Model.stopMusic()
+    //console.log("puttana")
+    //console.log(Model.state.framereq)
+    //window.cancelAnimationFrame(Model.state.framereq)
+    console.log("merda")
     menuPanel.style.display = 'inline-flex  '
 }
