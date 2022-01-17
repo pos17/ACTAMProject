@@ -26,7 +26,7 @@ skySunSet.classList.add('sky')
 skySunSet.style.opacity = '0';
 skySunSet.style.position = 'absolute';
 // skySunSet.style.zIndex = '1'
-canvasDiv.appendChild(skySunSet)
+// canvasDiv.appendChild(skySunSet)
 
 var skyDay = new Image()
 skyDay.src = new URL('../assets/BG/Background3.png', import.meta.url)
@@ -34,7 +34,7 @@ skyDay.classList.add('sky')
 skyDay.style.opacity = '0';
 skyDay.style.position = 'absolute';
 // skyDay.style.zIndex = '1'
-canvasDiv.appendChild(skyDay)
+// canvasDiv.appendChild(skyDay)
 
 var canvas = document.createElement("canvas")
 canvas.className = "canvases";

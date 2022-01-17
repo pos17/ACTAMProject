@@ -2,27 +2,57 @@
 html {
     height: 100%;
     width: 100%;
-    background-color: coral;
-
 }
 
 body {
-    width: min-content;
+    width: 100%;
+    min-width: 900px;
+    height: inherit ;
+    background-color: #7eb3a9 !important;
     /* background-color: coral; */
     /* position: absolute; */
 }
 
 #container {
     min-width: 900px;
-    width: 70%;
+    /* width: 70%; */
+    height: 100vh;
+    width: auto;
     left: 50%;
     top: 40%;
     transform: translate(-50%, -50%);
     position: absolute;
     border-radius: 10px;
     display: block;
-    height: max-content;
+
+    margin-top: 10vh;
+    
     /* margin: auto; */
+}
+
+#canva-container {
+    /* position: absolute; */
+    position: relative;
+    width: 85vw;
+    height: auto%;
+    /* min-width: 100%; */
+    margin-top: 10px;
+}
+
+#canvas-div {
+    position: inherit;
+    /* clear: both; */
+}
+
+.canvases {
+    position: inherit;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    top: 0px;
+    left: 0px;
+    image-rendering: crisp-edges;
+    border-radius: 10px;
 }
 
 .sky {
@@ -146,16 +176,7 @@ p {
     position: static;
 }
 
-.canvases {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    top: 0px;
-    left: 0px;
-    image-rendering: crisp-edges;
-    border-radius: 10px;
-}
+
 
 img {
     image-rendering: crisp-edges;
@@ -196,8 +217,9 @@ img {
 
 .menu-panel {
     position: absolute;
-    width: 90%;
-    height: 90%;
+    width: 100%;
+    height: 100%;
+    
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
@@ -207,7 +229,7 @@ img {
     margin: auto;
     background-color: rgb(201, 173, 15);
     border-radius: 10px;
-    height: max-content;
+    /* height: max-content; */
     padding: 7px;
 }
 
@@ -244,20 +266,24 @@ img {
     min-width: 900px;
     display: inline-flex;
     position: absolute;
-    bottom: -21%;
+    /* bottom: -21%; */
     text-align: justify;
     align-content: center;
     width: 100%;
     left: 50%;
     transform: translate(-50%);
-    background-color: rgba(226, 158, 55, 0.50);
-    padding: 15px;
+    /* background-color: rgba(226, 158, 55, 0.50); */
+    padding: 1vh;
     border-radius: 5px;
-    border: solid 2px black;
+    /* border: solid 2px black; */
 }
 
 .nav-btn {
     margin: auto !important;
     background-color: beige !important;
+    padding: 10px !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    font-size: 140%;
 }
 
