@@ -1,6 +1,10 @@
 {
     "idList": {
       "background":0,
+      "backgroundNight":0,
+      "backgroundSunrise":1,
+      "backgroundDay":2,
+      "backgroundSunset":3,
       "landscape":4,
       "floor":8,
       "building":12,

@@ -47,6 +47,7 @@ var ctx = canvas.getContext('2d');
 
 //fintanto che non capisco come gira il discorso background, il bg è notturno, si cambia poi in caso 
 var bg = new Image()
+var bgPassing = new Image()
 var landscape = new Image()
 var floor = new Image()
 var building = new Image()
@@ -259,7 +260,7 @@ const new_assets = {
 
 
 // TODO: environment
-
+/*
 const environment = {
     mountain: {
         background: new_assets.mountains,
@@ -286,6 +287,7 @@ const environment = {
         shrub: new_assets.palm,
     }
 }
+*/
 /*
 var environmentToGenerate = {
     background: "mountain",
@@ -298,6 +300,11 @@ export function initImages(){
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     
     bg.src = Model.state.drawing.image.background.url
+    //bgPassing.src = Model.state.image.backgroundPassing.url
+    //bgNight.src =  Model.state.drawing.image.backgroundNight.url
+    //bgSunrise =  Model.state.drawing.image.backgroundSunrise.url
+    //bgDay =  Model.state.drawing.image.backgroundDay.url
+    //bgSunset =  Model.state.drawing.image.backgroundSunset.url
     landscape.src = Model.state.drawing.image.landscape.url
     floor.src = Model.state.drawing.image.floor.url
     building.src = Model.state.drawing.image.building.url
@@ -327,12 +334,14 @@ export function initImages(){
 }
 
 
-function drawThisImage (img, left, bottom) {
+function drawThisImage (img, left, bottom,alpha=1) {
     var h = img.naturalHeight*factor;
     var w = img.naturalWidth*factor;
     var x = left * canvas.width;
     var y = (1-bottom) * canvas.height;
+    ctx.globalAlpha = alpha
     ctx.drawImage(img, x, y-h, w, h)
+    ctx.globalAlpha = 1
 }
 
 function createEnvironment(timestamp) {
@@ -345,7 +354,8 @@ function createEnvironment(timestamp) {
     ctx.imageSmoothingEnabled = false;
 
 
-    // BACKGOUND IMAGE
+    // BACKGROUND IMAGE
+    
     drawThisImage(bg, Model.state.drawing.image.background.left, Model.state.drawing.image.background.bottom);
     
     state.assets.stars.forEach((star)=>{
@@ -653,7 +663,8 @@ generateButton.onclick = () => {
     //cancelAnimationFrame(framereq)
     Model.propagateStateChanges(false)
     Model.startMusic()
-    initImages( )
+    updatePage(0)
+    initImages()
 }
 
 document.getElementById('menu').onclick = () => {
@@ -667,12 +678,12 @@ document.getElementById('menu').onclick = () => {
 
 
 
-export function updatePage() {
-    var page = Model.state.navigationPage
+export function updatePage(aPage) {
+    Model.state.navigationPage = aPage
     console.log("page")
-    console.log(page)
+    console.log(aPage)
 
-    switch (page) {
+    switch (aPage) {
         case 0:
             homePage()
             break;
@@ -694,16 +705,22 @@ function homePage(){
     btn_right.innerHTML = "help"
 
     btn_left.onclick = ()=>{
-        Model.state.navigationPage=1;
-        updatePage()
+        //Model.state.navigationPage=1;
+        updatePage(1)
         console.log(Model.state.navigationPage)
     }
 
 }
 
 function menuPage(){
-    btn_left.innerHTML = "ciao"
-    btn_center.innerHTML = "ciao"
-    btn_right.innerHTML = "ciao"
+    btn_left.innerHTML = "save"
+    btn_center.innerHTML = "map"
+    btn_right.innerHTML = "help"
+
+    btn_left.onclick = ()=>{
+        //Model.state.navigationPage=1;
+        updatePage(0)
+        console.log(Model.state.navigationPage)
+    }
 }
 
