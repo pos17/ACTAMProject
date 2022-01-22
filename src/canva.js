@@ -46,8 +46,10 @@ canvasDiv.appendChild(canvas);
 var ctx = canvas.getContext('2d');
 
 //fintanto che non capisco come gira il discorso background, il bg è notturno, si cambia poi in caso 
-var bg = new Image()
-var bgPassing = new Image()
+var bgNight = new Image()
+var bgSunrise = new Image()
+var bgDay = new Image()
+var bgSunset = new Image()
 var landscape = new Image()
 var floor = new Image()
 var building = new Image()
@@ -299,12 +301,10 @@ var environmentToGenerate = {
 export function initImages(){
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     
-    bg.src = Model.state.drawing.image.background.url
-    //bgPassing.src = Model.state.image.backgroundPassing.url
-    //bgNight.src =  Model.state.drawing.image.backgroundNight.url
-    //bgSunrise =  Model.state.drawing.image.backgroundSunrise.url
-    //bgDay =  Model.state.drawing.image.backgroundDay.url
-    //bgSunset =  Model.state.drawing.image.backgroundSunset.url
+    bgNight.src = new_assets.night.url
+    bgSunrise.src = new_assets.sunrise.url
+    bgDay.src = new_assets.day.url
+    bgSunset.src = new_assets.sunset.url
     landscape.src = Model.state.drawing.image.landscape.url
     floor.src = Model.state.drawing.image.floor.url
     building.src = Model.state.drawing.image.building.url
@@ -314,8 +314,8 @@ export function initImages(){
     //star.src = new_assets.star.url[0];
 
     // moon.classList.add('invert');
-    console.log('moon: ')
-    console.log(moon)
+    //console.log('moon: ')
+    //console.log(moon)
 
     state.assets.stars = []
 
@@ -344,7 +344,12 @@ function drawThisImage (img, left, bottom,alpha=1) {
     ctx.globalAlpha = 1
 }
 
+
 function createEnvironment(timestamp) {
+    let alphaNight = 0 
+    let alphaSunrise = 0 
+    let alphaDay = 0 
+    let alphaSunset = 0
     var time = Date.now()
 
     var h = canvas.height;
@@ -352,53 +357,116 @@ function createEnvironment(timestamp) {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.imageSmoothingEnabled = false;
-
-
-    // BACKGROUND IMAGE
+    var a= 1
+    omega = a/t;
+    let hAstra = (h-floor.naturalHeight*factor)-25*factor;
+    let wAstra = w/2
+    var angle = (/*alpha0 +*/ omega * (time-time0.getTime()))
+    let angleD = angle%(2*Math.PI)
+    console.log(angleD)
     
-    drawThisImage(bg, Model.state.drawing.image.background.left, Model.state.drawing.image.background.bottom);
+    // BACKGROUND IMAGE
+    switch(true){
+        case (angleD< 0.7):
+            alphaNight = 1
+            alphaSunrise = 0
+            alphaSunset = 1 - (1/(0.7))*angleD
+            alphaDay = 0
+        break
+        case(angleD < 3.05):
+            alphaNight = 1
+            alphaSunrise = 0
+            alphaSunset = 0
+            alphaDay = 0  
+        break
+        case(angleD < 3.30):
+            alphaNight = 1
+            alphaSunrise = (1/(3.30-3.05))*(angleD-3.05)
+            alphaSunset = 0
+            alphaDay = 0
+        break
+        case(angleD < 4.0):
+            alphaNight = 0
+            alphaSunrise = 1
+            alphaSunset = 0
+            alphaDay = (1/(4.0-3.30))*(angleD-3.30)
+        break
+        case(angleD < 6.18):
+            alphaNight = 0
+            alphaSunrise = 0
+            alphaSunset = 0
+            alphaDay = 1
+        break
+        default:
+            alphaNight = 0
+            alphaSunrise = 0
+            alphaSunset = 1
+            alphaDay = 1 - (1/(2*Math.PI-6.18))*(angleD-6.18)            
+        break  
+    }
+    drawThisImage(bgNight, Model.state.drawing.image.background.left, Model.state.drawing.image.background.bottom,alphaNight);
+    drawThisImage(bgSunrise, Model.state.drawing.image.background.left, Model.state.drawing.image.background.bottom,alphaSunrise);
+    drawThisImage(bgSunset, Model.state.drawing.image.background.left, Model.state.drawing.image.background.bottom,alphaSunset);
+    drawThisImage(bgDay, Model.state.drawing.image.background.left, Model.state.drawing.image.background.bottom,alphaDay);
+    
+    
+    
+    
     
     state.assets.stars.forEach((star)=>{
         drawThisImage(star.img, star.left, star.bottom)
     })
-
+    //console.log("HereWeAre")
 
     // ANIMATED IMAGES
-    var s = moonRadius - Math.sqrt(Math.pow(moonRadius,2)-(Math.pow(canvas.width,2)/4))
-    var a = 2 * Math.acos(1-(s/moonRadius))
-    omega = a/t;
-
+    //var s = moonRadius - Math.sqrt(Math.pow(moonRadius,2)-(Math.pow(canvas.width,2)/4))
+    //var a = 2 * Math.acos(1-(s/moonRadius))
+    
+    //console.log("HereWeAre1")
     ctx.save();
-    ctx.translate(w/2, h*2)
+    ctx.translate(w/2, hAstra-15*factor)
     // var angle = ((a/60)*time.getSeconds()+(a/60000)*time.getMilliseconds());
     // var angle = ((2*Math.PI/6000)*time.getSeconds()) + ((2*Math.PI/100000)*time.getMilliseconds());
-    var angle = (alpha0 + omega * (time-time0.getTime()))
-    ctx.rotate(angle);
+   
+    //ctx.rotate(angle);
+
+    // if(angle%(2*Math.PI) < 0.1) {
+    //     Model.state.queueDay = 3
+    // } else if ((angle%(2*Math.PI) > 3.11 )&&(angle%(2*Math.PI) <3.13)) {
+    //     Model.state.queueDay = 1
+    // }
 
     ctx.save()
-    ctx.translate(moonRadius, 0)
-    ctx.rotate(-angle);
+    //ctx.translate(moonRadius, 0)
+    
+    ctx.translate(-wAstra*(Math.cos(angle)), hAstra*(Math.sin(-angle)))
+    ctx.translate(-(moon.naturalWidth*factor)/2, (moon.naturalHeight*factor)/2)
+    //ctx.rotate(-angle);
     ctx.drawImage(moon, 0, 0, moon.naturalWidth*factor, moon.naturalHeight*factor);
     ctx.restore()
-
+    /*
     ctx.save()
-    ctx.translate(-moonRadius, 0)
-    ctx.rotate(-angle);
+    ctx.translate(-w/2*(Math.cos(angle)), -h*(Math.sin(angle)))
+    //ctx.translate(-moonRadius, 0)
+    //ctx.rotate(-angle);
     ctx.drawImage(moon, 0, 0, moon.naturalWidth*factor, moon.naturalHeight*factor);
     ctx.restore()
-
+    */
     ctx.save()
-    ctx.translate(0, moonRadius)
-    ctx.rotate(-angle);
+    ctx.translate(wAstra*(Math.cos(angle)), hAstra*(Math.sin(angle)))
+    ctx.translate(-(sun.naturalWidth*factor)/2, (sun.naturalHeight*factor)/2)
+    //ctx.translate(0, moonRadius)
+    //ctx.rotate(-angle);
     ctx.drawImage(sun, 0, 0, sun.naturalWidth*factor, sun.naturalHeight*factor);
     ctx.restore()
-
+    /*
     ctx.save()
-    ctx.translate(0, -moonRadius)
-    ctx.rotate(-angle);
+    ctx.translate(w/2*(Math.cos(angle)), -h*(Math.sin(angle)))
+    //ctx.translate(0, -moonRadius)
+    //ctx.rotate(-angle);
     ctx.drawImage(sun, 0, 0, sun.naturalWidth*factor, sun.naturalHeight*factor);
     ctx.restore()
-
+    */
     ctx.restore()
 
 
@@ -421,20 +489,20 @@ function createEnvironment(timestamp) {
     // window.requestAnimationFrame(() => {createEnvironment(env)});
     
     Model.state.framereq = window.requestAnimationFrame(countFPS);
-    console.log(Model.state.framereq)
+    //console.log(Model.state.framereq)
 }
 
 function countFPS(timestamp) {
     if(Model.state.isPlaying) {
         if(Date.now() - Model.state.now > 1000 / Model.state.fps) {
-            console.log("print")
+            //console.log("print")
             Model.state.now = Date.now()
             Model.state.framereq = window.requestAnimationFrame(createEnvironment);
-            console.log(Model.state.framereq)
+            //console.log(Model.state.framereq)
         } else {
             
             Model.state.framereq = window.requestAnimationFrame(countFPS);
-            console.log(Model.state.framereq)
+            //console.log(Model.state.framereq)
         }
     }
 }

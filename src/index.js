@@ -6,15 +6,19 @@ import {MarkovMelody} from "./markov_melody.js"
 import * as Canva from './canva.js'
 import * as Instr from './instruments.js';
 import * as effects from './effects.js';
-
+import { initializeApp } from "firebase/app";
 export const state= {
+    queueCounter:0,
+    queueDay: 0, //0 night, 1 night to day, 2 day, 3 day to night
+    now1: 0,
+    canvasFactor:8,
     framereq:undefined,
     now:Date.now(),
     effects:{
       melody:{},
       harmony:{}
     },
-    fps:20,
+    fps:15,
     instruments:{},
     stateChanged:false,
     readyModel:false,
@@ -43,14 +47,12 @@ var mm = new MarkovMelody(tree = markovChain,nodes = markov_music_elements)
 // console.log(mm.generateMelody(1))
 //console.log(mm.generatePath(2))
 
-
-
-initializeApp()
+initializeApp1()
 
 /**
  *  Function to initialize the main settings of the player 
  */
-async function initializeApp() {
+async function initializeApp1() {
   
     //initialize the drawing values
     state.drawing = require("./myDrawing.json")
