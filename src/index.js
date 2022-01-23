@@ -67,7 +67,7 @@ async function initializeApp() {
     propagateStateChanges(state.isFirst)
     Canva.initImages()
     Canva.playableButton(true)
-    Canva.updatePage()
+    Canva.updatePage(1)
 }
 
 // {

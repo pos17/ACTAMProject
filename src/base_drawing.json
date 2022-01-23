@@ -1,6 +1,7 @@
 {
     "idList": {
       "background":0,
+      "backgroundPassing":3,
       "landscape":4,
       "floor":8,
       "building":12,
