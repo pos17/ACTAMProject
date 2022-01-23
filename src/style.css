@@ -15,7 +15,6 @@ body {
 
 #container {
     min-width: 900px;
-    /* width: 70%; */
     height: 100vh;
     width: auto;
     left: 50%;
@@ -26,22 +25,17 @@ body {
     display: block;
 
     margin-top: 10vh;
-    
-    /* margin: auto; */
 }
 
 #canva-container {
-    /* position: absolute; */
     position: relative;
     width: 85vw;
     height: auto;
-    /* min-width: 100%; */
     margin-top: 10px;
 }
 
 #canvas-div {
     position: inherit;
-    /* clear: both; */
 }
 
 .canvases {
@@ -56,7 +50,6 @@ body {
 }
 
 .sky {
-    /* position: absolute; */
     width: 100%; 
     height: auto;
     bottom: 0%;
