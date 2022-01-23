@@ -18,7 +18,7 @@ export const state= {
       melody:{},
       harmony:{}
     },
-    fps:15,
+    fps:24,
     instruments:{},
     stateChanged:false,
     readyModel:false,

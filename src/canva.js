@@ -346,10 +346,21 @@ function drawThisImage (img, left, bottom,alpha=1) {
 
 
 function createEnvironment(timestamp) {
+    
+    //const values to modify canvas elements 
+    const NIGHT_START = 0.5
+    const SUNRISE_START = 3.05
+    const SUNRISE_END = 3.30
+    const DAY_START = 4.0
+    const SUNSET_START = 6.10
+    const SUNSET_END = 0
+
     let alphaNight = 0 
     let alphaSunrise = 0 
     let alphaDay = 0 
     let alphaSunset = 0
+
+
     var time = Date.now()
 
     var h = canvas.height;
@@ -357,41 +368,41 @@ function createEnvironment(timestamp) {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.imageSmoothingEnabled = false;
-    var a= 1
+    var a= 4
     omega = a/t;
     let hAstra = (h-floor.naturalHeight*factor)-25*factor;
-    let wAstra = w/2
+    let wAstra = w/2 - (moon.naturalWidth/2)*factor 
     var angle = (/*alpha0 +*/ omega * (time-time0.getTime()))
     let angleD = angle%(2*Math.PI)
     console.log(angleD)
     
     // BACKGROUND IMAGE
     switch(true){
-        case (angleD< 0.7):
+        case (angleD< NIGHT_START):
             alphaNight = 1
             alphaSunrise = 0
-            alphaSunset = 1 - (1/(0.7))*angleD
+            alphaSunset = 1 - (1/(NIGHT_START-SUNSET_END))*(angleD-SUNSET_END)
             alphaDay = 0
         break
-        case(angleD < 3.05):
+        case(angleD < SUNRISE_START):
             alphaNight = 1
             alphaSunrise = 0
             alphaSunset = 0
             alphaDay = 0  
         break
-        case(angleD < 3.30):
+        case(angleD < SUNRISE_END):
             alphaNight = 1
-            alphaSunrise = (1/(3.30-3.05))*(angleD-3.05)
+            alphaSunrise = (1/(SUNRISE_END-SUNRISE_START))*(angleD-SUNRISE_START)
             alphaSunset = 0
             alphaDay = 0
         break
-        case(angleD < 4.0):
+        case(angleD < DAY_START):
             alphaNight = 0
             alphaSunrise = 1
             alphaSunset = 0
-            alphaDay = (1/(4.0-3.30))*(angleD-3.30)
+            alphaDay = (1/(DAY_START-SUNRISE_END))*(angleD-SUNRISE_END)
         break
-        case(angleD < 6.18):
+        case(angleD < SUNSET_START):
             alphaNight = 0
             alphaSunrise = 0
             alphaSunset = 0
@@ -401,7 +412,7 @@ function createEnvironment(timestamp) {
             alphaNight = 0
             alphaSunrise = 0
             alphaSunset = 1
-            alphaDay = 1 - (1/(2*Math.PI-6.18))*(angleD-6.18)            
+            alphaDay = 1 - (1/(2*Math.PI-SUNSET_START))*(angleD-SUNSET_START)            
         break  
     }
     drawThisImage(bgNight, Model.state.drawing.image.background.left, Model.state.drawing.image.background.bottom,alphaNight);
@@ -453,7 +464,7 @@ function createEnvironment(timestamp) {
     ctx.restore()
     */
     ctx.save()
-    ctx.translate(wAstra*(Math.cos(angle)), hAstra*(Math.sin(angle)))
+    ctx.translate(wAstra*(Math.cos(angle-0.1)), hAstra*(Math.sin(angle-0.1)))
     ctx.translate(-(sun.naturalWidth*factor)/2, (sun.naturalHeight*factor)/2)
     //ctx.translate(0, moonRadius)
     //ctx.rotate(-angle);
