@@ -295,3 +295,9 @@ function addPartToTransport(noteSequence,instrument) {
 
 
 
+document.getElementById("mytone").onclick = ()=>{
+  var gino = new Instr.Bell()
+  // Tone.start()
+
+  gino.triggerAttackRelease("C6", "8n")
+}
