@@ -374,3 +374,10 @@ Tone.Transport.schedule(()=>{
   },"0:0:0")
 
   
+
+document.getElementById("mytone").onclick = ()=>{
+  var gino = new Instr.Bell()
+  // Tone.start()
+
+  gino.triggerAttackRelease("C6", "8n")
+}

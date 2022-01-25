@@ -243,6 +243,46 @@ class Synth {
     }
 }
 
+
+class Bell {
+    constructor () {
+        var synth = new Tone.PolySynth()
+        var synthOctave = new Tone.PolySynth()
+        synth.set({
+            envelope: {
+                attack: 0,
+                decay: 0.241,
+                decayCurve: "exponential",
+                sustain: 0,
+                release: 0,
+            },
+            oscillator: {
+                type: "sine",
+            },
+        });
+
+        synthOctave.set({
+            envelope: {
+                attack: 0,
+                decay: 0.241,
+                decayCurve: "exponential",
+                sustain: 0,
+                release: 0,
+            },
+            oscillator: {
+                type: "sine",
+            },
+        })
+        
+        this.synth = synth;
+    }
+
+    triggerAttackRelease(note, duration, time, velocity) {
+        this.synth.triggerAttackRelease(note, duration, time, velocity)
+    }
+}
+
+
 module.exports = {
     Kick: Kick,
     Snare: Snare,
@@ -250,5 +290,6 @@ module.exports = {
     HiHatOpen: HiHatOpen,   
     Pad: Pad,
     Lead: Lead,
-    Synth: Synth
+    Synth: Synth,
+    Bell: Bell,
 }
