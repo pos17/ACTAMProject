@@ -67,7 +67,7 @@ async function initializeApp1() {
     await Canva.createMenu()
     Canva.assignClick()
     propagateStateChanges(state.isFirst)
-    Canva.initImages()
+    await Canva.initImages()
     Canva.playableButton(true)
     Canva.updatePage(1)
 }

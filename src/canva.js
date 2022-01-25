@@ -1,6 +1,7 @@
 import * as Model from "./index.js"
 import * as Tone from 'tone'
 import { saveAs } from 'file-saver';
+import { getAsset } from "./firebase.js";
 
 const canvasDiv = document.getElementById('canvas-div');
 // const canva = document.getElementById('main-canvas');
@@ -298,13 +299,13 @@ var environmentToGenerate = {
     shrub: "mountain",
 }
 */
-export function initImages(){
+export async function initImages(){
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     
-    bgNight.src = new_assets.night.url
-    bgSunrise.src = new_assets.sunrise.url
-    bgDay.src = new_assets.day.url
-    bgSunset.src = new_assets.sunset.url
+    bgNight.src = await getAsset('BG/Background1.png')
+    bgSunrise.src = await getAsset('BG/Background2.png')
+    bgDay.src = await getAsset('BG/Background3.png')
+    bgSunset.src = await getAsset('BG/Background4.png')
     landscape.src = Model.state.drawing.image.landscape.url
     floor.src = Model.state.drawing.image.floor.url
     building.src = Model.state.drawing.image.building.url
@@ -355,6 +356,8 @@ function createEnvironment(timestamp) {
     const SUNSET_START = 6.10
     const SUNSET_END = 0
 
+    const ALPHASTART = Math.PI*3/2
+
     let alphaNight = 0 
     let alphaSunrise = 0 
     let alphaDay = 0 
@@ -368,11 +371,11 @@ function createEnvironment(timestamp) {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.imageSmoothingEnabled = false;
-    var a= 4
+    var a= 3
     omega = a/t;
     let hAstra = (h-floor.naturalHeight*factor)-25*factor;
     let wAstra = w/2 - (moon.naturalWidth/2)*factor 
-    var angle = (/*alpha0 +*/ omega * (time-time0.getTime()))
+    var angle = (ALPHASTART + omega * (time-time0.getTime()))
     let angleD = angle%(2*Math.PI)
     console.log(angleD)
     
@@ -723,7 +726,8 @@ export function assignClick() {
     })
 }
 
-generateButton.onclick = () => {
+generateButton.onclick = async () => {
+    await initImages()
     menuPanel.style.display = 'none'
     Tone.start()
     /*
@@ -743,7 +747,7 @@ generateButton.onclick = () => {
     Model.propagateStateChanges(false)
     Model.startMusic()
     updatePage(0)
-    initImages()
+    
 }
 
 document.getElementById('menu').onclick = () => {
