@@ -8,14 +8,7 @@ const canvasDiv = document.getElementById('canvas-div');
 const sky = document.getElementById('sky');
 const container = document.getElementById('canva-container')
 
-var generateButton = document.createElement('button')
-var helpButton = document.createElement('button')
-var menuPanel = document.createElement('div')
-menuPanel.className = 'menu-panel'
 
-var btn_left = document.getElementById('btn-sx')
-var btn_center =  document.getElementById('btn-ct')
-var btn_right =  document.getElementById('btn-dx')
 
 var factor = 8;
 var channels = ['mountain', 'seaside', 'city']
@@ -47,18 +40,7 @@ canvasDiv.appendChild(canvas);
 var ctx = canvas.getContext('2d');
 
 //fintanto che non capisco come gira il discorso background, il bg è notturno, si cambia poi in caso 
-var bgNight = new Image()
-var bgSunrise = new Image()
-var bgDay = new Image()
-var bgSunset = new Image()
-var landscape = new Image()
-var floor = new Image()
-var building = new Image()
-var shrub = new Image()
 
-var moon = new Image();
-var sun = new Image();
-var star = new Image();
 
 var time0 = new Date();
 var omega = 0; /* canvas angular speed */
@@ -301,23 +283,43 @@ var environmentToGenerate = {
 */
 export async function initImages(){
     ctx.clearRect(0, 0, canvas.width, canvas.height)
+    for(let key of Object.keys(Model.state.drawing.image)) {
+        console.log(key)
+        Model.state.imagesToDraw[key] = await DrawableImage.build(Model.state.drawing.image[key])
+    }
     
+    console.log(Model.state.imagesToDraw["moon"])
+    console.log(Model.state.imagesToDraw["sun"])
+    /*
+    var bgNight = new Image()   
+    var bgSunrise = new Image()
+    var bgDay = new Image()
+    var bgSunset = new Image()
+    var landscape = new Image()
+    var floor = new Image()
+    var building = new Image()
+    var shrub = new Image()
+
+    var moon = new Image();
+    var sun = new Image();
+    var star = new Image();
     bgNight.src = await getAsset('BG/Background1.png')
     bgSunrise.src = await getAsset('BG/Background2.png')
     bgDay.src = await getAsset('BG/Background3.png')
     bgSunset.src = await getAsset('BG/Background4.png')
-    landscape.src = Model.state.drawing.image.landscape.url
+    landscape.src = await getAsset(Model.state.drawing.image.landscape.url)
     floor.src = Model.state.drawing.image.floor.url
     building.src = Model.state.drawing.image.building.url
     shrub.src = Model.state.drawing.image.shrub.url
     moon.src = Model.state.drawing.image.moon.url
     sun.src = Model.state.drawing.image.sun.url
+    */
     //star.src = new_assets.star.url[0];
 
     // moon.classList.add('invert');
     //console.log('moon: ')
     //console.log(moon)
-
+    /*
     state.assets.stars = []
 
     var numOfStars = 32
@@ -328,22 +330,13 @@ export async function initImages(){
     }
 
     console.log(state.assets.stars)
-
+    */
     // window.requestAnimationFrame(()=>{createEnvironment(env)});
+    console.log("passato")
     Model.state.framereq = window.requestAnimationFrame(countFPS);
     console.log(Model.state.framereq)
 }
 
-
-function drawThisImage (img, left, bottom,alpha=1) {
-    var h = img.naturalHeight*factor;
-    var w = img.naturalWidth*factor;
-    var x = left * canvas.width;
-    var y = (1-bottom) * canvas.height;
-    ctx.globalAlpha = alpha
-    ctx.drawImage(img, x, y-h, w, h)
-    ctx.globalAlpha = 1
-}
 
 
 function createEnvironment(timestamp) {
@@ -355,7 +348,7 @@ function createEnvironment(timestamp) {
     const DAY_START = 4.0
     const SUNSET_START = 6.10
     const SUNSET_END = 0
-
+    let lightOn = false
     const ALPHASTART = Math.PI*3/2
 
     let alphaNight = 0 
@@ -371,14 +364,19 @@ function createEnvironment(timestamp) {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.imageSmoothingEnabled = false;
-    var a= 3
+    var a= 0.5
     omega = a/t;
-    let hAstra = (h-floor.naturalHeight*factor)-25*factor;
-    let wAstra = w/2 - (moon.naturalWidth/2)*factor 
+    //console.log("floor")
+    //console.log(Model.state.imagesToDraw["floor"])
+    let hAstra = h-Model.state.imagesToDraw["floor"].getNHeight()*factor-25*factor;
+    let wAstra = w/2 - ((Model.state.imagesToDraw["moon"].getNWidth())/2*factor) 
+    //console.log("HEW")
+    //console.log(wAstra)
+    //console.log(hAstra)
     var angle = (ALPHASTART + omega * (time-time0.getTime()))
     let angleD = angle%(2*Math.PI)
-    console.log(angleD)
-    
+    //console.log(angleD)
+    //console.log("hereIam")
     // BACKGROUND IMAGE
     switch(true){
         case (angleD< NIGHT_START):
@@ -386,50 +384,61 @@ function createEnvironment(timestamp) {
             alphaSunrise = 0
             alphaSunset = 1 - (1/(NIGHT_START-SUNSET_END))*(angleD-SUNSET_END)
             alphaDay = 0
+            lightOn = true
         break
         case(angleD < SUNRISE_START):
             alphaNight = 1
             alphaSunrise = 0
             alphaSunset = 0
             alphaDay = 0  
+            lightOn = true
         break
         case(angleD < SUNRISE_END):
             alphaNight = 1
             alphaSunrise = (1/(SUNRISE_END-SUNRISE_START))*(angleD-SUNRISE_START)
             alphaSunset = 0
             alphaDay = 0
+            lightOn = true
         break
         case(angleD < DAY_START):
             alphaNight = 0
             alphaSunrise = 1
             alphaSunset = 0
             alphaDay = (1/(DAY_START-SUNRISE_END))*(angleD-SUNRISE_END)
+            lightOn = false
         break
         case(angleD < SUNSET_START):
             alphaNight = 0
             alphaSunrise = 0
             alphaSunset = 0
             alphaDay = 1
+            lightOn = false
         break
         default:
             alphaNight = 0
             alphaSunrise = 0
             alphaSunset = 1
-            alphaDay = 1 - (1/(2*Math.PI-SUNSET_START))*(angleD-SUNSET_START)            
+            alphaDay = 1 - (1/(2*Math.PI-SUNSET_START))*(angleD-SUNSET_START)
+            lightOn = false           
         break  
     }
-    drawThisImage(bgNight, Model.state.drawing.image.background.left, Model.state.drawing.image.background.bottom,alphaNight);
-    drawThisImage(bgSunrise, Model.state.drawing.image.background.left, Model.state.drawing.image.background.bottom,alphaSunrise);
-    drawThisImage(bgSunset, Model.state.drawing.image.background.left, Model.state.drawing.image.background.bottom,alphaSunset);
-    drawThisImage(bgDay, Model.state.drawing.image.background.left, Model.state.drawing.image.background.bottom,alphaDay);
+    /*
+    drawThisImage(Model.state.imagesToDraw["bgNight"], 0, 0,alphaNight,false);
+    drawThisImage(Model.state.imagesToDraw["bgSunrise"], 0, 0,alphaSunrise,false);
+    drawThisImage(Model.state.imagesToDraw["bgSunset"], 0, 0,alphaSunset,false);
+    drawThisImage(Model.state.imagesToDraw["bgDay"], 0, 0,alphaDay,false);
+    */
+    Model.state.imagesToDraw["bgNight"].drawThisImage(alphaNight,lightOn,canvas.height,canvas.width,ctx,factor)
+    Model.state.imagesToDraw["bgSunrise"].drawThisImage(alphaSunrise,lightOn,canvas.height,canvas.width,ctx,factor)
+    Model.state.imagesToDraw["bgSunset"].drawThisImage(alphaSunset,lightOn,canvas.height,canvas.width,ctx,factor)
+    Model.state.imagesToDraw["bgDay"].drawThisImage(alphaDay,lightOn,canvas.height,canvas.width,ctx,factor)
     
     
-    
-    
-    
+    /*
     state.assets.stars.forEach((star)=>{
         drawThisImage(star.img, star.left, star.bottom)
     })
+    */
     //console.log("HereWeAre")
 
     // ANIMATED IMAGES
@@ -438,7 +447,7 @@ function createEnvironment(timestamp) {
     
     //console.log("HereWeAre1")
     ctx.save();
-    ctx.translate(w/2, hAstra-15*factor)
+    ctx.translate(w/2, hAstra + 15*factor)
     // var angle = ((a/60)*time.getSeconds()+(a/60000)*time.getMilliseconds());
     // var angle = ((2*Math.PI/6000)*time.getSeconds()) + ((2*Math.PI/100000)*time.getMilliseconds());
    
@@ -454,9 +463,10 @@ function createEnvironment(timestamp) {
     //ctx.translate(moonRadius, 0)
     
     ctx.translate(-wAstra*(Math.cos(angle)), hAstra*(Math.sin(-angle)))
-    ctx.translate(-(moon.naturalWidth*factor)/2, (moon.naturalHeight*factor)/2)
+    ctx.translate(-(Model.state.imagesToDraw["moon"].getNWidth()*factor)/2, (Model.state.imagesToDraw["moon"].getNHeight()*factor)/2)
     //ctx.rotate(-angle);
-    ctx.drawImage(moon, 0, 0, moon.naturalWidth*factor, moon.naturalHeight*factor);
+    Model.state.imagesToDraw["moon"].drawThisImage(1,lightOn,0,0,ctx,factor)
+    //ctx.drawImage(Model.state.imagesToDraw["moon"], 0, 0, Model.state.imagesToDraw["moon"].naturalWidth*factor, Model.state.imagesToDraw["moon"].naturalHeight*factor);
     ctx.restore()
     /*
     ctx.save()
@@ -468,10 +478,11 @@ function createEnvironment(timestamp) {
     */
     ctx.save()
     ctx.translate(wAstra*(Math.cos(angle-0.1)), hAstra*(Math.sin(angle-0.1)))
-    ctx.translate(-(sun.naturalWidth*factor)/2, (sun.naturalHeight*factor)/2)
+    ctx.translate(-(Model.state.imagesToDraw["sun"].getNWidth()*factor)/2, (Model.state.imagesToDraw["sun"].getNHeight()*factor)/2)
     //ctx.translate(0, moonRadius)
     //ctx.rotate(-angle);
-    ctx.drawImage(sun, 0, 0, sun.naturalWidth*factor, sun.naturalHeight*factor);
+    Model.state.imagesToDraw["sun"].drawThisImage(1,lightOn,0,0,ctx,factor)
+    //ctx.drawImage(Model.state.imagesToDraw["sun"], 0, 0, Model.state.imagesToDraw["sun"].naturalWidth*factor, Model.state.imagesToDraw["sun"].naturalHeight*factor);
     ctx.restore()
     /*
     ctx.save()
@@ -483,12 +494,20 @@ function createEnvironment(timestamp) {
     */
     ctx.restore()
 
-
+    //console.log("here5")
     // STATIC ELEMENTS
-    drawThisImage(landscape, Model.state.drawing.image.landscape.left, Model.state.drawing.image.landscape.bottom);
-    drawThisImage(floor, Model.state.drawing.image.floor.left, Model.state.drawing.image.floor.bottom);
-    drawThisImage(building, Model.state.drawing.image.building.left, Model.state.drawing.image.building.bottom);
-    drawThisImage(shrub, Model.state.drawing.image.shrub.left, Model.state.drawing.image.shrub.bottom);
+    Model.state.imagesToDraw["landscape"].drawThisImage(1,lightOn,canvas.height,canvas.width,ctx,factor)
+    //drawThisImage(Model.state.imagesToDraw["landscape"],Model.state.drawing.image.landscape.left, Model.state.drawing.image.landscape.bottom,1,Model.state.drawing.image.landscape.hasLight,lightOn);
+    //drawThisImage(landscape, Model.state.drawing.image.landscape.left, Model.state.drawing.image.landscape.bottom);
+    Model.state.imagesToDraw["floor"].drawThisImage(1,lightOn,canvas.height,canvas.width,ctx,factor)
+    //drawThisImage(Model.state.imagesToDraw["floor"],Model.state.drawing.image.floor.left, Model.state.drawing.image.floor.bottom,1,Model.state.drawing.image.floor.hasLight,lightOn);
+    //drawThisImage(floor, Model.state.drawing.image.floor.left, Model.state.drawing.image.floor.bottom);
+    Model.state.imagesToDraw["building"].drawThisImage(1,lightOn,canvas.height,canvas.width,ctx,factor)
+    //drawThisImage(Model.state.imagesToDraw["building"],Model.state.drawing.image.building.left, Model.state.drawing.image.building.bottom,1,Model.state.drawing.image.building.hasLight,lightOn);
+    //drawThisImage(building, Model.state.drawing.image.building.left, Model.state.drawing.image.building.bottom);
+    Model.state.imagesToDraw["tree"].drawThisImage(1,lightOn,canvas.height,canvas.width,ctx,factor)
+    //drawThisImage(Model.state.imagesToDraw["tree"],Model.state.drawing.image.tree.left, Model.state.drawing.image.tree.bottom,1,Model.state.drawing.image.tree.hasLight,lightOn);
+    //drawThisImage(shrub, Model.state.drawing.image.shrub.left, Model.state.drawing.image.shrub.bottom);
     
     
     
@@ -554,256 +573,86 @@ function blendBG() {
 
 
 /* CREATING MENU' */
+/*
 export  async function initJSON() {
     for(let datum of Model.state.possibleValues.data) {
         datum.image = new_assets[datum.imageName]
     }
 }
+*/
+/*
+function drawThisImage (img, left, bottom,alpha=1,hasLight=false,lightOn) {
+    var h = img.naturalHeight*factor;
+    var w = img.naturalWidth*factor;
+    var x = left * canvas.width;
+    var y = (1-bottom) * canvas.height;
+    ctx.globalAlpha = alpha
+    console.log("here6")
+    if(hasLight) {
+        if(lightOn) {
+            ctx.drawImage(img.lightOn, x, y-h, w, h)
+        } else {
+            ctx.drawImage(img.lightOff, x, y-h, w, h)
+        }
+    } else {
+        ctx.drawImage(img, x, y-h, w, h)    
+    }
+    ctx.drawImage(img, x, y-h, w, h)
+    ctx.globalAlpha = 1
+}
+*/
 
+class DrawableImage {
+    constructor(hasLight,imageLightOff,imageLightOn,left,bottom) {
+        this.imageLightOff = imageLightOff;
+        this.imageLightOn = imageLightOn;
+        this.hasLight = hasLight;
+        this.left = left;
+        this.bottom = bottom;
+    }
 
-
-export async function createMenu () {
-    console.log("menu Creation")
-    var btnContainer = document.createElement('div')
-    btnContainer.className = 'token-btn-container'
-    // cycle each environment to create each row 
-
-    console.log(Model.state.possibleValues.elementTypes)
-    for (let elType of Model.state.possibleValues.elementTypes) {
-        console.log(elType)
-        var btnDiv = document.createElement('div')
-        btnDiv.className = 'token-btn-div'    
+    static async build(image) {
+        //hasLight,urlLightOff,urlLightOn,left,bottom
         
-        let toPutIn = []
-        for(let datum of Model.state.possibleValues.data) {
-            if(datum.elementType === elType) {
-                toPutIn.push(datum)
+        if(image.hasLight) {
+            let imageLightOn = new Image()
+            imageLightOn.src = await getAsset(image.urlLightOn)
+            let imageLightOff = new Image()
+            imageLightOff.src = await getAsset(image.urlLightOff)
+            return new DrawableImage(image.hasLight,imageLightOff,imageLightOn,image.left,image.bottom)
+        }else  {
+            let imageLightOff = new Image()
+            imageLightOff.src = await getAsset(image.url)
+            return new DrawableImage(image.hasLight,imageLightOff,imageLightOff,image.left,image.bottom)
+        }
+    }
+
+    drawThisImage(alpha0=1,lightOn,canvasHeight,canvasWidth,ctx,factor) {
+        var h = this.imageLightOff.naturalHeight*factor;
+        var w = this.imageLightOff.naturalWidth*factor;
+        var x = this.left * canvasWidth;
+        var y = (1-this.bottom) * canvasHeight;
+        ctx.globalAlpha = alpha0
+
+        if(this.hasLight) {
+            if(lightOn) {
+                ctx.drawImage(this.imageLightOn, x, y-h, w, h)
+            } else {
+                ctx.drawImage(this.imageLightOff, x, y-h, w, h)
             }
+        } else {
+            ctx.drawImage(this.imageLightOff, x, y-h, w, h)    
         }
-        console.log(new_assets["mountains"].previewUrl)
-        // cycle every element of the environment
-        console.log("toPutIn:")
-        console.log(toPutIn)
-
-
-        for (let datum of toPutIn) {
-            console.log('datum: ')
-            console.log(datum)
-            //console.log(asset[1])
-            console.log(datum.image.previewUrl)
-            var aNewSrc = datum.image.previewUrl
-            var img = document.createElement('img')
-            img.src = aNewSrc//asset[1].previewUrl
-            img.className = 'token-image'
-
-            var btn = document.createElement('button')
-            btn.id = datum.id
-            btn.className = 'nes-btn'
-            btn.classList.add('token-btn')
-            btn.classList.add(datum.elementType)//asset[0])
-            btn.classList.add(datum.environment)
-
-            btn.style.margin = '7px'
-            btn.style.marginLeft = 'auto'
-            btn.style.marginRight = 'auto'
-
-            btn.appendChild(img)
-            btnDiv.appendChild(btn)
-        }
-        btnContainer.appendChild(btnDiv)
+        //ctx.drawImage(imageLightOff, x, y-h, w, h)
+        ctx.globalAlpha = 1
     }
-
-    menuPanel.appendChild(btnContainer)
-
-    generateButton.className = 'nes-btn is-success'
-    generateButton.innerText = 'GENERATE'
-    generateButton.style.display = 'block'
-    generateButton.style.margin = 'auto'
-    generateButton.style.marginTop = '20px'
-    generateButton.style.verticalAlign = 'middle'
-
-    helpButton.className = 'nes-btn is-warning'
-    helpButton.innerText = '?'
-    helpButton.style.display = 'block'
-    helpButton.style.margin = 'auto' 
-    helpButton.style.marginTop = '20px'
-    helpButton.style.verticalAlign = 'middle'
-
-    var btnDiv = document.createElement('div')
-        btnDiv.style.display = 'block'
-        btnDiv.style.height = 'max-content'
-        btnDiv.style.marginTop = '10%'
-        btnDiv.style.textAlign = 'center'
-
-    var title = document.createElement('p')
-        title.innerText = 'MENU'
-        title.style.backgroundColor = 'rgb(245, 247, 99)'
-        title.style.padding = '10px'
-        title.style.borderRadius = '5px'
-        title.style.marginTop = '40%'
-        title.style.fontSize = 'x-large'
     
-
-    btnDiv.appendChild(helpButton)
-    btnDiv.appendChild(generateButton)
-    btnDiv.appendChild(title)
-
-    menuPanel.appendChild(btnDiv)
-
-    container.appendChild(menuPanel)
-
-    console.log('envToGen: ')
-    visualizeSelectedTokens()
-}
-
-function visualizeSelectedTokens() {
-    document.querySelectorAll('.token-btn').forEach((btn)=>{
-        if (Object.values(Model.state.drawing.idList).indexOf(parseInt(btn.id)) > -1) {
-            console.log("it is here num 2")
-            console.log(btn);
-            btn.classList.add('selected-btn')
-        }
-    })
-}
-
-//createMenu()
-
-/* -------------------------------------------------------- */
-
-export function playableButton (ready) {
-    if (ready) {
-        playButton.classList.replace('is-disabled', 'is-success');
+    getNWidth() {
+        return this.imageLightOff.naturalWidth
+    }
+    getNHeight() {
+        return this.imageLightOff.naturalHeight
     }
 }
 
-function showInitPanel() {
-    document.getElementById("panel-container").hidden = !document.getElementById("panel-container").hidden
-    document.getElementById('front-panel').hidden = false
-    document.getElementById('start-panel').hidden = true;
-}
-
-var okButton = document.getElementById('ok-button');
-okButton.onclick = () => {
-    var word1 = document.getElementById('name-field1').value
-    var word2 = document.getElementById('name-field2').value
-    // Model.setSeedWords(word1, word2);
-    if ((word1 != "")&&(word2 != "")) {
-        document.getElementById('front-panel').hidden = true;
-        document.getElementById('start-panel').hidden = false;
-        Model.state.emitter.updateReadyToPlay()
-        Tone.start()
-        //Tone.setContext(new Tone.Context({ latencyHint : "balanced" }))
-        Tone.context.latencyHint = "playback"
-    }    
-}
-
-var playButton = document.getElementById('play-button');
-playButton.onclick = ()=> {
-    if (playButton.classList.contains('is-success')){
-        showInitPanel();
-        // window.requestAnimationFrame(moveMoon) 
-        Model.startMusic(); 
-        
-        }
-}
-
-export function assignClick() {
-    document.querySelectorAll('.token-btn').forEach((btn)=>{
-
-        btn.addEventListener('click', ()=>{
-            var id = btn.id
-            var env = btn.classList[3]
-            var el = btn.classList[2]
-            console.log("elements")
-            console.log(env)
-            console.log(el)
-            //Model.state.drawing.
-            document.querySelectorAll('.'+ el).forEach((elem)=>{elem.classList.remove('selected-btn')})
-            Model.modifyState(id)
-            visualizeSelectedTokens()
-            
-        })
-    })
-}
-
-generateButton.onclick = async () => {
-    await initImages()
-    menuPanel.style.display = 'none'
-    Tone.start()
-    /*
-    Model.state.drawing.image.moon = Model.state.possibleValues.data.find(x=>x.imageName==="moon1").image
-    Model.state.drawing.image.sun = Model.state.possibleValues.data.find(x=>x.imageName==="sun").image
-    Model.state.drawing.image.background = Model.state.possibleValues.data.find(x=>x.imageName==="night").image
-    var fileName = 'myDrawing.json';
-    // Create a blob of the data
-    var fileToSave = new Blob([JSON.stringify(Model.state.drawing)], {
-        type: 'application/json'
-    });
-    
-    // Save the file
-    saveAs(fileToSave, fileName);
-    */
-    //cancelAnimationFrame(framereq)
-    Model.propagateStateChanges(false)
-    Model.startMusic()
-    updatePage(0)
-    
-}
-
-document.getElementById('menu').onclick = () => {
-    Model.stopMusic()
-    //console.log("puttana")
-    //console.log(Model.state.framereq)
-    //window.cancelAnimationFrame(Model.state.framereq)
-    console.log("merda")
-    menuPanel.style.display = 'inline-flex  '
-}
-
-
-
-export function updatePage(aPage) {
-    Model.state.navigationPage = aPage
-    console.log("page")
-    console.log(aPage)
-
-    switch (aPage) {
-        case 0:
-            homePage()
-            break;
-        
-        case 1:
-            menuPage()
-            Model.stopMusic()
-            menuPanel.style.display = 'inline-flex  '
-            break;
-    
-        default:
-            break;
-    }
-}
-
-function homePage(){
-    btn_left.innerHTML = "menu"
-    btn_center.innerHTML = "map"
-    btn_right.innerHTML = "help"
-
-    btn_left.onclick = ()=>{
-        //Model.state.navigationPage=1;
-        updatePage(1)
-        console.log(Model.state.navigationPage)
-    }
-
-}
-
-function menuPage(){
-    btn_left.innerHTML = "save"
-    btn_center.innerHTML = "map"
-    btn_right.innerHTML = "help"
-
-    btn_left.onclick = ()=>{
-        //Model.state.navigationPage=1;
-        updatePage(0)
-        console.log(Model.state.navigationPage)
-    }
-}
 

@@ -1,12 +1,9 @@
 {
     "idList": {
-        "background": 0,
-        "landscape": 4,
+        "landscape": 0,
         "floor": 8,
         "building": 12,
-        "shrub": 16,
-        "moon": 20,
-        "sun": 21
+        "tree": 16
     },
     "image": {
         "landscape": {
@@ -28,25 +25,48 @@
             "left": 0.7,
             "bottom": 0.1
         },
-        "shrub": {
+        "tree": {
             "url": "http://localhost:1234/Tree%20Alt.38a2d9a6.png?1641279753372",
             "previewUrl": "http://localhost:1234/Tree%20Alt.38a2d9a6.png?1641279753372",
             "left": 0.35,
             "bottom": 0.09
         },
         "moon": {
-            "url": "http://localhost:1234/Moon1.b42a48c7.png?1641279753372",
+            "url": "MOON/Moon1.png",
             "left": 0,
-            "bottom": 0
+            "bottom": 0,
+            "hasLight":false
         },
         "sun": {
-            "url": "http://localhost:1234/Sole.2aa9c570.png?1641279753372",
+            "url": "SUN/Sole.png",
             "left": 0,
-            "bottom": 0
+            "bottom": 0,
+            "hasLight":false
         },
-        "background": {
-            "url": "http://localhost:1234/Background1.5cd4a057.png?1641279753372",
-            "previewUrl": "http://localhost:1234/Background1.5cd4a057.png?1641279753372",
+        "bgNight": {
+            "url": "BG/Background1.png",
+            "previewUrl": "BG/Background1.png",
+            "left": 0,
+            "bottom": 0,
+            "index": 0
+        },
+        "bgSunrise": {
+            "url": "BG/Background2.png",
+            "previewUrl": "BG/Background2.png",
+            "left": 0,
+            "bottom": 0,
+            "index": 0
+        },
+        "bgDay": {
+            "url": "BG/Background3.png",
+            "previewUrl": "BG/Background3.png",
+            "left": 0,
+            "bottom": 0,
+            "index": 0
+        },
+        "bgSunset": {
+            "url": "BG/Background4.png",
+            "previewUrl": "BG/Background4.png",
             "left": 0,
             "bottom": 0,
             "index": 0

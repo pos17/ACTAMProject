@@ -2,7 +2,7 @@
 
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
-
+import {doc, getDoc,getFirestore, collection, query, where,getDocs} from "firebase/firestore";
 
 // TODO: Add SDKs for Firebase products that you want to use
 
@@ -31,17 +31,19 @@ const firebaseConfig = {
 // Initialize Firebase
 
 const app = initializeApp(firebaseConfig);
+const db = getFirestore();
 
 
 
 
-//storage handling 
+//------------------storage handling-------------------------------------- 
 
 const storage = getStorage(app)
 
 export async function getAsset(imageName) {
     let assetPos = 'assets/' + imageName
     let reference = ref(storage, assetPos) 
+    console.log(reference)
     let url = await getDownloadURL(reference)
     try {
         return new URL(url)
@@ -66,4 +68,30 @@ export async function getAsset(imageName) {
             break;
         }
     }
+}
+
+
+//-------------------------------database handling--------------------------//
+export async function getMenuTypes() {
+  const docRef = doc(db, "menu", "menuTypes");
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    return docSnap.data();
+  } else {
+    // doc.data() will be undefined in this case
+    console.log("No such document!");
+  }
+}
+
+export async function getElementsByType(type) {
+  const q = query(collection(db, "elements"), where("elementType", "==", type));
+
+  const querySnapshot = await getDocs(q);
+  elementsToRet = []
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    elementsToRet.push(doc.data());
+  });
+  return elementsToRet
 }

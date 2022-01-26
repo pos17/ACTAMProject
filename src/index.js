@@ -4,10 +4,14 @@ import * as Tone from "tone"
 import {Emitter} from "./eventEmitter.js"
 import {MarkovMelody} from "./markov_melody.js"
 import * as Canva from './canva.js'
+import { createMenu, assignClick,updatePage} from "./menu.js";
 import * as Instr from './instruments.js';
 import * as effects from './effects.js';
 import { initializeApp } from "firebase/app";
 export const state= {
+    imagesToDraw:{},
+    environments:undefined,
+    elementTypes:undefined,
     queueCounter:0,
     queueDay: 0, //0 night, 1 night to day, 2 day, 3 day to night
     now1: 0,
@@ -30,7 +34,7 @@ export const state= {
     totalLength:"",
     drawing:undefined,
     navigationPage:0,
-    possibleValues: require("./possible_elements.json"),
+    possibleValues:[],//require("./possible_elements.json"),
     master: {
         compressor: new Tone.Compressor({
           threshold: -15,
@@ -61,15 +65,15 @@ async function initializeApp1() {
     // set this context as the global Context
     Tone.context.lookAhead = 1;
     Tone.Destination.chain(state.master.compressor,state.master.gain)
-    await Canva.initJSON()
+    //await Canva.initJSON()
     await buildInstruments()
     console.log(state.instruments)
-    await Canva.createMenu()
-    Canva.assignClick()
+    await createMenu()
+    assignClick()
     propagateStateChanges(state.isFirst)
     await Canva.initImages()
-    Canva.playableButton(true)
-    Canva.updatePage(1)
+    //Canva.playableButton(true)
+    updatePage(1)
 }
 
 // {
@@ -135,7 +139,9 @@ export async function propagateStateChanges(isFirst) {
   }
 
 export function modifyState(idValue) {
-    modifyingValue = state.possibleValues.data.find(element => element.id==idValue)
+  console.log(idValue)
+  console.log(state.possibleValues)
+    modifyingValue = state.possibleValues.find(element => element.id==idValue)
 
     console.log("modifying value")
     console.log(modifyingValue)
