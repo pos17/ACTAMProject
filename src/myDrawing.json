@@ -43,30 +43,9 @@
             "bottom": 0,
             "hasLight":false
         },
-        "bgNight": {
+        "background": {
             "url": "BG/Background1.png",
             "previewUrl": "BG/Background1.png",
-            "left": 0,
-            "bottom": 0,
-            "index": 0
-        },
-        "bgSunrise": {
-            "url": "BG/Background2.png",
-            "previewUrl": "BG/Background2.png",
-            "left": 0,
-            "bottom": 0,
-            "index": 0
-        },
-        "bgDay": {
-            "url": "BG/Background3.png",
-            "previewUrl": "BG/Background3.png",
-            "left": 0,
-            "bottom": 0,
-            "index": 0
-        },
-        "bgSunset": {
-            "url": "BG/Background4.png",
-            "previewUrl": "BG/Background4.png",
             "left": 0,
             "bottom": 0,
             "index": 0

@@ -1,7 +1,7 @@
 import * as Model from "./index.js"
 import * as Tone from 'tone'
 import { saveAs } from 'file-saver';
-import { getAsset } from "./firebase.js";
+import { getAsset,getDocumentElement } from "./firebase.js";
 
 const canvasDiv = document.getElementById('canvas-div');
 // const canva = document.getElementById('main-canvas');
@@ -283,11 +283,22 @@ var environmentToGenerate = {
 */
 export async function initImages(){
     ctx.clearRect(0, 0, canvas.width, canvas.height)
+    
+    /*
+     * momentary upload of elements  
+     */
+    el = await getDocumentElement("21sjvRkIbI4OCiBmLBqQhH")
+    Model.state.drawing.image["sun"] = el.image
+    el = await getDocumentElement("20p5Ppekl7T3P8WWJYN6Tc")
+    Model.state.drawing.image["moon"] = el.image
+    el = await getDocumentElement("OcyJGyHdUBI6fXb5AcD3")
+    Model.state.drawing.image["background"] = el.image
+    
+    
     for(let key of Object.keys(Model.state.drawing.image)) {
         console.log(key)
         Model.state.imagesToDraw[key] = await DrawableImage.build(Model.state.drawing.image[key])
     }
-    
     console.log(Model.state.imagesToDraw["moon"])
     console.log(Model.state.imagesToDraw["sun"])
     /*
@@ -355,7 +366,7 @@ function createEnvironment(timestamp) {
     let alphaSunrise = 0 
     let alphaDay = 0 
     let alphaSunset = 0
-
+    let sunToDraw = 0
 
     var time = Date.now()
 
@@ -374,6 +385,7 @@ function createEnvironment(timestamp) {
     //console.log(wAstra)
     //console.log(hAstra)
     var angle = (ALPHASTART + omega * (time-time0.getTime()))
+    
     let angleD = angle%(2*Math.PI)
     //console.log(angleD)
     //console.log("hereIam")
@@ -385,6 +397,7 @@ function createEnvironment(timestamp) {
             alphaSunset = 1 - (1/(NIGHT_START-SUNSET_END))*(angleD-SUNSET_END)
             alphaDay = 0
             lightOn = true
+            sunToDraw = 1
         break
         case(angleD < SUNRISE_START):
             alphaNight = 1
@@ -413,6 +426,7 @@ function createEnvironment(timestamp) {
             alphaSunset = 0
             alphaDay = 1
             lightOn = false
+            
         break
         default:
             alphaNight = 0
@@ -420,6 +434,7 @@ function createEnvironment(timestamp) {
             alphaSunset = 1
             alphaDay = 1 - (1/(2*Math.PI-SUNSET_START))*(angleD-SUNSET_START)
             lightOn = false           
+            sunToDraw = (1/(2*Math.PI-SUNSET_START))*(angleD-SUNSET_START)
         break  
     }
     /*
@@ -428,10 +443,11 @@ function createEnvironment(timestamp) {
     drawThisImage(Model.state.imagesToDraw["bgSunset"], 0, 0,alphaSunset,false);
     drawThisImage(Model.state.imagesToDraw["bgDay"], 0, 0,alphaDay,false);
     */
-    Model.state.imagesToDraw["bgNight"].drawThisImage(alphaNight,lightOn,canvas.height,canvas.width,ctx,factor)
-    Model.state.imagesToDraw["bgSunrise"].drawThisImage(alphaSunrise,lightOn,canvas.height,canvas.width,ctx,factor)
-    Model.state.imagesToDraw["bgSunset"].drawThisImage(alphaSunset,lightOn,canvas.height,canvas.width,ctx,factor)
-    Model.state.imagesToDraw["bgDay"].drawThisImage(alphaDay,lightOn,canvas.height,canvas.width,ctx,factor)
+    //drawThisImage(imageToDraw=0,alpha0=1,lightOn,canvasHeight=0,canvasWidth=0,ctx,factor)
+    Model.state.imagesToDraw["background"].drawThisImage(0,alphaNight,lightOn,canvas.height,canvas.width,ctx,factor)
+    Model.state.imagesToDraw["background"].drawThisImage(1,alphaSunrise,lightOn,canvas.height,canvas.width,ctx,factor)
+    Model.state.imagesToDraw["background"].drawThisImage(2,alphaSunset,lightOn,canvas.height,canvas.width,ctx,factor)
+    Model.state.imagesToDraw["background"].drawThisImage(3,alphaDay,lightOn,canvas.height,canvas.width,ctx,factor)
     
     
     /*
@@ -447,7 +463,7 @@ function createEnvironment(timestamp) {
     
     //console.log("HereWeAre1")
     ctx.save();
-    ctx.translate(w/2, hAstra + 15*factor)
+    ctx.translate(Math.round(w/2), Math.round(hAstra - 15*factor))
     // var angle = ((a/60)*time.getSeconds()+(a/60000)*time.getMilliseconds());
     // var angle = ((2*Math.PI/6000)*time.getSeconds()) + ((2*Math.PI/100000)*time.getMilliseconds());
    
@@ -462,10 +478,10 @@ function createEnvironment(timestamp) {
     ctx.save()
     //ctx.translate(moonRadius, 0)
     
-    ctx.translate(-wAstra*(Math.cos(angle)), hAstra*(Math.sin(-angle)))
-    ctx.translate(-(Model.state.imagesToDraw["moon"].getNWidth()*factor)/2, (Model.state.imagesToDraw["moon"].getNHeight()*factor)/2)
-    //ctx.rotate(-angle);
-    Model.state.imagesToDraw["moon"].drawThisImage(1,lightOn,0,0,ctx,factor)
+    ctx.translate(Math.round(-wAstra*(Math.cos(angle))), Math.round(hAstra*(Math.sin(-angle))))
+    ctx.translate(Math.round(-(Model.state.imagesToDraw["moon"].getNWidth()*factor)/2), Math.round((Model.state.imagesToDraw["moon"].getNHeight()*factor)/2))
+    //let numOfMoon = Math.floor(((angle) / (2* Math.PI) ) % (Model.state.imagesToDraw["moon"].getNImages()))
+    Model.state.imagesToDraw["moon"].drawThisImage(0/*numOfMoon*/,1,lightOn,0,0,ctx,factor)
     //ctx.drawImage(Model.state.imagesToDraw["moon"], 0, 0, Model.state.imagesToDraw["moon"].naturalWidth*factor, Model.state.imagesToDraw["moon"].naturalHeight*factor);
     ctx.restore()
     /*
@@ -477,11 +493,12 @@ function createEnvironment(timestamp) {
     ctx.restore()
     */
     ctx.save()
-    ctx.translate(wAstra*(Math.cos(angle-0.1)), hAstra*(Math.sin(angle-0.1)))
-    ctx.translate(-(Model.state.imagesToDraw["sun"].getNWidth()*factor)/2, (Model.state.imagesToDraw["sun"].getNHeight()*factor)/2)
+    ctx.translate(Math.round(wAstra*(Math.cos(angle-0.1))), Math.round(hAstra*(Math.sin(angle-0.1))))
+    ctx.translate(Math.round(-(Model.state.imagesToDraw["sun"].getNWidth()*factor)/2), Math.round((Model.state.imagesToDraw["sun"].getNHeight()*factor)/2))
     //ctx.translate(0, moonRadius)
     //ctx.rotate(-angle);
-    Model.state.imagesToDraw["sun"].drawThisImage(1,lightOn,0,0,ctx,factor)
+    Model.state.imagesToDraw["sun"].drawThisImage(0,1,lightOn,0,0,ctx,factor)
+    Model.state.imagesToDraw["sun"].drawThisImage(1,sunToDraw,lightOn,0,0,ctx,factor)
     //ctx.drawImage(Model.state.imagesToDraw["sun"], 0, 0, Model.state.imagesToDraw["sun"].naturalWidth*factor, Model.state.imagesToDraw["sun"].naturalHeight*factor);
     ctx.restore()
     /*
@@ -496,16 +513,16 @@ function createEnvironment(timestamp) {
 
     //console.log("here5")
     // STATIC ELEMENTS
-    Model.state.imagesToDraw["landscape"].drawThisImage(1,lightOn,canvas.height,canvas.width,ctx,factor)
+    Model.state.imagesToDraw["landscape"].drawThisImage(0,1,lightOn,canvas.height,canvas.width,ctx,factor)
     //drawThisImage(Model.state.imagesToDraw["landscape"],Model.state.drawing.image.landscape.left, Model.state.drawing.image.landscape.bottom,1,Model.state.drawing.image.landscape.hasLight,lightOn);
     //drawThisImage(landscape, Model.state.drawing.image.landscape.left, Model.state.drawing.image.landscape.bottom);
-    Model.state.imagesToDraw["floor"].drawThisImage(1,lightOn,canvas.height,canvas.width,ctx,factor)
+    Model.state.imagesToDraw["floor"].drawThisImage(0,1,lightOn,canvas.height,canvas.width,ctx,factor)
     //drawThisImage(Model.state.imagesToDraw["floor"],Model.state.drawing.image.floor.left, Model.state.drawing.image.floor.bottom,1,Model.state.drawing.image.floor.hasLight,lightOn);
     //drawThisImage(floor, Model.state.drawing.image.floor.left, Model.state.drawing.image.floor.bottom);
-    Model.state.imagesToDraw["building"].drawThisImage(1,lightOn,canvas.height,canvas.width,ctx,factor)
+    Model.state.imagesToDraw["building"].drawThisImage(0,1,lightOn,canvas.height,canvas.width,ctx,factor)
     //drawThisImage(Model.state.imagesToDraw["building"],Model.state.drawing.image.building.left, Model.state.drawing.image.building.bottom,1,Model.state.drawing.image.building.hasLight,lightOn);
     //drawThisImage(building, Model.state.drawing.image.building.left, Model.state.drawing.image.building.bottom);
-    Model.state.imagesToDraw["tree"].drawThisImage(1,lightOn,canvas.height,canvas.width,ctx,factor)
+    Model.state.imagesToDraw["tree"].drawThisImage(0,1,lightOn,canvas.height,canvas.width,ctx,factor)
     //drawThisImage(Model.state.imagesToDraw["tree"],Model.state.drawing.image.tree.left, Model.state.drawing.image.tree.bottom,1,Model.state.drawing.image.tree.hasLight,lightOn);
     //drawThisImage(shrub, Model.state.drawing.image.shrub.left, Model.state.drawing.image.shrub.bottom);
     
@@ -602,18 +619,31 @@ function drawThisImage (img, left, bottom,alpha=1,hasLight=false,lightOn) {
 }
 */
 
+/**
+ * types of images:
+ * 0: standard only one behaviour and one type of image
+ * 1: hasLights 
+ * 2: sun or moon 
+ * 3: background 
+ */
+
 class DrawableImage {
-    constructor(hasLight,imageLightOff,imageLightOn,left,bottom) {
-        this.imageLightOff = imageLightOff;
-        this.imageLightOn = imageLightOn;
-        this.hasLight = hasLight;
+    constructor(anImageArray,left,bottom,anImageType) {
+        this.imageType = anImageType;
+        this.imageArray = anImageArray;
         this.left = left;
         this.bottom = bottom;
     }
 
     static async build(image) {
         //hasLight,urlLightOff,urlLightOn,left,bottom
-        
+        let imageArray = []
+        for(let url of image.imageArray) {
+            let anImage = new Image()
+            anImage.src = await getAsset(url)
+            imageArray.push(anImage)
+        }
+        /*
         if(image.hasLight) {
             let imageLightOn = new Image()
             imageLightOn.src = await getAsset(image.urlLightOn)
@@ -625,33 +655,53 @@ class DrawableImage {
             imageLightOff.src = await getAsset(image.url)
             return new DrawableImage(image.hasLight,imageLightOff,imageLightOff,image.left,image.bottom)
         }
+        */
+        return new DrawableImage(imageArray,image.left,image.bottom,image.imageType)
     }
 
-    drawThisImage(alpha0=1,lightOn,canvasHeight,canvasWidth,ctx,factor) {
-        var h = this.imageLightOff.naturalHeight*factor;
-        var w = this.imageLightOff.naturalWidth*factor;
+    drawThisImage(imageToDraw=0,alpha0=1,lightOn,canvasHeight=0,canvasWidth=0,ctx,factor) {
+        var h = this.imageArray[imageToDraw].naturalHeight*factor;
+        var w = this.imageArray[imageToDraw].naturalWidth*factor;
         var x = this.left * canvasWidth;
         var y = (1-this.bottom) * canvasHeight;
         ctx.globalAlpha = alpha0
-
-        if(this.hasLight) {
-            if(lightOn) {
-                ctx.drawImage(this.imageLightOn, x, y-h, w, h)
-            } else {
-                ctx.drawImage(this.imageLightOff, x, y-h, w, h)
-            }
-        } else {
-            ctx.drawImage(this.imageLightOff, x, y-h, w, h)    
+        let  posX = 0;
+        let posY = 0;
+        switch(this.imageType) {
+            case(0):
+                posX = x, 
+                posY = y-h
+            break;
+            case(1):
+                if(lightOn) imageToDraw = 1
+                else imageToDraw = 0
+                posX = x, 
+                posY = y-h
+            break;
+            case(2):
+                x = 0;
+                y = 0;
+                posX = 0, 
+                posY = 0
+            break;
+            case(3):
+                posX = x, 
+                posY = y-h
+            break;
         }
+        ctx.drawImage(this.imageArray[imageToDraw], posX, posY, w, h)
         //ctx.drawImage(imageLightOff, x, y-h, w, h)
         ctx.globalAlpha = 1
     }
     
     getNWidth() {
-        return this.imageLightOff.naturalWidth
+        return this.imageArray[0].naturalWidth
     }
     getNHeight() {
-        return this.imageLightOff.naturalHeight
+        return this.imageArray[0].naturalHeight
+    }
+    getNImages() {
+        return this.imageArray.length
     }
 }
 

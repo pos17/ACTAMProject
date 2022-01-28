@@ -95,3 +95,15 @@ export async function getElementsByType(type) {
   });
   return elementsToRet
 }
+
+export async function getDocumentElement(docId) {
+  const docRef = doc(db, "elements", docId);
+  const docSnap = await getDoc(docRef);
+  
+  if (docSnap.exists()) {
+    return docSnap.data();
+  } else {
+    // doc.data() will be undefined in this case
+    console.log("No such document!");
+  }
+}
