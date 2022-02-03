@@ -1,4 +1,5 @@
 import * as Tone from 'tone'
+import { Freeverb } from 'tone';
 
 class Kick {
     constructor () {
@@ -243,45 +244,102 @@ class Synth {
     }
 }
 
-
 class Bell {
     constructor () {
-        var synth = new Tone.PolySynth()
-        var synthOctave = new Tone.PolySynth()
-        synth.set({
-            envelope: {
-                attack: 0,
-                decay: 0.241,
-                decayCurve: "exponential",
-                sustain: 0,
-                release: 0,
-            },
-            oscillator: {
-                type: "sine",
-            },
-        });
+        var synth = new Tone.DuoSynth()
+        var dly = new Tone.FeedbackDelay()
+        var verb = new Tone.Reverb()
 
-        synthOctave.set({
-            envelope: {
-                attack: 0,
-                decay: 0.241,
-                decayCurve: "exponential",
-                sustain: 0,
-                release: 0,
+        synth.set({
+            voice0: {
+                envelope: {
+                    attack: 0,
+                    attackCurve: 'linear',
+                    decay: 1.241,
+                    decayCurve: "exponential",
+                    sustain: 0,
+                    release: 1.89,
+                },
             },
-            oscillator: {
-                type: "sine",
+            voice1: {
+                envelope: {
+                    attack: 0,
+                    attackCurve: 'linear',
+                    decay: 1.241,
+                    decayCurve: "exponential",
+                    sustain: 0,
+                    release: 1.89,
+                },
             },
+            harmonicity: 2,
+            vibratoAmount: 0,
+        });
+        synth.voice0.oscillator.type = 'sine2'
+        synth.voice1.oscillator.type = 'sine3'
+        synth.voice1.volume.value = -20;
+        synth.volume.value = -6 
+
+        dly.set({
+            delayTime: '4n.',
+            feedback: 0.3,
+            wet: 0.08,
+            
         })
-        
+
+        verb.set({
+            decay: 4,
+            // preDelay: 0.67,
+            wet: 0.2,
+        })
+
+        synth.chain(dly, verb, Tone.Destination)
+    
         this.synth = synth;
+
     }
 
-    triggerAttackRelease(note, duration, time, velocity) {
-        this.synth.triggerAttackRelease(note, duration, time, velocity)
+    triggerAttack(note, time, velocity) {
+        this.synth.triggerAttackRelease(note, "8n", time, velocity)
+    }
+
+    setVolume(volValue) {
+        this.synth.volume.value = volValue
+    }
+
+    connect(node) {
+        this.synth.connect(node)
     }
 }
 
+class Sitar {
+    constructor() {
+        var sitar = new Tone.Sampler().toDestination()
+        
+        sitar.set({
+            // baseUrl: ,
+            urls: {
+                C3: 'C3.mp3',
+                G3: 'G3.mp3',
+                C4: 'C4.mp3',
+                G4: 'G4.mp3',
+            },
+            onload: ()=>{
+                console.log("L O A D E D")
+            }
+        });
+
+        this.sitar = sitar;
+    }
+
+    triggerAttack(note, time, velocity) {
+        this.sitar.triggerAttack(note, time, velocity)
+    }
+
+    loaded(){
+        return this.sitar.loaded
+    }
+
+}
 
 module.exports = {
     Kick: Kick,
@@ -292,4 +350,5 @@ module.exports = {
     Lead: Lead,
     Synth: Synth,
     Bell: Bell,
+    Sitar: Sitar,
 }

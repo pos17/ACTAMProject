@@ -280,3 +280,8 @@ img {
     font-size: 140%;
 }
 
+#mytone {
+    position: absolute;
+    bottom: 2%;
+    left: 2%;
+}

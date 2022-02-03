@@ -376,8 +376,13 @@ Tone.Transport.schedule(()=>{
   
 
 document.getElementById("mytone").onclick = ()=>{
-  var gino = new Instr.Bell()
+  var gino = new Instr.Sitar()
   // Tone.start()
+  // console.log(gino.loaded())
 
-  gino.triggerAttackRelease("C6", "8n")
+  gino.triggerAttack("C4", Tone.now(), 127)
+  gino.triggerAttack("A4", Tone.now()+1, 127)
+  gino.triggerAttack("F4", Tone.now()+2, 127)
+  
 }
+
