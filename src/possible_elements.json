@@ -75,8 +75,9 @@
       "environment": "desert",
       "imageName":"desert",
       "image": {
-        "url": "../assets/BG/Desert.png",
-        "previewUrl":"..\/assets\/PREVS\/Desert prev.png",
+        "urlLightOn": "../assets/BG/Desert.png",
+        "urlLightOff": "../assets/BG/Desert.png",
+        "previewUrl":"../assets/PREVS/Desert prev.png",
         "left": 0,
         "bottom": 0,
         "index": 0
@@ -90,7 +91,8 @@
       "environment": "city",
       "imageName":"skyline",
       "image": {
-        "url": "../assets/BG/Skyline.png",
+        "urlLightOn": "../assets/BG/Skyline.png",
+        "urlLightOff": "../assets/BG/Skyline.png",
         "previewUrl": "../assets/PREVS/Skyline prev.png",
         "left": 0,
         "bottom": 0,
@@ -106,6 +108,7 @@
       "imageName":"sea",
       "image": {
         "url": "../assets/BG/Sea.png",
+
         "previewUrl": "../assets/PREVS/Sea prev.png",
         "left": 0,
         "bottom": 0,
@@ -273,7 +276,7 @@
     {
       "id": 20,
       "elementType": "astrum",
-      "imageName":"moon1",
+      "imageName":"moon",
       "image": "../assets/MOON/Moon1.png"
     },
     {
