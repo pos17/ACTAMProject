@@ -293,7 +293,8 @@ export async function initImages(){
     Model.state.drawing.image["moon"] = el.image
     el = await getDocumentElement("OcyJGyHdUBI6fXb5AcD3")
     Model.state.drawing.image["background"] = el.image
-    
+    el = await getDocumentElement("229MYuVK7Qhl0OKlCOXwPJ")
+    Model.state.drawing.image["flyingObject"] = el.image
     
     for(let key of Object.keys(Model.state.drawing.image)) {
         console.log(key)
@@ -501,6 +502,26 @@ function createEnvironment(timestamp) {
     Model.state.imagesToDraw["sun"].drawThisImage(1,sunToDraw,lightOn,0,0,ctx,factor)
     //ctx.drawImage(Model.state.imagesToDraw["sun"], 0, 0, Model.state.imagesToDraw["sun"].naturalWidth*factor, Model.state.imagesToDraw["sun"].naturalHeight*factor);
     ctx.restore()
+    ctx.restore()
+
+
+    ctx.save()
+    ctx.translate(0.1*(Math.cos(angle))*2*w,h/4)
+    Model.state.imagesToDraw["flyingObject"].drawThisImage(0,1,lightOn,0,0,ctx,factor)
+    ctx.restore()
+    ctx.save()
+    ctx.translate(0.3*(Math.cos(angle+1))*2*w,h/6   )
+    Model.state.imagesToDraw["flyingObject"].drawThisImage(1,1,lightOn,0,0,ctx,factor)
+    ctx.restore()
+    ctx.save()
+    ctx.translate(0.1*(Math.cos(angle+0.1))*2*w,h/5)
+    Model.state.imagesToDraw["flyingObject"].drawThisImage(2,1,lightOn,0,0,ctx,factor)
+    ctx.restore()
+    ctx.save()
+    ctx.translate(Math.cos(angle)*2*w,h/4)
+    Model.state.imagesToDraw["flyingObject"].drawThisImage(3,1,lightOn,0,0,ctx,factor)
+    ctx.restore()
+    
     /*
     ctx.save()
     ctx.translate(w/2*(Math.cos(angle)), -h*(Math.sin(angle)))
@@ -509,7 +530,7 @@ function createEnvironment(timestamp) {
     ctx.drawImage(sun, 0, 0, sun.naturalWidth*factor, sun.naturalHeight*factor);
     ctx.restore()
     */
-    ctx.restore()
+    
 
     //console.log("here5")
     // STATIC ELEMENTS
@@ -687,6 +708,10 @@ class DrawableImage {
             case(3):
                 posX = x, 
                 posY = y-h
+            break;
+            case(4):
+                posX = 0, 
+                posY = 0
             break;
         }
         ctx.drawImage(this.imageArray[imageToDraw], posX, posY, w, h)
