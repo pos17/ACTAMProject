@@ -1,4 +1,6 @@
 import * as Tone from 'tone'
+import { getSample} from "./firebase.js";
+
 import { Freeverb } from 'tone';
 
 class Kick {
@@ -307,28 +309,14 @@ class Bell {
     }
 
     connect(node) {
+        this.synth.disconnect(Tone.Destination)
         this.synth.connect(node)
     }
 }
 
 class Sitar {
     constructor() {
-        var sitar = new Tone.Sampler().toDestination()
-        
-        sitar.set({
-            // baseUrl: ,
-            urls: {
-                C3: 'C3.mp3',
-                G3: 'G3.mp3',
-                C4: 'C4.mp3',
-                G4: 'G4.mp3',
-            },
-            onload: ()=>{
-                console.log("L O A D E D")
-            }
-        });
 
-        this.sitar = sitar;
     }
 
     triggerAttack(note, time, velocity) {
@@ -337,6 +325,107 @@ class Sitar {
 
     loaded(){
         return this.sitar.loaded
+    }
+
+}
+
+
+class Marimba {
+    constructor(){
+        var synthTone = new Tone.DuoSynth()
+        var synthPulse = new Tone.Synth()
+        var dist = new Tone.Distortion(0.63)
+        var trim = new Tone.Volume(-10)
+        var filterLP = new Tone.Filter({
+            frequency: "4437Hz",
+            type: 'lowpass',
+            rolloff: -24,
+        })
+        var filterHP = new Tone.Filter({
+            frequency: '170Hz',
+            type: 'highpass',
+            rolloff: -48
+        })
+        var chorus = new Tone.Chorus({
+            frequency: 0.2,
+            delayTime: 0.013,
+            depth: 1
+        })
+        var dly = new Tone.FeedbackDelay({
+            delayTime: '8n.',
+            feedback: 0.1,
+            wet: 0.05
+        })
+
+        synthTone.set({
+            voice1: {
+                envelope: {
+                    attack: 0,
+                    decay: 0.5,
+                    sustain: 0,
+                    release: 0.19,
+                },
+                oscillator: {
+                    type: 'sine3',
+                    volume: -3.82
+                },
+            
+            },
+            voice0: {
+                envelope: {
+                    attack: 0,
+                    decay: 0.5,
+                    sustain: 0,
+                    release: 0.19,
+                },
+                oscillator: {
+                    type: 'triangle',
+                    volume: -4.62
+                },
+                
+            },
+            harmonicity: 0.5,
+            vibratoAmount: 0.1,
+            vibratoRate: "0.5hz"
+        })
+
+        synthPulse.set({
+            detune: 1200,
+            envelope: {
+                attack: 0,
+                decay: 0.01,
+                sustain: 0,
+                release: 0
+            },
+            oscillator: {
+                type: 'sine2',
+                volume: -10,
+            }
+        });
+
+        synthTone.chain(dist, trim, filterLP, filterHP, chorus, dly, Tone.Destination)
+        synthPulse.chain(filterHP, chorus, dly, Tone.Destination)
+
+
+        this.dly = dly
+        this.synthTone = synthTone;
+        this.synthPulse = synthPulse;
+
+    };
+
+    triggerAttack(note, time, velocity){
+        this.synthPulse.triggerAttack(note, time, velocity);
+        this.synthTone.triggerAttack(note, time, velocity);
+    }
+
+    setVolume(volValue) {
+        this.synthPulse.volume.value = volValue
+        this.synthTone.volume.value = volValue
+    }
+
+    connect(node) {
+        this.dly.disconnect(Tone.Destination)
+        this.dly.connect(node)
     }
 
 }
@@ -351,4 +440,5 @@ module.exports = {
     Synth: Synth,
     Bell: Bell,
     Sitar: Sitar,
+    Marimba: Marimba,
 }
