@@ -381,7 +381,12 @@ Tone.Transport.schedule(()=>{
 
   
 
-document.getElementById("mytone").onclick =  play
+document.getElementById("mytone").onclick =  ()=>{
+  var gino = new Instr.Guitar()
+  gino.triggerAttack('C3', Tone.now(), 100)
+  gino.triggerAttack('G3', Tone.now()+0.5, 100)
+  gino.triggerAttack('E3', Tone.now()+1, 100)
+}
 
 
 /*
