@@ -189,6 +189,9 @@ img {
     width: 80px;
     margin: 10px;
     align-content: center;
+    /* border-style:solid;
+    border-width: 8px; */
+    
 }
 
 
@@ -217,11 +220,12 @@ img {
     top: 50%;
     transform: translate(-50%, -50%);
     z-index: 25;
-
+    border:solid;
+    border-width: 4px;
     display: inline-flex;
     margin: auto;
     background-color: rgb(201, 173, 15);
-    border-radius: 10px;
+    border-radius: 0px;
     /* height: max-content; */
     padding: 7px;
 }

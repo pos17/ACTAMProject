@@ -388,8 +388,7 @@ function createEnvironment(timestamp) {
     var angle = (ALPHASTART + omega * (time-time0.getTime()))
     
     let angleD = angle%(2*Math.PI)
-    //console.log(angleD)
-    //console.log("hereIam")
+    let transAngle = angle%(w)
     // BACKGROUND IMAGE
     switch(true){
         case (angleD< NIGHT_START):
@@ -506,22 +505,23 @@ function createEnvironment(timestamp) {
 
 
     ctx.save()
-    ctx.translate(0.1*(Math.cos(angle))*2*w,h/4)
+    ctx.translate(-h/4+((((0.02*angle)*w))%(w+h/2)),h/4)
     Model.state.imagesToDraw["flyingObject"].drawThisImage(0,1,lightOn,0,0,ctx,factor)
     ctx.restore()
+    /*
     ctx.save()
     ctx.translate(0.3*(Math.cos(angle+1))*2*w,h/6   )
     Model.state.imagesToDraw["flyingObject"].drawThisImage(1,1,lightOn,0,0,ctx,factor)
     ctx.restore()
     ctx.save()
-    ctx.translate(0.1*(Math.cos(angle+0.1))*2*w,h/5)
+    ctx.translate(0.1*(Math.cos(angle+0.1))*2*w,h/8)
     Model.state.imagesToDraw["flyingObject"].drawThisImage(2,1,lightOn,0,0,ctx,factor)
     ctx.restore()
     ctx.save()
-    ctx.translate(Math.cos(angle)*2*w,h/4)
+    ctx.translate(Math.cos(angle)*2*w,h/3)
     Model.state.imagesToDraw["flyingObject"].drawThisImage(3,1,lightOn,0,0,ctx,factor)
     ctx.restore()
-    
+    */
     /*
     ctx.save()
     ctx.translate(w/2*(Math.cos(angle)), -h*(Math.sin(angle)))

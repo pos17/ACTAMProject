@@ -73,7 +73,7 @@ export async function createMenu () {
             btn.classList.add('token-btn')
             btn.classList.add(datum.elementType)
             btn.classList.add(datum.environment)
-
+            btn.type = "button"
             btn.style.margin = '7px'
             btn.style.marginLeft = 'auto'
             btn.style.marginRight = 'auto'
