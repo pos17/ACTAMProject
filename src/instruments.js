@@ -2,7 +2,10 @@ import * as Tone from 'tone'
 import { getSample} from "./firebase.js";
 
 import { Freeverb } from 'tone';
-
+buffer1 = new Tone.Buffer()
+buffer2 = new Tone.Buffer()
+buffer3 = new Tone.Buffer()
+buffer4 = new Tone.Buffer()
 class Kick {
     constructor () {
         var kick = new Tone.MembraneSynth({
@@ -315,8 +318,34 @@ class Bell {
 }
 
 class Sitar {
-    constructor() {
-
+    constructor(aSitar) {
+        this.sitar = aSitar
+    }
+    static async build() {
+        await Tone.loaded()
+        let C3 = await getSample("Sitar","C3.mp3");
+        let G3 = await getSample("Sitar","G3.mp3");
+        let C4 = await getSample("Sitar","C4.mp3");
+        let G4 = await getSample("Sitar","G4.mp3");
+        //await buffer1.load(C3)
+        //await buffer1.load(G3)
+        //await buffer1.load(C4)
+        //await buffer1.load(G4)
+        let sitar = new Tone.Sampler({
+            urls: {
+                C3: C3,
+                G3: G3,
+                C4: C4,
+                G4: G4,
+            },
+            onload: () => {
+                sitar.triggerAttackRelease(["C3", "E3", "G3", "B3"], 0.5);
+            }
+        }).toDestination();
+        console.log("not yet loaded")
+        await Tone.loaded()
+        console.log("loaded")
+        return new Sitar(sitar)
     }
 
     triggerAttack(note, time, velocity) {

@@ -381,12 +381,20 @@ Tone.Transport.schedule(()=>{
 
   
 
-document.getElementById("mytone").onclick = async ()=>{
+document.getElementById("mytone").onclick =  play
+
+
+/*
+async ()=>{
   // var gino = Instr.Sitar.build()
   // Tone.start()
   // console.log(gino)
 
-  var gino = new Instr.Marimba()
+  var gino = await Instr.Sitar.build()
+  gino.triggerAttack('C4', Tone.now(), 127)
+}*/
+
+async function play() {
+  var gino = await Instr.Sitar.build()
   gino.triggerAttack('C4', Tone.now(), 127)
 }
-
