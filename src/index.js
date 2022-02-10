@@ -9,6 +9,10 @@ import * as Instr from './instruments.js';
 import * as effects from './effects.js';
 import { initializeApp } from "firebase/app";
 export const state= {
+    loadingPage:{
+      limit: 0,
+      lastAnimation: Date.now()
+    },
     imagesToDraw:{},
     environments:undefined,
     elementTypes:undefined,
@@ -51,6 +55,12 @@ var mm = new MarkovMelody(tree = markovChain,nodes = markov_music_elements)
 // console.log(mm.generateMelody(1))
 //console.log(mm.generatePath(2))
 
+
+
+
+
+
+
 initializeApp1()
 
 /**
@@ -59,17 +69,22 @@ initializeApp1()
 async function initializeApp1() {
   
     //initialize the drawing values
+    
     state.drawing = require("./myDrawing.json")
     state.isFirst = true
     //const context = new Tone.Context({ latencyHint: "playback" });
     // set this context as the global Context
     Tone.context.lookAhead = 1;
     Tone.Destination.chain(state.master.compressor,state.master.gain)
-    //await Canva.initJSON()
+    setLimit(40)
+    increase();
     await buildInstruments()
     console.log(state.instruments)
+    setLimit(90)
     await createMenu()
+    setLimit(90)
     assignClick()
+    setLimit(100)
     propagateStateChanges(state.isFirst)
     await Canva.initImages()
     //Canva.playableButton(true)
@@ -397,4 +412,34 @@ async ()=>{
 async function play() {
   var gino = await Instr.Sitar.build()
   gino.triggerAttack('C4', Tone.now(), 127)
+}
+
+
+
+
+/**
+ * loading bar improvement using requestAnimationFrame
+ */
+ 
+  
+ function setLimit(toValue) {
+  state.loadingPage.limit= toValue
+}
+
+function increase() {
+  let element = document.getElementById("loadingId");
+  let fromValue = element.value
+  let limit = state.loadingPage.limit;
+  if((Date.now() - state.loadingPage.lastAnimation )>( 1000 / 30)) {
+    if(fromValue < limit) {
+    element.value = fromValue+1
+    }
+    if(fromValue >=100) {
+      document.getElementById("initialLoadingPanel").style.visibility = 'hidden'
+    }
+    window.requestAnimationFrame(increase)
+    state.loadingPage.lastAnimation = Date.now()
+  } else {
+    window.requestAnimationFrame(increase)
+  }
 }

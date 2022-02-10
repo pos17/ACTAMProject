@@ -175,6 +175,9 @@ img {
     image-rendering: crisp-edges;
 }
 
+
+/*menu token element specification */
+
 .token-image {
     /* max-height: 100%; */
     max-width: 101%;
@@ -207,6 +210,8 @@ img {
     -moz-animation: BLINK 1s infinite;
 
 }
+
+
 
 .menu-panel {
     position: absolute;
@@ -285,3 +290,24 @@ img {
     bottom: 2%;
     left: 2%;
 }
+
+
+/*loadingPage code BEGIN*/
+  .loader-wrapper {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #242f3f;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #loadingId {
+    display: inline-block;
+    position: relative;
+    width: 60%;
+  }
+  
+/*loadingPage code END*/

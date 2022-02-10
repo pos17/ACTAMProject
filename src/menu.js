@@ -18,12 +18,13 @@ export async function createMenu () {
     var btnContainer = document.createElement('div')
     btnContainer.className = 'token-btn-container'
 
+    //if the menu isn't initialized a new element is created
     if(Model.state.elementTypes==undefined || Model.state.environments==undefined) {
         let data  = await getMenuTypes()
         Model.state.elementTypes = data.primaryTypes
         Model.state.environments = data.environments
     }
-
+    
     console.log(Model.state.elementTypes)
     for (let elType of Model.state.elementTypes) {
         console.log(elType)
