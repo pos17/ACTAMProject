@@ -11,31 +11,12 @@ const container = document.getElementById('canva-container')
 
 
 var factor = 8;
-var channels = ['mountain', 'seaside', 'city']
-
-
-var skySunSet = new Image()
-skySunSet.src = new URL('../assets/BG/Background2.png', import.meta.url)
-skySunSet.classList.add('sky')
-skySunSet.style.opacity = '0';
-skySunSet.style.position = 'absolute';
-// skySunSet.style.zIndex = '1'
-// canvasDiv.appendChild(skySunSet)
-
-var skyDay = new Image()
-skyDay.src = new URL('../assets/BG/Background3.png', import.meta.url)
-skyDay.classList.add('sky')
-skyDay.style.opacity = '0';
-skyDay.style.position = 'absolute';
-// skyDay.style.zIndex = '1'
-// canvasDiv.appendChild(skyDay)
 
 var canvas = document.createElement("canvas")
 canvas.className = "canvases";
 canvas.width = 256*factor;
 canvas.height = 128*factor;
 canvasDiv.appendChild(canvas);
-// state.canvas = canvas;
 
 var ctx = canvas.getContext('2d');
 
@@ -45,242 +26,9 @@ var ctx = canvas.getContext('2d');
 var time0 = new Date();
 var omega = 0; /* canvas angular speed */
 var moonRadius = canvas.width/1.1;
-var alpha0 = Math.acos((canvas.width/2)/moonRadius) 
 
 var t = Tone.Time('16m').toMilliseconds()
 
-var state = {
-    canvas: {},
-    assets: {
-        stars: []
-    },
-    environment: channels[0],
-} 
-
-const new_assets = {
-    night:{
-        url: new URL('../assets/BG/Background1.png', import.meta.url),
-        previewUrl: new URL('../assets/BG/Background1.png', import.meta.url), 
-        left: 0,
-        bottom: 0,
-        index: 0
-    },
-    day:{
-        url: new URL('../assets/BG/Background3.png', import.meta.url),
-        previewUrl: new URL('../assets/BG/Background3.png', import.meta.url), 
-        left: 0,
-        bottom: 0,
-        index: 0
-    },
-    sunset:{
-        url: new URL('../assets/BG/Background4.png', import.meta.url),
-        previewUrl: new URL('../assets/BG/Background4.png', import.meta.url), 
-        left: 0,
-        bottom: 0,
-        index: 0
-    },
-    sunrise:{
-        url: new URL('../assets/BG/Background2.png', import.meta.url),
-        previewUrl: new URL('../assets/BG/Background2.png', import.meta.url), 
-        left: 0,
-        bottom: 0,
-        index: 0
-    },
-    mountains: {
-        url: new URL('../assets/BG/Mountains.png', import.meta.url),
-        previewUrl: new URL('../assets/PREVS/Mountains prev.png', import.meta.url), 
-        left: 0,
-        bottom: 0,
-        index: 0
-    },
-
-    sea: {
-        url: new URL('../assets/BG/Sea.png', import.meta.url),
-        previewUrl: new URL('../assets/PREVS/Sea prev.png', import.meta.url), 
-        left: 0,
-        bottom: 0,
-        index: 0
-    },
-
-    skyline: {
-        url: new URL('../assets/BG/Skyline.png', import.meta.url),
-        previewUrl: new URL('../assets/PREVS/Skyline prev.png', import.meta.url), 
-        left: 0,
-        bottom: 0,
-        index: 0
-    },
-
-    desert: {
-        url: new URL('../assets/BG/Desert.png', import.meta.url),
-        previewUrl: new URL('../assets/PREVS/Desert prev.png', import.meta.url), 
-        left: 0,
-        bottom: 0,
-        index: 0
-    },
-
-    grass: {
-        url: new URL('../assets/BG/Grass.png', import.meta.url),
-        previewUrl: new URL('../assets/PREVS/Grass prev.png', import.meta.url), 
-        left: 0,
-        bottom: 0,
-    },
-
-    seaSand: {
-        url: new URL('../assets/BG/Sand.png', import.meta.url),
-        previewUrl: new URL('../assets/PREVS/Sea Sand prev.png', import.meta.url), 
-        left: 0,
-        bottom: 0,
-    },
-
-    desertSand: {
-        url: new URL('../assets/BG/Desert Sand.png', import.meta.url),
-        previewUrl: new URL('../assets/PREVS/Desert Sand prev.png', import.meta.url), 
-        left: 0,
-        bottom: 0,
-    },
-
-    concrete: {
-        url: new URL('../assets/BG/Concrete.png', import.meta.url),
-        previewUrl: new URL('../assets/PREVS/Concrete prev.png', import.meta.url), 
-        left: 0,
-        bottom: 0,
-    },
-
-    mountainHouse: {
-        url: new URL('../assets/HOUSE/Mountain Home.png', import.meta.url),
-        previewUrl: new URL('../assets/HOUSE/Mountain Home.png', import.meta.url),
-        left: 0.7,
-        bottom: 0.1,
-    },
-    
-    seaHouse: {
-        url: new URL('../assets/HOUSE/Sea Home.png', import.meta.url),
-        previewUrl: new URL('../assets/HOUSE/Sea Home.png', import.meta.url),
-        left: 0.7,
-        bottom: 0.1,
-    },
-
-    cityHouse: {
-        url: new URL('../assets/HOUSE/City Home.png', import.meta.url),
-        previewUrl: new URL('../assets/HOUSE/City Home.png', import.meta.url),
-        left: 0.7,
-        bottom: 0.1,
-    },
-
-    desertHouse: {
-        url: new URL('../assets/HOUSE/Desert Home.png', import.meta.url),
-        previewUrl: new URL('../assets/HOUSE/Desert Home.png', import.meta.url),
-        left: 0.7,
-        bottom: 0.1,
-    },
-
-    moon: {
-        url: [
-            new URL('../assets/MOON/Moon1.png', import.meta.url),
-            new URL('../assets/MOON/Moon2.png', import.meta.url),
-            new URL('../assets/MOON/Moon3.png', import.meta.url),
-            new URL('../assets/MOON/Moon4.png', import.meta.url),
-            new URL('../assets/MOON/Moon5.png', import.meta.url),
-        ],
-        left: 0,
-        bottom: 0,
-    },
-    moon1: {
-        url: new URL('../assets/MOON/Moon1.png', import.meta.url),
-        left: 0,
-        bottom: 0,
-    },
-    sun: {
-        url: new URL('../assets/MOON/Sole.png', import.meta.url),
-        left: 0,
-        bottom: 0,
-    },
-
-    star: {
-        url: [new URL('../assets/Small Star.png', import.meta.url), new URL('../assets/Big Star.png', import.meta.url),],  
-    },
-
-    tree1: {
-        url: new URL('../assets/TREES/Tree Alt.png', import.meta.url),
-        previewUrl: new URL('../assets/TREES/Tree Alt.png', import.meta.url),
-        left: 0.35,
-        bottom: 0.09,
-    }, 
-
-    tree2: {
-        url: new URL('../assets/TREES/Tree Maj.png', import.meta.url),
-        previewUrl: new URL('../assets/TREES/Tree Maj.png', import.meta.url),
-        left: 0.2,
-        bottom: 0.15,
-    },
-    
-    tree3: {
-        url: new URL('../assets/TREES/Tree Min.png', import.meta.url),
-        previewUrl: new URL('../assets/TREES/Tree Min.png', import.meta.url),
-        left: 0.2,
-        bottom: 0.1,
-    }, 
-
-    palm: {
-        url: new URL('../assets/TREES/Palm.png', import.meta.url),
-        previewUrl: new URL('../assets/TREES/Palm.png', import.meta.url),
-        left: 0.3,
-        bottom: 0.1,
-    }, 
-
-    streetLamp: {
-        url: new URL('../assets/TREES/Street Lamp.png', import.meta.url),
-        previewUrl: new URL('../assets/TREES/Street Lamp.png', import.meta.url),
-        left: 0.3,
-        bottom: 0.1,
-    },
-
-    cactus: {
-        url: new URL('../assets/TREES/Cactus.png', import.meta.url),
-        previewUrl: new URL('../assets/TREES/Cactus.png', import.meta.url),
-        left: 0.3,
-        bottom: 0.1,
-    },
-}
-
-
-// TODO: environment
-/*
-const environment = {
-    mountain: {
-        background: new_assets.mountains,
-        floor: new_assets.grass,
-        building: new_assets.mountainHouse,
-        shrub: new_assets.tree3,
-    },
-    desert: {
-        background: new_assets.desert,
-        floor: new_assets.desertSand,
-        building: new_assets.desertHouse,
-        shrub: new_assets.cactus,
-    },
-    city: {
-        background: new_assets.skyline,
-        floor: new_assets.concrete,
-        building: new_assets.cityHouse,
-        shrub: new_assets.streetLamp,
-    },
-    seaside: {
-        background: new_assets.sea,
-        floor: new_assets.seaSand,
-        building: new_assets.seaHouse,
-        shrub: new_assets.palm,
-    }
-}
-*/
-/*
-var environmentToGenerate = {
-    background: "mountain",
-    floor: "mountain",
-    building: "mountain",
-    shrub: "mountain",
-}
-*/
 export async function initImages(){
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     
@@ -302,49 +50,7 @@ export async function initImages(){
     }
     console.log(Model.state.imagesToDraw["moon"])
     console.log(Model.state.imagesToDraw["sun"])
-    /*
-    var bgNight = new Image()   
-    var bgSunrise = new Image()
-    var bgDay = new Image()
-    var bgSunset = new Image()
-    var landscape = new Image()
-    var floor = new Image()
-    var building = new Image()
-    var shrub = new Image()
 
-    var moon = new Image();
-    var sun = new Image();
-    var star = new Image();
-    bgNight.src = await getAsset('BG/Background1.png')
-    bgSunrise.src = await getAsset('BG/Background2.png')
-    bgDay.src = await getAsset('BG/Background3.png')
-    bgSunset.src = await getAsset('BG/Background4.png')
-    landscape.src = await getAsset(Model.state.drawing.image.landscape.url)
-    floor.src = Model.state.drawing.image.floor.url
-    building.src = Model.state.drawing.image.building.url
-    shrub.src = Model.state.drawing.image.shrub.url
-    moon.src = Model.state.drawing.image.moon.url
-    sun.src = Model.state.drawing.image.sun.url
-    */
-    //star.src = new_assets.star.url[0];
-
-    // moon.classList.add('invert');
-    //console.log('moon: ')
-    //console.log(moon)
-    /*
-    state.assets.stars = []
-
-    var numOfStars = 32
-
-    for (i=0; i<numOfStars; i++){
-        var aStar = {img: star, left: Math.random(), bottom: 1-(Math.random()*0.7)}
-        state.assets.stars.push(aStar);
-    }
-
-    console.log(state.assets.stars)
-    */
-    // window.requestAnimationFrame(()=>{createEnvironment(env)});
-    console.log("passato")
     Model.state.framereq = window.requestAnimationFrame(countFPS);
     console.log(Model.state.framereq)
 }
@@ -378,13 +84,8 @@ function createEnvironment(timestamp) {
     ctx.imageSmoothingEnabled = false;
     var a= 0.5
     omega = a/t;
-    //console.log("floor")
-    //console.log(Model.state.imagesToDraw["floor"])
     let hAstra = h-Model.state.imagesToDraw["floor"].getNHeight()*factor-25*factor;
     let wAstra = w/2 - ((Model.state.imagesToDraw["moon"].getNWidth())/2*factor) 
-    //console.log("HEW")
-    //console.log(wAstra)
-    //console.log(hAstra)
     var angle = (ALPHASTART + omega * (time-time0.getTime()))
     
     let angleD = angle%(2*Math.PI)
@@ -437,13 +138,7 @@ function createEnvironment(timestamp) {
             sunToDraw = (1/(2*Math.PI-SUNSET_START))*(angleD-SUNSET_START)
         break  
     }
-    /*
-    drawThisImage(Model.state.imagesToDraw["bgNight"], 0, 0,alphaNight,false);
-    drawThisImage(Model.state.imagesToDraw["bgSunrise"], 0, 0,alphaSunrise,false);
-    drawThisImage(Model.state.imagesToDraw["bgSunset"], 0, 0,alphaSunset,false);
-    drawThisImage(Model.state.imagesToDraw["bgDay"], 0, 0,alphaDay,false);
-    */
-    //drawThisImage(imageToDraw=0,alpha0=1,lightOn,canvasHeight=0,canvasWidth=0,ctx,factor)
+    
     Model.state.imagesToDraw["background"].drawThisImage(0,alphaNight,lightOn,canvas.height,canvas.width,ctx,factor)
     Model.state.imagesToDraw["background"].drawThisImage(1,alphaSunrise,lightOn,canvas.height,canvas.width,ctx,factor)
     Model.state.imagesToDraw["background"].drawThisImage(2,alphaSunset,lightOn,canvas.height,canvas.width,ctx,factor)
@@ -580,16 +275,6 @@ function countFPS(timestamp) {
 
 
 /*
-function animate() {
-  // perform some animation task here
-
-  setTimeout(() => {
-    requestAnimationFrame(animate);
-  }, 1000 / fps);
-}
-animate();
-*/
-
 function blendBG() {
     var opaSunSet = parseFloat(skySunSet.style.opacity.split()[0])
     var opaDay = parseFloat(skyDay.style.opacity.split()[0])
@@ -604,7 +289,7 @@ function blendBG() {
         }
     }
 }
-
+*/
 // initImages(state.environment);  
 //initImages(
 //);  

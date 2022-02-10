@@ -6,115 +6,33 @@
         "tree": 16
     },
     "image": {
-        "landscape": {
-            "url": "http://localhost:1234/Mountains.ed430dae.png?1641279753372",
-            "previewUrl": "http://localhost:1234/Mountains%20prev.30ab7dec.png?1641279753372",
-            "left": 0,
-            "bottom": 0,
-            "index": 0
-        },
-        "floor": {
-            "url": "http://localhost:1234/Grass.93676fb1.png?1641279753372",
-            "previewUrl": "http://localhost:1234/Grass%20prev.b0e0afc7.png?1641279753372",
-            "left": 0,
-            "bottom": 0
-        },
-        "building": {
-            "url": "http://localhost:1234/Mountain%20Home.17181278.png?1641279753372",
-            "previewUrl": "http://localhost:1234/Mountain%20Home.17181278.png?1641279753372",
-            "left": 0.7,
-            "bottom": 0.1
-        },
-        "tree": {
-            "url": "http://localhost:1234/Tree%20Alt.38a2d9a6.png?1641279753372",
-            "previewUrl": "http://localhost:1234/Tree%20Alt.38a2d9a6.png?1641279753372",
-            "left": 0.35,
-            "bottom": 0.09
-        },
-        "moon": {
-            "url": "MOON/Moon1.png",
-            "left": 0,
-            "bottom": 0,
-            "hasLight":false
-        },
-        "sun": {
-            "url": "SUN/Sole.png",
-            "left": 0,
-            "bottom": 0,
-            "hasLight":false
-        },
-        "background": {
-            "url": "BG/Background1.png",
-            "previewUrl": "BG/Background1.png",
-            "left": 0,
-            "bottom": 0,
-            "index": 0
-        }
     },
     "chords": {
-        "isChanged": true,
         "instrument": "Pad",
         "sequence": [
             {
                 "time": "0:0:0",
                 "value": "F",
-                "length": "1m",
-                "notes": [
-                    "F2",
-                    "A2",
-                    "C3"
-                ]
+                "length": "1m"
             },
             {
                 "time": "1:0:0",
                 "value": "Am",
-                "length": "1m",
-                "notes": [
-                    "A2",
-                    "C3",
-                    "E3"
-                ]
+                "length": "1m"
             },
             {
                 "time": "2:0:0",
                 "value": "Am",
-                "length": "1m",
-                "notes": [
-                    "A2",
-                    "C3",
-                    "E3"
-                ]
+                "length": "1m"
             },
             {
                 "time": "3:0:0",
                 "value": "G",
-                "length": "1m",
-                "notes": [
-                    "G2",
-                    "B2",
-                    "D3"
-                ]
+                "length": "1m"
             }
-        ],
-        "loopLength": "4:0:0",
-        "effects": [
-            {
-                "effect": "chorus",
-                "setup": {
-                    "wet": 0.5,
-                    "feedback": 0,
-                    "frequency": 1.5,
-                    "delayTime": 3.5,
-                    "depth": 1,
-                    "type": "sine",
-                    "spread": 180
-                }
-            }
-        ],
-        "effect": "chorus"
+        ]
     },
     "melody": {
-        "isChanged": true,
         "instrument": "Synth",
         "sequence": {
             "totalQuantizedSteps": 64,
@@ -276,65 +194,6 @@
                     "quantizedEndStep": 64
                 }
             ]
-        },
-        "effects": [
-            {
-                "effect": "chorus",
-                "setup": {
-                    "wet": 0.5,
-                    "feedback": 0,
-                    "frequency": 1.5,
-                    "delayTime": 3.5,
-                    "depth": 1,
-                    "type": "sine",
-                    "spread": 180
-                }
-            },
-            {
-                "effect": "delay",
-                "setup": {
-                    "wet": 0.1,
-                    "feedback": 0.5,
-                    "delayTime": 0.75,
-                    "maxDelay": 1
-                }
-            }
-        ],
-        "playingPart": {
-            "debug": false,
-            "_wasDisposed": false,
-            "context": {},
-            "name": "Part",
-            "_state": {
-                "debug": false,
-                "_wasDisposed": false,
-                "name": "StateTimeline",
-                "_timeline": [
-                    {
-                        "state": "stopped",
-                        "time": 0
-                    },
-                    {
-                        "id": -1,
-                        "offset": 0,
-                        "state": "started",
-                        "time": 0
-                    }
-                ],
-                "memory": null,
-                "increasing": true,
-                "_initial": "stopped"
-            },
-            "_startOffset": 0,
-            "_loop": false,
-            "value": null,
-            "_loopStart": 0,
-            "_loopEnd": 768,
-            "_playbackRate": 1,
-            "_probability": 1,
-            "_humanize": false,
-            "mute": false,
-            "_events": {}
         }
     },
     "loopLength": "4:0:0"
