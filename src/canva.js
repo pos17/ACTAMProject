@@ -49,259 +49,24 @@ var alpha0 = Math.acos((canvas.width/2)/moonRadius)
 
 var t = Tone.Time('16m').toMilliseconds()
 
-var state = {
-    canvas: {},
-    assets: {
-        stars: []
-    },
-    environment: channels[0],
-} 
-
-const new_assets = {
-    night:{
-        url: new URL('../assets/BG/Background1.png', import.meta.url),
-        previewUrl: new URL('../assets/BG/Background1.png', import.meta.url), 
-        left: 0,
-        bottom: 0,
-        index: 0
-    },
-    day:{
-        url: new URL('../assets/BG/Background3.png', import.meta.url),
-        previewUrl: new URL('../assets/BG/Background3.png', import.meta.url), 
-        left: 0,
-        bottom: 0,
-        index: 0
-    },
-    sunset:{
-        url: new URL('../assets/BG/Background4.png', import.meta.url),
-        previewUrl: new URL('../assets/BG/Background4.png', import.meta.url), 
-        left: 0,
-        bottom: 0,
-        index: 0
-    },
-    sunrise:{
-        url: new URL('../assets/BG/Background2.png', import.meta.url),
-        previewUrl: new URL('../assets/BG/Background2.png', import.meta.url), 
-        left: 0,
-        bottom: 0,
-        index: 0
-    },
-    mountains: {
-        url: new URL('../assets/BG/Mountains.png', import.meta.url),
-        previewUrl: new URL('../assets/PREVS/Mountains prev.png', import.meta.url), 
-        left: 0,
-        bottom: 0,
-        index: 0
-    },
-
-    sea: {
-        url: new URL('../assets/BG/Sea.png', import.meta.url),
-        previewUrl: new URL('../assets/PREVS/Sea prev.png', import.meta.url), 
-        left: 0,
-        bottom: 0,
-        index: 0
-    },
-
-    skyline: {
-        url: new URL('../assets/BG/Skyline.png', import.meta.url),
-        previewUrl: new URL('../assets/PREVS/Skyline prev.png', import.meta.url), 
-        left: 0,
-        bottom: 0,
-        index: 0
-    },
-
-    desert: {
-        url: new URL('../assets/BG/Desert.png', import.meta.url),
-        previewUrl: new URL('../assets/PREVS/Desert prev.png', import.meta.url), 
-        left: 0,
-        bottom: 0,
-        index: 0
-    },
-
-    grass: {
-        url: new URL('../assets/BG/Grass.png', import.meta.url),
-        previewUrl: new URL('../assets/PREVS/Grass prev.png', import.meta.url), 
-        left: 0,
-        bottom: 0,
-    },
-
-    seaSand: {
-        url: new URL('../assets/BG/Sand.png', import.meta.url),
-        previewUrl: new URL('../assets/PREVS/Sea Sand prev.png', import.meta.url), 
-        left: 0,
-        bottom: 0,
-    },
-
-    desertSand: {
-        url: new URL('../assets/BG/Desert Sand.png', import.meta.url),
-        previewUrl: new URL('../assets/PREVS/Desert Sand prev.png', import.meta.url), 
-        left: 0,
-        bottom: 0,
-    },
-
-    concrete: {
-        url: new URL('../assets/BG/Concrete.png', import.meta.url),
-        previewUrl: new URL('../assets/PREVS/Concrete prev.png', import.meta.url), 
-        left: 0,
-        bottom: 0,
-    },
-
-    mountainHouse: {
-        url: new URL('../assets/HOUSE/Mountain Home.png', import.meta.url),
-        previewUrl: new URL('../assets/HOUSE/Mountain Home.png', import.meta.url),
-        left: 0.7,
-        bottom: 0.1,
-    },
-    
-    seaHouse: {
-        url: new URL('../assets/HOUSE/Sea Home.png', import.meta.url),
-        previewUrl: new URL('../assets/HOUSE/Sea Home.png', import.meta.url),
-        left: 0.7,
-        bottom: 0.1,
-    },
-
-    cityHouse: {
-        url: new URL('../assets/HOUSE/City Home.png', import.meta.url),
-        previewUrl: new URL('../assets/HOUSE/City Home.png', import.meta.url),
-        left: 0.7,
-        bottom: 0.1,
-    },
-
-    desertHouse: {
-        url: new URL('../assets/HOUSE/Desert Home.png', import.meta.url),
-        previewUrl: new URL('../assets/HOUSE/Desert Home.png', import.meta.url),
-        left: 0.7,
-        bottom: 0.1,
-    },
-
-    moon: {
-        url: [
-            new URL('../assets/MOON/Moon1.png', import.meta.url),
-            new URL('../assets/MOON/Moon2.png', import.meta.url),
-            new URL('../assets/MOON/Moon3.png', import.meta.url),
-            new URL('../assets/MOON/Moon4.png', import.meta.url),
-            new URL('../assets/MOON/Moon5.png', import.meta.url),
-        ],
-        left: 0,
-        bottom: 0,
-    },
-    moon1: {
-        url: new URL('../assets/MOON/Moon1.png', import.meta.url),
-        left: 0,
-        bottom: 0,
-    },
-    sun: {
-        url: new URL('../assets/MOON/Sole.png', import.meta.url),
-        left: 0,
-        bottom: 0,
-    },
-
-    star: {
-        url: [new URL('../assets/Small Star.png', import.meta.url), new URL('../assets/Big Star.png', import.meta.url),],  
-    },
-
-    tree1: {
-        url: new URL('../assets/TREES/Tree Alt.png', import.meta.url),
-        previewUrl: new URL('../assets/TREES/Tree Alt.png', import.meta.url),
-        left: 0.35,
-        bottom: 0.09,
-    }, 
-
-    tree2: {
-        url: new URL('../assets/TREES/Tree Maj.png', import.meta.url),
-        previewUrl: new URL('../assets/TREES/Tree Maj.png', import.meta.url),
-        left: 0.2,
-        bottom: 0.15,
-    },
-    
-    tree3: {
-        url: new URL('../assets/TREES/Tree Min.png', import.meta.url),
-        previewUrl: new URL('../assets/TREES/Tree Min.png', import.meta.url),
-        left: 0.2,
-        bottom: 0.1,
-    }, 
-
-    palm: {
-        url: new URL('../assets/TREES/Palm.png', import.meta.url),
-        previewUrl: new URL('../assets/TREES/Palm.png', import.meta.url),
-        left: 0.3,
-        bottom: 0.1,
-    }, 
-
-    streetLamp: {
-        url: new URL('../assets/TREES/Street Lamp.png', import.meta.url),
-        previewUrl: new URL('../assets/TREES/Street Lamp.png', import.meta.url),
-        left: 0.3,
-        bottom: 0.1,
-    },
-
-    cactus: {
-        url: new URL('../assets/TREES/Cactus.png', import.meta.url),
-        previewUrl: new URL('../assets/TREES/Cactus.png', import.meta.url),
-        left: 0.3,
-        bottom: 0.1,
-    },
-}
-
-
-// TODO: environment
-/*
-const environment = {
-    mountain: {
-        background: new_assets.mountains,
-        floor: new_assets.grass,
-        building: new_assets.mountainHouse,
-        shrub: new_assets.tree3,
-    },
-    desert: {
-        background: new_assets.desert,
-        floor: new_assets.desertSand,
-        building: new_assets.desertHouse,
-        shrub: new_assets.cactus,
-    },
-    city: {
-        background: new_assets.skyline,
-        floor: new_assets.concrete,
-        building: new_assets.cityHouse,
-        shrub: new_assets.streetLamp,
-    },
-    seaside: {
-        background: new_assets.sea,
-        floor: new_assets.seaSand,
-        building: new_assets.seaHouse,
-        shrub: new_assets.palm,
-    }
-}
-*/
-/*
-var environmentToGenerate = {
-    background: "mountain",
-    floor: "mountain",
-    building: "mountain",
-    shrub: "mountain",
-}
-*/
 export async function initImages(){
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     
     /*
      * momentary upload of elements  
      */
-    el = await getDocumentElement("21sjvRkIbI4OCiBmLBqQhH")
-    Model.state.drawing.image["sun"] = el.image
-    el = await getDocumentElement("20p5Ppekl7T3P8WWJYN6Tc")
-    Model.state.drawing.image["moon"] = el.image
-    el = await getDocumentElement("OcyJGyHdUBI6fXb5AcD3")
-    Model.state.drawing.image["background"] = el.image
-    el = await getDocumentElement("229MYuVK7Qhl0OKlCOXwPJ")
-    Model.state.drawing.image["flyingObject"] = el.image
+    // el = await getDocumentElement("21sjvRkIbI4OCiBmLBqQhH")
+    // Model.state.drawing.image["sun"] = el.image
+    // el = await getDocumentElement("20p5Ppekl7T3P8WWJYN6Tc")
+    // Model.state.drawing.image["moon"] = el.image
+    // el = await getDocumentElement("OcyJGyHdUBI6fXb5AcD3")
+    // Model.state.drawing.image["background"] = el.image
+    // el = await getDocumentElement("229MYuVK7Qhl0OKlCOXwPJ")
+    // Model.state.drawing.image["flyingObject"] = el.image
     
-    for(let key of Object.keys(Model.state.drawing.image)) {
-        console.log(key)
-        Model.state.imagesToDraw[key] = await DrawableImage.build(Model.state.drawing.image[key])
-    }
-    console.log(Model.state.imagesToDraw["moon"])
-    console.log(Model.state.imagesToDraw["sun"])
+    
+    console.log(MVC.getImageToDraw("moon"))
+    console.log(MVC.getImageToDraw("sun"))
     /*
     var bgNight = new Image()   
     var bgSunrise = new Image()
@@ -345,8 +110,23 @@ export async function initImages(){
     */
     // window.requestAnimationFrame(()=>{createEnvironment(env)});
     console.log("passato")
-    Model.state.framereq = window.requestAnimationFrame(countFPS);
-    console.log(Model.state.framereq)
+    MVC.setFrameReq(window.requestAnimationFrame(countFPS))
+    //console.log(Model.state.framereq)
+}
+
+function countFPS(timestamp) {
+    if(Model.state.isPlaying) {
+        if(Date.now() - Model.state.now > 1000 / Model.state.fps) {
+            //console.log("print")
+            Model.state.now = Date.now()
+            Model.state.framereq = window.requestAnimationFrame(createEnvironment);
+            //console.log(Model.state.framereq)
+        } else {
+            
+            Model.state.framereq = window.requestAnimationFrame(countFPS);
+            //console.log(Model.state.framereq)
+        }
+    }
 }
 
 
@@ -563,20 +343,7 @@ function createEnvironment(timestamp) {
     //console.log(Model.state.framereq)
 }
 
-function countFPS(timestamp) {
-    if(Model.state.isPlaying) {
-        if(Date.now() - Model.state.now > 1000 / Model.state.fps) {
-            //console.log("print")
-            Model.state.now = Date.now()
-            Model.state.framereq = window.requestAnimationFrame(createEnvironment);
-            //console.log(Model.state.framereq)
-        } else {
-            
-            Model.state.framereq = window.requestAnimationFrame(countFPS);
-            //console.log(Model.state.framereq)
-        }
-    }
-}
+
 
 
 /*
@@ -648,7 +415,7 @@ function drawThisImage (img, left, bottom,alpha=1,hasLight=false,lightOn) {
  * 3: background 
  */
 
-class DrawableImage {
+export class DrawableImage {
     constructor(anImageArray,left,bottom,anImageType) {
         this.imageType = anImageType;
         this.imageArray = anImageArray;

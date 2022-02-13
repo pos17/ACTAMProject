@@ -16,7 +16,7 @@ body {
 #container {
     min-width: 900px;
     height: 100vh;
-    width: auto;
+    width: 100vw;
     left: 50%;
     top: 40%;
     transform: translate(-50%, -50%);
@@ -30,8 +30,11 @@ body {
 #canva-container {
     position: relative;
     width: 85vw;
-    height: auto;
+    height: 100%;
     margin-top: 10px;
+    left: 50%;
+    top: 45%;
+    transform: translate(-50%, -50%);
 }
 
 #canvas-div {
@@ -179,17 +182,18 @@ img {
 /*menu token element specification */
 
 .token-image {
-    /* max-height: 100%; */
-    max-width: 101%;
+    position: absolute;
+    width: 80%;
     /* left: 5px; */
-    /* left: 50%;
-    transform: translate(-50%); */
+     left: 50%;
+     top: 50%;
+    transform: translate(-50%,-50%); 
 }
 
 .token-btn {
     background-color: rgb(248, 235, 183);
-    height: 80px;
-    width: 80px;
+    height: 150px;
+    width: 150px;
     margin: 10px;
     align-content: center;
 }
@@ -225,16 +229,32 @@ img {
 
     display: inline-flex;
     margin: auto;
-    background-color: rgb(201, 173, 15);
+    background-color: rgb(155, 211, 202);
     border-radius: 10px;
     /* height: max-content; */
     padding: 7px;
 }
 
+#tokenGrid {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    padding-top: 1%;
+    padding-right: 7%;
+    padding-bottom: 15vh;
+    padding-left: 7%;
+    gap:1%
+}
 .token-btn-container {
+    display: grid;
+    
     width: 100%;
     display: block;
     margin: auto;
+    padding-top: 1%;
+    padding-right: 7%;
+    padding-bottom: 1%;
+    padding-left: 7%;
+    gap:100px
 }
 
 .token-btn-div {
@@ -259,6 +279,14 @@ img {
     -webkit-transform: rotate(-135deg);
 }
 
+.navbar {
+  overflow: hidden;
+  background-color: #333;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding: 1vh;
+}
 
 #nav-button-container {
     min-width: 900px;
@@ -303,6 +331,7 @@ img {
     display:flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
   }
   #loadingId {
     display: inline-block;

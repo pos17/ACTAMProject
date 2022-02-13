@@ -8,50 +8,13 @@ import { createMenu, assignClick,updatePage} from "./menu.js";
 import * as Instr from './instruments.js';
 import * as effects from './effects.js';
 import { initializeApp } from "firebase/app";
-export const state= {
-    loadingPage:{
-      limit: 0,
-      lastAnimation: Date.now()
-    },
-    imagesToDraw:{},
-    environments:undefined,
-    elementTypes:undefined,
-    queueCounter:0,
-    queueDay: 0, //0 night, 1 night to day, 2 day, 3 day to night
-    now1: 0,
-    canvasFactor:8,
-    framereq:undefined,
-    now:Date.now(),
-    effects:{
-      melody:{},
-      harmony:{}
-    },
-    fps:24,
-    instruments:{},
-    stateChanged:false,
-    readyModel:false,
-    readyToPlay: false,
-    isPlaying:false,
-    emitter: new Emitter(),
-    key:"c", //main key of the system
-    bpm:60,
-    totalLength:"",
-    drawing:undefined,
-    navigationPage:0,
-    possibleValues:[],//require("./possible_elements.json"),
-    master: {
-        compressor: new Tone.Compressor({
-          threshold: -15,
-          ratio: 7,
-        }),
-        gain: new Tone.Gain(0.3)
-    }
-}
+import * as MVC from "./modelViewController.js"
 
-var markovChain = require("./markov_nodes.json")
-var markov_music_elements = require("./markov_music_elements.json")
+
+//var markovChain = require("./markov_nodes.json")
+//var markov_music_elements = require("./markov_music_elements.json")
 //console.log(markovChain)
-var mm = new MarkovMelody(tree = markovChain,nodes = markov_music_elements)
+//var mm = new MarkovMelody(tree = markovChain,nodes = markov_music_elements)
 // console.log(mm.generateMelody(1))
 //console.log(mm.generatePath(2))
 
@@ -61,31 +24,34 @@ var mm = new MarkovMelody(tree = markovChain,nodes = markov_music_elements)
 
 
 
-initializeApp1()
+initializeMyApp()
 
 /**
  *  Function to initialize the main settings of the player 
  */
-async function initializeApp1() {
+async function initializeMyApp() {
   
     //initialize the drawing values
-    
-    state.drawing = require("./myDrawing.json")
-    state.isFirst = true
-    //const context = new Tone.Context({ latencyHint: "playback" });
-    // set this context as the global Context
+    //state.isFirst = true
     Tone.context.lookAhead = 1;
-    Tone.Destination.chain(state.master.compressor,state.master.gain)
-    setLimit(40)
-    increase();
-    await buildInstruments()
-    console.log(state.instruments)
-    setLimit(90)
+    MVC.setNow()
+    MVC.setMasterChain()
+    console.log("master chain set")
+    console.log(MVC.getMasterChain())
+    Tone.Destination.chain(MVC.getMasterChain().compressor,MVC.getMasterChain().gain)
+    console.log("master chain get")
+    MVC.setLimit(40)
+    MVC.increase();
+    await MVC.initiateState()
+    //await buildInstruments()
+    //console.log(state.instruments)
+    MVC.setLimit(90)
+    MVC.orderElements()
     await createMenu()
-    setLimit(90)
     assignClick()
-    setLimit(100)
-    propagateStateChanges(state.isFirst)
+    MVC.setLimit(100)
+    //propagateStateChanges(state.isFirst)
+    MVC.updateState()
     await Canva.initImages()
     //Canva.playableButton(true)
     updatePage(1)
@@ -153,38 +119,7 @@ export async function propagateStateChanges(isFirst) {
     console.log(state)
   }
 
-export function modifyState(idValue) {
-  console.log(idValue)
-  console.log(state.possibleValues)
-    modifyingValue = state.possibleValues.find(element => element.id==idValue)
 
-    console.log("modifying value")
-    console.log(modifyingValue)
-    
-    state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
-    state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-
-    switch(modifyingValue.elementType) {
-        case("background"):{
-          
-        } break;
-        case("landscape"):{
-          state.drawing.chords.instrument = modifyingValue.instrument
-          state.drawing.chords.effect = modifyingValue.effect
-        } break;
-        case("building"):{
-
-        } break;
-        case("plant"):{
-
-        } break;
-        case("astrum"):{
-
-        } break;
-
-    }
-    console.log(state.drawing)
-}
 
 async function buildInstruments() {
   
@@ -387,16 +322,16 @@ function fromChordToNotes(chordName) {
     console.log(notesArray)
     return notesArray
 }
-
+/*
 Tone.Transport.schedule(()=>{
   console.log("sticazzi");
   console.log("state of chords")
   console.log(state.playingPartChords.state)
   },"0:0:0")
-
+*/
   
 
-document.getElementById("mytone").onclick =  play
+//document.getElementById("mytone").onclick =  play
 
 
 /*
@@ -417,29 +352,3 @@ async function play() {
 
 
 
-/**
- * loading bar improvement using requestAnimationFrame
- */
- 
-  
- function setLimit(toValue) {
-  state.loadingPage.limit= toValue
-}
-
-function increase() {
-  let element = document.getElementById("loadingId");
-  let fromValue = element.value
-  let limit = state.loadingPage.limit;
-  if((Date.now() - state.loadingPage.lastAnimation )>( 1000 / 30)) {
-    if(fromValue < limit) {
-    element.value = fromValue+1
-    }
-    if(fromValue >=100) {
-      document.getElementById("initialLoadingPanel").style.visibility = 'hidden'
-    }
-    window.requestAnimationFrame(increase)
-    state.loadingPage.lastAnimation = Date.now()
-  } else {
-    window.requestAnimationFrame(increase)
-  }
-}

@@ -1,8 +1,7 @@
-import * as Model from "./index.js"
-import { getElementsByType, getMenuTypes,getAsset } from "./firebase"
+import * as MVC from "./modelViewController.js"
+import { getElementsByType, getMenuTypes,getAsset, getElements} from "./firebase"
 import { initImages } from "./canva.js"
 import * as Tone from 'tone'
-
 var generateButton = document.createElement('button')
 var helpButton = document.createElement('button')
 var menuPanel = document.createElement('div')
@@ -13,9 +12,41 @@ var btn_center =  document.getElementById('btn-ct')
 var btn_right =  document.getElementById('btn-dx')
 
 
+
 export async function createMenu () {
     console.log("menu Creation")
-    var btnContainer = document.createElement('div')
+    var btnContainer = document.getElementById("tokenGrid")// document.createElement('div')
+    btnContainer.className = 'token-btn-container'
+    console.log(MVC.getStateElements())
+    for(let datum of MVC.getStateElements()) {
+        console.log('datum: ')
+        console.log(datum)
+        console.log(datum.image.previewUrl)
+        var aNewSrc =await getAsset(datum.image.previewUrl) 
+        var img = document.createElement('img')
+        img.src = aNewSrc
+        img.className = 'token-image'
+
+        var btn = document.createElement('button')
+        btn.id = datum.id
+        btn.className = 'nes-btn'
+        btn.classList.add('token-btn')
+        btn.classList.add(datum.elementType)
+        btn.classList.add(datum.environment)
+
+        btn.style.margin = '7px'
+        btn.style.marginLeft = 'auto'
+        btn.style.marginRight = 'auto'
+
+        btn.appendChild(img)
+        btnContainer.appendChild(btn)
+    }
+    visualizeSelectedTokens()
+}
+/*
+export async function createMenu () {
+    console.log("menu Creation")
+    var btnContainer = document.getElementById("tokenGrid")// document.createElement('div')
     btnContainer.className = 'token-btn-container'
 
     //if the menu isn't initialized a new element is created
@@ -127,32 +158,24 @@ export async function createMenu () {
     console.log('envToGen: ')
     visualizeSelectedTokens()
 }
+*/
 
-function visualizeSelectedTokens() {
-    document.querySelectorAll('.token-btn').forEach((btn)=>{
-        if (Object.values(Model.state.drawing.idList).indexOf(parseInt(btn.id)) > -1) {
-            console.log("it is here num 2")
-            console.log(btn);
-            btn.classList.add('selected-btn')
-        }
-    })
-}
 
 
 /* -------------------------------------------------------- */
 
-export function playableButton (ready) {
-    if (ready) {
-        playButton.classList.replace('is-disabled', 'is-success');
-    }
-}
+// export function playableButton (ready) {
+//     if (ready) {
+//         playButton.classList.replace('is-disabled', 'is-success');
+//     }
+// }
 
 function showInitPanel() {
     document.getElementById("panel-container").hidden = !document.getElementById("panel-container").hidden
     document.getElementById('front-panel').hidden = false
     document.getElementById('start-panel').hidden = true;
 }
-
+/*
 var okButton = document.getElementById('ok-button');
 okButton.onclick = () => {
     var word1 = document.getElementById('name-field1').value
@@ -165,16 +188,16 @@ okButton.onclick = () => {
         Tone.start()
         Tone.context.latencyHint = "playback"
     }    
-}
+}*/
 
-var playButton = document.getElementById('play-button');
-playButton.onclick = ()=> {
-    if (playButton.classList.contains('is-success')){
-        showInitPanel();
-        Model.startMusic(); 
+// var playButton = document.getElementById('play-button');
+// playButton.onclick = ()=> {
+//     if (playButton.classList.contains('is-success')){
+//         showInitPanel();
+//         Model.startMusic(); 
         
-        }
-}
+//         }
+// }
 
 export function assignClick() {
     document.querySelectorAll('.token-btn').forEach((btn)=>{
@@ -186,24 +209,41 @@ export function assignClick() {
             console.log("elements")
             console.log(env)
             console.log(el)
+            //console.log(Model.state.drawing)
             //Model.state.drawing.
-            document.querySelectorAll('.'+ el).forEach((elem)=>{elem.classList.remove('selected-btn')})
-            Model.modifyState(id)
+            //document.querySelectorAll('.'+ el).forEach((elem)=>{elem.classList.remove('selected-btn')})
+            MVC.modifyIdList(id)
+            
             visualizeSelectedTokens()
             
         })
     })
 }
 
-generateButton.onclick = async () => {
-    console.log(Model.state)
+
+function visualizeSelectedTokens() {
+    document.querySelectorAll('.token-btn').forEach((btn)=>{
+        btn.classList.remove('selected-btn')
+    });
+    document.querySelectorAll('.token-btn').forEach((btn)=>{
+        if (Object.values(MVC.getIdList()).indexOf(parseInt(btn.id)) > -1) {
+            //console.log("it is here num 2")
+            //console.log(btn);
+            btn.classList.add('selected-btn')
+        }
+    });
+}
+
+/*generateButton*/btn_right.onclick = async () => {
+    //console.log(Model.state)
+    await MVC.updateState()
     await initImages()
     menuPanel.style.display = 'none'
     Tone.start()
-    Model.propagateStateChanges(false)
-    Model.startMusic()
-    updatePage(0)
-    console.log(Model.state)
+    //Model.propagateStateChanges(false)
+    //Model.startMusic()
+    //updatePage(0)
+    //console.log(Model.state)
     
 }
 
