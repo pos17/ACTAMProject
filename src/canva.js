@@ -11,31 +11,12 @@ const container = document.getElementById('canva-container')
 
 
 var factor = 8;
-var channels = ['mountain', 'seaside', 'city']
-
-
-var skySunSet = new Image()
-skySunSet.src = new URL('../assets/BG/Background2.png', import.meta.url)
-skySunSet.classList.add('sky')
-skySunSet.style.opacity = '0';
-skySunSet.style.position = 'absolute';
-// skySunSet.style.zIndex = '1'
-// canvasDiv.appendChild(skySunSet)
-
-var skyDay = new Image()
-skyDay.src = new URL('../assets/BG/Background3.png', import.meta.url)
-skyDay.classList.add('sky')
-skyDay.style.opacity = '0';
-skyDay.style.position = 'absolute';
-// skyDay.style.zIndex = '1'
-// canvasDiv.appendChild(skyDay)
 
 var canvas = document.createElement("canvas")
 canvas.className = "canvases";
 canvas.width = 256*factor;
 canvas.height = 128*factor;
 canvasDiv.appendChild(canvas);
-// state.canvas = canvas;
 
 var ctx = canvas.getContext('2d');
 
@@ -45,7 +26,6 @@ var ctx = canvas.getContext('2d');
 var time0 = new Date();
 var omega = 0; /* canvas angular speed */
 var moonRadius = canvas.width/1.1;
-var alpha0 = Math.acos((canvas.width/2)/moonRadius) 
 
 var t = Tone.Time('16m').toMilliseconds()
 
@@ -158,18 +138,12 @@ function createEnvironment(timestamp) {
     ctx.imageSmoothingEnabled = false;
     var a= 0.5
     omega = a/t;
-    //console.log("floor")
-    //console.log(Model.state.imagesToDraw["floor"])
     let hAstra = h-Model.state.imagesToDraw["floor"].getNHeight()*factor-25*factor;
     let wAstra = w/2 - ((Model.state.imagesToDraw["moon"].getNWidth())/2*factor) 
-    //console.log("HEW")
-    //console.log(wAstra)
-    //console.log(hAstra)
     var angle = (ALPHASTART + omega * (time-time0.getTime()))
     
     let angleD = angle%(2*Math.PI)
-    //console.log(angleD)
-    //console.log("hereIam")
+    let transAngle = angle%(w)
     // BACKGROUND IMAGE
     switch(true){
         case (angleD< NIGHT_START):
@@ -218,13 +192,7 @@ function createEnvironment(timestamp) {
             sunToDraw = (1/(2*Math.PI-SUNSET_START))*(angleD-SUNSET_START)
         break  
     }
-    /*
-    drawThisImage(Model.state.imagesToDraw["bgNight"], 0, 0,alphaNight,false);
-    drawThisImage(Model.state.imagesToDraw["bgSunrise"], 0, 0,alphaSunrise,false);
-    drawThisImage(Model.state.imagesToDraw["bgSunset"], 0, 0,alphaSunset,false);
-    drawThisImage(Model.state.imagesToDraw["bgDay"], 0, 0,alphaDay,false);
-    */
-    //drawThisImage(imageToDraw=0,alpha0=1,lightOn,canvasHeight=0,canvasWidth=0,ctx,factor)
+    
     Model.state.imagesToDraw["background"].drawThisImage(0,alphaNight,lightOn,canvas.height,canvas.width,ctx,factor)
     Model.state.imagesToDraw["background"].drawThisImage(1,alphaSunrise,lightOn,canvas.height,canvas.width,ctx,factor)
     Model.state.imagesToDraw["background"].drawThisImage(2,alphaSunset,lightOn,canvas.height,canvas.width,ctx,factor)
@@ -286,22 +254,23 @@ function createEnvironment(timestamp) {
 
 
     ctx.save()
-    ctx.translate(0.1*(Math.cos(angle))*2*w,h/4)
+    ctx.translate(-h/4+((((0.02*angle)*w))%(w+h/2)),h/4)
     Model.state.imagesToDraw["flyingObject"].drawThisImage(0,1,lightOn,0,0,ctx,factor)
     ctx.restore()
+    /*
     ctx.save()
     ctx.translate(0.3*(Math.cos(angle+1))*2*w,h/6   )
     Model.state.imagesToDraw["flyingObject"].drawThisImage(1,1,lightOn,0,0,ctx,factor)
     ctx.restore()
     ctx.save()
-    ctx.translate(0.1*(Math.cos(angle+0.1))*2*w,h/5)
+    ctx.translate(0.1*(Math.cos(angle+0.1))*2*w,h/8)
     Model.state.imagesToDraw["flyingObject"].drawThisImage(2,1,lightOn,0,0,ctx,factor)
     ctx.restore()
     ctx.save()
-    ctx.translate(Math.cos(angle)*2*w,h/4)
+    ctx.translate(Math.cos(angle)*2*w,h/3)
     Model.state.imagesToDraw["flyingObject"].drawThisImage(3,1,lightOn,0,0,ctx,factor)
     ctx.restore()
-    
+    */
     /*
     ctx.save()
     ctx.translate(w/2*(Math.cos(angle)), -h*(Math.sin(angle)))
@@ -347,16 +316,6 @@ function createEnvironment(timestamp) {
 
 
 /*
-function animate() {
-  // perform some animation task here
-
-  setTimeout(() => {
-    requestAnimationFrame(animate);
-  }, 1000 / fps);
-}
-animate();
-*/
-
 function blendBG() {
     var opaSunSet = parseFloat(skySunSet.style.opacity.split()[0])
     var opaDay = parseFloat(skyDay.style.opacity.split()[0])
@@ -371,7 +330,7 @@ function blendBG() {
         }
     }
 }
-
+*/
 // initImages(state.environment);  
 //initImages(
 //);  
