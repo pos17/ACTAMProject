@@ -127,6 +127,18 @@ export async function getElementsByType(type) {
   return elementsToRet
 }
 
+export async function getElements() {
+  const q = query(collection(db, "elements"));
+
+  const querySnapshot = await getDocs(q);
+  elementsToRet = []
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    elementsToRet.push(doc.data());
+  });
+  return elementsToRet
+}
+
 export async function getDocumentElement(docId) {
   const docRef = doc(db, "elements", docId);
   const docSnap = await getDoc(docRef);
