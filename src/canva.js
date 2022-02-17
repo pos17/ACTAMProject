@@ -1,6 +1,6 @@
 import * as MVC from "./modelViewController.js"
 import * as Tone from 'tone'
-import { saveAs } from 'file-saver';
+//import { saveAs } from 'file-saver';
 import { getAsset, getDocumentElement } from "./firebase.js";
 
 const canvasDiv = document.getElementById('canvas-div');
@@ -90,52 +90,45 @@ function createEnvironment() {
     let angleD = angle % (2 * Math.PI)
     let transAngle = angle % (w)
     // BACKGROUND IMAGE
-    switch (true) {
-        case (angleD < NIGHT_START):
-            alphaNight = 1
-            alphaSunrise = 0
-            alphaSunset = 1 - (1 / (NIGHT_START - SUNSET_END)) * (angleD - SUNSET_END)
-            alphaDay = 0
-            lightOn = true
-            sunToDraw = 1
-            break
-        case (angleD < SUNRISE_START):
-            alphaNight = 1
-            alphaSunrise = 0
-            alphaSunset = 0
-            alphaDay = 0
-            lightOn = true
-            break
-        case (angleD < SUNRISE_END):
-            alphaNight = 1
-            alphaSunrise = (1 / (SUNRISE_END - SUNRISE_START)) * (angleD - SUNRISE_START)
-            alphaSunset = 0
-            alphaDay = 0
-            lightOn = true
-            break
-        case (angleD < DAY_START):
-            alphaNight = 0
-            alphaSunrise = 1
-            alphaSunset = 0
-            alphaDay = (1 / (DAY_START - SUNRISE_END)) * (angleD - SUNRISE_END)
-            lightOn = false
-            break
-        case (angleD < SUNSET_START):
-            alphaNight = 0
-            alphaSunrise = 0
-            alphaSunset = 0
-            alphaDay = 1
-            lightOn = false
-
-            break
-        default:
-            alphaNight = 0
-            alphaSunrise = 0
-            alphaSunset = 1
-            alphaDay = 1 - (1 / (2 * Math.PI - SUNSET_START)) * (angleD - SUNSET_START)
-            lightOn = false
-            sunToDraw = (1 / (2 * Math.PI - SUNSET_START)) * (angleD - SUNSET_START)
-            break
+    if (angleD < NIGHT_START) {
+        alphaNight = 1
+        alphaSunrise = 0
+        alphaSunset = 1 - (1 / (NIGHT_START - SUNSET_END)) * (angleD - SUNSET_END)
+        alphaDay = 0
+        lightOn = true
+        sunToDraw = 1
+    }
+    else if (angleD < SUNRISE_START) {
+        alphaNight = 1
+        alphaSunrise = 0
+        alphaSunset = 0
+        alphaDay = 0
+        lightOn = true
+    } else if (angleD < SUNRISE_END) {
+        alphaNight = 1
+        alphaSunrise = (1 / (SUNRISE_END - SUNRISE_START)) * (angleD - SUNRISE_START)
+        alphaSunset = 0
+        alphaDay = 0
+        lightOn = true
+    } else if (angleD < DAY_START) {
+        alphaNight = 0
+        alphaSunrise = 1
+        alphaSunset = 0
+        alphaDay = (1 / (DAY_START - SUNRISE_END)) * (angleD - SUNRISE_END)
+        lightOn = false
+    } else if (angleD < SUNSET_START) {
+        alphaNight = 0
+        alphaSunrise = 0
+        alphaSunset = 0
+        alphaDay = 1
+        lightOn = false
+    } else {
+        alphaNight = 0
+        alphaSunrise = 0
+        alphaSunset = 1
+        alphaDay = 1 - (1 / (2 * Math.PI - SUNSET_START)) * (angleD - SUNSET_START)
+        lightOn = false
+        sunToDraw = (1 / (2 * Math.PI - SUNSET_START)) * (angleD - SUNSET_START)
     }
     let background = MVC.getImageToDraw("background");
     background.drawThisImage(0, alphaNight, lightOn, canvas.height, canvas.width, ctx, factor)
@@ -195,10 +188,10 @@ function createEnvironment() {
         console.log("num of objs")
         console.log(flyObjs.length)
         let i = 1;
-        for (j = 1; j < 3; j++) {
+        for (let j = 1; j < 3; ++j) {
             for (let flyObj of flyObjs) {
                 ctx.save()
-                ctx.translate((-w)+((3*j*(flyObj.getProperty().shift*w) + (((flyObj.getProperty().velocity * angle) * w))) % (2*w)),flyObj.getProperty().shift*(h/3)/*(h / 10)*/)
+                ctx.translate((-w) + ((3 * j * (flyObj.getProperty().shift * w) + (((flyObj.getProperty().velocity * angle) * w))) % (2 * w)), flyObj.getProperty().shift * (h / 3)/*(h / 10)*/)
                 flyObj.drawThisImage(0, alphaNight, lightOn, canvas.height, canvas.width, ctx, factor)
                 flyObj.drawThisImage(1, alphaSunrise, lightOn, canvas.height, canvas.width, ctx, factor)
                 flyObj.drawThisImage(2, alphaSunset, lightOn, canvas.height, canvas.width, ctx, factor)
@@ -298,18 +291,18 @@ export class DrawableImage {
             anImage.src = await getAsset(url)
             imageArray.push(anImage)
         }
-        let property={}
-        switch(image.imageType){
-        case(4):
-            property.velocity = image.velocity;
-            property.shift = Math.random();
-        break;
-    }
+        let property = {}
+        switch (image.imageType) {
+            case (4):
+                property.velocity = image.velocity;
+                property.shift = Math.random();
+                break;
+        }
         if (image.imageType == 4) {
             image.bottom = Math.random()
             image.left = Math.random()
         }
-        return new DrawableImage(imageArray, image.left, image.bottom, image.imageType,property)
+        return new DrawableImage(imageArray, image.left, image.bottom, image.imageType, property)
     }
 
     drawThisImage(imageToDraw = 0, alpha0 = 1, lightOn, canvasHeight = 0, canvasWidth = 0, ctx, factor) {

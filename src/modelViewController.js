@@ -90,7 +90,7 @@ export function setMasterChain() {
 }
 
 export function setMasterVolume(value) {
-    if(value>0) state.master.mainVolumeSave = value
+    if (value > 0) state.master.mainVolumeSave = value
     state.master.mainGain.gain.value = value
 }
 export function getSavedVolume() {
@@ -217,7 +217,7 @@ export async function updateState() {
             case ("flyingObject"): {
                 state.drawing.image[modifyingValue.elementType].push(modifyingValue.image)
                 state.imagesToDraw[modifyingValue.elementType] = [];
-                for(let img of state.drawing.image[modifyingValue.elementType]) {
+                for (let img of state.drawing.image[modifyingValue.elementType]) {
                     state.imagesToDraw[modifyingValue.elementType].push(await DrawableImage.build(img))
                 }
             } break;
@@ -276,7 +276,12 @@ export function orderElements() {
             orderedEl.push(el)
         }
     }
-    while(elements.length > 0) {
+    while ((el = elements.find(element => ((element.elementType == "flyingObject")))) != undefined) {
+        let index = elements.indexOf(el)
+        elements.splice(index, 1)
+        orderedEl.push(el)
+    }
+    while (elements.length > 0) {
         let el = elements.pop()
         orderedEl.push(el)
     }

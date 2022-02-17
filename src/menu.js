@@ -290,8 +290,8 @@ async function playerPage() {
     let volSlider = document.getElementById("volume-slider")
     volumeUpdate(70)
     volSlider.addEventListener('input', function () { volumeUpdate(volSlider.value) }, false);
-    document.getElementById("btn-dx1").onclick = () => { openFullscreen() }
-    document.getElementById("btn-sx1").onclick = () => { updatePage(0) }
+    document.getElementById("btn-dx1").onclick = () => { openFullscreen("main-canvas") }
+    document.getElementById("btn-stop").onclick = () => { updatePage(0) }
     document.getElementById("player-navbar").hidden = false;
     document.getElementById("canva-container").hidden = false;
     document.getElementById("menu-container").hidden = true;
@@ -303,6 +303,7 @@ async function playerPage() {
 async function menuPage() {
     //await createMenu()
     visualizeSelectedTokens()
+    //document.getElementById("main-fs-button").onclick = () => { openFullscreen("main-body") }
     document.getElementById("btn-dx").onclick = () => { updatePage(1) }
     document.getElementById("player-navbar").hidden = true;
     document.getElementById("canva-container").hidden = true;
@@ -317,8 +318,8 @@ async function menuPage() {
 /**
  * fullscreen handling part 
  */
-function openFullscreen() {
-    elem = document.getElementById("main-canvas")
+function openFullscreen(element) {
+    elem = document.getElementById(element)
     if (elem.requestFullscreen) {
         elem.requestFullscreen();
     } else if (elem.webkitRequestFullscreen) { /* Safari */
