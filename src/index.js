@@ -1,6 +1,6 @@
 import { Scale, Note, Chord, Interval } from "@tonaljs/tonal";
 import * as Tone from "tone"
-import { Emitter } from "./eventEmitter.js"
+
 import { MarkovMelody } from "./markov_melody.js"
 import * as Canva from './canva.js'
 import { createMenu, assignClick, updatePage } from "./menu.js";
