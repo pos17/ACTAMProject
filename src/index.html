@@ -72,7 +72,18 @@
             <img src="../assets/Transport play no-btn.png" class="button-icon" />
         </button>
 
-        <button type="button" class="nes-btn nav-btn" id="btn-dx1">FULL</button>
+        <button type="button" class="nes-btn" id="btn-dx1">
+            <img src="../assets/TRANSPORT BTNS/Full Screen icon.png" 
+                class="button-icon" 
+                style="
+                    display: block;
+                    margin: auto !important;"/>
+            <img src="../assets/TRANSPORT BTNS/Full Screen No icon.png" 
+                class="button-icon" 
+                style="
+                    display: none;
+                    margin: auto !important;" />
+        </button>
         <div id="volume-container" class="dropup">
             <button type="button" class="nes-btn dropupbtn" id="btn-vol">
                 <img id="vol-no" src="../assets/Volume No icon.png" class="button-icon" style="display: none;"/>
@@ -83,7 +94,7 @@
             <div class="dropup-content">
                 <div class="center-slider">
                 <div class="slider-wrapper">
-                    <input id="volume-slider" type="range" min="0" max="100" value="70" step="10" class="volume-slider">
+                    <input id="volume-slider" type="range" min="0" max="100" value="70" step="10" class="nes-progress volume-slider">
                 </div>
             </div>
             </div>
@@ -95,7 +106,7 @@
         <progress id="loadingId" class="nes-progress is-success loader" value="0" max="100"></progress>
     </div>
 
-    <input type="range" min="0" max="1" step="0.1"  class="nes-progress">
+    
 </body>
 
 </html>
