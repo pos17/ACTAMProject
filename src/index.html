@@ -4,106 +4,87 @@
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]>      <html class="no-js"> <![endif]-->
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="style.css">
-        <link rel="stylesheet" href="../node_modules/nes.css/css/nes.css">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet"> 
-            
-        <script type="module" src="index.js"></script>
-        <!-- <script type="module" src="canvaEnv.js"></script> -->
-        <script type="module" src="canva.js"></script>
 
-        <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>   -->
-    </head>
-    <body>
-        <!-- <button onclick="mylog()">CIAONE</button> -->
-        <!--<button id = "workieTalkie">Talk to worker</button> -->
-        <div id="container">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://unpkg.com/nes.css/css/nes.css" rel="stylesheet" />
+    <!-- <link rel="stylesheet" href="../node_modules/nes.css/css/nes.css"> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
-            <div id="canva-container">
-                <div id="panel-container" hidden='true'>
-                    <div id="init-panel"></div>
-                    <div id="front-panel">
-                        <h1 id="title"> TITLE </h1>
-    
-                        <div class="nes-field">
-                            <div class="word-input">
-                                <label for="name-field1">Word1</label>
-                                <input type="text" id="name-field1" class="nes-input">
-                            </div>
-                            
-                            <div class="word-input">
-                                <label for="name-field2">Word2</label>
-                                <input type="text" id="name-field2" class="nes-input">
-                            </div>
-    
-                        </div>
-                        
-                        <div class="mood">
-                            <label for="mood-slider">How do you feel today?</label>
-                            <div class="mood-slider-div">
-                                <p>SAD </p>
-                                <input id="mood-slider" name="mood-slider" type="range" class="nes-progress" max="7" min="1" step="1">
-                                <p> HAPPY</p>
-                            </div>
-                        </div>
-    
-                        <button id="ok-button" class="nes-btn is-success">OK</button>
-                        
-                    </div>
-    
-                    <div id="start-panel" hidden="true">
-                        <h1 id="title"> LOADING </h1>
-                        <p>We're generating your song!</p>
-                        <button id="play-button" class="nes-btn is-disabled">PLAY</button>
-                    </div>
-                </div>
-                
-    
-                <div id="canvas-div">
-                    <!-- <canvas id="canvas"></canvas> -->
-                    <!-- <img src="../assets/BG/Background1.png" id="sky" class="sky" />  -->
-                    <!-- <canvas id="main-canvas"></canvas>   -->
-                </div>
-    
+    <script type="module" src="index.js"></script>
+    <!-- <script type="module" src="canvaEnv.js"></script> -->
+    <script type="module" src="canva.js"></script>
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>   -->
+</head>
+
+<body>
+
+    <!-- <button onclick="mylog()">CIAONE</button> -->
+    <!--<button id = "workieTalkie">Talk to worker</button> -->
+    <div id="container" hidden="true" ;>
+        <div id="menu-container">
+            <!-- panel to contain the main canvas and the components connected to it -->
+            <button id='menu' class="nes-btn">
+                <i class="arrow up"></i>
+            </button>
+            <!-- div where the main token menu is built -->
+            <div id="tokenGrid"></div>
+        </div>
+        <div id="canva-container" hidden="true" ;>
+            <!--div used to embed the main canvas-->
+            <div id="canvas-div" class=" nes-container is-rounded">
+                <canvas id="main-canvas" class="canvases"></canvas>
             </div>
-
-            
-            <div id="nav-button-container">
-                <button class="nes-btn nav-btn" id="btn-sx">ciao</button>
-                <button class="nes-btn nav-btn" id="btn-ct"></button>
-                <button class="nes-btn nav-btn" id="btn-dx"></button>
+        </div>
+    </div>
+    <div id="upbar" class="upbar">
+        <a>Theme</a>
+        <div class="dropdown">
+            <button class="dropbtn">Dropdown</button>
+            <div class="dropdown-content">
+                <a href="#">Linketto 1</a>
+                <a href="#">Link 2</a>
+                <a href="#">Link 3</a>
             </div>
-    
+        </div>
+    </div>
+    <div id="menu-navbar" class="navbar">
+        <button class="nes-btn nav-btn" id="btn-sx">FULL</button>
+        <button class="nes-btn nav-btn" id="btn-ct">MUSIC</button>
+        <button type="button" class="nes-btn nav-btn is-success" id="btn-dx">PLAY</button>
+    </div>
+
+    <div id="player-navbar" class="navbar" hidden="true">
+        <button class="nes-btn nav-btn" id="btn-sx1">BACK</button>
+
+        <button class="nes-btn " id="btn-stop">
+            <img src="../assets/Transport stop no-btn.png" class="button-icon" />
+        </button>
+        <button class="nes-btn " id="btn-play">
+            <img src="../assets/Transport play no-btn.png" class="button-icon" />
+        </button>
+
+        <button type="button" class="nes-btn nav-btn" id="btn-dx1">FULL</button>
+        <div id="volume-container" class="dropup">
+            <button type="button" class="nes-btn nav-btn dropupbtn" id="btn-dx2">VOL</button>
+            <div class="slider-wrapper dropup-content">
+                <input type="range" min="0" max="11" value="7" step="1" class="volume-slider">
+            </div>
         </div>
 
-        <button id="mytone">
-            PLAYME
-        </button>
-        
-        <button id='menu' class="nes-btn">
-            <i class="arrow up"></i>
-        </button>
+    </div>
+    <!-- loading page declaration -->
+    <div id="initialLoadingPanel" class="loader-wrapper">
+        <progress id="loadingId" class="nes-progress is-success loader" value="0" max="100"></progress>
+    </div>
+</body>
 
-        <input type="range" min="0" max="1" step="0.1" class="nes-progress">
-
-        <!-- <button class="nes-btn token-btn">
-            <img src="../assets/HOUSE/Home.png" alt="suca">
-        </button> -->
-        <!--<div id="app-5">-->
-
-        <!-- <button id="ciao" class="nes-btn">
-            <img src="../assets/HOUSE/Sea Home.png" alt="stocazzo">
-        </button> -->
-            
-        <!-- </div> -->
-    </body>
-    
 </html>
