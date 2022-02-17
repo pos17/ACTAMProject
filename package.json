@@ -17,7 +17,8 @@
     "@babel/runtime-corejs2": "^7.17.0",
     "babel-cli": "^6.26.0",
     "parcel": "^2.2.1",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "sharp": "^0.29.3"
   },
   "dependencies": {
     "@parcel/fs": "^2.2.1",
