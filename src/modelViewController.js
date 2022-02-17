@@ -25,7 +25,7 @@ const state = {
     stateChanged: false,
     readyModel: false,
     readyToPlay: false,
-    isPlaying: false,
+    isPlaying: true,
     key: "c", //main key of the system
     bpm: 60,
     totalLength: "",
@@ -166,43 +166,39 @@ export function modifyIdList(idValue) {
 }
 
 export async function updateState() {
-    /* 
-    for(let key of Object.keys(MVC.getImages())) {
-        console.log(key)
-        Model.state.imagesToDraw[key] = await DrawableImage.build(Model.state.drawing.image[key])
-    }
-     */
     let ids = getIdList()
+    let flyObjsArr = []
+    state.imagesToDraw["flyingObject"] = flyObjsArr
     for (let id of ids) {
         modifyingValue = state.elements.find(element => element.id == id)
         switch (modifyingValue.elementType) {
             case ("floor"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(Model.state.drawing.image[modifyingValue.elementType])
+                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
             } break;
             case ("background"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(Model.state.drawing.image[modifyingValue.elementType])
+                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
             } break;
             case ("landscape"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(Model.state.drawing.image[modifyingValue.elementType])
+                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
             } break;
             case ("building"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(Model.state.drawing.image[modifyingValue.elementType])
+                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
             } break;
             case ("tree"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(Model.state.drawing.image[modifyingValue.elementType])
+                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
             } break;
             case ("astrumDay"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(Model.state.drawing.image[modifyingValue.elementType])
+                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
             } break;
             case ("astrumNight"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(Model.state.drawing.image[modifyingValue.elementType])
+                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
             } break;
             case ("flyingObject"): {
                 state.drawing.image[modifyingValue.elementType].push(modifyingValue.image)
@@ -283,4 +279,29 @@ export function getFrameReq() {
 }
 export function setFrameReq(value) {
     state.framereq = value
+}
+
+/**
+ * work on play pause elements
+ */
+
+export function isPlaying() {
+    return state.isPlaying
+}
+export function getAnimationSnap() {
+    return state.now1
+}
+export function setAnimationSnap(value) {
+    state.now1 = value
+}
+export function getFPS() {
+    return state.fps
+}
+
+export function getNavPage() {
+    return state.navigationPage
+}
+
+export function setNavPage(aPage) {
+    state.navigationPage = aPage
 }

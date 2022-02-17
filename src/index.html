@@ -12,7 +12,8 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="../node_modules/nes.css/css/nes.css">
+    <link href="https://unpkg.com/nes.css/css/nes.css" rel="stylesheet" />
+    <!-- <link rel="stylesheet" href="../node_modules/nes.css/css/nes.css"> -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -28,31 +29,57 @@
 
     <!-- <button onclick="mylog()">CIAONE</button> -->
     <!--<button id = "workieTalkie">Talk to worker</button> -->
-    <div id="container" hidden = 'true'>
-        <!-- panel to contain the main canvas and the components connected to it -->
-        <div id="canva-container" hidden = "true">
-            <!--div used to embed the main canvas-->
-            <div id="canvas-div"></div>
+    <div id="container" hidden="true" ;>
+        <div id="menu-container">
+            <!-- panel to contain the main canvas and the components connected to it -->
+            <button id='menu' class="nes-btn">
+                <i class="arrow up"></i>
+            </button>
+            <!-- div where the main token menu is built -->
+            <div id="tokenGrid"></div>
         </div>
+        <div id="canva-container" hidden="true" ;>
+            <!--div used to embed the main canvas-->
+            <div id="canvas-div" class=" nes-container is-rounded">
+                <canvas id="main-canvas" class="canvases"></canvas>
+            </div>
+        </div>
+    </div>
+    <div id="upbar" class="upbar">
+        <a>Theme</a>
+        <div class="dropdown">
+            <button class="dropbtn">Dropdown</button>
+            <div class="dropdown-content">
+                <a href="#">Linketto 1</a>
+                <a href="#">Link 2</a>
+                <a href="#">Link 3</a>
+            </div>
+        </div>
+    </div>
+    <div id="menu-navbar" class="navbar">
+        <button class="nes-btn nav-btn" id="btn-sx">FULL</button>
+        <button class="nes-btn nav-btn" id="btn-ct">MUSIC</button>
+        <button type="button" class="nes-btn nav-btn is-success" id="btn-dx">PLAY</button>
+    </div>
 
-        <button id='menu' class="nes-btn">
-            <i class="arrow up"></i>
+    <div id="player-navbar" class="navbar" hidden="true">
+        <button class="nes-btn nav-btn" id="btn-sx1">BACK</button>
+
+        <button class="nes-btn " id="btn-stop">
+            <img src="../assets/Transport stop no-btn.png" class="button-icon" />
+        </button>
+        <button class="nes-btn " id="btn-play">
+            <img src="../assets/Transport play no-btn.png" class="button-icon" />
         </button>
 
-        <!-- div where the main token menu is built -->
-        <div id="mainMenu">
-            <div id="tokenGrid"></div>
-        </div>  
+        <button type="button" class="nes-btn nav-btn" id="btn-dx1">FULL</button>
+        <div id="volume-container" class="dropup">
+            <button type="button" class="nes-btn nav-btn dropupbtn" id="btn-dx2">VOL</button>
+            <div class="slider-wrapper dropup-content">
+                <input type="range" min="0" max="11" value="7" step="1" class="volume-slider">
+            </div>
+        </div>
 
-        
-
-              
-
-    </div>
-    <div class="navbar">
-        <button class="nes-btn nav-btn" id="btn-sx" >ciao</button>
-        <button class="nes-btn nav-btn" id="btn-ct">miao</button>
-        <button class="nes-btn nav-btn" id="btn-dx" style="float: right">bau</button>
     </div>
     <!-- loading page declaration -->
     <div id="initialLoadingPanel" class="loader-wrapper">

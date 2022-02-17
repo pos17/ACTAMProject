@@ -1,5 +1,5 @@
 import * as MVC from "./modelViewController.js"
-import { getElementsByType, getMenuTypes,getAsset, getElements} from "./firebase"
+import { getElementsByType, getMenuTypes, getAsset, getElements } from "./firebase"
 import { initImages } from "./canva.js"
 import * as Tone from 'tone'
 var generateButton = document.createElement('button')
@@ -8,21 +8,21 @@ var menuPanel = document.createElement('div')
 menuPanel.className = 'menu-panel'
 
 var btn_left = document.getElementById('btn-sx')
-var btn_center =  document.getElementById('btn-ct')
-var btn_right =  document.getElementById('btn-dx')
+var btn_center = document.getElementById('btn-ct')
+var btn_right = document.getElementById('btn-dx')
 
 
 
-export async function createMenu () {
+export async function createMenu() {
     console.log("menu Creation")
     var btnContainer = document.getElementById("tokenGrid")// document.createElement('div')
     btnContainer.className = 'token-btn-container'
     console.log(MVC.getStateElements())
-    for(let datum of MVC.getStateElements()) {
+    for (let datum of MVC.getStateElements()) {
         console.log('datum: ')
         console.log(datum)
         console.log(datum.image.previewUrl)
-        var aNewSrc =await getAsset(datum.image.previewUrl) 
+        var aNewSrc = await getAsset(datum.image.previewUrl)
         var img = document.createElement('img')
         img.src = aNewSrc
         img.className = 'token-image'
@@ -41,8 +41,44 @@ export async function createMenu () {
         btn.appendChild(img)
         btnContainer.appendChild(btn)
     }
-    visualizeSelectedTokens()
 }
+
+export function assignClick() {
+    document.querySelectorAll('.token-btn').forEach((btn) => {
+
+        btn.addEventListener('click', () => {
+            var id = btn.id
+            var env = btn.classList[3]
+            var el = btn.classList[2]
+            console.log("elements")
+            console.log(env)
+            console.log(el)
+            //console.log(Model.state.drawing)
+            //Model.state.drawing.
+            //document.querySelectorAll('.'+ el).forEach((elem)=>{elem.classList.remove('selected-btn')})
+            MVC.modifyIdList(id)
+
+            visualizeSelectedTokens()
+
+        })
+    })
+}
+
+
+function visualizeSelectedTokens() {
+    document.querySelectorAll('.token-btn').forEach((btn) => {
+        btn.classList.remove('selected-btn')
+    });
+    document.querySelectorAll('.token-btn').forEach((btn) => {
+        if (Object.values(MVC.getIdList()).indexOf(parseInt(btn.id)) > -1) {
+            //console.log("it is here num 2")
+            //console.log(btn);
+            btn.classList.add('selected-btn')
+        }
+    });
+}
+
+
 /*
 export async function createMenu () {
     console.log("menu Creation")
@@ -195,106 +231,125 @@ okButton.onclick = () => {
 //     if (playButton.classList.contains('is-success')){
 //         showInitPanel();
 //         Model.startMusic(); 
-        
+
 //         }
 // }
-
-export function assignClick() {
-    document.querySelectorAll('.token-btn').forEach((btn)=>{
-
-        btn.addEventListener('click', ()=>{
-            var id = btn.id
-            var env = btn.classList[3]
-            var el = btn.classList[2]
-            console.log("elements")
-            console.log(env)
-            console.log(el)
-            //console.log(Model.state.drawing)
-            //Model.state.drawing.
-            //document.querySelectorAll('.'+ el).forEach((elem)=>{elem.classList.remove('selected-btn')})
-            MVC.modifyIdList(id)
-            
-            visualizeSelectedTokens()
-            
-        })
-    })
-}
-
-
-function visualizeSelectedTokens() {
-    document.querySelectorAll('.token-btn').forEach((btn)=>{
-        btn.classList.remove('selected-btn')
-    });
-    document.querySelectorAll('.token-btn').forEach((btn)=>{
-        if (Object.values(MVC.getIdList()).indexOf(parseInt(btn.id)) > -1) {
-            //console.log("it is here num 2")
-            //console.log(btn);
-            btn.classList.add('selected-btn')
-        }
-    });
-}
-
-/*generateButton*/btn_right.onclick = async () => {
+/*
+btn_right.onclick = async () => {
     //console.log(Model.state)
     await MVC.updateState()
     await initImages()
-    menuPanel.style.display = 'none'
+    document.getElementById("canva-container").hidden = false;
+    document.getElementById("menu-container").hidden = true;
+    //document.getElementById("container").hidden = true; 
+    console.log("Hey there")
+    //menuPanel.style.display = 'none'
     Tone.start()
     //Model.propagateStateChanges(false)
     //Model.startMusic()
     //updatePage(0)
     //console.log(Model.state)
-    
-}
 
+}
+*/
 document.getElementById('menu').onclick = () => {
-    Model.stopMusic()
+    //Model.stopMusic()
     console.log("merda")
     menuPanel.style.display = 'inline-flex  '
 }
 
-export function updatePage(aPage) {
-    Model.state.navigationPage = aPage
+/**
+ * 
+ * @param {*} aPage 0 selecting tokens
+ *                  1 player page 
+ */
+export async function updatePage(aPage) {
+    MVC.setNavPage(aPage)
     console.log("page")
     console.log(aPage)
 
     switch (aPage) {
         case 0:
-            homePage()
+            await menuPage()
             break;
         
         case 1:
-            menuPage()
-            Model.stopMusic()
-            menuPanel.style.display = 'inline-flex  '
+            await playerPage()
             break;
-    
         default:
             break;
     }
 }
 
-function homePage(){
-    btn_left.innerHTML = "menu"
-    btn_center.innerHTML = "map"
-    btn_right.innerHTML = "help"
 
-    btn_left.onclick = ()=>{
-        //Model.state.navigationPage=1;
-        updatePage(1)
-        console.log(Model.state.navigationPage)
-    }
+async function playerPage(){
+    await MVC.updateState()
+    await initImages()
+    Tone.start()
+    document.getElementById("btn-sx1").onclick = ()=>{updatePage(0)}
+    document.getElementById("player-navbar").hidden = false;
+    document.getElementById("canva-container").hidden = false;
+    document.getElementById("menu-container").hidden = true;
+    document.getElementById("menu-navbar").hidden = true;
+    document.getElementById("upbar").hidden = true;
 
 }
 
-function menuPage(){
-    btn_left.innerHTML = "save"
-    btn_center.innerHTML = "map"
-    btn_right.innerHTML = "help"
+async function menuPage(){
+    //await createMenu()
+    visualizeSelectedTokens()
+    document.getElementById("btn-dx").onclick = () => {updatePage(1)}
+    document.getElementById("player-navbar").hidden = true;
+    document.getElementById("canva-container").hidden = true;
+    document.getElementById("menu-container").hidden = false;
+    document.getElementById("menu-navbar").hidden = false;
+    
+}
 
-    btn_left.onclick = ()=>{
-        //Model.state.navigationPage=1;
-        updatePage(0)
-        console.log(Model.state.navigationPage)
+
+
+/**
+ * fullscreen handling part 
+ */
+function openFullscreen() {
+    elem = document.getElementById("main-canvas")
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) { /* Safari */
+        elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { /* IE11 */
+        elem.msRequestFullscreen();
     }
 }
+/* Close fullscreen */
+function closeFullscreen() {
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) { /* Safari */
+        document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) { /* IE11 */
+        document.msExitFullscreen();
+    }
+}
+
+document.getElementById("btn-dx1").onclick= ()=> {
+    openFullscreen()
+}
+
+window.addEventListener("keydown", function(event) {
+    if (event.key == "Escape") closeFullscreen()
+}, true);
+
+
+
+
+var prevScrollpos = window.pageYOffset;
+window.onscroll = function() {
+  var currentScrollPos = window.pageYOffset;
+  if (prevScrollpos > currentScrollPos) {
+    document.getElementById("upbar").style.top = "0";
+  } else {
+    document.getElementById("upbar").style.top = "-100px";
+  }
+  prevScrollpos = currentScrollPos;
+} 
