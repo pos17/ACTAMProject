@@ -382,24 +382,14 @@ Tone.Transport.schedule(()=>{
   
 
 document.getElementById("mytone").onclick =  ()=>{
-  var gino = new Instr.Guitar()
-  gino.triggerAttack('C3', Tone.now(), 100)
-  gino.triggerAttack('G3', Tone.now()+0.5, 100)
-  gino.triggerAttack('E3', Tone.now()+1, 100)
+  var gino = new Instr.Bass4()
+  const volume = new Tone.Volume(-30).toDestination()
+
+  gino.connect(volume)
+  gino.triggerAttackRelease('A2','2n', Tone.now(), 127)
+  gino.triggerAttackRelease('C3','2n', Tone.now()+2, 127)
+  gino.triggerAttackRelease('G2','2n', Tone.now()+4, 127)
+  gino.triggerAttackRelease('D3','2n', Tone.now()+6, 127)
+
 }
 
-
-/*
-async ()=>{
-  // var gino = Instr.Sitar.build()
-  // Tone.start()
-  // console.log(gino)
-
-  var gino = await Instr.Sitar.build()
-  gino.triggerAttack('C4', Tone.now(), 127)
-}*/
-
-async function play() {
-  var gino = await Instr.Sitar.build()
-  gino.triggerAttack('C4', Tone.now(), 127)
-}
