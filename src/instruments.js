@@ -363,13 +363,10 @@ class Marimba {
     constructor(){
         var synthTone = new Tone.DuoSynth()
         var synthPulse = new Tone.Synth()
-        var dist = new Tone.Distortion({
-            distortion: 0.5,
-            wet: 0.5
-        })
+        var dist = new Tone.Distortion(0.63)
         var trim = new Tone.Volume(-10)
         var filterLP = new Tone.Filter({
-            frequency: "25z00Hz",
+            frequency: "4437Hz",
             type: 'lowpass',
             rolloff: -24,
         })
@@ -380,21 +377,16 @@ class Marimba {
         })
         var chorus = new Tone.Chorus({
             frequency: 0.2,
-            delayTime: 20,
-            depth: 1,
-            wet: 1
+            delayTime: 0.013,
+            depth: 1
         })
         var dly = new Tone.FeedbackDelay({
             delayTime: '8n.',
-            feedback: 0.2,
-            wet: 0.005
+            feedback: 0.1,
+            wet: 0.05
         })
-        var volume = new Tone.Volume(0)
-        var merge = new Tone.Merge()
-        var mono = new Tone.Mono()
 
         synthTone.set({
-            // low voice
             voice1: {
                 envelope: {
                     attack: 0,
@@ -403,21 +395,21 @@ class Marimba {
                     release: 0.19,
                 },
                 oscillator: {
-                    type: 'triangle',
-                    volume: -7.82
+                    type: 'sine3',
+                    volume: -3.82
                 },
+            
             },
-            // high voice
             voice0: {
                 envelope: {
                     attack: 0,
-                    decay: 0.3,
+                    decay: 0.5,
                     sustain: 0,
                     release: 0.19,
                 },
                 oscillator: {
-                    type: 'triangle3',
-                    volume: -8.62
+                    type: 'triangle',
+                    volume: -4.62
                 },
                 
             },
@@ -430,23 +422,21 @@ class Marimba {
             detune: 1200,
             envelope: {
                 attack: 0,
-                decay: 0.1,
+                decay: 0.01,
                 sustain: 0,
                 release: 0
             },
             oscillator: {
                 type: 'sine2',
-            },
-            volume: -18,
+                volume: -10,
+            }
         });
 
-        synthTone.chain(dist, trim, filterLP).connect(merge, 0, 0)
-        synthPulse.connect(merge, 0, 1)
-        merge.connect(mono)
-        mono.chain(filterHP, chorus, dly, volume, Tone.Destination)
+        synthTone.chain(dist, trim, filterLP, filterHP, chorus, dly, Tone.Destination)
+        synthPulse.chain(filterHP, chorus, dly, Tone.Destination)
 
-        this.volume = volume;
-        this.lastNode = volume;
+
+        this.dly = dly
         this.synthTone = synthTone;
         this.synthPulse = synthPulse;
 
@@ -458,44 +448,15 @@ class Marimba {
     }
 
     setVolume(volValue) {
-        this.volume.volume.value = volValue
+        this.synthPulse.volume.value = volValue
+        this.synthTone.volume.value = volValue
     }
 
     connect(node) {
-        this.lastNode.disconnect(Tone.Destination)
-        this.lastNode.connect(node)
+        this.dly.disconnect(Tone.Destination)
+        this.dly.connect(node)
     }
 
-}
-
-class Guitar {
-    constructor(){
-        const string = new Tone.PluckSynth({
-            dampening: 700,
-            release: 1,
-            resonance: 0.8,
-        })
-        const volume = new Tone.Volume(0)
-
-
-        string.chain(volume, Tone.Destination)
-        this.volume = volume
-        this.lastNode = volume
-        this.string = string
-    }
-
-    triggerAttack(note, time, velocity){
-        this.string.triggerAttack(note, time, velocity);
-    }
-
-    setVolume(volValue) {
-        this.volume.volume.value = volValue
-    }
-
-    connect(node) {
-        this.lastNode.disconnect(Tone.Destination)
-        this.lastNode.connect(node)
-    }
 }
 
 module.exports = {
@@ -509,5 +470,4 @@ module.exports = {
     Bell: Bell,
     Sitar: Sitar,
     Marimba: Marimba,
-    Guitar: Guitar,
 }
