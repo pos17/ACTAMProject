@@ -83,8 +83,22 @@ export function setMasterChain() {
             threshold: -15,
             ratio: 7,
         }),
-        gain: new Tone.Gain(0.3)
+        hiddenGain: new Tone.Gain(0.3),
+        mainGain: new Tone.Gain(1),
+        mainVolumeSave: 1
     }
+}
+
+export function setMasterVolume(value) {
+    if(value>0) state.master.mainVolumeSave = value
+    state.master.mainGain.gain.value = value
+}
+export function getSavedVolume() {
+    return state.master.mainVolumeSave
+}
+
+export function getMasterVolume() {
+    return state.master.mainGain.gain.value
 }
 
 /**

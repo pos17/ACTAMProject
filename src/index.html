@@ -74,9 +74,18 @@
 
         <button type="button" class="nes-btn nav-btn" id="btn-dx1">FULL</button>
         <div id="volume-container" class="dropup">
-            <button type="button" class="nes-btn nav-btn dropupbtn" id="btn-dx2">VOL</button>
-            <div class="slider-wrapper dropup-content">
-                <input type="range" min="0" max="11" value="7" step="1" class="volume-slider">
+            <button type="button" class="nes-btn dropupbtn" id="btn-vol">
+                <img id="vol-no" src="../assets/Volume No icon.png" class="button-icon" style="display: none;"/>
+                <img id="vol-low" src="../assets/Volume Low icon.png" class="button-icon" style="display: none;"/>
+                <img id="vol-mid" src="../assets/Volume Med icon.png" class="button-icon" style="display: block;"/>
+                <img id="vol-high" src="../assets/Volumr High icon.png" class="button-icon" style="display: none;"/>
+            </button>
+            <div class="dropup-content">
+                <div class="center-slider">
+                <div class="slider-wrapper">
+                    <input id="volume-slider" type="range" min="0" max="100" value="70" step="10" class="volume-slider">
+                </div>
+            </div>
             </div>
         </div>
 

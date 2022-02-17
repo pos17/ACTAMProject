@@ -37,7 +37,7 @@ async function initializeMyApp() {
     MVC.setMasterChain()
     console.log("master chain set")
     console.log(MVC.getMasterChain())
-    Tone.Destination.chain(MVC.getMasterChain().compressor, MVC.getMasterChain().gain)
+    Tone.Destination.chain(MVC.getMasterChain().compressor, MVC.getMasterChain().hiddenGain,MVC.getMasterChain().mainGain)
     console.log("master chain get")
     MVC.setLimit(40)
     MVC.increase();

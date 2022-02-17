@@ -272,7 +272,7 @@ export async function updatePage(aPage) {
         case 0:
             await menuPage()
             break;
-        
+
         case 1:
             await playerPage()
             break;
@@ -282,11 +282,16 @@ export async function updatePage(aPage) {
 }
 
 
-async function playerPage(){
+async function playerPage() {
     await MVC.updateState()
     await initImages()
     Tone.start()
-    document.getElementById("btn-sx1").onclick = ()=>{updatePage(0)}
+    document.getElementById("btn-vol").onclick = volumeButton
+    let volSlider = document.getElementById("volume-slider")
+    volumeUpdate(70)
+    volSlider.addEventListener('input', function () { volumeUpdate(volSlider.value) }, false);
+    document.getElementById("btn-dx1").onclick = () => { openFullscreen() }
+    document.getElementById("btn-sx1").onclick = () => { updatePage(0) }
     document.getElementById("player-navbar").hidden = false;
     document.getElementById("canva-container").hidden = false;
     document.getElementById("menu-container").hidden = true;
@@ -295,15 +300,16 @@ async function playerPage(){
 
 }
 
-async function menuPage(){
+async function menuPage() {
     //await createMenu()
     visualizeSelectedTokens()
-    document.getElementById("btn-dx").onclick = () => {updatePage(1)}
+    document.getElementById("btn-dx").onclick = () => { updatePage(1) }
     document.getElementById("player-navbar").hidden = true;
     document.getElementById("canva-container").hidden = true;
     document.getElementById("menu-container").hidden = false;
     document.getElementById("menu-navbar").hidden = false;
-    
+    document.getElementById("upbar").hidden = false;
+
 }
 
 
@@ -332,11 +338,9 @@ function closeFullscreen() {
     }
 }
 
-document.getElementById("btn-dx1").onclick= ()=> {
-    openFullscreen()
-}
 
-window.addEventListener("keydown", function(event) {
+
+window.addEventListener("keydown", function (event) {
     if (event.key == "Escape") closeFullscreen()
 }, true);
 
@@ -344,12 +348,58 @@ window.addEventListener("keydown", function(event) {
 
 
 var prevScrollpos = window.pageYOffset;
-window.onscroll = function() {
-  var currentScrollPos = window.pageYOffset;
-  if (prevScrollpos > currentScrollPos) {
-    document.getElementById("upbar").style.top = "0";
-  } else {
-    document.getElementById("upbar").style.top = "-100px";
-  }
-  prevScrollpos = currentScrollPos;
-} 
+window.onscroll = function () {
+    var currentScrollPos = window.pageYOffset;
+    if (prevScrollpos > currentScrollPos) {
+        document.getElementById("upbar").style.top = "0";
+    } else {
+        document.getElementById("upbar").style.top = "-100px";
+    }
+    prevScrollpos = currentScrollPos;
+}
+
+/**
+ * 
+ * @param {*} valueToSet index from 0 to 100
+ */
+function volumeUpdate(valueToSet) {
+    //0-100
+    if (valueToSet <= 0) {
+        document.getElementById("vol-no").style.display = "block"
+        document.getElementById("vol-low").style.display = "none"
+        document.getElementById("vol-mid").style.display = "none"
+        document.getElementById("vol-high").style.display = "none"
+    } else if (valueToSet < 40) {
+        document.getElementById("vol-no").style.display = "none"
+        document.getElementById("vol-low").style.display = "block"
+        document.getElementById("vol-mid").style.display = "none"
+        document.getElementById("vol-high").style.display = "none"
+    } else if (valueToSet < 75) {
+        document.getElementById("vol-no").style.display = "none"
+        document.getElementById("vol-low").style.display = "none"
+        document.getElementById("vol-mid").style.display = "block"
+        document.getElementById("vol-high").style.display = "none"
+    } else if (valueToSet < 101) {
+        document.getElementById("vol-no").style.display = "none"
+        document.getElementById("vol-low").style.display = "none"
+        document.getElementById("vol-mid").style.display = "none"
+        document.getElementById("vol-high").style.display = "block"
+    }
+    document.getElementById("volume-slider").value = valueToSet;
+    let vts = valueToSet / 100
+    MVC.setMasterVolume(vts)
+    console.log(MVC.getMasterVolume())
+}
+
+function volumeButton() {
+    console.log("accazzo")
+    let testValue = MVC.getMasterVolume() * 100
+    console.log(testValue)
+    if (testValue > 0) {
+        volumeUpdate(0)
+    } else {
+        console.log("savedVolume")
+        console.log(MVC.getSavedVolume() * 100)
+        volumeUpdate(MVC.getSavedVolume() * 100)
+    }
+}
