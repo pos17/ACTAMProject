@@ -185,8 +185,8 @@ function createEnvironment() {
     ctx.save()
     let flyObjs = MVC.getImageToDraw("flyingObject")
     if (flyObjs.length != 0) {
-        console.log("num of objs")
-        console.log(flyObjs.length)
+        //console.log("num of objs")
+        //console.log(flyObjs.length)
         let i = 1;
         for (let j = 1; j < 3; ++j) {
             for (let flyObj of flyObjs) {
