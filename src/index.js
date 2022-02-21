@@ -330,25 +330,9 @@ Tone.Transport.schedule(()=>{
 */
 
 
-document.getElementById("mytone").onclick =  play
+document.getElementById("mytone").onclick =  ()=>{
+    var gino = new Instr.Synth3()
 
-  gino.connect(volume)
-  gino.triggerAttackRelease('A2','2n', Tone.now(), 127)
-  gino.triggerAttackRelease('C3','2n', Tone.now()+2, 127)
-  gino.triggerAttackRelease('G2','2n', Tone.now()+4, 127)
-  gino.triggerAttackRelease('D3','2n', Tone.now()+6, 127)
-
-/*
-async ()=>{
-  // var gino = Instr.Sitar.build()
-  // Tone.start()
-  // console.log(gino)
-
-  var gino = await Instr.Sitar.build()
-  gino.triggerAttack('C4', Tone.now(), 127)
-}*/
-
-async function play() {
-    var gino = await Instr.Sitar.build()
-    gino.triggerAttack('C4', Tone.now(), 127)
+    gino.triggerAttackRelease(['E3', 'A3', 'C3'], 5, Tone.now(), 0.8)
 }
+

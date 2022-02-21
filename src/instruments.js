@@ -1,7 +1,7 @@
 import * as Tone from 'tone'
 import { getSample} from "./firebase.js";
 
-import { Freeverb, LFO } from 'tone';
+import { DuoSynth, Freeverb, LFO } from 'tone';
 buffer1 = new Tone.Buffer()
 buffer2 = new Tone.Buffer()
 buffer3 = new Tone.Buffer()
@@ -758,6 +758,245 @@ class Bass4 {
 
 }
 
+class Synth1 {
+    constructor (){
+
+        const synth = new Tone.PolySynth(Tone.DuoSynth)
+        synth.set({
+            voice0: {
+                envelope: {
+                    attack: 1,
+                    decay: 1,
+                    sustain: 0.4,
+                    release: 0.500
+                },
+                oscillator: {
+                    type: 'sine',
+                    volume: -10
+                }
+            },
+            voice1: {
+                envelope: {
+                    attack: 1,
+                    decay: 1,
+                    sustain: 0.4,
+                    release: 0.500
+                },
+                oscillator: {
+                    type: 'sine',
+                    volume: 0
+                }
+            },
+            harmonicity: 2,
+            vibratoAmount: 0.4,
+            vibratoRate: "8n"
+        })
+        const saw = new Tone.PolySynth(Tone.Synth)
+        saw.set({
+            envelope: {
+                attack: 1,
+                decay: 1,
+                sustain: 0.4,
+                release: 0.500
+            },
+            oscillator: {
+                type: 'sawtooth'
+            },
+            volume: -20,
+        })
+        const merge = new Tone.Merge()
+        const mono = new Tone.Mono()
+        const phaser = new Tone.Phaser({
+            frequency: '0.1Hz',
+            octaves: 1,
+            baseFrequency: '440Hz',
+            wet: 1
+        })
+        const filter = new Tone.Filter({
+            type: 'lowpass',
+            frequency: '350Hz',
+            rolloff: -48
+        })
+        const lfo = new Tone.LFO({
+            min: 320,
+            max: 380,
+            frequency: '4n',
+        })
+        const dly = new Tone.FeedbackDelay({
+            delayTime: '8n',
+            feedback: 0.1,
+            wet: 0.2
+        })
+        const tremolo = new Tone.Tremolo({
+            type: 'sine',
+            frequency: '8n',
+            depth: 0.45,
+            wet: 1,
+        })
+        const volume = new Tone.Volume()
+
+        synth.connect(merge, 0, 0)
+        saw.connect(merge, 0, 1)
+
+        merge.chain(mono, phaser, filter, dly, tremolo, volume, Tone.Destination)
+
+        lfo.connect(filter.frequency)
+
+        this.synth1 = synth
+        this.synth2 = saw
+        this.volume = volume
+        this.lastNode = volume
+    }
+
+    triggerAttackRelease(note, duration, time, velocity) {
+        this.synth1.triggerAttackRelease(note, duration, time, velocity)
+        this.synth2.triggerAttackRelease(note, duration, time, velocity)
+    }
+
+    setVolume(volValue) {
+        this.volume.volume.value = volValue
+    }
+
+    connect(node) {
+        this.lastNode.disconnect(Tone.Destination)
+        this.lastNode.connect(node)
+    } 
+}
+
+class Synth3 {
+    constructor (){
+
+        const synth1 = new Tone.PolySynth(Tone.DuoSynth)
+        synth1.set({
+            voice0: {
+                envelope: {
+                    attack: 1.479,
+                    decay: 0.001,
+                    sustain: 0,
+                    release: 0
+                },
+                oscillator: {
+                    type: 'sine',
+                    volume: -0
+                }
+            },
+            voice1: {
+                envelope: {
+                    attack: 1.479,
+                    decay: 0.001,
+                    sustain: 0,
+                    release: 0
+                },
+                oscillator: {
+                    type: 'square',
+                    volume: -15
+                },
+            },
+            volume: -8,
+            harmonicity: 1,
+            vibratoAmount: 0,
+        })
+
+        const synth2 = new Tone.PolySynth(Tone.DuoSynth)
+        synth2.set({
+            voice0: {
+                envelope: {
+                    attack: 0,
+                    decay: 0.099,
+                    sustain: 0,
+                    release: 0
+                },
+                oscillator: {
+                    type: 'sine',
+                    volume: 0
+                },
+            },
+            voice1: {
+                envelope: {
+                    attack: 0,
+                    decay: 0.099,
+                    sustain: 0,
+                    release: 0
+                },
+                oscillator: {
+                    type: 'sine',
+                    volume: -10
+                }
+            },
+            harmonicity: 2, 
+            detune: 1200,
+            volume: -10
+        })
+
+        const merge = new Tone.Merge()
+        const mono = new Tone.Mono()
+        
+        const env = new Tone.FrequencyEnvelope({
+            attack: 1.479,
+            decay: 0.001,
+            sustain: 0,
+            release: 0,
+            baseFrequency: '1700hz',
+            octaves: 3,
+            
+        })
+
+        const dly = new Tone.FeedbackDelay({
+            delayTime: '8n.',
+            feedback: 0.2,
+            wet: 0.3
+        })
+
+        const chorus = new Tone.Chorus({
+            frequency: '0.2Hz',
+            delayTime: 13.25,
+            depth: 1,
+            wet: 1
+        })
+
+        const filter1 = new Tone.Filter({
+            type: 'lowpass',
+            frequency: '1700Hz',
+            rolloff: -12
+        })
+
+        const filter2 = new Tone.Filter({
+            type: 'highpass',
+            frequency: '200Hz',
+            rolloff: -12
+        })
+        
+        const volume = new Tone.Volume()
+
+        env.connect(filter1.frequency)
+
+        synth1.connect(merge, 0, 0)
+        synth2.connect(merge, 0, 1)
+
+        merge.chain(mono, dly, chorus, filter1, filter2, volume, Tone.Destination)
+
+        this.synth1 = synth1
+        this.synth2 = synth2
+        this.env = env
+        this.volume = volume
+        this.lastNode = volume
+    }
+
+    triggerAttackRelease(note, duration, time, velocity) {
+        this.synth1.triggerAttackRelease(note, duration, time, velocity)
+        this.synth2.triggerAttackRelease(note, duration, time, velocity)
+        this.env.triggerAttackRelease(duration, time, velocity)
+    }
+
+    setVolume(volValue) {
+        this.volume.volume.value = volValue
+    }
+
+    connect(node) {
+        this.lastNode.disconnect(Tone.Destination)
+        this.lastNode.connect(node)
+    } 
+}
 
 module.exports = {
     Kick: Kick,
@@ -774,4 +1013,8 @@ module.exports = {
     Bass2: Bass2, // city
     Bass3: Bass3, // desert
     Bass4: Bass4, // sea
+    Synth1: Synth1, //mountain
+    // Synth2: Synth2, // city
+    Synth3: Synth3, // desert
+    // Synth4: Synth4, // sea
 }
