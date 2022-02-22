@@ -252,12 +252,13 @@ btn_right.onclick = async () => {
 
 }
 */
+/*
 document.getElementById('menu').onclick = () => {
     //Model.stopMusic()
     console.log("merda")
     menuPanel.style.display = 'inline-flex  '
 }
-
+*/
 /**
  * 
  * @param {*} aPage 0 selecting tokens

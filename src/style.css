@@ -45,8 +45,8 @@ body {
     transform: translate(-50%, -50%);
     overflow: hidden;
     padding-top: 5vh;
-    padding-left: 7vw;
-    padding-right: 7vw;
+    padding-left: 9vw;
+    padding-right: 9vw;
 }
 
 #canvas-div {
@@ -252,10 +252,6 @@ img {
 #tokenGrid {
     display: grid;
     grid-template-columns: auto auto auto auto;
-    padding-top: 1%;
-    padding-right: 7%;
-    padding-bottom: 20vh;
-    padding-left: 7%;
     gap: 1%
 }
 
@@ -264,9 +260,9 @@ img {
     width: 100%;
     display: block;
     margin: auto;
-    padding-top: 1%;
+    padding-top: 8vh;
     padding-right: 7%;
-    padding-bottom: 1%;
+    padding-bottom: 17vh;
     padding-left: 7%;
     gap: 100px
 }
