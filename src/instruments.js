@@ -863,6 +863,93 @@ class Synth1 {
     } 
 }
 
+class Synth2 {
+    constructor() {
+        const synth1 = new Tone.PolySynth(Tone.DuoSynth)
+        synth1.set({
+            voice0: {
+                envelope: {
+                    attack: 0.003,
+                    decay: 1,
+                    sustain: 1,
+                    release: 0.008
+                },
+                oscillator: {
+                    type: 'sawtooth',
+                    volume: -30
+                }
+            },
+            voice1: {
+                envelope: {
+                    attack: 0.003,
+                    decay: 1,
+                    sustain: 1,
+                    release: 0.008
+                },
+                oscillator: {
+                    type: 'triangle',
+                    volume: 0
+                }
+            },
+            harmonicity: 1,
+            vibratoAmount: 0
+        })
+        const dly = new Tone.FeedbackDelay({
+            delayTime: '16n.',
+            feedback: 0.2,
+            wet: 0.06
+        })
+        const tremolo = new Tone.Tremolo({
+            type: 'sine',
+            frequency: '16n',
+            depth: 1,
+            wet: 0.5,
+        })
+        const volume = new Tone.Volume()
+
+        synth1.chain(tremolo, dly, volume, Tone.Destination)
+
+        this.synth1 = synth1
+        this.volume = volume
+        this.lastNode = volume
+
+    }
+    //FIXME: too much latency on load
+    triggerAttackRelease(chord, duration, time, velocity) {
+        var playrate = 3
+        var arpNoteDuration = (4*Math.pow(2, (playrate-1))).toString() + 'n'
+        console.log(arpNoteDuration);
+        
+        const pattern = new Tone.Pattern((aTime, note)=>{
+            this.synth1.triggerAttackRelease(note, arpNoteDuration, aTime, velocity)
+        }, chord, 'upDown').start(time)
+
+        console.log(pattern.state);
+        pattern.playbackRate = playrate
+        
+        pattern.stop(time+duration)
+        console.log(pattern.state);
+        // pattern.dispose()
+    }
+
+    culo(note, duration, time, velocity) {
+        this.synth1.triggerAttackRelease(note, duration, time, velocity)
+    }
+
+    setVolume(volValue) {
+        this.volume.volume.value = volValue
+    }
+
+    connect(node) {
+        this.lastNode.disconnect(Tone.Destination)
+        this.lastNode.connect(node)
+    }
+
+    get() {
+        console.log(this.synth1.get())
+    }
+}
+
 class Synth3 {
     constructor (){
 
@@ -888,8 +975,8 @@ class Synth3 {
                     release: 0
                 },
                 oscillator: {
-                    type: 'square',
-                    volume: -15
+                    type: 'fatsquare',
+                    volume: -20
                 },
             },
             volume: -8,
@@ -938,7 +1025,7 @@ class Synth3 {
             release: 0,
             baseFrequency: '1700hz',
             octaves: 3,
-            
+
         })
 
         const dly = new Tone.FeedbackDelay({
@@ -998,6 +1085,56 @@ class Synth3 {
     } 
 }
 
+class Synth4 {
+    constructor() {
+        const synth = new Tone.PolySynth()
+        synth.set({
+            envelope: {
+                attack: 0,
+                decay: 0.367,
+                sustain: 0,
+                release: 0.008
+            },
+            oscillator: {
+                type: 'sine'
+            },  
+            volume: -18,
+        })
+        const dly = new Tone.FeedbackDelay({
+            delayTime: '8n.',
+            feedback: 0.2,
+            wet: 0.35
+        })
+        const phaser = new Tone.Phaser({
+            frequency: '1n.',
+            baseFrequency: '1100hz',
+            stages: 6,
+            octaves: 1,
+            wet: 0.23
+        })
+        const volume = new Tone.Volume()
+
+        synth.chain(dly, phaser, volume, Tone.Destination)
+
+        this.synth1 = synth
+        this.volume = volume
+        this.lastNode = volume
+    }
+
+    triggerAttackRelease(note, duration, time, velocity) {
+        this.synth1.triggerAttackRelease(note, duration, time, velocity)
+    }
+
+    setVolume(volValue) {
+        this.volume.volume.value = volValue
+    }
+
+    connect(node) {
+        this.lastNode.disconnect(Tone.Destination)
+        this.lastNode.connect(node)
+    } 
+}
+
 module.exports = {
     Kick: Kick,
     Snare: Snare,
@@ -1014,7 +1151,7 @@ module.exports = {
     Bass3: Bass3, // desert
     Bass4: Bass4, // sea
     Synth1: Synth1, //mountain
-    // Synth2: Synth2, // city
+    Synth2: Synth2, // city
     Synth3: Synth3, // desert
-    // Synth4: Synth4, // sea
+    Synth4: Synth4, // sea
 }

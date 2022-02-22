@@ -50,6 +50,7 @@ async function initializeMyApp() {
     assignClick()
     updatePage(0)
     MVC.setLimit(100)
+    Tone.context.latencyHint = 'playback'
         //propagateStateChanges(state.isFirst)
         //MVC.updateState()
         //await Canva.initImages()
@@ -330,9 +331,19 @@ Tone.Transport.schedule(()=>{
 */
 
 
-document.getElementById("mytone").onclick =  ()=>{
-    var gino = new Instr.Synth3()
-
-    gino.triggerAttackRelease(['E3', 'A3', 'C3'], 5, Tone.now(), 0.8)
+document.getElementById("mytone").onclick = ()=>{
+    var gino = new Instr.Synth2()
+    var gigio = new Instr.Synth1()
+    // gino.get()
+    // Tone.Transport.stop()
+    // gino.culo(['E3', 'A3', 'C3'], 5, Tone.now(), 1)
+    Tone.Transport.start(Tone.now())
+    Tone.Transport.bpm.value = 120;
+    console.log(Tone.Transport.state);
+    // gino.triggerAttackRelease(['E3', 'A3', 'C4'], 4, Tone.now(), 0.5)
+    gigio.triggerAttackRelease(['E3', 'A3', 'C4'], 8, Tone.now(), 0.5)
+    // gino.triggerAttackRelease(['F3', 'A3', 'C4'], 4, Tone.now()+4, 1)
+    // gino.triggerAttackRelease(['G3', 'B3', 'D4'], 4, Tone.now()+8, 1)
+    // gino.triggerAttackRelease(['F3', 'A3', 'C4'], 4, Tone.now()+12, 1)
 }
 
