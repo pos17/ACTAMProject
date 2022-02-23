@@ -36,7 +36,7 @@ export async function initImages() {
     console.log(MVC.getImageToDraw("astrumNight"))
 
     console.log("passato")
-    await MVC.setFrameReq(window.requestAnimationFrame(countFPS))
+    MVC.setFrameReq(window.requestAnimationFrame(countFPS))
 }
 
 function countFPS() {
@@ -112,7 +112,7 @@ function createEnvironment() {
         lightOn = true
     } else if (angleD < DAY_START) {
         alphaNight = 0
-        alphaSunrise = 1 -(1 / (DAY_START - SUNRISE_END)) * (angleD - SUNRISE_END)
+        alphaSunrise = 1 - (1 / (DAY_START - SUNRISE_END)) * (angleD - SUNRISE_END)
         alphaSunset = 0
         alphaDay = (1 / (DAY_START - SUNRISE_END)) * (angleD - SUNRISE_END)
         lightOn = false
@@ -185,20 +185,17 @@ function createEnvironment() {
     ctx.save()
     let flyObjs = MVC.getImageToDraw("flyingObject")
     if (flyObjs.length != 0) {
-        //console.log("num of objs")
-        //console.log(flyObjs.length)
-        let i = 1;
-        for (let j = 1; j < 3; ++j) {
-            for (let flyObj of flyObjs) {
-                ctx.save()
-                ctx.translate((-w) + ((3 * j * (flyObj.getProperty().shift * w) + (((flyObj.getProperty().velocity * angle) * w))) % (2 * w)), flyObj.getProperty().shift * (h / 3)/*(h / 10)*/)
-                flyObj.drawThisImage(0, 0.95*alphaNight, lightOn, canvas.height, canvas.width, ctx, factor)
-                flyObj.drawThisImage(1, 0.95*alphaSunrise, lightOn, canvas.height, canvas.width, ctx, factor)
-                flyObj.drawThisImage(2, 0.95*alphaSunset, lightOn, canvas.height, canvas.width, ctx, factor)
-                flyObj.drawThisImage(3, 0.95*alphaDay, lightOn, canvas.height, canvas.width, ctx, factor)
-                ctx.restore()
-                i++;
-            }
+        console.log("num of objs")
+        console.log(flyObjs.length)
+        // console.log(flyObjs)
+        for (let flyObj of flyObjs) {
+            ctx.save()
+            ctx.translate((-w) + (((2*flyObj.getProperty().shift*w) + ((flyObj.getProperty().velocity * angle) * w)) % (2 * w)), flyObj.getProperty().shift * (h / 3)/*(h / 10)*/)
+            flyObj.drawThisImage(0, 0.95 * alphaNight, lightOn, canvas.height, canvas.width, ctx, factor)
+            flyObj.drawThisImage(1, 0.95 * alphaSunrise, lightOn, canvas.height, canvas.width, ctx, factor)
+            flyObj.drawThisImage(2, 0.95 * alphaSunset, lightOn, canvas.height, canvas.width, ctx, factor)
+            flyObj.drawThisImage(3, 0.95 * alphaDay, lightOn, canvas.height, canvas.width, ctx, factor)
+            ctx.restore()
         }
     }
     ctx.restore()
@@ -303,6 +300,25 @@ export class DrawableImage {
             image.left = Math.random()
         }
         return new DrawableImage(imageArray, image.left, image.bottom, image.imageType, property)
+    }
+
+    clone() {
+        return new DrawableImage(this.imageArray, this.left, this.bottom, this.imageType, this.property);
+    }
+    changeRandomParams() {
+        if (this.imageType == 4) {
+            this.bottom = Math.random()
+            this.left = Math.random()
+            let newproperty = {
+                velocity: this.property.velocity,
+                shift: Math.random()
+            }
+            this.property = newproperty;
+        } else {
+            console.log("imageType:")
+            console.log(this.imageType)
+            console.error("wrong imageType for utilizing changeRandomParams")
+        }
     }
 
     drawThisImage(imageToDraw = 0, alpha0 = 1, lightOn, canvasHeight = 0, canvasWidth = 0, ctx, factor) {

@@ -210,9 +210,41 @@ img {
     background-color: rgb(248, 235, 183);
     height: 150px;
     width: 150px;
-    margin: 10px;
+    /* margin: 10px; */
     align-content: center;
+    left: 50%;
+    transform: translate(-50%);
+    position: relative;
     /* border: 3px solid; */
+    z-index: 1;
+}
+
+.token-add{
+    width: 60px;
+    height: 150px;
+    display: none;
+    overflow: visible;
+    position:relative;
+    left: 80px;
+    z-index: 2;
+}
+
+.token-plus{
+}
+.token-minus{
+}
+.token-div{
+    height: 200px;
+    width: 300px;
+    display: inline-block;
+    overflow: visible;
+    padding: 10px;
+    z-index: 1;
+}
+.token-div:hover .token-add{
+    display:inline-block;
+    overflow: visible;
+    z-index: 2;
 }
 
 @-webkit-keyframes BLINK {
@@ -252,7 +284,7 @@ img {
 #tokenGrid {
     display: grid;
     grid-template-columns: auto auto auto auto;
-    gap: 1%
+    
 }
 
 .token-btn-container {
@@ -264,8 +296,9 @@ img {
     padding-right: 7%;
     padding-bottom: 17vh;
     padding-left: 7%;
-    gap: 100px
 }
+
+
 
 .token-btn-div {
     width: 100%;
@@ -483,6 +516,8 @@ img {
     height: 15px;
     color: black;
   }
+
+/*thumb slider modification*/  
 
 input[type='range']::-webkit-slider-thumb {
     box-shadow: 0px 0px 0px #ffffff;

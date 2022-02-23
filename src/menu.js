@@ -26,7 +26,7 @@ export async function createMenu() {
         var img = document.createElement('img')
         img.src = aNewSrc
         img.className = 'token-image'
-
+        var btnDiv = document.createElement('div')
         var btn = document.createElement('button')
         btn.id = datum.id
         btn.className = 'nes-btn'
@@ -37,9 +37,23 @@ export async function createMenu() {
         btn.style.margin = '7px'
         btn.style.marginLeft = 'auto'
         btn.style.marginRight = 'auto'
-
         btn.appendChild(img)
-        btnContainer.appendChild(btn)
+        btnDiv.classList.add("token-div")
+        if (datum.elementType == "flyingObject") {
+            var tokenAdd = document.createElement('div')
+            tokenAdd.id = "tAdd" + btn.id
+            tokenAdd.classList.add("token-add");
+            tokenAdd.append("0")
+            btnDiv.appendChild(btn)
+            btnDiv.appendChild(tokenAdd)
+            btnContainer.appendChild(btnDiv)
+
+            console.log("ciao nuvoletta")
+
+        } else {
+            btnDiv.appendChild(btn)
+            btnContainer.appendChild(btnDiv)
+        }
     }
 }
 
@@ -70,9 +84,18 @@ function visualizeSelectedTokens() {
         btn.classList.remove('selected-btn')
     });
     document.querySelectorAll('.token-btn').forEach((btn) => {
-        if (Object.values(MVC.getIdList()).indexOf(parseInt(btn.id)) > -1) {
-            //console.log("it is here num 2")
-            //console.log(btn);
+        var elPos = Object.values(MVC.getIdList()).indexOf(parseInt(btn.id))
+        var counter = 0;
+        while (elPos > -1) {
+            counter = counter + 1;
+            elPos = Object.values(MVC.getIdList()).indexOf(parseInt(btn.id), elPos + 1)
+        }
+        if (btn.classList.contains("flyingObject")) {
+            var tAdd = document.getElementById("tAdd" + btn.id)
+            tAdd.removeChild(tAdd.firstChild)
+            tAdd.append(counter)
+        }
+        if (counter > 0) {
             btn.classList.add('selected-btn')
         }
     });

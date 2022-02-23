@@ -164,13 +164,22 @@ export function modifyIdList(idValue) {
             state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
         } break;
         case ("flyingObject"): {
-            console.log("in?1")
-            if (state.drawing.idList[modifyingValue.elementType].includes(modifyingValue.id)) {
-                console.log("in?")
-                let index = state.drawing.idList[modifyingValue.elementType].indexOf(modifyingValue.id)
-                state.drawing.idList[modifyingValue.elementType].splice(index, 1)
+            const count = {};
+            for (const element of state.drawing.idList[modifyingValue.elementType]) {
+                if (count[element]) {
+                    count[element] += 1;
+                } else {
+                    count[element] = 1;
+                }
+            }
+            //console.log("in?1")
+            if (count[modifyingValue.id] > 2) {
+                while (state.drawing.idList[modifyingValue.elementType].indexOf(modifyingValue.id) != -1) {
+                    let index = state.drawing.idList[modifyingValue.elementType].indexOf(modifyingValue.id)
+                    state.drawing.idList[modifyingValue.elementType].splice(index, 1)
+                }
             } else {
-                console.log("in?2")
+                //console.log("in?2")
                 state.drawing.idList[modifyingValue.elementType].push(modifyingValue.id)
             }
         } break;
@@ -217,8 +226,25 @@ export async function updateState() {
             case ("flyingObject"): {
                 state.drawing.image[modifyingValue.elementType].push(modifyingValue.image)
                 state.imagesToDraw[modifyingValue.elementType] = [];
+                let i = 0
                 for (let img of state.drawing.image[modifyingValue.elementType]) {
-                    state.imagesToDraw[modifyingValue.elementType].push(await DrawableImage.build(img))
+                    console.log("Im here to check images to draw ")
+                    console.log(state.imagesToDraw)
+                    console.log(img)
+                    if (state.drawing.image[modifyingValue.elementType].indexOf(img) < i) {
+                        var elToCopy = state.imagesToDraw[modifyingValue.elementType][state.drawing.image[modifyingValue.elementType].indexOf(img)]
+                        console.log(elToCopy)
+                        var newEl = elToCopy.clone()
+                        console.log(newEl)
+                        newEl.changeRandomParams()
+                        console.log(newEl)
+                        state.imagesToDraw[modifyingValue.elementType].push(newEl);
+                        console.log("pushing a recycled element")
+                    } else {
+                        state.imagesToDraw[modifyingValue.elementType].push(await DrawableImage.build(img))
+                        console.log("pushing a recycled element")
+                    }
+                    i++
                 }
             } break;
 
