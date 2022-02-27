@@ -91,7 +91,7 @@ function createEnvironment() {
     let transAngle = angle % (w)
     // BACKGROUND IMAGE
     if (angleD < NIGHT_START) {
-        alphaNight = (1 / (NIGHT_START - SUNSET_END)) * (angleD - SUNSET_END)
+        alphaNight = 1//(1 / (NIGHT_START - SUNSET_END)) * (angleD - SUNSET_END)
         alphaSunrise = 0
         alphaSunset = 1 - (1 / (NIGHT_START - SUNSET_END)) * (angleD - SUNSET_END)
         alphaDay = 0
@@ -105,14 +105,14 @@ function createEnvironment() {
         alphaDay = 0
         lightOn = true
     } else if (angleD < SUNRISE_END) {
-        alphaNight = 1 - (1 / (SUNRISE_END - SUNRISE_START)) * (angleD - SUNRISE_START)
+        alphaNight = 1 //- (1 / (SUNRISE_END - SUNRISE_START)) * (angleD - SUNRISE_START)
         alphaSunrise = (1 / (SUNRISE_END - SUNRISE_START)) * (angleD - SUNRISE_START)
         alphaSunset = 0
         alphaDay = 0
         lightOn = true
     } else if (angleD < DAY_START) {
         alphaNight = 0
-        alphaSunrise = 1 - (1 / (DAY_START - SUNRISE_END)) * (angleD - SUNRISE_END)
+        alphaSunrise = 1 //- (1 / (DAY_START - SUNRISE_END)) * (angleD - SUNRISE_END)
         alphaSunset = 0
         alphaDay = (1 / (DAY_START - SUNRISE_END)) * (angleD - SUNRISE_END)
         lightOn = false
@@ -125,7 +125,7 @@ function createEnvironment() {
     } else {
         alphaNight = 0
         alphaSunrise = 0
-        alphaSunset = (1 / (2 * Math.PI - SUNSET_START)) * (angleD - SUNSET_START)
+        alphaSunset = 1//(1 / (2 * Math.PI - SUNSET_START)) * (angleD - SUNSET_START)
         alphaDay = 1 - (1 / (2 * Math.PI - SUNSET_START)) * (angleD - SUNSET_START)
         lightOn = false
         sunToDraw = (1 / (2 * Math.PI - SUNSET_START)) * (angleD - SUNSET_START)
@@ -190,11 +190,11 @@ function createEnvironment() {
         // console.log(flyObjs)
         for (let flyObj of flyObjs) {
             ctx.save()
-            ctx.translate((-w) + (((2*flyObj.getProperty().shift*w) + ((flyObj.getProperty().velocity * angle) * w)) % (2 * w)), flyObj.getProperty().shift * (h / 3)/*(h / 10)*/)
-            flyObj.drawThisImage(0, 0.95 * alphaNight, lightOn, canvas.height, canvas.width, ctx, factor)
-            flyObj.drawThisImage(1, 0.95 * alphaSunrise, lightOn, canvas.height, canvas.width, ctx, factor)
-            flyObj.drawThisImage(2, 0.95 * alphaSunset, lightOn, canvas.height, canvas.width, ctx, factor)
-            flyObj.drawThisImage(3, 0.95 * alphaDay, lightOn, canvas.height, canvas.width, ctx, factor)
+            ctx.translate((-w) + (((2*flyObj.getProperty().shift*2*w) + ((flyObj.getProperty().velocity * angle) * w)) % (2 * w)), flyObj.getProperty().shift * (h / 2)/*(h / 10)*/)
+            flyObj.drawThisImage(0,  alphaNight, lightOn, canvas.height, canvas.width, ctx, factor)
+            flyObj.drawThisImage(1, alphaSunrise, lightOn, canvas.height, canvas.width, ctx, factor)
+            flyObj.drawThisImage(2, alphaSunset, lightOn, canvas.height, canvas.width, ctx, factor)
+            flyObj.drawThisImage(3, alphaDay, lightOn, canvas.height, canvas.width, ctx, factor)
             ctx.restore()
         }
     }
