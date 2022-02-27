@@ -1,4 +1,5 @@
 import * as MVC from "./modelViewController.js"
+import * as index from "./index.js"
 import { getElementsByType, getMenuTypes, getAsset, getElements } from "./firebase"
 import { initImages } from "./canva.js"
 import * as Tone from 'tone'
@@ -315,7 +316,7 @@ async function playerPage() {
     volumeUpdate(70)
     volSlider.addEventListener('input', function () { volumeUpdate(volSlider.value) }, false);
     document.getElementById("btn-dx1").onclick = () => { openFullscreen("main-canvas") }
-    document.getElementById("btn-stop").onclick = () => { updatePage(0) }
+    document.getElementById("btn-stop").onclick = () => { updatePage(0);  index.stopMusic()}
     document.getElementById("player-navbar").hidden = false;
     document.getElementById("canva-container").hidden = false;
     document.getElementById("menu-container").hidden = true;
@@ -328,7 +329,7 @@ async function menuPage() {
     //await createMenu()
     visualizeSelectedTokens()
     //document.getElementById("main-fs-button").onclick = () => { openFullscreen("main-body") }
-    document.getElementById("btn-dx").onclick = () => { updatePage(1) }
+    document.getElementById("btn-dx").onclick = () => { updatePage(1); index.startMusic()}
     document.getElementById("player-navbar").hidden = true;
     document.getElementById("canva-container").hidden = true;
     document.getElementById("menu-container").hidden = false;

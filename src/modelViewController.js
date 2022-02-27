@@ -330,6 +330,10 @@ export function setFrameReq(value) {
  * work on play pause elements
  */
 
+ export function setPlaying(value) {
+    state.isPlaying = value
+}
+
 export function isPlaying() {
     return state.isPlaying
 }

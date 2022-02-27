@@ -193,13 +193,13 @@ export function startMusic() {
     Tone.Transport.bpm.value = 60
     Tone.Transport.start("+0.1", "0:0:0");
 
-    state.isPlaying = true;
+    MVC.setPlaying(true);
 }
 
 export function stopMusic() {
     Tone.Transport.stop();
     //Tone.Transport.cancel(0)
-    state.isPlaying = false;
+    MVC.setPlaying(false);
 }
 
 
