@@ -50,6 +50,7 @@ async function initializeMyApp() {
     assignClick()
     updatePage(0)
     MVC.setLimit(100)
+    Tone.context.latencyHint = 'playback'
         //propagateStateChanges(state.isFirst)
         //MVC.updateState()
         //await Canva.initImages()
