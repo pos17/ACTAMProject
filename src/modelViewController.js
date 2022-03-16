@@ -354,3 +354,8 @@ export function getNavPage() {
 export function setNavPage(aPage) {
     state.navigationPage = aPage
 }
+
+export function setInstrument(instrName, instrInstance) {
+    
+    state.instruments[instrName] = instrInstance;
+}

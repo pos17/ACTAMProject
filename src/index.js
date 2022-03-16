@@ -42,8 +42,8 @@ async function initializeMyApp() {
     MVC.setLimit(40)
     MVC.increase();
     await MVC.initiateState()
-    await buildInstruments()
-    console.log(state.instruments)
+    buildInstruments()
+    //console.log(state.instruments)
     MVC.setLimit(90)
     MVC.orderElements()
     await createMenu()
@@ -122,7 +122,7 @@ export async function propagateStateChanges(isFirst) {
 
 
 
-async function buildInstruments() {
+function buildInstruments() {
 
     //building audio channels
     bassChannel = new Tone.Channel()
@@ -130,7 +130,7 @@ async function buildInstruments() {
     melodyChannel = new Tone.Channel()
     drumChannel = new Tone.Channel()
 
-
+    console.log("here I am")
     /* //build modulation effects
     state.effects.harmony.chorus = new Tone.Chorus()
     state.effects.melody.chorus = new Tone.Chorus()
@@ -161,29 +161,49 @@ async function buildInstruments() {
         Tone.Destination
     ) */
 
-
+    
     //building instruments
     /* leads */
-    state.instruments.Bell    = new Instr.Bell().connect(melodyChannel)
-    state.instruments.Lead    = new Instr.Lead().connect(melodyChannel)
-    state.instruments.Sitar   = new Instr.Sitar().connect(melodyChannel)
-    state.instruments.Marimba = new Instr.Marimba().connect(melodyChannel)
-
+    // var bell = new Instr.Bell()
+    // console.log("here I am 2")
+    // bell.connect(melodyChannel)
+    // console.log("Here I am 3")
+    // MVC.setInstrument("Bell", bell)
+    // MVC.setInstrument("Lead", new Instr.Lead().connect(melodyChannel))
+    // MVC.setInstrument("Sitar", new Instr.Sitar().connect(melodyChannel))
+    // MVC.setInstrument("Marimba", new Instr.Marimba().connect(melodyChannel))
+    //state.instruments.Bell    = new Instr.Bell().connect(melodyChannel)
+    //state.instruments.Lead    = new Instr.Lead().connect(melodyChannel)
+    //state.instruments.Sitar   = new Instr.Sitar().connect(melodyChannel)
+    //state.instruments.Marimba = new Instr.Marimba().connect(melodyChannel)
+    
     /* bass */
-    state.instruments.Bass1 = new Instr.Bass1().connect(bassChannel) 
-    state.instruments.Bass2 = new Instr.Bass2().connect(bassChannel)
-    state.instruments.Bass3 = new Instr.Bass3().connect(bassChannel)
-    state.instruments.Bass4 = new Instr.Bass4().connect(bassChannel)
+    var bass1 = new Instr.Bass1()
+    bass1.connect(bassChannel)
+    console.log("Here I am 2")
+    MVC.setInstrument("Bass1",bass1 )
+    MVC.setInstrument("Bass2", new Instr.Bass2().connect(bassChannel))
+    MVC.setInstrument("Bass3", new Instr.Bass3().connect(bassChannel))
+    MVC.setInstrument("Bass4", new Instr.Bass4().connect(bassChannel))
+    
+    //state.instruments.Bass1 = new Instr.Bass1().connect(bassChannel) 
+    //state.instruments.Bass2 = new Instr.Bass2().connect(bassChannel)
+    //state.instruments.Bass3 = new Instr.Bass3().connect(bassChannel)
+    //state.instruments.Bass4 = new Instr.Bass4().connect(bassChannel)
     
     /* pads */
-    state.instruments.Synth1 = new Instr.Synth1().connect(harmonyChannel)
-    state.instruments.Synth2 = new Instr.Synth2().connect(harmonyChannel)
-    state.instruments.Synth3 = new Instr.Synth3().connect(harmonyChannel)
-    state.instruments.Synth4 = new Instr.Synth4().connect(harmonyChannel)
+    MVC.setInstrument("Synth1", new Instr.Synth1().connect(harmonyChannel))
+    MVC.setInstrument("Synth2", new Instr.Synth2().connect(harmonyChannel))
+    MVC.setInstrument("Synth3", new Instr.Synth3().connect(harmonyChannel))
+    MVC.setInstrument("Synth4", new Instr.Synth4().connect(harmonyChannel))
+    //state.instruments.Synth1 = new Instr.Synth1().connect(harmonyChannel)
+    //state.instruments.Synth2 = new Instr.Synth2().connect(harmonyChannel)
+    //state.instruments.Synth3 = new Instr.Synth3().connect(harmonyChannel)
+    //state.instruments.Synth4 = new Instr.Synth4().connect(harmonyChannel)
 
 
-    console.log(state.instruments.Pad)
-    console.log(state.effects)
+    //console.log(state.instruments.Pad)
+    //console.log(state.effects)
 }
 
 async function concatenateMelodiesFromMatrix(positionsArray, matrixSideDim) {
