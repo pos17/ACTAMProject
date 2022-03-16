@@ -251,9 +251,10 @@ class Synth {
 
 class Bell {
     constructor () {
-        var synth = new Tone.DuoSynth()
-        var dly = new Tone.FeedbackDelay()
-        var verb = new Tone.Reverb()
+        const synth = new Tone.DuoSynth()
+        const dly = new Tone.FeedbackDelay()
+        const verb = new Tone.Reverb()
+        const volume = new Tone.Volume()
 
         synth.set({
             voice0: {
@@ -297,9 +298,11 @@ class Bell {
             wet: 0.2,
         })
 
-        synth.chain(dly, verb, Tone.Destination)
+        synth.chain(dly, verb, volume, Tone.Destination)
     
         this.synth = synth;
+        this.volume = volume;
+        this.lastNode = volume;
 
     }
 
@@ -308,12 +311,12 @@ class Bell {
     }
 
     setVolume(volValue) {
-        this.synth.volume.value = volValue
+        this.volume.volume.value = volValue
     }
 
     connect(node) {
-        this.synth.disconnect(Tone.Destination)
-        this.synth.connect(node)
+        this.lastNode.disconnect(Tone.Destination)
+        this.lastNode.connect(node)
     }
 }
 
