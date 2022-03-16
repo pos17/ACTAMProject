@@ -42,8 +42,8 @@ async function initializeMyApp() {
     MVC.setLimit(40)
     MVC.increase();
     await MVC.initiateState()
-        //await buildInstruments()
-        //console.log(state.instruments)
+    await buildInstruments()
+    console.log(state.instruments)
     MVC.setLimit(90)
     MVC.orderElements()
     await createMenu()
@@ -125,18 +125,20 @@ export async function propagateStateChanges(isFirst) {
 async function buildInstruments() {
 
     //building audio channels
+    bassChannel = new Tone.Channel()
     harmonyChannel = new Tone.Channel()
     melodyChannel = new Tone.Channel()
+    drumChannel = new Tone.Channel()
 
 
-    //build modulation effects
+    /* //build modulation effects
     state.effects.harmony.chorus = new Tone.Chorus()
     state.effects.melody.chorus = new Tone.Chorus()
     state.effects.harmony.chorus.wet.value = 0
-    state.effects.melody.chorus.wet.value = 0
+    state.effects.melody.chorus.wet.value = 0 */
 
 
-    //build time effects
+    /* //build time effects
     state.effects.harmony.reverb = await new Tone.Reverb()
     state.effects.harmony.reverb.wet.value = 0
     state.effects.melody.reverb = await new Tone.Reverb()
@@ -157,16 +159,29 @@ async function buildInstruments() {
         //state.effects.melody.reverb,
         state.effects.melody.delay,
         Tone.Destination
-    )
+    ) */
 
 
     //building instruments
-    state.instruments.Pad = new Instr.Pad() //.connect(state.effects.harmony.channel)
-    state.instruments.Lead = new Instr.Lead() //.connect(state.effects.melody.channel)
-    state.instruments.Synth = new Instr.Synth() //.connect(state.effects.melody.channel)
-    state.instruments.Pad.connect(harmonyChannel)
-    state.instruments.Lead.connect(melodyChannel)
-    state.instruments.Synth.connect(melodyChannel)
+    /* leads */
+    state.instruments.Bell    = new Instr.Bell().connect(melodyChannel)
+    state.instruments.Lead    = new Instr.Lead().connect(melodyChannel)
+    state.instruments.Sitar   = new Instr.Sitar().connect(melodyChannel)
+    state.instruments.Marimba = new Instr.Marimba().connect(melodyChannel)
+
+    /* bass */
+    state.instruments.Bass1 = new Instr.Bass1().connect(bassChannel) 
+    state.instruments.Bass2 = new Instr.Bass2().connect(bassChannel)
+    state.instruments.Bass3 = new Instr.Bass3().connect(bassChannel)
+    state.instruments.Bass4 = new Instr.Bass4().connect(bassChannel)
+    
+    /* pads */
+    state.instruments.Synth1 = new Instr.Synth1().connect(harmonyChannel)
+    state.instruments.Synth2 = new Instr.Synth2().connect(harmonyChannel)
+    state.instruments.Synth3 = new Instr.Synth3().connect(harmonyChannel)
+    state.instruments.Synth4 = new Instr.Synth4().connect(harmonyChannel)
+
+
     console.log(state.instruments.Pad)
     console.log(state.effects)
 }
