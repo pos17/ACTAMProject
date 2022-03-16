@@ -322,30 +322,33 @@ class Bell {
 
 class Marimba {
     constructor(){
-        var synthTone = new Tone.DuoSynth()
-        var synthPulse = new Tone.Synth()
-        var dist = new Tone.Distortion(0.63)
-        var trim = new Tone.Volume(-10)
-        var filterLP = new Tone.Filter({
+        const synthTone = new Tone.DuoSynth()
+        const synthPulse = new Tone.Synth()
+        const dist = new Tone.Distortion(0.63)
+        const trim = new Tone.Volume(-10)
+        const filterLP = new Tone.Filter({
             frequency: "4437Hz",
             type: 'lowpass',
             rolloff: -24,
         })
-        var filterHP = new Tone.Filter({
+        const filterHP = new Tone.Filter({
             frequency: '170Hz',
             type: 'highpass',
             rolloff: -48
         })
-        var chorus = new Tone.Chorus({
+        const chorus = new Tone.Chorus({
             frequency: 0.2,
             delayTime: 0.013,
             depth: 1
         })
-        var dly = new Tone.FeedbackDelay({
+        const dly = new Tone.FeedbackDelay({
             delayTime: '8n.',
             feedback: 0.1,
             wet: 0.05
         })
+        const merge = new Tone.Merge()
+        const mono = new Tone.Mono()
+        const volume = new Tone.Volume()
 
         synthTone.set({
             voice1: {
@@ -393,13 +396,17 @@ class Marimba {
             }
         });
 
-        synthTone.chain(dist, trim, filterLP, filterHP, chorus, dly, Tone.Destination)
-        synthPulse.chain(filterHP, chorus, dly, Tone.Destination)
+        synthTone.chain(dist, trim, filterLP).connect(merge,0,0)
+        synthPulse.connect(merge, 0,1)
+
+        merge.chain(mono, filterHP, chorus, dly, volume, Tone.Destination)
 
 
         this.dly = dly
         this.synthTone = synthTone;
         this.synthPulse = synthPulse;
+        this.volume = volume;
+        this.lastNode = volume;
 
     };
 
@@ -409,8 +416,7 @@ class Marimba {
     }
 
     setVolume(volValue) {
-        this.synthPulse.volume.value = volValue
-        this.synthTone.volume.value = volValue
+        this.volume.volume.value = volValue
     }
 
     connect(node) {
