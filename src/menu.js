@@ -322,14 +322,14 @@ async function playerPage() {
     document.getElementById("menu-container").hidden = true;
     document.getElementById("menu-navbar").hidden = true;
     document.getElementById("upbar").hidden = true;
-
+    index.startMusic()
 }
 
 async function menuPage() {
     //await createMenu()
     visualizeSelectedTokens()
     //document.getElementById("main-fs-button").onclick = () => { openFullscreen("main-body") }
-    document.getElementById("btn-dx").onclick = () => { updatePage(1); index.startMusic()}
+    document.getElementById("btn-dx").onclick = () => { updatePage(1);}
     document.getElementById("player-navbar").hidden = true;
     document.getElementById("canva-container").hidden = true;
     document.getElementById("menu-container").hidden = false;

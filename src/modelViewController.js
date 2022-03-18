@@ -1,6 +1,7 @@
 import * as Tone from "tone";
 import * as Firebase from "./firebase.js";
 import { DrawableImage } from "./canva.js";
+import { MarkovMelody } from "./markov_melody.js";
 const state = {
     loadingPage: {
         value: 0,
@@ -16,10 +17,6 @@ const state = {
     now1: 0,
     canvasFactor: 8,
     framereq: undefined,
-    effects: {
-        melody: {},
-        harmony: {}
-    },
     fps: 24,
     instruments: {},
     stateChanged: false,
@@ -45,6 +42,10 @@ const state = {
         },
         image: {
             flyingObject: []
+        },
+        audio:{
+            chords:"| F6 | Em7 A7 | Dm7 | Cm7 F7 |",
+            melody:"f+4 c+8 a8 e+4 c+8 a8 \n d+8 e+8 cb8 d+8 db+8 bb8 g8 ab8 \n a4 f8 d8 g8 a8 f8 e8 \n eb8/3 g8/3 bb8/3 d+8 db+8 r8 f8 f8/3 g8/3 f8/3"
         }
     },
 }
@@ -194,14 +195,18 @@ export async function updateState() {
     state.imagesToDraw["flyingObject"] = flyObjsArr
     for (let id of ids) {
         modifyingValue = state.elements.find(element => element.id == id)
+        console.log("modifyingValue")
+        console.log(modifyingValue)
         switch (modifyingValue.elementType) {
             case ("floor"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
                 state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
+                state.drawing.audio[modifyingValue.elementType] = modifyingValue.audio.instrument
             } break;
             case ("background"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
                 state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
+            
             } break;
             case ("landscape"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
@@ -210,10 +215,12 @@ export async function updateState() {
             case ("building"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
                 state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
+                state.drawing.audio[modifyingValue.elementType] = modifyingValue.audio.instrument
             } break;
             case ("tree"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
                 state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
+                state.drawing.audio[modifyingValue.elementType] = modifyingValue.audio.instrument
             } break;
             case ("astrumDay"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
@@ -356,6 +363,28 @@ export function setNavPage(aPage) {
 }
 
 export function setInstrument(instrName, instrInstance) {
-    
+
     state.instruments[instrName] = instrInstance;
+}
+
+export function getInstrument(instrName) {
+    return state.instruments[instrName];
+}
+
+export function getInstrumentList(instrName) {
+    return state.instruments;
+}
+
+/*
+    Nodes handling
+*/
+
+export async function generateNodes() {
+    var nodeList = await Firebase.getNodes()
+    var mMelody = new MarkovMelody(nodeList)
+    state.melodyNodes = mMelody 
+}
+
+export function generateMelody() {
+    return state.melodyNodes.generateMelody()
 }

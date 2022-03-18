@@ -1,36 +1,40 @@
 //const core = require('@magenta/music/node/core');
 export class MarkovMelody {
-    constructor(tree, nodes=undefined) {
-        this.tree = tree
+    constructor(nodes) {
         this.nodes = nodes
-        //console.log(this.tree)
+        console.log(this.nodes)
     }
 
-    generateMelody(startId) {
-        var path = this.generatePath(startId)
-        var musicSequence = []
-        for(let id of path) {
-            musicSequence.push(this.nodes.find(x => x.id == id))
+    generateMelody(startId=0) {
+        var path = this._generatePath(startId)
+        var melodySequence = ""
+        var chordsSequence = "|"
+        for(let node of path) {
+            melodySequence = melodySequence + node.mel + "\n"    
+            chordsSequence = chordsSequence + " "+ node.chord +" |"
         }
         
-        return musicSequence
+        return {
+            melody:melodySequence,
+            chords:chordsSequence
+        }
     }
 
-    generatePath(anId = 0) {
+    _generatePath(anId = 0) {
         //anId = anId.toString()
-        console.log(this.tree)
-        var startingNode = this.tree.find(x => x.id == anId)
+        //console.log(this.tree)
+        var startingNode = this.nodes.find(x => x.id == anId)
         var startingNodeId = startingNode.id
         let thisNodeId = -1;
         var thisNode = startingNode
         let path = []
         while(thisNodeId != startingNodeId) {
-            path.push(thisNode.id)
+            path.push(thisNode)
             console.log(thisNode)
             var nextNodeId = this._nextRandomNode(thisNode)
             console.log(nextNodeId)
             thisNodeId = nextNodeId
-            thisNode = this.tree.find(x => x.id == nextNodeId)
+            thisNode = this.nodes.find(x => x.id == nextNodeId)
         }
         return path
     }
@@ -39,13 +43,13 @@ export class MarkovMelody {
         let possibleNodes = aNode.links
         let totalWeights = 0;
         for(var i = 0; i < possibleNodes.length;i++) {
-            totalWeights = totalWeights + possibleNodes[i].probability
+            totalWeights = totalWeights + possibleNodes[i].prob
         }
         var random = Math.random() * totalWeights;
         //console.log(totalWeights)
         //console.log(random)
         for (var i = 0; i < possibleNodes.length; i++) {
-            random -= possibleNodes[i].probability;
+            random -= possibleNodes[i].prob;
     
             if (random < 0) {
                 return possibleNodes[i].id;

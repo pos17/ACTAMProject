@@ -150,3 +150,15 @@ export async function getDocumentElement(docId) {
     console.log("No such document!");
   }
 }
+
+export async function getNodes() {
+  const q = query(collection(db, "nodes"));
+
+  const querySnapshot = await getDocs(q);
+  elementsToRet = []
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    elementsToRet.push(doc.data());
+  });
+  return elementsToRet
+}
