@@ -17,7 +17,7 @@ const state = {
     now1: 0,
     canvasFactor: 8,
     framereq: undefined,
-    fps: 24,
+    fps: 15,
     instruments: {},
     stateChanged: false,
     readyModel: false,
@@ -211,8 +211,8 @@ export async function updateState() {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
                 state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
                 console.log("ch")
-                console.log(state.drawing.audio.instruments["harmony"])
-                state.drawing.audio.instruments["harmony"] = modifyingValue.audio.instrument
+                console.log(state.drawing.audio.instruments["chords"])
+                state.drawing.audio.instruments["chords"] = modifyingValue.audio.instrument
                 
             } break;
             case ("background"): {

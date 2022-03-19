@@ -10,7 +10,7 @@ const container = document.getElementById('canva-container')
 
 
 
-var factor = 8;
+var factor = 4;
 
 var canvas = document.getElementById("main-canvas")
 canvas.className = "canvases";

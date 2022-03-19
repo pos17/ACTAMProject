@@ -1,4 +1,4 @@
-import { Scale, Note, Chord, Interval } from "@tonaljs/tonal";
+import { Scale, Note, Chord, Interval, Tonal } from "@tonaljs/tonal";
 import * as Tone from "tone"
 
 import { MarkovMelody } from "./markov_melody.js"
@@ -18,7 +18,11 @@ async function initializeMyApp() {
 
     //initialize the drawing values
     //state.isFirst = true
-    Tone.context.lookAhead = 1;
+    // prioritize sustained playback
+    //const context = new Tone.Context({ latencyHint: "playback" });
+    // set this context as the global Context
+    //Tone.setContext(context);
+    Tone.context.lookAhead = 30;
     MVC.setNow()
     MVC.setMasterChain()
     console.log("master chain set")
@@ -36,7 +40,7 @@ async function initializeMyApp() {
     assignClick()
     updatePage(0)
     MVC.setLimit(100)
-    Tone.context.latencyHint = 'playback'
+    //Tone.context.latencyHint = 'playback'
     console.log("i nodi")
     /*
     await MVC.generateNodes()
@@ -46,7 +50,7 @@ async function initializeMyApp() {
     console.log(notePart)
     addNotePartToTransport(notePart, MVC.getInstrument("Marimba")) 
     */
-    
+
 }
 
 // {
@@ -129,63 +133,63 @@ function buildInstruments() {
     state.effects.melody.chorus.wet.value = 0 */
 
 
-     //build time effects
-     /*
-    state.effects.harmony.reverb = new Tone.Reverb()
-    state.effects.harmony.reverb.wet.value = 0
-    state.effects.melody.reverb = await new Tone.Reverb()
-    state.effects.melody.reverb.wet.value = 0
-        //TODO: set correct time for delay
-    state.effects.melody.delay = new Tone.PingPongDelay()
-    state.effects.harmony.delay = new Tone.PingPongDelay()
-    state.effects.melody.delay.wet.value = 0
-    state.effects.harmony.delay.wet.value = 0
-    console.log(state.effects.harmony.delay.get())
-        //creating effects chain
-    */
+    //build time effects
+    /*
+   state.effects.harmony.reverb = new Tone.Reverb()
+   state.effects.harmony.reverb.wet.value = 0
+   state.effects.melody.reverb = await new Tone.Reverb()
+   state.effects.melody.reverb.wet.value = 0
+       //TODO: set correct time for delay
+   state.effects.melody.delay = new Tone.PingPongDelay()
+   state.effects.harmony.delay = new Tone.PingPongDelay()
+   state.effects.melody.delay.wet.value = 0
+   state.effects.harmony.delay.wet.value = 0
+   console.log(state.effects.harmony.delay.get())
+       //creating effects chain
+   */
     harmonyChannel.chain(
         Tone.Destination
     )
     bassChannel.chain(
         Tone.Destination
-    ) 
+    )
     melodyChannel.chain(
         Tone.Destination
-    ) 
+    )
     drumChannel.chain(
         Tone.Destination
-    ) 
+    )
 
     /*      building instruments         */
-    
+
     /* leads */
-    let bell =new Instr.Bell();
-    let lead =new Instr.Lead();
-    let sitar =new Instr.Sitar()
+    let bell = new Instr.Bell();
+    let lead = new Instr.Lead();
+    let sitar = new Instr.Sitar()
     let marimba = new Instr.Marimba();
-    
+
     bell.connect(melodyChannel)
     lead.connect(melodyChannel)
     sitar.connect(melodyChannel)
     marimba.connect(melodyChannel)
-    
+
     MVC.setInstrument("Bell", bell)
     MVC.setInstrument("Lead", lead)
     MVC.setInstrument("Sitar", sitar)
     MVC.setInstrument("Marimba", marimba)
-    
-    
+
+
     /* bass */
-    let bass1 =new Instr.Bass1()
-    let bass2 =new Instr.Bass2()
-    let bass3 =new Instr.Bass3()
-    let bass4 =new Instr.Bass4()
-    
+    let bass1 = new Instr.Bass1()
+    let bass2 = new Instr.Bass2()
+    let bass3 = new Instr.Bass3()
+    let bass4 = new Instr.Bass4()
+
     bass1.connect(bassChannel)
     bass2.connect(bassChannel)
     bass3.connect(bassChannel)
     bass4.connect(bassChannel)
-    
+
 
     MVC.setInstrument("Bass1", bass1)
     MVC.setInstrument("Bass2", bass2)
@@ -194,11 +198,11 @@ function buildInstruments() {
 
 
     /* pads */
-    let synth1 =new Instr.Synth1()
-    let synth2 =new Instr.Synth2()
-    let synth3 =new Instr.Synth3()
-    let synth4 =new Instr.Synth4()
-    
+    let synth1 = new Instr.Synth1()
+    let synth2 = new Instr.Synth2()
+    let synth3 = new Instr.Synth3()
+    let synth4 = new Instr.Synth4()
+
     synth1.connect(harmonyChannel)
     synth2.connect(harmonyChannel)
     synth3.connect(harmonyChannel)
@@ -301,8 +305,8 @@ function parseMelodyString(melodyString) {
             let noteMap = buildNoteFromString(note)
             let timeSig = barIndex + ":" + quarterIndex + ":" + sixteenthIndex
             noteMap["time"] = timeSig
-            if(noteMap.note!="r") { 
-            notesToRet.push(noteMap)
+            if (noteMap.note != "r") {
+                notesToRet.push(noteMap)
             }
             switch (noteMap.duration) {
                 case "1m":
@@ -336,15 +340,15 @@ function parseMelodyString(melodyString) {
                     break;
             }
 
-            if(sixteenthIndex >= 4) {
-                let carry = sixteenthIndex%4
-                let value = Math.floor(sixteenthIndex/4)
+            if (sixteenthIndex >= 4) {
+                let carry = sixteenthIndex % 4
+                let value = Math.floor(sixteenthIndex / 4)
                 quarterIndex = quarterIndex + value;
                 sixteenthIndex = carry;
             }
-            if(quarterIndex >= 4) {
-                let carry = quarterIndex%4
-                let value = Math.floor(quarterIndex/4)
+            if (quarterIndex >= 4) {
+                let carry = quarterIndex % 4
+                let value = Math.floor(quarterIndex / 4)
                 barIndex = barIndex + value;
                 quarterIndex = carry;
             }
@@ -354,12 +358,12 @@ function parseMelodyString(melodyString) {
 
     }
 
-    let loopValue= barIndex+":"+quarterIndex+":"+sixteenthIndex;
+    let loopValue = barIndex + ":" + quarterIndex + ":" + sixteenthIndex;
     console.log(barsArray)
     console.log(notesToRet)
     return {
-        notesArray:notesToRet,
-        loopValue:loopValue
+        notesArray: notesToRet,
+        loopValue: loopValue
     };
 }
 
@@ -375,10 +379,10 @@ function buildNoteFromString(noteString) {
 
     //midiNote value calculation from string
     midiNote = noteString.charAt(0);
-    if(midiNote != "r") {
-    if (noteString.charAt(1) == "b" || noteString.charAt(1) == "#") midiNote = midiNote + noteString.charAt(1);
-    let octave = 3 + (count(noteString, "+")) - (count(noteString, "-"))
-    midiNote = midiNote + octave;
+    if (midiNote != "r") {
+        if (noteString.charAt(1) == "b" || noteString.charAt(1) == "#") midiNote = midiNote + noteString.charAt(1);
+        let octave = 3 + (count(noteString, "+")) - (count(noteString, "-"))
+        midiNote = midiNote + octave;
     } else {
         midiNote = "r"
     }
@@ -437,24 +441,18 @@ function addNotePartToTransport(notePart, instrument) {
     console.log(notePart)
     const part = new Tone.Part((time, value) => {
         instrument.triggerAttack(value.note, time, 0.5)
-        console.log("note: " + value.note+ " ,time: " + time + " duration: " + value.duration)
+        console.log("note: " + value.note + " ,time: " + time + " duration: " + value.duration)
     }, notePart).start(0)
     return part
 }
 
-function playChordSequence(chordsString, key = "C", instrument, numOfRepetitions = 1) {
-
-    console.log("chordsString in playChordSequence")
-    console.log(chordsString)
-
-
-
+function playChordSequence(chordsSequence, instrument) {
     console.log(instrument)
     chordsPlayed = new Tone.Part(((time, value) => {
         console.log("value to be played")
         console.log(value)
 
-        instrument.triggerAttackRelease(value.notes, value.length, time, 0.5)
+        instrument.triggerAttackRelease(value.notes, value.duration, time, 0.5)
     }), chordsSequence).start(0)
     //Tone.debug = true
     return chordsPlayed
@@ -484,7 +482,7 @@ function parseChordsString(chordsString) {
         sixteenthCount = 0;
         quarterAdd = 4 / chordsBar.length;
         console.log(quarterAdd)
-        for (let chord of chordsBar) {
+        for (let aChord of chordsBar) {
             var dur;
             switch (quarterAdd) {
                 case 4: dur = "1m";
@@ -495,17 +493,27 @@ function parseChordsString(chordsString) {
                     break;
             }
             var tTime = barCount + ":" + quarterCount + ":" + sixteenthCount
+            let notesArray = fromChordToNotes(aChord)
             chord = {
-                value: chord,
+                notes: notesArray,
                 time: tTime,
                 duration: dur
             }
             quarterCount = quarterCount + quarterAdd
+
             chordsToRet.push(chord)
+        }
+        if (quarterCount >= 4) {
+            quarterCount = quarterCount % 4
         }
         barCount++;
     }
     console.log(chordsToRet)
+    let barLoop = barCount + ":" + quarterCount + ":" + sixteenthCount
+    return {
+        chordsList: chordsToRet,
+        barLoop: barLoop
+    }
 }
 
 console.log("testParsing")
@@ -538,9 +546,14 @@ Tone.Transport.schedule(()=>{
 export function initMusic() {
     Tone.Transport.cancel()
     let computedMelody = parseMelodyString(MVC.getMelodyString())
+    let computeChords = parseChordsString(MVC.getChordString())
     console.log(computedMelody)
-    addNotePartToTransport(computedMelody.notesArray,MVC.getPlayingInstrument("melody"))
-    Tone.Transport.loopEnd=computedMelody.loopValue;
-    Tone.Transport.loop=true;
+    if (computeChords.barLoop != computedMelody.loopValue) {
+        console.error("loop bars no consistent, melodyLoop: " + computedMelody.loopValue + ", chordsloop: " + computeChords.barLoop)
+    }
+    addNotePartToTransport(computedMelody.notesArray, MVC.getPlayingInstrument("melody"))
+    playChordSequence(computeChords.chordsList, MVC.getPlayingInstrument("chords"))
+    Tone.Transport.loopEnd = computedMelody.loopValue;
+    Tone.Transport.loop = true;
 
 }
