@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "npm run clean && parcel src/index.html",
+    "dev": "npm run clean && parcel serve src/index.html",
     "build": "rimraf ./docs && parcel build src/index.html --dist-dir docs --public-url https://pox17.github.io/ACTAMProject/",
     "clean": "rimraf ./development && rimraf ./.parcel-cache"
   },
