@@ -1,12 +1,8 @@
-import { Scale, Note, Chord, Interval, Tonal } from "@tonaljs/tonal";
+import { Note, Chord, Interval} from "@tonaljs/tonal";
 import * as Tone from "tone"
 
-import { MarkovMelody } from "./markov_melody.js"
-import * as Canva from './canva.js'
 import { createMenu, assignClick, updatePage } from "./menu.js";
 import * as Instr from './instruments.js';
-import * as effects from './effects.js';
-import * as firebase from './firebase.js'
 import * as MVC from "./modelViewController.js"
 
 initializeMyApp()
