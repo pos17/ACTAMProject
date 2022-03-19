@@ -11,10 +11,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@babel/core": "^7.17.4",
-    "@babel/plugin-transform-runtime": "^7.17.0",
-    "@babel/runtime-corejs2": "^7.17.2",
-    "babel-cli": "^6.26.0",
     "parcel": "^2.3.1",
     "rimraf": "^3.0.2",
     "sharp": "^0.29.3"
@@ -25,6 +21,7 @@
     "file-saver": "^2.0.5",
     "firebase": "^9.6.6",
     "nes.css": "^2.3.0",
+    "process": "^0.11.10",
     "tone": "^14.7.77"
   }
 }
