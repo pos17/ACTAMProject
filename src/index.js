@@ -22,7 +22,7 @@ async function initializeMyApp() {
     //const context = new Tone.Context({ latencyHint: "playback" });
     // set this context as the global Context
     //Tone.setContext(context);
-    Tone.context.lookAhead = 30;
+    Tone.context.lookAhead = 5;
     MVC.setNow()
     MVC.setMasterChain()
     console.log("master chain set")

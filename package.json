@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "dev": "npm run clean && parcel src/index.html",
-    "build": "rimraf ./dist/public && parcel build src/index.html --dist-dir public --public-url ./",
+    "build": "rimraf ./docs && parcel build src/index.html --dist-dir docs --public-url ./",
     "clean": "rimraf ./development && rimraf ./.parcel-cache"
   },
   "keywords": [],
