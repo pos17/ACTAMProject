@@ -4,9 +4,6 @@ import * as Tone from 'tone'
 import { getAsset, getDocumentElement } from "./firebase.js";
 
 const canvasDiv = document.getElementById('canvas-div');
-// const canva = document.getElementById('main-canvas');
-const sky = document.getElementById('sky');
-const container = document.getElementById('canva-container')
 
 
 
