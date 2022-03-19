@@ -9,20 +9,6 @@ import * as effects from './effects.js';
 import * as firebase from './firebase.js'
 import * as MVC from "./modelViewController.js"
 
-
-//var markovChain = require("./markov_nodes.json")
-//var markov_music_elements = require("./markov_music_elements.json")
-//console.log(markovChain)
-//var mm = new MarkovMelody(tree = markovChain,nodes = markov_music_elements)
-// console.log(mm.generateMelody(1))
-//console.log(mm.generatePath(2))
-
-
-
-
-
-
-
 initializeMyApp()
 
 /**
@@ -52,17 +38,15 @@ async function initializeMyApp() {
     MVC.setLimit(100)
     Tone.context.latencyHint = 'playback'
     console.log("i nodi")
+    /*
     await MVC.generateNodes()
     console.log(MVC.generateMelody())
     let notePart = parseMelodyString("f+4 c+8 a8 e+4 c+8 a8\nd+8 e+8 cb8 d+8 db+8 bb8 g8 ab8\na4 f8 d8 g8 a8 f8 e8\neb16 g16 bb8 d+8 db+8 r8 f8 f16 g8 f16")
     console.log("notepart")
     console.log(notePart)
-    addNotePartToTransport(notePart, MVC.getInstrument("Lead")) 
-    //propagateStateChanges(state.isFirst)
-    //MVC.updateState()
-    //await Canva.initImages()
-    //Canva.playableButton(true)
-    //updatePage(1)
+    addNotePartToTransport(notePart, MVC.getInstrument("Marimba")) 
+    */
+    
 }
 
 // {
@@ -172,12 +156,9 @@ function buildInstruments() {
         Tone.Destination
     ) 
 
-    //building instruments
+    /*      building instruments         */
+    
     /* leads */
-    // var bell = new Instr.Bell()
-    // console.log("here I am 2")
-    // bell.connect(melodyChannel)
-    // console.log("Here I am 3")
     let bell =new Instr.Bell();
     let lead =new Instr.Lead();
     let sitar =new Instr.Sitar()
@@ -229,24 +210,6 @@ function buildInstruments() {
     MVC.setInstrument("Synth3", synth3)
     MVC.setInstrument("Synth4", synth4)
 }
-
-async function concatenateMelodiesFromMatrix(positionsArray, matrixSideDim) {
-    toConcatenate = []
-    toConcatenate = state.melodiesMatrix
-    console.log(toConcatenate)
-    var waitingObj = state.emitter.waitForWorker()
-    state.worker.postMessage({
-        message: "concatenate",
-        concatenationArray: toConcatenate,
-        waitingIndex: waitingObj.waitingIndex
-    })
-    await waitingObj.promise
-    console.log("qui ha fatto??")
-}
-
-
-
-
 
 export function startMusic() {
     //Tone.Transport.loop = true;
@@ -390,9 +353,14 @@ function parseMelodyString(melodyString) {
         }
 
     }
+
+    let loopValue= barIndex+":"+quarterIndex+":"+sixteenthIndex;
     console.log(barsArray)
     console.log(notesToRet)
-    return notesToRet;
+    return {
+        notesArray:notesToRet,
+        loopValue:loopValue
+    };
 }
 
 function buildNoteFromString(noteString) {
@@ -442,6 +410,12 @@ function buildNoteFromString(noteString) {
     return noteToRet;
 }
 
+/**
+ * counts the occurences of a character in a certain string
+ * @param {} str 
+ * @param {*} find 
+ * @returns 
+ */
 function count(str, find) {
     return (str.split(find)).length - 1;
 }
@@ -462,7 +436,7 @@ function addNotePartToTransport(notePart, instrument) {
     console.log("notePart2")
     console.log(notePart)
     const part = new Tone.Part((time, value) => {
-        instrument.triggerAttack(value.note, time, 0.8)
+        instrument.triggerAttack(value.note, time, 0.5)
         console.log("note: " + value.note+ " ,time: " + time + " duration: " + value.duration)
     }, notePart).start(0)
     return part
@@ -561,3 +535,12 @@ Tone.Transport.schedule(()=>{
   },"0:0:0")
 */
 
+export function initMusic() {
+    Tone.Transport.cancel()
+    let computedMelody = parseMelodyString(MVC.getMelodyString())
+    console.log(computedMelody)
+    addNotePartToTransport(computedMelody.notesArray,MVC.getPlayingInstrument("melody"))
+    Tone.Transport.loopEnd=computedMelody.loopValue;
+    Tone.Transport.loop=true;
+
+}

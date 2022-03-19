@@ -27,8 +27,9 @@ const state = {
     bpm: 60,
     totalLength: "",
     navigationPage: 0,
-    //require("./possible_elements.json"),
+    startingId:0,
     master: {},
+    playingPart:[],
     drawing: {
         idList: {
             astrumDay: 21,
@@ -45,7 +46,8 @@ const state = {
         },
         audio:{
             chords:"| F6 | Em7 A7 | Dm7 | Cm7 F7 |",
-            melody:"f+4 c+8 a8 e+4 c+8 a8 \n d+8 e+8 cb8 d+8 db+8 bb8 g8 ab8 \n a4 f8 d8 g8 a8 f8 e8 \n eb8/3 g8/3 bb8/3 d+8 db+8 r8 f8 f8/3 g8/3 f8/3"
+            melody:"f+4 c+8 a8 e+4 c+8 a8\nd+8 e+8 cb8 d+8 db+8 bb8 g8 ab8\na4 f8 d8 g8 a8 f8 e8\neb8 g16 bb16 d+8 db+8 r8 f8 f16 g8 f16",
+            instruments:{},
         }
     },
 }
@@ -102,6 +104,8 @@ export function getMasterVolume() {
     return state.master.mainGain.gain.value
 }
 
+
+
 /**
  * loading bar improvement using requestAnimationFrame
  */
@@ -129,6 +133,9 @@ export function increase() {
         window.requestAnimationFrame(increase)
     }
 }
+
+
+
 
 /**
  * id of the element to load to change the actual drawing state
@@ -193,6 +200,8 @@ export async function updateState() {
     let ids = getIdList()
     let flyObjsArr = []
     state.imagesToDraw["flyingObject"] = flyObjsArr
+
+
     for (let id of ids) {
         modifyingValue = state.elements.find(element => element.id == id)
         console.log("modifyingValue")
@@ -201,7 +210,10 @@ export async function updateState() {
             case ("floor"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
                 state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
-                state.drawing.audio[modifyingValue.elementType] = modifyingValue.audio.instrument
+                console.log("ch")
+                console.log(state.drawing.audio.instruments["harmony"])
+                state.drawing.audio.instruments["harmony"] = modifyingValue.audio.instrument
+                
             } break;
             case ("background"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
@@ -215,12 +227,16 @@ export async function updateState() {
             case ("building"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
                 state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
-                state.drawing.audio[modifyingValue.elementType] = modifyingValue.audio.instrument
+                console.log("mel")
+                console.log(state.drawing.audio.instruments["melody"])
+                state.drawing.audio.instruments["melody"] = modifyingValue.audio.instrument
             } break;
             case ("tree"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
                 state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
-                state.drawing.audio[modifyingValue.elementType] = modifyingValue.audio.instrument
+                console.log("bass")
+                console.log(state.drawing.audio.instruments["bass"])
+                state.drawing.audio.instruments["bass"] = modifyingValue.audio.instrument
             } break;
             case ("astrumDay"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
@@ -371,8 +387,13 @@ export function getInstrument(instrName) {
     return state.instruments[instrName];
 }
 
-export function getInstrumentList(instrName) {
-    return state.instruments;
+export function getInstrumentList() {
+    return state.drawing.audio.instruments;
+}
+
+export function getPlayingInstrument(instrUse) {
+    let instr = getInstrument(state.drawing.audio.instruments[instrUse])
+    return instr;
 }
 
 /*
@@ -385,6 +406,28 @@ export async function generateNodes() {
     state.melodyNodes = mMelody 
 }
 
-export function generateMelody() {
-    return state.melodyNodes.generateMelody()
+export function generateMelody(startId) {
+    return state.melodyNodes.generateMelody(startId)
+}
+
+export function getMelodyString() {
+    return state.drawing.audio.melody;
+}
+
+export function getChordString() {
+    return state.drawing.audio.chords;
+}
+
+export function getStartingNode() {
+    return state.startingId;
+}
+
+export function addPlayingPart(playingPart) {
+    state.playingPart.push(playingPart)
+}
+export function getPlayingPartLength() {
+    return state.playingPart.length
+}
+export function getPlayingPart() {
+    return state.playingPart
 }

@@ -310,6 +310,7 @@ export async function updatePage(aPage) {
 async function playerPage() {
     await MVC.updateState()
     await initImages()
+    index.initMusic()
     Tone.start()
     document.getElementById("btn-vol").onclick = volumeButton
     let volSlider = document.getElementById("volume-slider")
