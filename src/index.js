@@ -1262,3 +1262,791 @@ function volumeButton() {
         volumeUpdate(MVC.getSavedVolume() * 100)
     }
 }
+
+
+
+
+
+
+
+
+export class DrawableImage {
+    constructor(anImageArray, left, bottom, anImageType, property) {
+        this.imageType = anImageType;
+        this.imageArray = anImageArray;
+        this.left = left;
+        this.bottom = bottom;
+        this.property = property
+    }
+
+    static async build(image) {
+        //hasLight,urlLightOff,urlLightOn,left,bottom
+        let imageArray = []
+        for (let url of image.imageArray) {
+            let anImage = new Image()
+            anImage.src = await getAsset(url)
+            imageArray.push(anImage)
+        }
+        let property = {}
+        switch (image.imageType) {
+            case (4):
+                property.velocity = image.velocity;
+                property.shift = Math.random();
+                break;
+        }
+        if (image.imageType == 4) {
+            image.bottom = Math.random()
+            image.left = Math.random()
+        }
+        return new DrawableImage(imageArray, image.left, image.bottom, image.imageType, property)
+    }
+
+    clone() {
+        return new DrawableImage(this.imageArray, this.left, this.bottom, this.imageType, this.property);
+    }
+    changeRandomParams() {
+        if (this.imageType == 4) {
+            this.bottom = Math.random()
+            this.left = Math.random()
+            let newproperty = {
+                velocity: this.property.velocity,
+                shift: Math.random()
+            }
+            this.property = newproperty;
+        } else {
+            console.log("imageType:")
+            console.log(this.imageType)
+            console.error("wrong imageType for utilizing changeRandomParams")
+        }
+    }
+
+    drawThisImage(imageToDraw = 0, alpha0 = 1, lightOn, canvasHeight = 0, canvasWidth = 0, ctx, factor) {
+        var h = this.imageArray[imageToDraw].naturalHeight * factor;
+        var w = this.imageArray[imageToDraw].naturalWidth * factor;
+        var x = this.left * canvasWidth;
+        var y = (1 - this.bottom) * canvasHeight;
+        ctx.globalAlpha = alpha0
+        let posX = 0;
+        let posY = 0;
+        switch (this.imageType) {
+            case (0):
+                posX = x;
+                posY = y - h
+                break;
+            case (1):
+                if (lightOn) imageToDraw = 1
+                else imageToDraw = 0
+                posX = x;
+                posY = y - h
+                break;
+            case (2):
+                x = 0;
+                y = 0;
+                posX = 0;
+                posY = 0
+                break;
+            case (3):
+                posX = x;
+                posY = y - h
+                break;
+            case (4):
+                posX = 0;
+                posY = 0;
+                break;
+        }
+        ctx.drawImage(this.imageArray[imageToDraw], posX, posY, w, h)
+        //ctx.drawImage(imageLightOff, x, y-h, w, h)
+        ctx.globalAlpha = 1
+    }
+
+    getNWidth() {
+        return this.imageArray[0].naturalWidth
+    }
+    getNHeight() {
+        return this.imageArray[0].naturalHeight
+    }
+    getNImages() {
+        return this.imageArray.length
+    }
+    getProperty() {
+        return this.property
+    }
+}
+
+
+
+/**
+ * 
+ * 
+ * firebase 
+ * 
+ * 
+ * 
+ */
+
+
+ const firebaseConfig = {
+
+    apiKey: "AIzaSyCx_9Kyfjn03jNXGM9dj7b8Omfd6CP0awU",
+  
+    authDomain: "actamproject-598ad.firebaseapp.com",
+  
+    projectId: "actamproject-598ad",
+  
+    storageBucket: "actamproject-598ad.appspot.com",
+  
+    messagingSenderId: "868627486863",
+  
+    appId: "1:868627486863:web:ee55ebd557f3abd6d5b8fa"
+  
+  };
+  
+  
+  // Initialize Firebase
+  const firebase = require("firebase");
+  // Required for side-effects
+  require("firebase/firestore");
+  
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  
+  
+  
+  
+  //------------------storage handling-------------------------------------- 
+  
+  const storage = firebase.storage()
+  
+  export async function getAsset(imageName) {
+      let assetPos = 'assets/' + imageName
+      let reference = ref(storage, assetPos) 
+      console.log(reference)
+      let url = await getDownloadURL(reference)
+      try {
+          return new URL(url)
+      } catch(error) {
+          // A full list of error codes is available at
+          // https://firebase.google.com/docs/storage/web/handle-errors
+          switch (error.code) {
+            case 'storage/object-not-found':
+              // File doesn't exist
+              break;
+            case 'storage/unauthorized':
+              // User doesn't have permission to access the object
+              break;
+            case 'storage/canceled':
+              // User canceled the upload
+              break;
+      
+            // ...
+      
+            case 'storage/unknown':
+              // Unknown error occurred, inspect the server response
+              break;
+          }
+      }
+  }
+  
+  export async function getSample(instr, note) {
+    let instrPos = 'samples/' + instr + '/'
+    let notePos = instrPos + note
+    console.log(notePos)
+    let reference = ref(storage, notePos) 
+    console.log(reference)
+    let url = await getDownloadURL(reference)
+    try {
+        return new URL(url)
+    } catch(error) {
+        // A full list of error codes is available at
+        // https://firebase.google.com/docs/storage/web/handle-errors
+        switch (error.code) {
+          case 'storage/object-not-found':
+            // File doesn't exist
+            break;
+          case 'storage/unauthorized':
+            // User doesn't have permission to access the object
+            break;
+          case 'storage/canceled':
+            // User canceled the upload
+            break;
+    
+          // ...
+    
+          case 'storage/unknown':
+            // Unknown error occurred, inspect the server response
+            break;
+        }
+    }
+  }
+  
+  //-------------------------------database handling--------------------------//
+  export async function getMenuTypes() {
+    const docRef = doc(db, "menu", "menuTypes");
+    const docSnap = await getDoc(docRef);
+  
+    if (docSnap.exists()) {
+      return docSnap.data();
+    } else {
+      // doc.data() will be undefined in this case
+      console.log("No such document!");
+    }
+  }
+  
+  export async function getElementsByType(type) {
+    const q = query(collection(db, "elements"), where("elementType", "==", type));
+  
+    const querySnapshot = await getDocs(q);
+    elementsToRet = []
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      elementsToRet.push(doc.data());
+    });
+    return elementsToRet
+  }
+  
+  export async function getElements() {
+    const q = query(collection(db, "elements"));
+  
+    const querySnapshot = await getDocs(q);
+    elementsToRet = []
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      elementsToRet.push(doc.data());
+    });
+    return elementsToRet
+  }
+  
+  export async function getDocumentElement(docId) {
+    const docRef = doc(db, "elements", docId);
+    const docSnap = await getDoc(docRef);
+    
+    if (docSnap.exists()) {
+      return docSnap.data();
+    } else {
+      // doc.data() will be undefined in this case
+      console.log("No such document!");
+    }
+  }
+  
+  export async function getNodes() {
+    const q = query(collection(db, "nodes"));
+  
+    const querySnapshot = await getDocs(q);
+    elementsToRet = []
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      elementsToRet.push(doc.data());
+    });
+    return elementsToRet
+  }
+
+
+
+  /***
+   * 
+   * 
+   * 
+   * markov nodes 
+   * 
+   * 
+   */
+
+   export class MarkovMelody {
+    constructor(nodes) {
+        this.nodes = nodes
+        console.log(this.nodes)
+    }
+
+    generateMelody(startId=0) {
+        var path = this._generatePath(startId)
+        var melodySequence = ""
+        var chordsSequence = "|"
+        for(let node of path) {
+            melodySequence = melodySequence + node.mel + "\n"    
+            chordsSequence = chordsSequence + " "+ node.chord +" |"
+        }
+        
+        return {
+            melody:melodySequence,
+            chords:chordsSequence
+        }
+    }
+
+    _generatePath(anId = 0) {
+        //anId = anId.toString()
+        //console.log(this.tree)
+        var startingNode = this.nodes.find(x => x.id == anId)
+        var startingNodeId = startingNode.id
+        let thisNodeId = -1;
+        var thisNode = startingNode
+        let path = []
+        while(thisNodeId != startingNodeId) {
+            path.push(thisNode)
+            console.log(thisNode)
+            var nextNodeId = this._nextRandomNode(thisNode)
+            console.log(nextNodeId)
+            thisNodeId = nextNodeId
+            thisNode = this.nodes.find(x => x.id == nextNodeId)
+        }
+        return path
+    }
+
+    _nextRandomNode(aNode) {
+        let possibleNodes = aNode.links
+        let totalWeights = 0;
+        for(var i = 0; i < possibleNodes.length;i++) {
+            totalWeights = totalWeights + possibleNodes[i].prob
+        }
+        var random = Math.random() * totalWeights;
+        //console.log(totalWeights)
+        //console.log(random)
+        for (var i = 0; i < possibleNodes.length; i++) {
+            random -= possibleNodes[i].prob;
+    
+            if (random < 0) {
+                return possibleNodes[i].id;
+            }
+        }
+    }
+
+
+}
+
+/***
+ * 
+ * 
+ * MVC
+ * 
+ * 
+ */
+
+
+const state = {
+    loadingPage: {
+        value: 0,
+        limit: 0,
+        lastUpdate: undefined,
+    },
+    imagesToDraw: {},
+    environments: undefined,
+    elementTypes: undefined,
+    elements: [],
+    queueCounter: 0,
+    queueDay: 0, //0 night, 1 night to day, 2 day, 3 day to night
+    now1: 0,
+    canvasFactor: 8,
+    framereq: undefined,
+    fps: 15,
+    instruments: {},
+    stateChanged: false,
+    readyModel: false,
+    readyToPlay: false,
+    isPlaying: true,
+    key: "c", //main key of the system
+    bpm: 60,
+    totalLength: "",
+    navigationPage: 0,
+    startingId:0,
+    master: {},
+    playingPart:[],
+    drawing: {
+        idList: {
+            astrumDay: 21,
+            astrumNight: 20,
+            landscape: 0,
+            floor: 8,
+            building: 12,
+            tree: 16,
+            background: 1,
+            flyingObject: []
+        },
+        image: {
+            flyingObject: []
+        },
+        audio:{
+            chords:"| F6 | Em7 A7 | Dm7 | Cm7 F7 |",
+            melody:"f+4 c+8 a8 e+4 c+8 a8\nd+8 e+8 cb8 d+8 db+8 bb8 g8 ab8\na4 f8 d8 g8 a8 f8 e8\neb8 g16 bb16 d+8 db+8 r8 f8 f16 g8 f16",
+            instruments:{},
+        }
+    },
+}
+
+export async function initiateState() {
+    let data = await Firebase.getMenuTypes()
+    console.log("got?")
+    state.elementTypes = data.primaryTypes
+    state.environments = data.environments
+    let elements = await Firebase.getElements()
+    state.elements = elements
+}
+
+export function getSelectedIdList() {
+    return state.drawing.idList;
+}
+
+export function getStateElements() {
+    return state.elements;
+}
+
+export function getImage() {
+    return state.drawing.image
+}
+
+
+export function setNow() {
+    state.loadingPage.lastUpdate = Date.now()
+}
+export function getMasterChain() {
+    return state.master
+}
+export function setMasterChain() {
+    state.master = {
+        compressor: new Tone.Compressor({
+            threshold: -15,
+            ratio: 7,
+        }),
+        hiddenGain: new Tone.Gain(0.3),
+        mainGain: new Tone.Gain(1),
+        mainVolumeSave: 1
+    }
+}
+
+export function setMasterVolume(value) {
+    if (value > 0) state.master.mainVolumeSave = value
+    state.master.mainGain.gain.value = value
+}
+export function getSavedVolume() {
+    return state.master.mainVolumeSave
+}
+
+export function getMasterVolume() {
+    return state.master.mainGain.gain.value
+}
+
+
+
+/**
+ * loading bar improvement using requestAnimationFrame
+ */
+export function setLimit(toValue) {
+    state.loadingPage.limit = toValue
+}
+
+export function increase() {
+    let element = document.getElementById("loadingId");
+    let fromValue = state.loadingPage.value;
+    let limit = state.loadingPage.limit;
+    if ((Date.now() - state.loadingPage.lastUpdate) > (1000 / 30)) {
+        if (fromValue < limit) {
+            state.loadingPage.value = fromValue + 1;
+            element.value = state.loadingPage.value;
+        }
+        if (fromValue >= 100) {
+            document.getElementById("container").hidden = false
+            document.getElementById("initialLoadingPanel").style.visibility = 'hidden'
+
+        }
+        window.requestAnimationFrame(increase)
+        state.loadingPage.lastUpdate = Date.now()
+    } else {
+        window.requestAnimationFrame(increase)
+    }
+}
+
+
+
+
+/**
+ * id of the element to load to change the actual drawing state
+ * @param {int} idValue 
+ */
+export function modifyIdList(idValue) {
+    console.log(idValue)
+    //console.log(state.possibleValues)
+    modifyingValue = state.elements.find(element => element.id == idValue)
+    console.log("modifying value")
+    console.log(modifyingValue)
+    switch (modifyingValue.elementType) {
+        case ("floor"): {
+            state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
+        } break;
+        case ("background"): {
+            state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
+        } break;
+        case ("landscape"): {
+            state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
+            //state.drawing.chords.instrument = modifyingValue.instrument
+            //state.drawing.chords.effect = modifyingValue.effect
+        } break;
+        case ("building"): {
+            state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
+        } break;
+        case ("tree"): {
+            state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
+        } break;
+        case ("astrumDay"): {
+            state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
+        } break;
+        case ("astrumNight"): {
+            state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
+        } break;
+        case ("flyingObject"): {
+            const count = {};
+            for (const element of state.drawing.idList[modifyingValue.elementType]) {
+                if (count[element]) {
+                    count[element] += 1;
+                } else {
+                    count[element] = 1;
+                }
+            }
+            //console.log("in?1")
+            if (count[modifyingValue.id] > 2) {
+                while (state.drawing.idList[modifyingValue.elementType].indexOf(modifyingValue.id) != -1) {
+                    let index = state.drawing.idList[modifyingValue.elementType].indexOf(modifyingValue.id)
+                    state.drawing.idList[modifyingValue.elementType].splice(index, 1)
+                }
+            } else {
+                //console.log("in?2")
+                state.drawing.idList[modifyingValue.elementType].push(modifyingValue.id)
+            }
+        } break;
+
+    }
+    console.log(state.drawing)
+}
+
+export async function updateState() {
+    let ids = getIdList()
+    let flyObjsArr = []
+    state.imagesToDraw["flyingObject"] = flyObjsArr
+
+
+    for (let id of ids) {
+        modifyingValue = state.elements.find(element => element.id == id)
+        console.log("modifyingValue")
+        console.log(modifyingValue)
+        switch (modifyingValue.elementType) {
+            case ("floor"): {
+                state.drawing.image[modifyingValue.elementType] = modifyingValue.image
+                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
+                console.log("ch")
+                console.log(state.drawing.audio.instruments["chords"])
+                state.drawing.audio.instruments["chords"] = modifyingValue.audio.instrument
+                
+            } break;
+            case ("background"): {
+                state.drawing.image[modifyingValue.elementType] = modifyingValue.image
+                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
+            
+            } break;
+            case ("landscape"): {
+                state.drawing.image[modifyingValue.elementType] = modifyingValue.image
+                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
+            } break;
+            case ("building"): {
+                state.drawing.image[modifyingValue.elementType] = modifyingValue.image
+                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
+                console.log("mel")
+                console.log(state.drawing.audio.instruments["melody"])
+                state.drawing.audio.instruments["melody"] = modifyingValue.audio.instrument
+            } break;
+            case ("tree"): {
+                state.drawing.image[modifyingValue.elementType] = modifyingValue.image
+                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
+                console.log("bass")
+                console.log(state.drawing.audio.instruments["bass"])
+                state.drawing.audio.instruments["bass"] = modifyingValue.audio.instrument
+            } break;
+            case ("astrumDay"): {
+                state.drawing.image[modifyingValue.elementType] = modifyingValue.image
+                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
+            } break;
+            case ("astrumNight"): {
+                state.drawing.image[modifyingValue.elementType] = modifyingValue.image
+                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
+            } break;
+            case ("flyingObject"): {
+                state.drawing.image[modifyingValue.elementType].push(modifyingValue.image)
+                state.imagesToDraw[modifyingValue.elementType] = [];
+                let i = 0
+                for (let img of state.drawing.image[modifyingValue.elementType]) {
+                    console.log("Im here to check images to draw ")
+                    console.log(state.imagesToDraw)
+                    console.log(img)
+                    if (state.drawing.image[modifyingValue.elementType].indexOf(img) < i) {
+                        var elToCopy = state.imagesToDraw[modifyingValue.elementType][state.drawing.image[modifyingValue.elementType].indexOf(img)]
+                        console.log(elToCopy)
+                        var newEl = elToCopy.clone()
+                        console.log(newEl)
+                        newEl.changeRandomParams()
+                        console.log(newEl)
+                        state.imagesToDraw[modifyingValue.elementType].push(newEl);
+                        console.log("pushing a recycled element")
+                    } else {
+                        state.imagesToDraw[modifyingValue.elementType].push(await DrawableImage.build(img))
+                        console.log("pushing a recycled element")
+                    }
+                    i++
+                }
+            } break;
+
+        }
+    }
+}
+
+export function getIdList() {
+    let arToRet = []
+    for (const [key, value] of Object.entries(state.drawing.idList)) {
+        switch (key) {
+            case ("floor"): {
+                arToRet.push(value)
+            } break;
+            case ("background"): {
+                arToRet.push(value)
+            } break;
+            case ("landscape"): {
+                arToRet.push(value)
+            } break;
+            case ("building"): {
+                arToRet.push(value)
+            } break;
+            case ("tree"): {
+                arToRet.push(value)
+            } break;
+            case ("astrumDay"): {
+                arToRet.push(value)
+            } break;
+            case ("astrumNight"): {
+                arToRet.push(value)
+            } break;
+            case ("flyingObject"): {
+                for (let el of value) {
+                    arToRet.push(el)
+                }
+            } break;
+
+        }
+    }
+
+    return arToRet
+}
+
+export function orderElements() {
+    let orderedEl = []
+    let elements = state.elements
+    let elementTypes = state.elementTypes
+    let environments = state.environments
+    for (let elType of elementTypes) {
+        for (let env of environments) {
+            el = elements.find(element => ((element.elementType == elType) && (element.environment == env)))
+            let index = elements.indexOf(el)
+            elements.splice(index, 1)
+            orderedEl.push(el)
+        }
+    }
+    while ((el = elements.find(element => ((element.elementType == "flyingObject")))) != undefined) {
+        let index = elements.indexOf(el)
+        elements.splice(index, 1)
+        orderedEl.push(el)
+    }
+    while (elements.length > 0) {
+        let el = elements.pop()
+        orderedEl.push(el)
+    }
+    state.elements = orderedEl;
+
+}
+
+
+export function getImageToDraw(key) {
+    return state.imagesToDraw[key]
+}
+export function getFrameReq() {
+    return state.framereq
+}
+export function setFrameReq(value) {
+    state.framereq = value
+}
+
+/**
+ * work on play pause elements
+ */
+
+ export function setPlaying(value) {
+    state.isPlaying = value
+}
+
+export function isPlaying() {
+    return state.isPlaying
+}
+export function getAnimationSnap() {
+    return state.now1
+}
+export function setAnimationSnap(value) {
+    state.now1 = value
+}
+export function getFPS() {
+    return state.fps
+}
+
+export function getNavPage() {
+    return state.navigationPage
+}
+
+export function setNavPage(aPage) {
+    state.navigationPage = aPage
+}
+
+export function setInstrument(instrName, instrInstance) {
+
+    state.instruments[instrName] = instrInstance;
+}
+
+export function getInstrument(instrName) {
+    return state.instruments[instrName];
+}
+
+export function getInstrumentList() {
+    return state.drawing.audio.instruments;
+}
+
+export function getPlayingInstrument(instrUse) {
+    let instr = getInstrument(state.drawing.audio.instruments[instrUse])
+    return instr;
+}
+
+/*
+    Nodes handling
+*/
+
+export async function generateNodes() {
+    var nodeList = await Firebase.getNodes()
+    var mMelody = new MarkovMelody(nodeList)
+    state.melodyNodes = mMelody 
+}
+
+export function generateMelody(startId) {
+    return state.melodyNodes.generateMelody(startId)
+}
+
+export function getMelodyString() {
+    return state.drawing.audio.melody;
+}
+
+export function getChordString() {
+    return state.drawing.audio.chords;
+}
+
+export function getStartingNode() {
+    return state.startingId;
+}
+
+export function addPlayingPart(playingPart) {
+    state.playingPart.push(playingPart)
+}
+export function getPlayingPartLength() {
+    return state.playingPart.length
+}
+export function getPlayingPart() {
+    return state.playingPart
+}
