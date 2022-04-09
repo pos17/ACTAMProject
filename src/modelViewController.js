@@ -17,7 +17,7 @@ const state = {
     now1: 0,
     canvasFactor: 8,
     framereq: undefined,
-    fps: 15,
+    fps: 24,
     instruments: {},
     stateChanged: false,
     readyModel: false,
