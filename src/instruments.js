@@ -215,8 +215,8 @@ class Lead {
         this.instr = instr;
     }
 
-    triggerAttackRelease(note, duration, time, velocity) {
-        this.instr.triggerAttackRelease(note, duration, time, velocity)
+    triggerAttack(note, time, velocity) {
+        this.instr.triggerAttackRelease(note, '8n', time, velocity)
     }
 
     connect(node) {
