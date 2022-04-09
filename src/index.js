@@ -1,12 +1,65 @@
-import { Note, Chord, Interval} from "@tonaljs/tonal";
-import * as Tone from "tone"
+//import { Note, Chord, Interval} from "@tonaljs/tonal";
+//import * as Tone from "tone"
 
-import * as Instr from './instruments.js';
-import * as MVC from "./modelViewController.js"
-import { getAsset, getDocumentElement } from "./firebase.js";
+//import * as Instr from './instruments.js';
+//import * as MVC from "./modelViewController.js"
+//import { getAsset, getDocumentElement } from "./firebase.js";
+let app;
+let db;
+let storage;
+let ctx;
+let canvas;
+const state = {
+    loadingPage: {
+        value: 0,
+        limit: 0,
+        lastUpdate: undefined,
+    },
+    imagesToDraw: {},
+    environments: undefined,
+    elementTypes: undefined,
+    elements: [],
+    queueCounter: 0,
+    queueDay: 0, //0 night, 1 night to day, 2 day, 3 day to night
+    now1: 0,
+    canvasFactor: 8,
+    framereq: undefined,
+    fps: 15,
+    instruments: {},
+    stateChanged: false,
+    readyModel: false,
+    readyToPlay: false,
+    isPlaying: true,
+    key: "c", //main key of the system
+    bpm: 60,
+    totalLength: "",
+    navigationPage: 0,
+    startingId: 0,
+    master: {},
+    playingPart: [],
+    drawing: {
+        idList: {
+            astrumDay: 21,
+            astrumNight: 20,
+            landscape: 0,
+            floor: 8,
+            building: 12,
+            tree: 16,
+            background: 1,
+            flyingObject: []
+        },
+        image: {
+            flyingObject: []
+        },
+        audio: {
+            chords: "| F6 | Em7 A7 | Dm7 | Cm7 F7 |",
+            melody: "f+4 c+8 a8 e+4 c+8 a8\nd+8 e+8 cb8 d+8 db+8 bb8 g8 ab8\na4 f8 d8 g8 a8 f8 e8\neb8 g16 bb16 d+8 db+8 r8 f8 f16 g8 f16",
+            instruments: {},
+        }
+    },
+}
 
 
-initializeMyApp()
 
 /**
  *  Function to initialize the main settings of the player 
@@ -19,36 +72,433 @@ async function initializeMyApp() {
     //const context = new Tone.Context({ latencyHint: "playback" });
     // set this context as the global Context
     //Tone.setContext(context);
+    initializeFirebase();
     Tone.context.lookAhead = 5;
-    MVC.setNow()
-    MVC.setMasterChain()
+    setNow()
+    setMasterChain()
     console.log("master chain set")
-    console.log(MVC.getMasterChain())
-    Tone.Destination.chain(MVC.getMasterChain().compressor, MVC.getMasterChain().hiddenGain, MVC.getMasterChain().mainGain)
+    console.log(getMasterChain())
+    Tone.Destination.chain(getMasterChain().compressor, getMasterChain().hiddenGain, getMasterChain().mainGain)
     console.log("master chain get")
-    MVC.setLimit(40)
-    MVC.increase();
-    await MVC.initiateState()
+    setLimit(40)
+    increase();
+    await initiateState()
     buildInstruments()
     //console.log(state.instruments)
-    MVC.setLimit(90)
-    MVC.orderElements()
+    setLimit(90)
+    orderElements()
     await createMenu()
     assignClick()
     updatePage(0)
-    MVC.setLimit(100)
+    setLimit(100)
     //Tone.context.latencyHint = 'playback'
     console.log("i nodi")
+    prepareCanvas();
     /*
-    await MVC.generateNodes()
-    console.log(MVC.generateMelody())
+    await generateNodes()
+    console.log(generateMelody())
     let notePart = parseMelodyString("f+4 c+8 a8 e+4 c+8 a8\nd+8 e+8 cb8 d+8 db+8 bb8 g8 ab8\na4 f8 d8 g8 a8 f8 e8\neb16 g16 bb8 d+8 db+8 r8 f8 f16 g8 f16")
     console.log("notepart")
     console.log(notePart)
-    addNotePartToTransport(notePart, MVC.getInstrument("Marimba")) 
+    addNotePartToTransport(notePart, getInstrument("Marimba")) 
     */
 
 }
+
+
+initializeMyApp()
+
+/***
+ * 
+ * 
+ * MVC
+ * 
+ * 
+ */
+
+
+
+async function initiateState() {
+    let data = await getMenuTypes()
+    console.log("got?")
+    state.elementTypes = data.primaryTypes
+    state.environments = data.environments
+    let elements = await getElements()
+    state.elements = elements
+}
+
+function getSelectedIdList() {
+    return state.drawing.idList;
+}
+
+function getStateElements() {
+    return state.elements;
+}
+
+function getImage() {
+    return state.drawing.image
+}
+
+
+function setNow() {
+    state.loadingPage.lastUpdate = Date.now()
+}
+function getMasterChain() {
+    return state.master
+}
+function setMasterChain() {
+    state.master = {
+        compressor: new Tone.Compressor({
+            threshold: -15,
+            ratio: 7,
+        }),
+        hiddenGain: new Tone.Gain(0.3),
+        mainGain: new Tone.Gain(1),
+        mainVolumeSave: 1
+    }
+}
+
+function setMasterVolume(value) {
+    if (value > 0) state.master.mainVolumeSave = value
+    state.master.mainGain.gain.value = value
+}
+function getSavedVolume() {
+    return state.master.mainVolumeSave
+}
+
+function getMasterVolume() {
+    return state.master.mainGain.gain.value
+}
+
+
+
+/**
+ * loading bar improvement using requestAnimationFrame
+ */
+function setLimit(toValue) {
+    state.loadingPage.limit = toValue
+}
+
+function increase() {
+    let element = document.getElementById("loadingId");
+    let fromValue = state.loadingPage.value;
+    let limit = state.loadingPage.limit;
+    if ((Date.now() - state.loadingPage.lastUpdate) > (1000 / 30)) {
+        if (fromValue < limit) {
+            state.loadingPage.value = fromValue + 1;
+            element.value = state.loadingPage.value;
+        }
+        if (fromValue >= 100) {
+            document.getElementById("container").hidden = false
+            document.getElementById("initialLoadingPanel").style.visibility = 'hidden'
+
+        }
+        window.requestAnimationFrame(increase)
+        state.loadingPage.lastUpdate = Date.now()
+    } else {
+        window.requestAnimationFrame(increase)
+    }
+}
+
+
+
+
+/**
+ * id of the element to load to change the actual drawing state
+ * @param {int} idValue 
+ */
+function modifyIdList(idValue) {
+    console.log(idValue)
+    //console.log(state.possibleValues)
+    let modifyingValue = state.elements.find(element => element.id == idValue)
+    console.log("modifying value")
+    console.log(modifyingValue)
+    switch (modifyingValue.elementType) {
+        case ("floor"): {
+            state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
+        } break;
+        case ("background"): {
+            state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
+        } break;
+        case ("landscape"): {
+            state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
+            //state.drawing.chords.instrument = modifyingValue.instrument
+            //state.drawing.chords.effect = modifyingValue.effect
+        } break;
+        case ("building"): {
+            state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
+        } break;
+        case ("tree"): {
+            state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
+        } break;
+        case ("astrumDay"): {
+            state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
+        } break;
+        case ("astrumNight"): {
+            state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
+        } break;
+        case ("flyingObject"): {
+            const count = {};
+            for (const element of state.drawing.idList[modifyingValue.elementType]) {
+                if (count[element]) {
+                    count[element] += 1;
+                } else {
+                    count[element] = 1;
+                }
+            }
+            //console.log("in?1")
+            if (count[modifyingValue.id] > 2) {
+                while (state.drawing.idList[modifyingValue.elementType].indexOf(modifyingValue.id) != -1) {
+                    let index = state.drawing.idList[modifyingValue.elementType].indexOf(modifyingValue.id)
+                    state.drawing.idList[modifyingValue.elementType].splice(index, 1)
+                }
+            } else {
+                //console.log("in?2")
+                state.drawing.idList[modifyingValue.elementType].push(modifyingValue.id)
+            }
+        } break;
+
+    }
+    console.log(state.drawing)
+}
+
+async function updateState() {
+    let ids = getIdList()
+    let flyObjsArr = []
+    state.imagesToDraw["flyingObject"] = flyObjsArr
+
+
+    for (let id of ids) {
+        let modifyingValue = state.elements.find(element => element.id == id)
+        console.log("modifyingValue")
+        console.log(modifyingValue)
+        switch (modifyingValue.elementType) {
+            case ("floor"): {
+                state.drawing.image[modifyingValue.elementType] = modifyingValue.image
+                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
+                console.log("ch")
+                console.log(state.drawing.audio.instruments["chords"])
+                state.drawing.audio.instruments["chords"] = modifyingValue.audio.instrument
+
+            } break;
+            case ("background"): {
+                state.drawing.image[modifyingValue.elementType] = modifyingValue.image
+                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
+
+            } break;
+            case ("landscape"): {
+                state.drawing.image[modifyingValue.elementType] = modifyingValue.image
+                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
+            } break;
+            case ("building"): {
+                state.drawing.image[modifyingValue.elementType] = modifyingValue.image
+                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
+                console.log("mel")
+                console.log(state.drawing.audio.instruments["melody"])
+                state.drawing.audio.instruments["melody"] = modifyingValue.audio.instrument
+            } break;
+            case ("tree"): {
+                state.drawing.image[modifyingValue.elementType] = modifyingValue.image
+                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
+                console.log("bass")
+                console.log(state.drawing.audio.instruments["bass"])
+                state.drawing.audio.instruments["bass"] = modifyingValue.audio.instrument
+            } break;
+            case ("astrumDay"): {
+                state.drawing.image[modifyingValue.elementType] = modifyingValue.image
+                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
+            } break;
+            case ("astrumNight"): {
+                state.drawing.image[modifyingValue.elementType] = modifyingValue.image
+                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
+            } break;
+            case ("flyingObject"): {
+                state.drawing.image[modifyingValue.elementType].push(modifyingValue.image)
+                state.imagesToDraw[modifyingValue.elementType] = [];
+                let i = 0
+                for (let img of state.drawing.image[modifyingValue.elementType]) {
+                    console.log("Im here to check images to draw ")
+                    console.log(state.imagesToDraw)
+                    console.log(img)
+                    if (state.drawing.image[modifyingValue.elementType].indexOf(img) < i) {
+                        var elToCopy = state.imagesToDraw[modifyingValue.elementType][state.drawing.image[modifyingValue.elementType].indexOf(img)]
+                        console.log(elToCopy)
+                        var newEl = elToCopy.clone()
+                        console.log(newEl)
+                        newEl.changeRandomParams()
+                        console.log(newEl)
+                        state.imagesToDraw[modifyingValue.elementType].push(newEl);
+                        console.log("pushing a recycled element")
+                    } else {
+                        state.imagesToDraw[modifyingValue.elementType].push(await DrawableImage.build(img))
+                        console.log("pushing a recycled element")
+                    }
+                    i++
+                }
+            } break;
+
+        }
+    }
+}
+
+function getIdList() {
+    let arToRet = []
+    for (const [key, value] of Object.entries(state.drawing.idList)) {
+        switch (key) {
+            case ("floor"): {
+                arToRet.push(value)
+            } break;
+            case ("background"): {
+                arToRet.push(value)
+            } break;
+            case ("landscape"): {
+                arToRet.push(value)
+            } break;
+            case ("building"): {
+                arToRet.push(value)
+            } break;
+            case ("tree"): {
+                arToRet.push(value)
+            } break;
+            case ("astrumDay"): {
+                arToRet.push(value)
+            } break;
+            case ("astrumNight"): {
+                arToRet.push(value)
+            } break;
+            case ("flyingObject"): {
+                for (let el of value) {
+                    arToRet.push(el)
+                }
+            } break;
+
+        }
+    }
+
+    return arToRet
+}
+
+function orderElements() {
+    let orderedEl = []
+    let elements = state.elements
+    let elementTypes = state.elementTypes
+    let environments = state.environments
+    for (let elType of elementTypes) {
+        for (let env of environments) {
+            let el = elements.find(element => ((element.elementType == elType) && (element.environment == env)))
+            let index = elements.indexOf(el)
+            elements.splice(index, 1)
+            orderedEl.push(el)
+        }
+    }
+    let el1;
+    while ((el1 = elements.find(element => ((element.elementType == "flyingObject")))) != undefined) {
+        let index = elements.indexOf(el1)
+        elements.splice(index, 1)
+        orderedEl.push(el1)
+    }
+    while (elements.length > 0) {
+        let el = elements.pop()
+        orderedEl.push(el)
+    }
+    state.elements = orderedEl;
+
+}
+
+
+function getImageToDraw(key) {
+    return state.imagesToDraw[key]
+}
+function getFrameReq() {
+    return state.framereq
+}
+function setFrameReq(value) {
+    state.framereq = value
+}
+
+/**
+ * work on play pause elements
+ */
+
+function setPlaying(value) {
+    state.isPlaying = value
+}
+
+function isPlaying() {
+    return state.isPlaying
+}
+function getAnimationSnap() {
+    return state.now1
+}
+function setAnimationSnap(value) {
+    state.now1 = value
+}
+function getFPS() {
+    return state.fps
+}
+
+function getNavPage() {
+    return state.navigationPage
+}
+
+function setNavPage(aPage) {
+    state.navigationPage = aPage
+}
+
+function setInstrument(instrName, instrInstance) {
+
+    state.instruments[instrName] = instrInstance;
+}
+
+function getInstrument(instrName) {
+    return state.instruments[instrName];
+}
+
+function getInstrumentList() {
+    return state.drawing.audio.instruments;
+}
+
+function getPlayingInstrument(instrUse) {
+    let instr = getInstrument(state.drawing.audio.instruments[instrUse])
+    return instr;
+}
+
+/*
+    Nodes handling
+*/
+
+async function generateNodes() {
+    var nodeList = await getNodes()
+    var mMelody = new MarkovMelody(nodeList)
+    state.melodyNodes = mMelody
+}
+
+function generateMelody(startId) {
+    return state.melodyNodes.generateMelody(startId)
+}
+
+function getMelodyString() {
+    return state.drawing.audio.melody;
+}
+
+function getChordString() {
+    return state.drawing.audio.chords;
+}
+
+function getStartingNode() {
+    return state.startingId;
+}
+
+function addPlayingPart(playingPart) {
+    state.playingPart.push(playingPart)
+}
+function getPlayingPartLength() {
+    return state.playingPart.length
+}
+function getPlayingPart() {
+    return state.playingPart
+}
+
 
 // {
 //   "__idEnvStructure": "1x -> mountain, 2x -> desert, 3x -> city, 4x -> seaside, 5x -> skyelement",
@@ -58,7 +508,7 @@ async function initializeMyApp() {
  * 
  * @param {bool} isFirst values that states if the function is called during the initialization 
  */
-export async function propagateStateChanges(isFirst) {
+async function propagateStateChanges(isFirst) {
 
     console.log("state before propagation")
     console.log(state)
@@ -117,10 +567,10 @@ export async function propagateStateChanges(isFirst) {
 function buildInstruments() {
 
     //building audio channels
-    bassChannel = new Tone.Channel()
-    harmonyChannel = new Tone.Channel()
-    melodyChannel = new Tone.Channel()
-    drumChannel = new Tone.Channel()
+    let bassChannel = new Tone.Channel()
+    let harmonyChannel = new Tone.Channel()
+    let melodyChannel = new Tone.Channel()
+    let drumChannel = new Tone.Channel()
 
     console.log("here I am")
     /* //build modulation effects
@@ -160,27 +610,27 @@ function buildInstruments() {
     /*      building instruments         */
 
     /* leads */
-    let bell = new Instr.Bell();
-    let lead = new Instr.Lead();
-    let sitar = new Instr.Sitar()
-    let marimba = new Instr.Marimba();
+    let bell = new Bell();
+    let lead = new Lead();
+    let sitar = new Sitar()
+    let marimba = new Marimba();
 
     bell.connect(melodyChannel)
     lead.connect(melodyChannel)
     sitar.connect(melodyChannel)
     marimba.connect(melodyChannel)
 
-    MVC.setInstrument("Bell", bell)
-    MVC.setInstrument("Lead", lead)
-    MVC.setInstrument("Sitar", sitar)
-    MVC.setInstrument("Marimba", marimba)
+    setInstrument("Bell", bell)
+    setInstrument("Lead", lead)
+    setInstrument("Sitar", sitar)
+    setInstrument("Marimba", marimba)
 
 
     /* bass */
-    let bass1 = new Instr.Bass1()
-    let bass2 = new Instr.Bass2()
-    let bass3 = new Instr.Bass3()
-    let bass4 = new Instr.Bass4()
+    let bass1 = new Bass1()
+    let bass2 = new Bass2()
+    let bass3 = new Bass3()
+    let bass4 = new Bass4()
 
     bass1.connect(bassChannel)
     bass2.connect(bassChannel)
@@ -188,17 +638,17 @@ function buildInstruments() {
     bass4.connect(bassChannel)
 
 
-    MVC.setInstrument("Bass1", bass1)
-    MVC.setInstrument("Bass2", bass2)
-    MVC.setInstrument("Bass3", bass3)
-    MVC.setInstrument("Bass4", bass4)
+    setInstrument("Bass1", bass1)
+    setInstrument("Bass2", bass2)
+    setInstrument("Bass3", bass3)
+    setInstrument("Bass4", bass4)
 
 
     /* pads */
-    let synth1 = new Instr.Synth1()
-    let synth2 = new Instr.Synth2()
-    let synth3 = new Instr.Synth3()
-    let synth4 = new Instr.Synth4()
+    let synth1 = new Synth1()
+    let synth2 = new Synth2()
+    let synth3 = new Synth3()
+    let synth4 = new Synth4()
 
     synth1.connect(harmonyChannel)
     synth2.connect(harmonyChannel)
@@ -206,24 +656,24 @@ function buildInstruments() {
     synth4.connect(harmonyChannel)
 
 
-    MVC.setInstrument("Synth1", synth1)
-    MVC.setInstrument("Synth2", synth2)
-    MVC.setInstrument("Synth3", synth3)
-    MVC.setInstrument("Synth4", synth4)
+    setInstrument("Synth1", synth1)
+    setInstrument("Synth2", synth2)
+    setInstrument("Synth3", synth3)
+    setInstrument("Synth4", synth4)
 }
 
-export function startMusic() {
+function startMusic() {
     //Tone.Transport.loop = true;
     Tone.Transport.bpm.value = 60
     Tone.Transport.start("+0.1", "0:0:0");
 
-    MVC.setPlaying(true);
+    setPlaying(true);
 }
 
-export function stopMusic() {
+function stopMusic() {
     Tone.Transport.stop();
     //Tone.Transport.cancel(0)
-    MVC.setPlaying(false);
+    setPlaying(false);
 }
 
 
@@ -296,7 +746,7 @@ function parseMelodyString(melodyString) {
     let quarterIndex = 0;
     let sixteenthIndex = 0;
     for (let bar of barsArray) {
-        notesArray = bar.split(" ")
+        let notesArray = bar.split(" ")
         console.log(notesArray)
         for (let note of notesArray) {
             let noteMap = buildNoteFromString(note)
@@ -403,7 +853,7 @@ function buildNoteFromString(noteString) {
     for (let i = 0; i < points; i++) {
         duration = duration + "."
     }
-    noteToRet = {
+    let noteToRet = {
         note: midiNote,
         duration: duration
     }
@@ -445,7 +895,7 @@ function addNotePartToTransport(notePart, instrument) {
 
 function playChordSequence(chordsSequence, instrument) {
     console.log(instrument)
-    chordsPlayed = new Tone.Part(((time, value) => {
+    let chordsPlayed = new Tone.Part(((time, value) => {
         console.log("value to be played")
         console.log(value)
 
@@ -456,28 +906,28 @@ function playChordSequence(chordsSequence, instrument) {
 }
 
 function parseChordsString(chordsString) {
-    chordsToRet = []
-    barsArray = []
+    let chordsToRet = []
+    let barsArray = []
     barsArray = chordsString.split("|")
     barsArray.shift()
     barsArray.pop()
 
     //cleaned array
-    numOfBars = barsArray.length
+    let numOfBars = barsArray.length
     console.log(barsArray)
     console.log(numOfBars)
     let barCount = 0;
     let quarterCount = 0;
     let sixteenthCount = 0;
     for (let bar of barsArray) {
-        chordsBar = bar.split(" ");
+        let chordsBar = bar.split(" ");
         console.log(chordsBar)
         chordsBar.shift()
         chordsBar.pop()
         console.log(chordsBar)
         quarterCount = 0;
         sixteenthCount = 0;
-        quarterAdd = 4 / chordsBar.length;
+        let quarterAdd = 4 / chordsBar.length;
         console.log(quarterAdd)
         for (let aChord of chordsBar) {
             var dur;
@@ -491,7 +941,7 @@ function parseChordsString(chordsString) {
             }
             var tTime = barCount + ":" + quarterCount + ":" + sixteenthCount
             let notesArray = fromChordToNotes(aChord)
-            chord = {
+            let chord = {
                 notes: notesArray,
                 time: tTime,
                 duration: dur
@@ -517,14 +967,14 @@ console.log("testParsing")
 parseChordsString("| F6 | Em7 A7 | Dm7 | Cm7 F7 |")
 
 function fromChordToNotes(chordName) {
-    var notesArray = Chord.get(chordName).notes
-    var distanceFromC = Interval.distance("C", notesArray[notesArray.length - 1])
+    var notesArray = Tonal.Chord.get(chordName).notes
+    var distanceFromC = Tonal.Interval.distance("C", notesArray[notesArray.length - 1])
     console.log("distance from C: " + distanceFromC)
-    noteOctave = 3
+    let noteOctave = 3
     for (var j = notesArray.length - 1; j >= 0; j--) {
-        if (Interval.semitones(Interval.distance("C", notesArray[j])) > Interval.semitones(distanceFromC)) {
+        if (Tonal.Interval.semitones(Tonal.Interval.distance("C", notesArray[j])) > Tonal.Interval.semitones(distanceFromC)) {
             noteOctave--;
-            distanceFromC = Interval.distance("C", notesArray[j])
+            distanceFromC = Tonal.Interval.distance("C", notesArray[j])
         }
         notesArray[j] = notesArray[j] + noteOctave
 
@@ -540,16 +990,16 @@ Tone.Transport.schedule(()=>{
   },"0:0:0")
 */
 
-export function initMusic() {
+function initMusic() {
     Tone.Transport.cancel()
-    let computedMelody = parseMelodyString(MVC.getMelodyString())
-    let computeChords = parseChordsString(MVC.getChordString())
+    let computedMelody = parseMelodyString(getMelodyString())
+    let computeChords = parseChordsString(getChordString())
     console.log(computedMelody)
     if (computeChords.barLoop != computedMelody.loopValue) {
         console.error("loop bars no consistent, melodyLoop: " + computedMelody.loopValue + ", chordsloop: " + computeChords.barLoop)
     }
-    addNotePartToTransport(computedMelody.notesArray, MVC.getPlayingInstrument("melody"))
-    playChordSequence(computeChords.chordsList, MVC.getPlayingInstrument("chords"))
+    addNotePartToTransport(computedMelody.notesArray, getPlayingInstrument("melody"))
+    playChordSequence(computeChords.chordsList, getPlayingInstrument("chords"))
     Tone.Transport.loopEnd = computedMelody.loopValue;
     Tone.Transport.loop = true;
 
@@ -562,48 +1012,48 @@ export function initMusic() {
 //canvas handling
 
 
+function prepareCanvas() {
+    const canvasDiv = document.getElementById('canvas-div');
 
-const canvasDiv = document.getElementById('canvas-div');
+    var factor = 4;
 
-var factor = 4;
+    canvas = document.getElementById("main-canvas")
+    canvas.className = "canvases";
 
-var canvas = document.getElementById("main-canvas")
-canvas.className = "canvases";
+    canvas.width = 256 * factor;
+    canvas.height = 128 * factor;
+    canvasDiv.appendChild(canvas);
 
-canvas.width = 256 * factor;
-canvas.height = 128 * factor;
-canvasDiv.appendChild(canvas);
+    ctx = canvas.getContext('2d');
 
-var ctx = canvas.getContext('2d');
-
-//fintanto che non capisco come gira il discorso background, il bg è notturno, si cambia poi in caso 
+    //fintanto che non capisco come gira il discorso background, il bg è notturno, si cambia poi in caso 
 
 
-var time0 = new Date();
-var omega = 0; /* canvas angular speed */
-var moonRadius = canvas.width / 1.1;
+    var time0 = new Date();
+    var omega = 0; /* canvas angular speed */
+    var moonRadius = canvas.width / 1.1;
 
-var t = Tone.Time('16m').toMilliseconds()
-
-export async function initImages() {
+    var t = Tone.Time('16m').toMilliseconds()
+}
+async function initImages() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    console.log(MVC.getImageToDraw("astrumDay"))
-    console.log(MVC.getImageToDraw("astrumNight"))
+    console.log(getImageToDraw("astrumDay"))
+    console.log(getImageToDraw("astrumNight"))
 
     console.log("passato")
-    MVC.setFrameReq(window.requestAnimationFrame(countFPS))
+    setFrameReq(window.requestAnimationFrame(countFPS))
 }
 
 function countFPS() {
-    if (MVC.isPlaying()) {
-        if (Date.now() - MVC.getAnimationSnap() > 1000 / MVC.getFPS()) {
+    if (isPlaying()) {
+        if (Date.now() - getAnimationSnap() > 1000 / getFPS()) {
             //console.log("print")
-            MVC.setAnimationSnap(Date.now())
-            MVC.setFrameReq(window.requestAnimationFrame(createEnvironment));
+            setAnimationSnap(Date.now())
+            setFrameReq(window.requestAnimationFrame(createEnvironment));
             //console.log(Model.state.framereq)
         } else {
 
-            MVC.setFrameReq(window.requestAnimationFrame(countFPS));
+            setFrameReq(window.requestAnimationFrame(countFPS));
             //console.log(Model.state.framereq)
         }
     }
@@ -638,8 +1088,8 @@ function createEnvironment() {
     ctx.imageSmoothingEnabled = false;
     var a = 5//0.5
     omega = a / t;
-    let hAstra = h - MVC.getImageToDraw("floor").getNHeight() * factor - 25 * factor;
-    let wAstra = w / 2 - ((MVC.getImageToDraw("astrumNight").getNWidth()) / 2 * factor)
+    let hAstra = h - getImageToDraw("floor").getNHeight() * factor - 25 * factor;
+    let wAstra = w / 2 - ((getImageToDraw("astrumNight").getNWidth()) / 2 * factor)
     var angle = (ALPHASTART + omega * (time - time0.getTime()))
 
     let angleD = angle % (2 * Math.PI)
@@ -685,7 +1135,7 @@ function createEnvironment() {
         lightOn = false
         sunToDraw = (1 / (2 * Math.PI - SUNSET_START)) * (angleD - SUNSET_START)
     }
-    let background = MVC.getImageToDraw("background");
+    let background = getImageToDraw("background");
     background.drawThisImage(0, alphaNight, lightOn, canvas.height, canvas.width, ctx, factor)
     background.drawThisImage(1, alphaSunrise, lightOn, canvas.height, canvas.width, ctx, factor)
     background.drawThisImage(2, alphaSunset, lightOn, canvas.height, canvas.width, ctx, factor)
@@ -719,7 +1169,7 @@ function createEnvironment() {
 
     ctx.save()
 
-    let moon = MVC.getImageToDraw("astrumNight")
+    let moon = getImageToDraw("astrumNight")
     ctx.translate(Math.round(-wAstra * (Math.cos(angle))), Math.round(hAstra * (Math.sin(-angle))))
     ctx.translate(Math.round(-(moon.getNWidth() * factor) / 2), Math.round((moon.getNHeight() * factor) / 2))
     moon.drawThisImage(0, 1, lightOn, 0, 0, ctx, factor)
@@ -727,7 +1177,7 @@ function createEnvironment() {
 
     ctx.save()
 
-    let sun = MVC.getImageToDraw("astrumDay")
+    let sun = getImageToDraw("astrumDay")
     ctx.translate(Math.round(wAstra * (Math.cos(angle - 0.1))), Math.round(hAstra * (Math.sin(angle - 0.1))))
     ctx.translate(Math.round(-(sun.getNWidth() * factor) / 2), Math.round((sun.getNHeight() * factor) / 2))
     sun.drawThisImage(0, 1, lightOn, 0, 0, ctx, factor)
@@ -738,15 +1188,15 @@ function createEnvironment() {
     ctx.restore()
 
     ctx.save()
-    let flyObjs = MVC.getImageToDraw("flyingObject")
+    let flyObjs = getImageToDraw("flyingObject")
     if (flyObjs.length != 0) {
         console.log("num of objs")
         console.log(flyObjs.length)
         // console.log(flyObjs)
         for (let flyObj of flyObjs) {
             ctx.save()
-            ctx.translate((-w) + (((2*flyObj.getProperty().shift*2*w) + ((flyObj.getProperty().velocity * angle) * w)) % (2 * w)), flyObj.getProperty().shift * (h / 2)/*(h / 10)*/)
-            flyObj.drawThisImage(0,  alphaNight, lightOn, canvas.height, canvas.width, ctx, factor)
+            ctx.translate((-w) + (((2 * flyObj.getProperty().shift * 2 * w) + ((flyObj.getProperty().velocity * angle) * w)) % (2 * w)), flyObj.getProperty().shift * (h / 2)/*(h / 10)*/)
+            flyObj.drawThisImage(0, alphaNight, lightOn, canvas.height, canvas.width, ctx, factor)
             flyObj.drawThisImage(1, alphaSunrise, lightOn, canvas.height, canvas.width, ctx, factor)
             flyObj.drawThisImage(2, alphaSunset, lightOn, canvas.height, canvas.width, ctx, factor)
             flyObj.drawThisImage(3, alphaDay, lightOn, canvas.height, canvas.width, ctx, factor)
@@ -755,12 +1205,12 @@ function createEnvironment() {
     }
     ctx.restore()
     // STATIC ELEMENTS
-    MVC.getImageToDraw("landscape").drawThisImage(0, 1, lightOn, canvas.height, canvas.width, ctx, factor)
-    MVC.getImageToDraw("floor").drawThisImage(0, 1, lightOn, canvas.height, canvas.width, ctx, factor)
-    MVC.getImageToDraw("building").drawThisImage(0, 1, lightOn, canvas.height, canvas.width, ctx, factor)
-    MVC.getImageToDraw("tree").drawThisImage(0, 1, lightOn, canvas.height, canvas.width, ctx, factor)
+    getImageToDraw("landscape").drawThisImage(0, 1, lightOn, canvas.height, canvas.width, ctx, factor)
+    getImageToDraw("floor").drawThisImage(0, 1, lightOn, canvas.height, canvas.width, ctx, factor)
+    getImageToDraw("building").drawThisImage(0, 1, lightOn, canvas.height, canvas.width, ctx, factor)
+    getImageToDraw("tree").drawThisImage(0, 1, lightOn, canvas.height, canvas.width, ctx, factor)
 
-    MVC.setFrameReq(window.requestAnimationFrame(countFPS));
+    setFrameReq(window.requestAnimationFrame(countFPS));
 }
 
 
@@ -789,7 +1239,7 @@ function blendBG() {
 
 /* CREATING MENU' */
 /*
-export  async function initJSON() {
+  async function initJSON() {
     for(let datum of Model.state.possibleValues.data) {
         datum.image = new_assets[datum.imageName]
     }
@@ -846,12 +1296,12 @@ var btn_right = document.getElementById('btn-dx')
 
 
 
-export async function createMenu() {
+async function createMenu() {
     console.log("menu Creation")
     var btnContainer = document.getElementById("tokenGrid")// document.createElement('div')
     btnContainer.className = 'token-btn-container'
-    console.log(MVC.getStateElements())
-    for (let datum of MVC.getStateElements()) {
+    console.log(getStateElements())
+    for (let datum of getStateElements()) {
         console.log('datum: ')
         console.log(datum)
         console.log(datum.image.previewUrl)
@@ -890,7 +1340,7 @@ export async function createMenu() {
     }
 }
 
-export function assignClick() {
+function assignClick() {
     document.querySelectorAll('.token-btn').forEach((btn) => {
 
         btn.addEventListener('click', () => {
@@ -903,7 +1353,7 @@ export function assignClick() {
             //console.log(Model.state.drawing)
             //Model.state.drawing.
             //document.querySelectorAll('.'+ el).forEach((elem)=>{elem.classList.remove('selected-btn')})
-            MVC.modifyIdList(id)
+            modifyIdList(id)
 
             visualizeSelectedTokens()
 
@@ -917,11 +1367,11 @@ function visualizeSelectedTokens() {
         btn.classList.remove('selected-btn')
     });
     document.querySelectorAll('.token-btn').forEach((btn) => {
-        var elPos = Object.values(MVC.getIdList()).indexOf(parseInt(btn.id))
+        var elPos = Object.values(getIdList()).indexOf(parseInt(btn.id))
         var counter = 0;
         while (elPos > -1) {
             counter = counter + 1;
-            elPos = Object.values(MVC.getIdList()).indexOf(parseInt(btn.id), elPos + 1)
+            elPos = Object.values(getIdList()).indexOf(parseInt(btn.id), elPos + 1)
         }
         if (btn.classList.contains("flyingObject")) {
             var tAdd = document.getElementById("tAdd" + btn.id)
@@ -936,7 +1386,7 @@ function visualizeSelectedTokens() {
 
 
 /*
-export async function createMenu () {
+ async function createMenu () {
     console.log("menu Creation")
     var btnContainer = document.getElementById("tokenGrid")// document.createElement('div')
     btnContainer.className = 'token-btn-container'
@@ -1056,7 +1506,7 @@ export async function createMenu () {
 
 /* -------------------------------------------------------- */
 
-// export function playableButton (ready) {
+//  function playableButton (ready) {
 //     if (ready) {
 //         playButton.classList.replace('is-disabled', 'is-success');
 //     }
@@ -1093,7 +1543,7 @@ okButton.onclick = () => {
 /*
 btn_right.onclick = async () => {
     //console.log(Model.state)
-    await MVC.updateState()
+    await updateState()
     await initImages()
     document.getElementById("canva-container").hidden = false;
     document.getElementById("menu-container").hidden = true;
@@ -1120,8 +1570,8 @@ document.getElementById('menu').onclick = () => {
  * @param {*} aPage 0 selecting tokens
  *                  1 player page 
  */
-export async function updatePage(aPage) {
-    MVC.setNavPage(aPage)
+async function updatePage(aPage) {
+    setNavPage(aPage)
     console.log("page")
     console.log(aPage)
 
@@ -1140,7 +1590,7 @@ export async function updatePage(aPage) {
 
 
 async function playerPage() {
-    await MVC.updateState()
+    await updateState()
     await initImages()
     initMusic()
     Tone.start()
@@ -1149,7 +1599,7 @@ async function playerPage() {
     volumeUpdate(70)
     volSlider.addEventListener('input', function () { volumeUpdate(volSlider.value) }, false);
     document.getElementById("btn-dx1").onclick = () => { openFullscreen("main-canvas") }
-    document.getElementById("btn-stop").onclick = () => { updatePage(0);  stopMusic()}
+    document.getElementById("btn-stop").onclick = () => { updatePage(0); stopMusic() }
     document.getElementById("player-navbar").hidden = false;
     document.getElementById("canva-container").hidden = false;
     document.getElementById("menu-container").hidden = true;
@@ -1162,7 +1612,7 @@ async function menuPage() {
     //await createMenu()
     visualizeSelectedTokens()
     //document.getElementById("main-fs-button").onclick = () => { openFullscreen("main-body") }
-    document.getElementById("btn-dx").onclick = () => { updatePage(1);}
+    document.getElementById("btn-dx").onclick = () => { updatePage(1); }
     document.getElementById("player-navbar").hidden = true;
     document.getElementById("canva-container").hidden = true;
     document.getElementById("menu-container").hidden = false;
@@ -1246,20 +1696,20 @@ function volumeUpdate(valueToSet) {
     }
     document.getElementById("volume-slider").value = valueToSet;
     let vts = valueToSet / 100
-    MVC.setMasterVolume(vts)
-    console.log(MVC.getMasterVolume())
+    setMasterVolume(vts)
+    console.log(getMasterVolume())
 }
 
 function volumeButton() {
     console.log("accazzo")
-    let testValue = MVC.getMasterVolume() * 100
+    let testValue = getMasterVolume() * 100
     console.log(testValue)
     if (testValue > 0) {
         volumeUpdate(0)
     } else {
         console.log("savedVolume")
-        console.log(MVC.getSavedVolume() * 100)
-        volumeUpdate(MVC.getSavedVolume() * 100)
+        console.log(getSavedVolume() * 100)
+        volumeUpdate(getSavedVolume() * 100)
     }
 }
 
@@ -1270,7 +1720,7 @@ function volumeButton() {
 
 
 
-export class DrawableImage {
+class DrawableImage {
     constructor(anImageArray, left, bottom, anImageType, property) {
         this.imageType = anImageType;
         this.imageArray = anImageArray;
@@ -1385,190 +1835,223 @@ export class DrawableImage {
  */
 
 
- const firebaseConfig = {
 
-    apiKey: "AIzaSyCx_9Kyfjn03jNXGM9dj7b8Omfd6CP0awU",
-  
-    authDomain: "actamproject-598ad.firebaseapp.com",
-  
-    projectId: "actamproject-598ad",
-  
-    storageBucket: "actamproject-598ad.appspot.com",
-  
-    messagingSenderId: "868627486863",
-  
-    appId: "1:868627486863:web:ee55ebd557f3abd6d5b8fa"
-  
-  };
-  
-  
-  // Initialize Firebase
-  const firebase = require("firebase");
-  // Required for side-effects
-  require("firebase/firestore");
-  
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  
-  
-  
-  
-  //------------------storage handling-------------------------------------- 
-  
-  const storage = firebase.storage()
-  
-  export async function getAsset(imageName) {
-      let assetPos = 'assets/' + imageName
-      let reference = ref(storage, assetPos) 
-      console.log(reference)
-      let url = await getDownloadURL(reference)
-      try {
-          return new URL(url)
-      } catch(error) {
-          // A full list of error codes is available at
-          // https://firebase.google.com/docs/storage/web/handle-errors
-          switch (error.code) {
+
+
+// Initialize Firebase
+//const firebase = require("firebase");
+// Required for side-effects
+//require("firebase/firestore");
+
+//import "firebase/firestore";
+
+function initializeFirebase() {
+    const firebaseConfig = {
+
+        apiKey: "AIzaSyCx_9Kyfjn03jNXGM9dj7b8Omfd6CP0awU",
+
+        authDomain: "actamproject-598ad.firebaseapp.com",
+
+        projectId: "actamproject-598ad",
+
+        storageBucket: "actamproject-598ad.appspot.com",
+
+        messagingSenderId: "868627486863",
+
+        appId: "1:868627486863:web:ee55ebd557f3abd6d5b8fa"
+
+    };
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    storage = firebase.storage()
+}
+
+
+
+//------------------storage handling-------------------------------------- 
+
+
+
+async function getAsset(imageName) {
+    let assetPos = 'assets/' + imageName
+    let reference = storage.ref(assetPos)
+    console.log(reference)
+    let url = await reference.getDownloadURL()
+    try {
+        return new URL(url)
+    } catch (error) {
+        // A full list of error codes is available at
+        // https://firebase.google.com/docs/storage/web/handle-errors
+        switch (error.code) {
             case 'storage/object-not-found':
-              // File doesn't exist
-              break;
+                // File doesn't exist
+                break;
             case 'storage/unauthorized':
-              // User doesn't have permission to access the object
-              break;
+                // User doesn't have permission to access the object
+                break;
             case 'storage/canceled':
-              // User canceled the upload
-              break;
-      
+                // User canceled the upload
+                break;
+
             // ...
-      
+
             case 'storage/unknown':
-              // Unknown error occurred, inspect the server response
-              break;
-          }
-      }
-  }
-  
-  export async function getSample(instr, note) {
+                // Unknown error occurred, inspect the server response
+                break;
+        }
+    }
+}
+
+async function getSample(instr, note) {
     let instrPos = 'samples/' + instr + '/'
     let notePos = instrPos + note
     console.log(notePos)
-    let reference = ref(storage, notePos) 
+    let reference = ref(storage, notePos)
     console.log(reference)
     let url = await getDownloadURL(reference)
     try {
         return new URL(url)
-    } catch(error) {
+    } catch (error) {
         // A full list of error codes is available at
         // https://firebase.google.com/docs/storage/web/handle-errors
         switch (error.code) {
-          case 'storage/object-not-found':
-            // File doesn't exist
-            break;
-          case 'storage/unauthorized':
-            // User doesn't have permission to access the object
-            break;
-          case 'storage/canceled':
-            // User canceled the upload
-            break;
-    
-          // ...
-    
-          case 'storage/unknown':
-            // Unknown error occurred, inspect the server response
-            break;
+            case 'storage/object-not-found':
+                // File doesn't exist
+                break;
+            case 'storage/unauthorized':
+                // User doesn't have permission to access the object
+                break;
+            case 'storage/canceled':
+                // User canceled the upload
+                break;
+
+            // ...
+
+            case 'storage/unknown':
+                // Unknown error occurred, inspect the server response
+                break;
         }
     }
-  }
-  
-  //-------------------------------database handling--------------------------//
-  export async function getMenuTypes() {
-    const docRef = doc(db, "menu", "menuTypes");
-    const docSnap = await getDoc(docRef);
-  
+}
+
+//-------------------------------database handling--------------------------//
+async function getMenuTypes() {
+    const docRef = db.collection("menu").doc("menuTypes");
+    console.log("ci sono arrivato qui")
+    //const docSnap = await getDoc(docRef);
+    let doc = await docRef.get()
+    try {
+        if (doc.exists) {
+            console.log("Document data:", doc.data());
+            return doc.data();
+        } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+        }
+    } catch (error) {
+        console.log("Error getting document:", error);
+    };
+    console.log("ci sono arrivato qui2")
+    /*
     if (docSnap.exists()) {
-      return docSnap.data();
+        return docSnap.data();
     } else {
-      // doc.data() will be undefined in this case
-      console.log("No such document!");
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
     }
-  }
-  
-  export async function getElementsByType(type) {
+    */
+}
+
+async function getElementsByType(type) {
     const q = query(collection(db, "elements"), where("elementType", "==", type));
-  
+
     const querySnapshot = await getDocs(q);
     elementsToRet = []
     querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      elementsToRet.push(doc.data());
+        // doc.data() is never undefined for query doc snapshots
+        elementsToRet.push(doc.data());
     });
     return elementsToRet
-  }
-  
-  export async function getElements() {
-    const q = query(collection(db, "elements"));
-  
-    const querySnapshot = await getDocs(q);
-    elementsToRet = []
+}
+
+async function getElements() {
+    //const q = query(collection(db, "elements"));
+    let elementsToRet =[];
+    let querySnapshot = await db.collection("elements").get()
     querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      elementsToRet.push(doc.data());
+        // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, " => ", doc.data());
+        elementsToRet.push(doc.data());
     });
+
+
+    // let el = db.collection("elements");
+    // //const querySnapshot = await getDocs(el);
+    // //elementsToRet = []
+    // let querySnapshot = await el.get();
+
+    // console.log("qsn")
+    // console.log(doc.data())
+    // querySnapshot.forEach((doc) => {
+    //     // doc.data() is never undefined for query doc snapshots
+    //     elementsToRet.push(doc.data());
+    // });
     return elementsToRet
-  }
-  
-  export async function getDocumentElement(docId) {
+}
+
+async function getDocumentElement(docId) {
     const docRef = doc(db, "elements", docId);
     const docSnap = await getDoc(docRef);
-    
+
     if (docSnap.exists()) {
-      return docSnap.data();
+        return docSnap.data();
     } else {
-      // doc.data() will be undefined in this case
-      console.log("No such document!");
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
     }
-  }
-  
-  export async function getNodes() {
+}
+
+async function getNodes() {
     const q = query(collection(db, "nodes"));
-  
+
     const querySnapshot = await getDocs(q);
     elementsToRet = []
     querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      elementsToRet.push(doc.data());
+        // doc.data() is never undefined for query doc snapshots
+        elementsToRet.push(doc.data());
     });
     return elementsToRet
-  }
+}
 
 
 
-  /***
-   * 
-   * 
-   * 
-   * markov nodes 
-   * 
-   * 
-   */
+/***
+ * 
+ * 
+ * 
+ * markov nodes 
+ * 
+ * 
+ */
 
-   export class MarkovMelody {
+class MarkovMelody {
     constructor(nodes) {
         this.nodes = nodes
         console.log(this.nodes)
     }
 
-    generateMelody(startId=0) {
+    generateMelody(startId = 0) {
         var path = this._generatePath(startId)
         var melodySequence = ""
         var chordsSequence = "|"
-        for(let node of path) {
-            melodySequence = melodySequence + node.mel + "\n"    
-            chordsSequence = chordsSequence + " "+ node.chord +" |"
+        for (let node of path) {
+            melodySequence = melodySequence + node.mel + "\n"
+            chordsSequence = chordsSequence + " " + node.chord + " |"
         }
-        
+
         return {
-            melody:melodySequence,
-            chords:chordsSequence
+            melody: melodySequence,
+            chords: chordsSequence
         }
     }
 
@@ -1580,7 +2063,7 @@ export class DrawableImage {
         let thisNodeId = -1;
         var thisNode = startingNode
         let path = []
-        while(thisNodeId != startingNodeId) {
+        while (thisNodeId != startingNodeId) {
             path.push(thisNode)
             console.log(thisNode)
             var nextNodeId = this._nextRandomNode(thisNode)
@@ -1594,7 +2077,7 @@ export class DrawableImage {
     _nextRandomNode(aNode) {
         let possibleNodes = aNode.links
         let totalWeights = 0;
-        for(var i = 0; i < possibleNodes.length;i++) {
+        for (var i = 0; i < possibleNodes.length; i++) {
             totalWeights = totalWeights + possibleNodes[i].prob
         }
         var random = Math.random() * totalWeights;
@@ -1602,7 +2085,7 @@ export class DrawableImage {
         //console.log(random)
         for (var i = 0; i < possibleNodes.length; i++) {
             random -= possibleNodes[i].prob;
-    
+
             if (random < 0) {
                 return possibleNodes[i].id;
             }
@@ -1612,441 +2095,1155 @@ export class DrawableImage {
 
 }
 
-/***
- * 
- * 
- * MVC
- * 
- * 
- */
 
 
-const state = {
-    loadingPage: {
-        value: 0,
-        limit: 0,
-        lastUpdate: undefined,
-    },
-    imagesToDraw: {},
-    environments: undefined,
-    elementTypes: undefined,
-    elements: [],
-    queueCounter: 0,
-    queueDay: 0, //0 night, 1 night to day, 2 day, 3 day to night
-    now1: 0,
-    canvasFactor: 8,
-    framereq: undefined,
-    fps: 15,
-    instruments: {},
-    stateChanged: false,
-    readyModel: false,
-    readyToPlay: false,
-    isPlaying: true,
-    key: "c", //main key of the system
-    bpm: 60,
-    totalLength: "",
-    navigationPage: 0,
-    startingId:0,
-    master: {},
-    playingPart:[],
-    drawing: {
-        idList: {
-            astrumDay: 21,
-            astrumNight: 20,
-            landscape: 0,
-            floor: 8,
-            building: 12,
-            tree: 16,
-            background: 1,
-            flyingObject: []
-        },
-        image: {
-            flyingObject: []
-        },
-        audio:{
-            chords:"| F6 | Em7 A7 | Dm7 | Cm7 F7 |",
-            melody:"f+4 c+8 a8 e+4 c+8 a8\nd+8 e+8 cb8 d+8 db+8 bb8 g8 ab8\na4 f8 d8 g8 a8 f8 e8\neb8 g16 bb16 d+8 db+8 r8 f8 f16 g8 f16",
-            instruments:{},
-        }
-    },
-}
-
-export async function initiateState() {
-    let data = await Firebase.getMenuTypes()
-    console.log("got?")
-    state.elementTypes = data.primaryTypes
-    state.environments = data.environments
-    let elements = await Firebase.getElements()
-    state.elements = elements
-}
-
-export function getSelectedIdList() {
-    return state.drawing.idList;
-}
-
-export function getStateElements() {
-    return state.elements;
-}
-
-export function getImage() {
-    return state.drawing.image
-}
 
 
-export function setNow() {
-    state.loadingPage.lastUpdate = Date.now()
-}
-export function getMasterChain() {
-    return state.master
-}
-export function setMasterChain() {
-    state.master = {
-        compressor: new Tone.Compressor({
-            threshold: -15,
-            ratio: 7,
-        }),
-        hiddenGain: new Tone.Gain(0.3),
-        mainGain: new Tone.Gain(1),
-        mainVolumeSave: 1
+
+
+//import * as Tone from 'tone'
+//import { getSample} from "./firebase.js";
+
+//import { DuoSynth, Freeverb, LFO } from 'tone';
+let buffer1 = new Tone.Buffer()
+let buffer2 = new Tone.Buffer()
+let buffer3 = new Tone.Buffer()
+let buffer4 = new Tone.Buffer()
+class Kick {
+    constructor() {
+        var kick = new Tone.MembraneSynth({
+            envelope: {
+                attack: 0.01,
+                decay: 0.01,
+                sustain: 0.3,
+                release: 0.2
+            },
+            frequency: 50,
+        }).toDestination();
+        this.kick = kick;
+    }
+
+    trigger(time, velocity) {
+        this.kick.triggerAttackRelease("C1", "8n", time, velocity)
+        // console.log("kicktime")
     }
 }
 
-export function setMasterVolume(value) {
-    if (value > 0) state.master.mainVolumeSave = value
-    state.master.mainGain.gain.value = value
-}
-export function getSavedVolume() {
-    return state.master.mainVolumeSave
-}
+class Snare {
+    constructor() {
+        var snare = new Tone.NoiseSynth({
+            noise: {
+                type: 'pink'
+            },
+            envelope: {
+                attack: 0.01,
+                decay: 0.1,
+                sustain: 0.1,
+                release: 0.1
+            },
+        })
 
-export function getMasterVolume() {
-    return state.master.mainGain.gain.value
-}
+        var filter = new Tone.Filter({
+            frequency: 15000,
+            type: "lowpass",
+        }).toDestination()
 
+        var gain = new Tone.Gain({
+            gain: 3,
+        });
 
+        var freqEnv = new Tone.FrequencyEnvelope({
+            attack: 0,
+            decay: 0.01,
+            sustain: 0.5,
+            release: 0.2,
+            baseFrequency: "10000hz",
+            octaves: -2,
+        }).connect(filter.frequency)
 
-/**
- * loading bar improvement using requestAnimationFrame
- */
-export function setLimit(toValue) {
-    state.loadingPage.limit = toValue
-}
+        snare.chain(gain, filter);
 
-export function increase() {
-    let element = document.getElementById("loadingId");
-    let fromValue = state.loadingPage.value;
-    let limit = state.loadingPage.limit;
-    if ((Date.now() - state.loadingPage.lastUpdate) > (1000 / 30)) {
-        if (fromValue < limit) {
-            state.loadingPage.value = fromValue + 1;
-            element.value = state.loadingPage.value;
-        }
-        if (fromValue >= 100) {
-            document.getElementById("container").hidden = false
-            document.getElementById("initialLoadingPanel").style.visibility = 'hidden'
+        this.env = freqEnv;
+        this.snare = snare;
+    }
 
-        }
-        window.requestAnimationFrame(increase)
-        state.loadingPage.lastUpdate = Date.now()
-    } else {
-        window.requestAnimationFrame(increase)
+    trigger(time, velocity) {
+        this.env.triggerAttackRelease("8n", time, velocity);
+        this.snare.triggerAttackRelease("8n", time, velocity);
+        // console.log("snaretime")
     }
 }
 
+class HiHatClosed {
+    constructor() {
+        var hihat = new Tone.NoiseSynth({
+            volume: -5,
+            envelope: {
+                attack: 0,
+                decay: 0,
+                sustain: 0.4,
+                release: 0.1
+            },
+        }
+        );
 
+        var filter = new Tone.Filter({
+            frequency: 5000,
+            type: "highpass",
+            rolloff: -24,
+        }).toDestination();
 
+        hihat.connect(filter);
+        this.hihat = hihat;
+    }
 
-/**
- * id of the element to load to change the actual drawing state
- * @param {int} idValue 
- */
-export function modifyIdList(idValue) {
-    console.log(idValue)
-    //console.log(state.possibleValues)
-    modifyingValue = state.elements.find(element => element.id == idValue)
-    console.log("modifying value")
-    console.log(modifyingValue)
-    switch (modifyingValue.elementType) {
-        case ("floor"): {
-            state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
-        } break;
-        case ("background"): {
-            state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
-        } break;
-        case ("landscape"): {
-            state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
-            //state.drawing.chords.instrument = modifyingValue.instrument
-            //state.drawing.chords.effect = modifyingValue.effect
-        } break;
-        case ("building"): {
-            state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
-        } break;
-        case ("tree"): {
-            state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
-        } break;
-        case ("astrumDay"): {
-            state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
-        } break;
-        case ("astrumNight"): {
-            state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
-        } break;
-        case ("flyingObject"): {
-            const count = {};
-            for (const element of state.drawing.idList[modifyingValue.elementType]) {
-                if (count[element]) {
-                    count[element] += 1;
-                } else {
-                    count[element] = 1;
-                }
+    trigger(time, velocity) {
+        this.hihat.triggerAttackRelease(0.01, time, velocity)
+    }
+}
+
+class HiHatOpen {
+    constructor() {
+        var hihat = new Tone.NoiseSynth({
+            volume: -5,
+            envelope: {
+                attack: 0,
+                decay: 0,
+                sustain: 0.4,
+                release: 0.02
+            },
+        }
+        );
+
+        var filter = new Tone.Filter({
+            frequency: 3000,
+            type: "highpass",
+            rolloff: -24,
+        }).toDestination();
+
+        hihat.connect(filter);
+        this.hihat = hihat;
+    }
+
+    trigger(time, velocity) {
+        this.hihat.triggerAttackRelease(0.1, time, velocity)
+    }
+}
+
+class Pad {
+    constructor() {
+        var pad = new Tone.PolySynth(Tone.Synth);
+        pad.set({
+            oscillator: {
+                type: 'triangle',
+            },
+
+            volume: '-25',
+
+            envelope: {
+                attack: '4n',
+                decay: '8n',
+                sustain: '0.5',
+                release: '2n'
             }
-            //console.log("in?1")
-            if (count[modifyingValue.id] > 2) {
-                while (state.drawing.idList[modifyingValue.elementType].indexOf(modifyingValue.id) != -1) {
-                    let index = state.drawing.idList[modifyingValue.elementType].indexOf(modifyingValue.id)
-                    state.drawing.idList[modifyingValue.elementType].splice(index, 1)
-                }
-            } else {
-                //console.log("in?2")
-                state.drawing.idList[modifyingValue.elementType].push(modifyingValue.id)
+        })
+
+        var filter = new Tone.Filter({
+            frequency: '1000Hz',
+            type: 'lowpass',
+            rolloff: '-24db'
+        })
+
+        var phaser = new Tone.Phaser({
+            baseFrequency: 500,
+            frequency: '0.2hz',
+            octaves: '3',
+        })
+
+        var verb = new Tone.Reverb({
+            decay: '3',
+        })
+
+        pad.chain(filter, phaser, verb);
+        this.pad = pad
+        this.filter = filter
+        this.verb = verb
+    }
+
+    connect(node) {
+        this.verb.connect(node)
+    }
+
+    triggerAttackRelease(notes, duration, time, velocity) {
+        this.pad.triggerAttackRelease(notes, duration, time, velocity)
+    }
+    setVolume(volValue) {
+        this.pad.volume.value = volValue
+    }
+
+}
+
+class Lead {
+    constructor() {
+        var instr = new Tone.PolySynth(Tone.Synth);
+        instr.set({
+            envelope: {
+                attack: '8n',
+                decay: '16n',
+                sustain: '0.1',
+                release: '16n'
+            },
+
+            oscillator: {
+                type: 'sine2'
+            },
+
+            volume: "-10"
+        })
+        var filter = new Tone.Filter({
+            frequency: '1500hz',
+            type: 'lowpass',
+            rolloff: '-24db'
+        })
+
+        var dly = new Tone.PingPongDelay('4n', 0.2);
+        dly.wet.value = 0.7
+        var verb = new Tone.Reverb({
+            decay: '4'
+        })
+        verb.wet.value = 0.5
+        var amp = new Tone.Gain(0.8)
+
+        instr.chain(filter, dly, verb, amp)
+        this.amp = amp
+        this.instr = instr;
+    }
+
+    triggerAttackRelease(note, duration, time, velocity) {
+        this.instr.triggerAttackRelease(note, duration, time, velocity)
+    }
+
+    connect(node) {
+        this.amp.connect(node)
+    }
+
+    setVolume(volValue) {
+        this.instr.volume.value = volValue
+    }
+}
+
+class Synth {
+    constructor() {
+        var instr = new Tone.PolySynth(Tone.Synth);
+
+        var amp = new Tone.Gain()
+        instr.chain(amp)
+        this.instr = instr;
+        this.amp = amp
+    }
+    connect(node) {
+        this.instr.connect(node)
+    }
+    triggerAttackRelease(note, duration, time, velocity) {
+        this.instr.triggerAttackRelease(note, duration, time, velocity)
+    }
+
+    setVolume(volValue) {
+        this.instr.volume.value = volValue
+    }
+}
+
+class Bell {
+    constructor() {
+        const synth = new Tone.DuoSynth()
+        const dly = new Tone.FeedbackDelay()
+        const verb = new Tone.Reverb()
+        const volume = new Tone.Volume()
+
+        synth.set({
+            voice0: {
+                envelope: {
+                    attack: 0,
+                    attackCurve: 'linear',
+                    decay: 1.241,
+                    decayCurve: "exponential",
+                    sustain: 0,
+                    release: 1.89,
+                },
+            },
+            voice1: {
+                envelope: {
+                    attack: 0,
+                    attackCurve: 'linear',
+                    decay: 1.241,
+                    decayCurve: "exponential",
+                    sustain: 0,
+                    release: 1.89,
+                },
+            },
+            harmonicity: 2,
+            vibratoAmount: 0,
+        });
+        synth.voice0.oscillator.type = 'sine2'
+        synth.voice1.oscillator.type = 'sine3'
+        synth.voice1.volume.value = -20;
+        synth.volume.value = -6
+
+        dly.set({
+            delayTime: '4n.',
+            feedback: 0.3,
+            wet: 0.08,
+
+        })
+
+        verb.set({
+            decay: 4,
+            // preDelay: 0.67,
+            wet: 0.2,
+        })
+
+        synth.chain(dly, verb, volume, Tone.Destination)
+
+        this.synth = synth;
+        this.volume = volume;
+        this.lastNode = volume;
+
+    }
+
+    triggerAttack(note, time, velocity) {
+        this.synth.triggerAttackRelease(note, "8n", time, velocity)
+    }
+
+    setVolume(volValue) {
+        this.volume.volume.value = volValue
+    }
+
+    connect(node) {
+        this.lastNode.disconnect(Tone.Destination)
+        this.lastNode.connect(node)
+    }
+}
+
+class Marimba {
+    constructor() {
+        const synthTone = new Tone.DuoSynth()
+        const synthPulse = new Tone.Synth()
+        const dist = new Tone.Distortion(0.63)
+        const trim = new Tone.Volume(-10)
+        const filterLP = new Tone.Filter({
+            frequency: "4437Hz",
+            type: 'lowpass',
+            rolloff: -24,
+        })
+        const filterHP = new Tone.Filter({
+            frequency: '170Hz',
+            type: 'highpass',
+            rolloff: -48
+        })
+        const chorus = new Tone.Chorus({
+            frequency: 0.2,
+            delayTime: 0.013,
+            depth: 1
+        })
+        const dly = new Tone.FeedbackDelay({
+            delayTime: '8n.',
+            feedback: 0.1,
+            wet: 0.05
+        })
+        const merge = new Tone.Merge()
+        const mono = new Tone.Mono()
+        const volume = new Tone.Volume()
+
+        synthTone.set({
+            voice1: {
+                envelope: {
+                    attack: 0,
+                    decay: 0.5,
+                    sustain: 0,
+                    release: 0.19,
+                },
+                oscillator: {
+                    type: 'sine3',
+                    volume: -3.82
+                },
+
+            },
+            voice0: {
+                envelope: {
+                    attack: 0,
+                    decay: 0.5,
+                    sustain: 0,
+                    release: 0.19,
+                },
+                oscillator: {
+                    type: 'triangle',
+                    volume: -4.62
+                },
+
+            },
+            harmonicity: 0.5,
+            vibratoAmount: 0.1,
+            vibratoRate: "0.5hz"
+        })
+
+        synthPulse.set({
+            detune: 1200,
+            envelope: {
+                attack: 0,
+                decay: 0.01,
+                sustain: 0,
+                release: 0
+            },
+            oscillator: {
+                type: 'sine2',
+                volume: -10,
             }
-        } break;
+        });
 
+        synthTone.chain(dist, trim, filterLP).connect(merge, 0, 0)
+        synthPulse.connect(merge, 0, 1)
+
+        merge.chain(mono, filterHP, chorus, dly, volume, Tone.Destination)
+
+
+        this.dly = dly
+        this.synthTone = synthTone;
+        this.synthPulse = synthPulse;
+        this.volume = volume;
+        this.lastNode = volume;
+
+    };
+
+    triggerAttack(note, time, velocity) {
+        this.synthPulse.triggerAttack(note, time, velocity);
+        this.synthTone.triggerAttack(note, time, velocity);
     }
-    console.log(state.drawing)
+
+    setVolume(volValue) {
+        this.volume.volume.value = volValue
+    }
+
+    connect(node) {
+        this.lastNode.disconnect(Tone.Destination)
+        this.lastNode.connect(node)
+    }
+
 }
 
-export async function updateState() {
-    let ids = getIdList()
-    let flyObjsArr = []
-    state.imagesToDraw["flyingObject"] = flyObjsArr
+class Sitar {
+    constructor() {
+        const string = new Tone.PluckSynth({
+            attackNoise: 5,
+            dampening: 1000,
+            release: 1.5,
+            resonance: 0.98,
+            volume: 0
+        })
 
+        const toneSynth = new Tone.PolySynth(Tone.Synth)
+        toneSynth.set({
+            volume: -40,
+            envelope: {
+                attack: 0.05,
+                decay: 1,
+                decayCurve: 'linear',
+                sustain: 0,
+                release: 1.5
+            },
+            detune: 1220,
+            oscillator: {
+                type: 'sine',
+                partialCount: 5,
+                partials: [0, 0.2, 1, 0, 1]
+            }
+        })
 
-    for (let id of ids) {
-        modifyingValue = state.elements.find(element => element.id == id)
-        console.log("modifyingValue")
-        console.log(modifyingValue)
-        switch (modifyingValue.elementType) {
-            case ("floor"): {
-                state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
-                console.log("ch")
-                console.log(state.drawing.audio.instruments["chords"])
-                state.drawing.audio.instruments["chords"] = modifyingValue.audio.instrument
-                
-            } break;
-            case ("background"): {
-                state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
-            
-            } break;
-            case ("landscape"): {
-                state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
-            } break;
-            case ("building"): {
-                state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
-                console.log("mel")
-                console.log(state.drawing.audio.instruments["melody"])
-                state.drawing.audio.instruments["melody"] = modifyingValue.audio.instrument
-            } break;
-            case ("tree"): {
-                state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
-                console.log("bass")
-                console.log(state.drawing.audio.instruments["bass"])
-                state.drawing.audio.instruments["bass"] = modifyingValue.audio.instrument
-            } break;
-            case ("astrumDay"): {
-                state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
-            } break;
-            case ("astrumNight"): {
-                state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
-            } break;
-            case ("flyingObject"): {
-                state.drawing.image[modifyingValue.elementType].push(modifyingValue.image)
-                state.imagesToDraw[modifyingValue.elementType] = [];
-                let i = 0
-                for (let img of state.drawing.image[modifyingValue.elementType]) {
-                    console.log("Im here to check images to draw ")
-                    console.log(state.imagesToDraw)
-                    console.log(img)
-                    if (state.drawing.image[modifyingValue.elementType].indexOf(img) < i) {
-                        var elToCopy = state.imagesToDraw[modifyingValue.elementType][state.drawing.image[modifyingValue.elementType].indexOf(img)]
-                        console.log(elToCopy)
-                        var newEl = elToCopy.clone()
-                        console.log(newEl)
-                        newEl.changeRandomParams()
-                        console.log(newEl)
-                        state.imagesToDraw[modifyingValue.elementType].push(newEl);
-                        console.log("pushing a recycled element")
-                    } else {
-                        state.imagesToDraw[modifyingValue.elementType].push(await DrawableImage.build(img))
-                        console.log("pushing a recycled element")
-                    }
-                    i++
+        const filterLP = new Tone.Filter({
+            frequency: '700Hz',
+            type: 'lowpass',
+            rolloff: -24,
+        })
+        const chorus = new Tone.Chorus({
+            frequency: 0.2,
+            delayTime: 20,
+            depth: 1,
+            wet: 1
+        })
+        const merge = new Tone.Merge()
+        const mono = new Tone.Mono()
+        const vibr = new Tone.Vibrato({
+            frequency: '0.6Hz',
+            depth: 1,
+            wet: 0.4
+        })
+        const dly = new Tone.PingPongDelay({
+            delayTime: '8n.',
+            feedback: 0.1,
+            wet: 0.1,
+        })
+        const verb = new Tone.Reverb({
+            decay: 2.5,
+            wet: 0.2,
+
+        })
+        const volume = new Tone.Volume(+5)
+
+        string.connect(merge, 0, 0)
+        toneSynth.connect(filterLP).connect(merge, 0, 1)
+
+        merge.chain(mono, vibr, chorus, dly, verb, volume, Tone.Destination)
+
+        this.volume = volume
+        this.lastNode = volume
+        this.string = string
+        this.toneSynth = toneSynth
+    }
+
+    triggerAttack(note, time, velocity) {
+        this.string.triggerAttack(note, time, velocity);
+        this.toneSynth.triggerAttackRelease(note, '8n', time, velocity);
+    }
+
+    setVolume(volValue) {
+        this.volume.volume.value = volValue
+    }
+
+    connect(node) {
+        this.lastNode.disconnect(Tone.Destination)
+        this.lastNode.connect(node)
+    }
+}
+
+class Bass1 {
+    constructor() {
+        const bass = new Tone.DuoSynth({
+            voice0: {
+                oscillator: {
+                    type: 'sine'
+                },
+                envelope: {
+                    attack: 0.0012,
+                    decay: 0.136,
+                    sustain: 0.5,
+                    release: 0.557
                 }
-            } break;
-
-        }
-    }
-}
-
-export function getIdList() {
-    let arToRet = []
-    for (const [key, value] of Object.entries(state.drawing.idList)) {
-        switch (key) {
-            case ("floor"): {
-                arToRet.push(value)
-            } break;
-            case ("background"): {
-                arToRet.push(value)
-            } break;
-            case ("landscape"): {
-                arToRet.push(value)
-            } break;
-            case ("building"): {
-                arToRet.push(value)
-            } break;
-            case ("tree"): {
-                arToRet.push(value)
-            } break;
-            case ("astrumDay"): {
-                arToRet.push(value)
-            } break;
-            case ("astrumNight"): {
-                arToRet.push(value)
-            } break;
-            case ("flyingObject"): {
-                for (let el of value) {
-                    arToRet.push(el)
+            },
+            voice1: {
+                oscillator: {
+                    type: 'sine',
+                    volume: -6
+                },
+                envelope: {
+                    attack: 0.0012,
+                    decay: 0.136,
+                    sustain: 0.5,
+                    release: 0.557
                 }
-            } break;
+            },
+            harmonicity: 2,
+            vibratoAmount: 0
+        })
 
-        }
+        const volume = new Tone.Volume()
+
+        bass.chain(volume, Tone.Destination)
+
+        this.synth = bass
+        this.volume = volume
+        this.lastNode = volume
     }
 
-    return arToRet
-}
-
-export function orderElements() {
-    let orderedEl = []
-    let elements = state.elements
-    let elementTypes = state.elementTypes
-    let environments = state.environments
-    for (let elType of elementTypes) {
-        for (let env of environments) {
-            el = elements.find(element => ((element.elementType == elType) && (element.environment == env)))
-            let index = elements.indexOf(el)
-            elements.splice(index, 1)
-            orderedEl.push(el)
-        }
+    triggerAttackRelease(note, duration, time, velocity) {
+        this.synth.triggerAttackRelease(note, duration, time, velocity)
     }
-    while ((el = elements.find(element => ((element.elementType == "flyingObject")))) != undefined) {
-        let index = elements.indexOf(el)
-        elements.splice(index, 1)
-        orderedEl.push(el)
+
+    setVolume(volValue) {
+        this.volume.volume.value = volValue
     }
-    while (elements.length > 0) {
-        let el = elements.pop()
-        orderedEl.push(el)
+
+    connect(node) {
+        this.lastNode.disconnect(Tone.Destination)
+        this.lastNode.connect(node)
     }
-    state.elements = orderedEl;
 
 }
 
+class Bass2 {
+    constructor() {
+        const bass = new Tone.DuoSynth({
+            //high voice
+            voice0: {
+                oscillator: {
+                    type: 'sine'
+                },
+                envelope: {
+                    attack: 0.003,
+                    decay: 1,
+                    sustain: 1,
+                    release: 0.008
+                }
+            },
+            // low voice
+            voice1: {
+                oscillator: {
+                    type: 'sawtooth',
+                    volume: -18
+                },
+                envelope: {
+                    attack: 0.003,
+                    decay: 1,
+                    sustain: 1,
+                    release: 0.008
+                }
+            },
+            harmonicity: 0.5,
+            vibratoAmount: 0
+        })
 
-export function getImageToDraw(key) {
-    return state.imagesToDraw[key]
-}
-export function getFrameReq() {
-    return state.framereq
-}
-export function setFrameReq(value) {
-    state.framereq = value
-}
+        const filter = new Tone.Filter({
+            frequency: '2000hz',
+            rolloff: -12,
+            type: 'lowpass'
+        })
 
-/**
- * work on play pause elements
- */
+        const volume = new Tone.Volume()
 
- export function setPlaying(value) {
-    state.isPlaying = value
-}
+        bass.chain(filter, volume, Tone.Destination)
 
-export function isPlaying() {
-    return state.isPlaying
-}
-export function getAnimationSnap() {
-    return state.now1
-}
-export function setAnimationSnap(value) {
-    state.now1 = value
-}
-export function getFPS() {
-    return state.fps
-}
+        this.synth = bass
+        this.volume = volume
+        this.lastNode = volume
+    }
 
-export function getNavPage() {
-    return state.navigationPage
-}
+    triggerAttackRelease(note, duration, time, velocity) {
+        this.synth.triggerAttackRelease(note, duration, time, velocity)
+    }
 
-export function setNavPage(aPage) {
-    state.navigationPage = aPage
-}
+    setVolume(volValue) {
+        this.volume.volume.value = volValue
+    }
 
-export function setInstrument(instrName, instrInstance) {
+    connect(node) {
+        this.lastNode.disconnect(Tone.Destination)
+        this.lastNode.connect(node)
+    }
 
-    state.instruments[instrName] = instrInstance;
-}
-
-export function getInstrument(instrName) {
-    return state.instruments[instrName];
-}
-
-export function getInstrumentList() {
-    return state.drawing.audio.instruments;
-}
-
-export function getPlayingInstrument(instrUse) {
-    let instr = getInstrument(state.drawing.audio.instruments[instrUse])
-    return instr;
-}
-
-/*
-    Nodes handling
-*/
-
-export async function generateNodes() {
-    var nodeList = await Firebase.getNodes()
-    var mMelody = new MarkovMelody(nodeList)
-    state.melodyNodes = mMelody 
 }
 
-export function generateMelody(startId) {
-    return state.melodyNodes.generateMelody(startId)
+class Bass3 {
+    constructor() {
+        const bass = new Tone.DuoSynth({
+            //high voice
+            voice0: {
+                oscillator: {
+                    type: 'sine'
+                },
+                envelope: {
+                    attack: 0.003,
+                    decay: 1,
+                    sustain: 1,
+                    release: 0.008
+                }
+            },
+            // low voice
+            voice1: {
+                oscillator: {
+                    type: 'square',
+                    volume: -18
+                },
+                envelope: {
+                    attack: 0.003,
+                    decay: 1,
+                    sustain: 1,
+                    release: 0.008
+                }
+            },
+            harmonicity: 1,
+            vibratoAmount: 0
+        })
+
+        const bass2 = new Tone.DuoSynth({
+            harmonicity: 0.5,
+            //voice high
+            voice0: {
+                oscillator: {
+                    type: 'sawtooth',
+                },
+                envelope: {
+                    attack: 0.003,
+                    decay: 1,
+                    sustain: 1,
+                    release: 0.008
+                }
+            },
+            //voice low
+            voice1: {
+                oscillator: {
+                    type: 'sine'
+                },
+                envelope: {
+                    attack: 0.003,
+                    decay: 1,
+                    sustain: 1,
+                    release: 0.008
+                }
+            },
+            volume: -15,
+        })
+
+        const filter = new Tone.Filter({
+            frequency: '2000hz',
+            rolloff: -12,
+            type: 'lowpass'
+        })
+
+        const tremolo = new Tone.Tremolo({
+            frequency: '16n',
+            depth: 1,
+            type: 'square'
+        })
+
+        const merge = new Tone.Merge()
+        const mono = new Tone.Mono()
+        const volume = new Tone.Volume()
+
+        bass.connect(merge, 0, 0)
+        bass2.connect(merge, 0, 1)
+        merge.chain(mono, tremolo, filter, volume, Tone.Destination)
+
+        this.synth1 = bass
+        this.synth2 = bass2
+        this.volume = volume
+        this.lastNode = volume
+    }
+
+    triggerAttackRelease(note, duration, time, velocity) {
+        this.synth1.triggerAttackRelease(note, duration, time, velocity)
+        this.synth2.triggerAttackRelease(note, duration, time, velocity)
+    }
+
+    setVolume(volValue) {
+        this.volume.volume.value = volValue
+    }
+
+    connect(node) {
+        this.lastNode.disconnect(Tone.Destination)
+        this.lastNode.connect(node)
+    }
+
 }
 
-export function getMelodyString() {
-    return state.drawing.audio.melody;
+class Bass4 {
+    constructor() {
+        const bass = new Tone.Synth({
+            oscillator: {
+                type: 'sine'
+            },
+            envelope: {
+                attack: 0.003,
+                decay: 0.5,
+                sustain: 0.1,
+                release: 0.65
+            }
+        })
+
+        const volume = new Tone.Volume()
+
+        bass.chain(volume, Tone.Destination)
+
+        this.synth = bass
+        this.volume = volume
+        this.lastNode = volume
+    }
+
+    triggerAttackRelease(note, duration, time, velocity) {
+        this.synth.triggerAttackRelease(note, duration, time, velocity)
+    }
+
+    setVolume(volValue) {
+        this.volume.volume.value = volValue
+    }
+
+    connect(node) {
+        this.lastNode.disconnect(Tone.Destination)
+        this.lastNode.connect(node)
+    }
+
 }
 
-export function getChordString() {
-    return state.drawing.audio.chords;
+class Synth1 {
+    constructor() {
+
+        const synth = new Tone.PolySynth(Tone.DuoSynth)
+        synth.set({
+            voice0: {
+                envelope: {
+                    attack: 1,
+                    decay: 1,
+                    sustain: 0.4,
+                    release: 0.500
+                },
+                oscillator: {
+                    type: 'sine',
+                    volume: -10
+                }
+            },
+            voice1: {
+                envelope: {
+                    attack: 1,
+                    decay: 1,
+                    sustain: 0.4,
+                    release: 0.500
+                },
+                oscillator: {
+                    type: 'sine',
+                    volume: 0
+                }
+            },
+            harmonicity: 2,
+            vibratoAmount: 0.4,
+            vibratoRate: "8n"
+        })
+        const saw = new Tone.PolySynth(Tone.Synth)
+        saw.set({
+            envelope: {
+                attack: 1,
+                decay: 1,
+                sustain: 0.4,
+                release: 0.500
+            },
+            oscillator: {
+                type: 'sawtooth'
+            },
+            volume: -20,
+        })
+        const merge = new Tone.Merge()
+        const mono = new Tone.Mono()
+        const phaser = new Tone.Phaser({
+            frequency: '0.1Hz',
+            octaves: 1,
+            baseFrequency: '440Hz',
+            wet: 1
+        })
+        const filter = new Tone.Filter({
+            type: 'lowpass',
+            frequency: '350Hz',
+            rolloff: -48
+        })
+        const lfo = new Tone.LFO({
+            min: 320,
+            max: 380,
+            frequency: '4n',
+        })
+        const dly = new Tone.FeedbackDelay({
+            delayTime: '8n',
+            feedback: 0.1,
+            wet: 0.2
+        })
+        const tremolo = new Tone.Tremolo({
+            type: 'sine',
+            frequency: '8n',
+            depth: 0.45,
+            wet: 1,
+        })
+        const volume = new Tone.Volume()
+
+        synth.connect(merge, 0, 0)
+        saw.connect(merge, 0, 1)
+
+        merge.chain(mono, phaser, filter, dly, tremolo, volume, Tone.Destination)
+
+        lfo.connect(filter.frequency)
+
+        this.synth1 = synth
+        this.synth2 = saw
+        this.volume = volume
+        this.lastNode = volume
+    }
+
+    triggerAttackRelease(note, duration, time, velocity) {
+        this.synth1.triggerAttackRelease(note, duration, time, velocity)
+        this.synth2.triggerAttackRelease(note, duration, time, velocity)
+    }
+
+    setVolume(volValue) {
+        this.volume.volume.value = volValue
+    }
+
+    connect(node) {
+        this.lastNode.disconnect(Tone.Destination)
+        this.lastNode.connect(node)
+    }
 }
 
-export function getStartingNode() {
-    return state.startingId;
+class Synth2 {
+    constructor() {
+        const synth1 = new Tone.PolySynth(Tone.DuoSynth)
+        synth1.set({
+            voice0: {
+                envelope: {
+                    attack: 0.003,
+                    decay: 1,
+                    sustain: 1,
+                    release: 0.008
+                },
+                oscillator: {
+                    type: 'sawtooth',
+                    volume: -30
+                }
+            },
+            voice1: {
+                envelope: {
+                    attack: 0.003,
+                    decay: 1,
+                    sustain: 1,
+                    release: 0.008
+                },
+                oscillator: {
+                    type: 'triangle',
+                    volume: 0
+                }
+            },
+            harmonicity: 1,
+            vibratoAmount: 0
+        })
+        const dly = new Tone.FeedbackDelay({
+            delayTime: '16n.',
+            feedback: 0.2,
+            wet: 0.06
+        })
+        const tremolo = new Tone.Tremolo({
+            type: 'sine',
+            frequency: '16n',
+            depth: 1,
+            wet: 0.5,
+        })
+        const volume = new Tone.Volume()
+
+        synth1.chain(tremolo, dly, volume, Tone.Destination)
+
+        this.synth1 = synth1
+        this.volume = volume
+        this.lastNode = volume
+
+    }
+    //FIXME: too much latency on load
+    triggerAttackRelease(chord, duration, time, velocity) {
+        var playrate = 3
+        var arpNoteDuration = (4 * Math.pow(2, (playrate - 1))).toString() + 'n'
+        console.log(arpNoteDuration);
+
+        const pattern = new Tone.Pattern((aTime, note) => {
+            this.synth1.triggerAttackRelease(note, arpNoteDuration, aTime, velocity)
+        }, chord, 'upDown').start(time)
+
+        console.log(pattern.state);
+        pattern.playbackRate = playrate
+
+        pattern.stop(time + duration)
+        console.log(pattern.state);
+        // pattern.dispose()
+    }
+
+    culo(note, duration, time, velocity) {
+        this.synth1.triggerAttackRelease(note, duration, time, velocity)
+    }
+
+    setVolume(volValue) {
+        this.volume.volume.value = volValue
+    }
+
+    connect(node) {
+        this.lastNode.disconnect(Tone.Destination)
+        this.lastNode.connect(node)
+    }
+
+    get() {
+        console.log(this.synth1.get())
+    }
 }
 
-export function addPlayingPart(playingPart) {
-    state.playingPart.push(playingPart)
+class Synth3 {
+    constructor() {
+
+        const synth1 = new Tone.PolySynth(Tone.DuoSynth)
+        synth1.set({
+            voice0: {
+                envelope: {
+                    attack: 1.479,
+                    decay: 0.001,
+                    sustain: 0,
+                    release: 0
+                },
+                oscillator: {
+                    type: 'sine',
+                    volume: -0
+                }
+            },
+            voice1: {
+                envelope: {
+                    attack: 1.479,
+                    decay: 0.001,
+                    sustain: 0,
+                    release: 0
+                },
+                oscillator: {
+                    type: 'fatsquare',
+                    volume: -20
+                },
+            },
+            volume: -8,
+            harmonicity: 1,
+            vibratoAmount: 0,
+        })
+
+        const synth2 = new Tone.PolySynth(Tone.DuoSynth)
+        synth2.set({
+            voice0: {
+                envelope: {
+                    attack: 0,
+                    decay: 0.099,
+                    sustain: 0,
+                    release: 0
+                },
+                oscillator: {
+                    type: 'sine',
+                    volume: 0
+                },
+            },
+            voice1: {
+                envelope: {
+                    attack: 0,
+                    decay: 0.099,
+                    sustain: 0,
+                    release: 0
+                },
+                oscillator: {
+                    type: 'sine',
+                    volume: -10
+                }
+            },
+            harmonicity: 2,
+            detune: 1200,
+            volume: -10
+        })
+
+        const merge = new Tone.Merge()
+        const mono = new Tone.Mono()
+
+        const env = new Tone.FrequencyEnvelope({
+            attack: 1.479,
+            decay: 0.001,
+            sustain: 0,
+            release: 0,
+            baseFrequency: '1700hz',
+            octaves: 3,
+
+        })
+
+        const dly = new Tone.FeedbackDelay({
+            delayTime: '8n.',
+            feedback: 0.2,
+            wet: 0.3
+        })
+
+        const chorus = new Tone.Chorus({
+            frequency: '0.2Hz',
+            delayTime: 13.25,
+            depth: 1,
+            wet: 1
+        })
+
+        const filter1 = new Tone.Filter({
+            type: 'lowpass',
+            frequency: '1700Hz',
+            rolloff: -12
+        })
+
+        const filter2 = new Tone.Filter({
+            type: 'highpass',
+            frequency: '200Hz',
+            rolloff: -12
+        })
+
+        const volume = new Tone.Volume()
+
+        env.connect(filter1.frequency)
+
+        synth1.connect(merge, 0, 0)
+        synth2.connect(merge, 0, 1)
+
+        merge.chain(mono, dly, chorus, filter1, filter2, volume, Tone.Destination)
+
+        this.synth1 = synth1
+        this.synth2 = synth2
+        this.env = env
+        this.volume = volume
+        this.lastNode = volume
+    }
+
+    triggerAttackRelease(note, duration, time, velocity) {
+        this.synth1.triggerAttackRelease(note, duration, time, velocity)
+        this.synth2.triggerAttackRelease(note, duration, time, velocity)
+        this.env.triggerAttackRelease(duration, time, velocity)
+    }
+
+    setVolume(volValue) {
+        this.volume.volume.value = volValue
+    }
+
+    connect(node) {
+        this.lastNode.disconnect(Tone.Destination)
+        this.lastNode.connect(node)
+    }
 }
-export function getPlayingPartLength() {
-    return state.playingPart.length
-}
-export function getPlayingPart() {
-    return state.playingPart
+
+class Synth4 {
+    constructor() {
+        const synth = new Tone.PolySynth()
+        synth.set({
+            envelope: {
+                attack: 0,
+                decay: 0.367,
+                sustain: 0,
+                release: 0.008
+            },
+            oscillator: {
+                type: 'sine'
+            },
+            volume: -18,
+        })
+        const dly = new Tone.FeedbackDelay({
+            delayTime: '8n.',
+            feedback: 0.2,
+            wet: 0.35
+        })
+        const phaser = new Tone.Phaser({
+            frequency: '1n.',
+            baseFrequency: '1100hz',
+            stages: 6,
+            octaves: 1,
+            wet: 0.23
+        })
+        const volume = new Tone.Volume()
+
+        synth.chain(dly, phaser, volume, Tone.Destination)
+
+        this.synth1 = synth
+        this.volume = volume
+        this.lastNode = volume
+    }
+
+    triggerAttackRelease(note, duration, time, velocity) {
+        this.synth1.triggerAttackRelease(note, duration, time, velocity)
+    }
+
+    setVolume(volValue) {
+        this.volume.volume.value = volValue
+    }
+
+    connect(node) {
+        this.lastNode.disconnect(Tone.Destination)
+        this.lastNode.connect(node)
+    }
 }
