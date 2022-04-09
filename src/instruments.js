@@ -184,7 +184,7 @@ class Lead {
     constructor() {
         var instr = new Tone.PolySynth(Tone.Synth);
         instr.set({envelope: {
-            attack: '8n',
+            attack: '32n',
             decay: '16n',
             sustain: '0.1',
             release: '16n'
@@ -203,7 +203,7 @@ class Lead {
         })
 
         var dly = new Tone.PingPongDelay('4n', 0.2);
-        dly.wet.value = 0.7
+        dly.wet.value = 0.4
         var verb = new Tone.Reverb({
             decay: '4'
         })
