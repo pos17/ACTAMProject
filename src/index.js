@@ -433,8 +433,8 @@ parseMelodyString("F+4 C+8 a8 e+4 c+8 a8\nd+8 e+8 cb8 d+8 db+8 bb8 g8 ab8\na4 f8
  */
 
 function addNotePartToTransport(notePart, instrument) {
-    console.log("notePart2")
-    console.log(notePart)
+    //console.log("notePart2")
+    //console.log(notePart)
     const part = new Tone.Part((time, value) => {
         instrument.triggerAttack(value.note, time, 0.5)
         //console.log("note: " + value.note + " ,time: " + time + " duration: " + value.duration)
@@ -443,7 +443,7 @@ function addNotePartToTransport(notePart, instrument) {
 }
 
 function playChordSequence(chordsSequence, instrument) {
-    console.log(instrument)
+    //console.log(instrument)
     chordsPlayed = new Tone.Part(((time, value) => {
         //console.log("value to be played")
         //console.log(value)
@@ -462,8 +462,8 @@ function parseChordsString(chordsString) {
 
     //cleaned array
     numOfBars = barsArray.length
-    console.log(barsArray)
-    console.log(numOfBars)
+    //console.log(barsArray)
+    //console.log(numOfBars)
     let barCount = 0;
     let quarterCount = 0;
     let sixteenthCount = 0;
