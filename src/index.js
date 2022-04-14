@@ -18,12 +18,12 @@ async function initializeMyApp() {
     //const context = new Tone.Context({ latencyHint: "playback" });
     // set this context as the global Context
     //Tone.setContext(context);
-    Tone.context.lookAhead = 0.2;
+    Tone.context.lookAhead = 0.5;
     MVC.setNow()
     MVC.setMasterChain()
     console.log("master chain set")
     console.log(MVC.getMasterChain())
-    Tone.Destination.chain(MVC.getMasterChain().compressor, MVC.getMasterChain().hiddenGain, MVC.getMasterChain().mainGain)
+    Tone.Destination.chain(/*MVC.getMasterChain().compressor*/ MVC.getMasterChain().hiddenGain, MVC.getMasterChain().mainGain)
     console.log("master chain get")
     MVC.setLimit(40)
     MVC.increase();
@@ -547,7 +547,7 @@ export function initMusic() {
         console.error("loop bars no consistent, melodyLoop: " + computedMelody.loopValue + ", chordsloop: " + computeChords.barLoop)
     }
     addNotePartToTransport(computedMelody.notesArray, MVC.getPlayingInstrument("melody"))
-    //playChordSequence(computeChords.chordsList, MVC.getPlayingInstrument("chords"))
+    playChordSequence(computeChords.chordsList, MVC.getPlayingInstrument("chords"))
     Tone.Transport.loopEnd = computedMelody.loopValue;
     Tone.Transport.loop = true;
 
