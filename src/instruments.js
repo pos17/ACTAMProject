@@ -927,17 +927,17 @@ class Synth2 {
     triggerAttackRelease(chord, duration, time, velocity) {
         var playrate = 3
         var arpNoteDuration = (4*Math.pow(2, (playrate-1))).toString() + 'n'
-        console.log(arpNoteDuration);
+        //console.log(arpNoteDuration);
         
         const pattern = new Tone.Pattern((aTime, note)=>{
             this.synth1.triggerAttackRelease(note, arpNoteDuration, aTime, velocity)
         }, chord, 'upDown').start(time)
 
-        console.log(pattern.state);
+        //console.log(pattern.state);
         pattern.playbackRate = playrate
         
         pattern.stop(time+duration)
-        console.log(pattern.state);
+        //console.log(pattern.state);
         // pattern.dispose()
     }
 
