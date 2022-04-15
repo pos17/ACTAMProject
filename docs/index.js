@@ -1,6 +1,8 @@
 //import { Note, Chord, Interval} from "@tonaljs/tonal";
 //import * as Tone from "tone"
 
+//const { Tone } = require("tone/build/esm/core/Tone");
+
 //import * as Instr from './instruments.js';
 //import * as MVC from "./modelViewController.js"
 //import { getAsset, getDocumentElement } from "./firebase.js";
@@ -9,12 +11,14 @@ let db;
 let storage;
 let ctx;
 let canvas;
+
 const state = {
     loadingPage: {
         value: 0,
         limit: 0,
         lastUpdate: undefined,
     },
+    isLoading: 0,
     imagesToDraw: {},
     environments: undefined,
     elementTypes: undefined,
@@ -998,8 +1002,8 @@ function initMusic() {
     if (computeChords.barLoop != computedMelody.loopValue) {
         console.error("loop bars no consistent, melodyLoop: " + computedMelody.loopValue + ", chordsloop: " + computeChords.barLoop)
     }
-    addNotePartToTransport(computedMelody.notesArray, getPlayingInstrument("melody"))
-    //playChordSequence(computeChords.chordsList, getPlayingInstrument("chords"))
+    addNotePartToTransport(computedMelody.notesArray, bs/*getPlayingInstrument("melody")*/)
+    playChordSequence(computeChords.chordsList, ps/*getPlayingInstrument("chords")*/)
     Tone.Transport.loopEnd = computedMelody.loopValue;
     Tone.Transport.loop = true;
 
@@ -1011,11 +1015,14 @@ function initMusic() {
 
 //canvas handling
 
-
+var t = Tone.Time('16m').toMilliseconds()
+var omega = 0; /* canvas angular speed */
+var factor = 4;
+var time0 = new Date();
 function prepareCanvas() {
     const canvasDiv = document.getElementById('canvas-div');
 
-    var factor = 4;
+    
 
     canvas = document.getElementById("main-canvas")
     canvas.className = "canvases";
@@ -1029,11 +1036,11 @@ function prepareCanvas() {
     //fintanto che non capisco come gira il discorso background, il bg è notturno, si cambia poi in caso 
 
 
-    var time0 = new Date();
-    var omega = 0; /* canvas angular speed */
+    
+    
     var moonRadius = canvas.width / 1.1;
 
-    var t = Tone.Time('16m').toMilliseconds()
+    //var t = Tone.Time('16m').toMilliseconds()
 }
 async function initImages() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -2097,18 +2104,130 @@ class MarkovMelody {
 
 
 
+class bellSample {
+    
+    constructor() {
+        state.isLoading = state.isLoading +1;
+        let bellUrls =  {
+            c3:"001_BellC3.wav",
+            db3:"002_BellCs3.wav",
+            d3:"003_BellD3.wav",
+            eb3:"004_BellDs3.wav",
+            e3:"005_BellE3.wav",
+            f3:"006_BellF3.wav",
+            gb3:"007_BellFs3.wav",
+            g3:"008_BellG3.wav",
+            ab3:"009_BellGs3.wav",
+            a3:"010_BellA3.wav",
+            bb3:"011_BellAs3.wav",
+            b3:"012_BellB3.wav",
+            c4:"013_BellC4.wav",
+            db4:"014_BellCs4.wav",
+            d4:"01_BellD4.wav",
+            eb4:"02_BellDs4.wav",
+            e4:"03_BellE4.wav",
+            f4:"04_BellF4.wav",
+            gb4:"05_BellFs4.wav",
+            g4:"06_BellG4.wav",
+            ab4:"07_BellGs4.wav",
+            a4:"08_BellA4.wav",
+            bb4:"09_BellAs4.wav",
+            b4:"10_BellB4.wav",
+            c5:"11_BellC5.wav",
+            db5:"12_BellCs5.wav",
+            d5:"13_BellD5.wav",
+            eb5:"14_BellDs5.wav",
+            e5:"15_BellE5.wav",
+            f5:"16_BellF5.wav",
+            gb5:"17_BellFs5.wav",
+            g5:"18_BellG5.wav",
+            ab5:"19_BellGs5.wav",
+            a5:"20_BellA5.wav",
+            bb5:"21_BellAs5.wav",
+            b5:"22_BellB5.wav",
+            c6:"23_BellC6.wav",
+        };
+        let bellUrls2 = {};
+        Object.keys(bellUrls).forEach(key => {
+            bellUrls2[key] = "./BellSamplesMelodies/"+bellUrls[key];
+        });
+        var bell = new Tone.Players(bellUrls2,() => {
+            state.isLoading = state.isLoading-1;
+            console.log("bell loaded")
+            });
+        bell.toDestination();
+        this.bell = bell;
+        
+    }
+
+    triggerAttack(note, time) {
+        this.bell.player(note).start(time);
+        //this.kick.triggerAttackRelease("C1", "8n", time, velocity)
+        // console.log("kicktime")
+    }
+}
+
+class padSample {
+    
+    constructor() {
+        state.isLoading = state.isLoading +1;
+        let padUrls =  {
+            C2:"01_SynthC2.wav",
+            Db2:"02_SynthCs2.wav",
+            D2:"03_SynthD2.wav",
+            Eb2:"04_SynthDs2.wav",
+            E2:"05_SynthE2.wav",
+            F2:"06_SynthF2.wav",
+            Gb2:"07_SynthFs2.wav",
+            G2:"08_SynthG2.wav",
+            Ab2:"09_SynthGs2.wav",
+            A2:"10_SynthA2.wav",
+            Bb2:"11_SynthAs2.wav",
+            B2:"12_SynthB2.wav",
+            C3:"13_SynthC3.wav",
+            Db3:"14_SynthCs3.wav",
+            D3:"15_SynthD3.wav",
+            Eb3:"16_SynthDs3.wav",
+            E3:"17_SynthE3.wav",
+            F3:"18_SynthF3.wav",
+            Gb3:"19_SynthFs3.wav",
+            G3:"20_SynthG3.wav",
+            Ab3:"21_SynthGs3.wav",
+            A3:"22_SynthA3.wav",
+            Bb3:"23_SynthAs3.wav",
+            B3:"24_SynthB3.wav",
+            C4:"25_SynthC4.wav",
+        };
+        let padUrls2 = {};
+        Object.keys(padUrls).forEach(key => {
+            padUrls2[key] = "./SynthSample/"+padUrls[key];
+        });
+        var pad = new Tone.Players(padUrls2,() => {
+            state.isLoading = state.isLoading-1;
+            console.log("pad loaded")
+            });
+        pad.toDestination();
+        this.pad = pad;
+        
+    }
+
+    triggerAttackRelease(notes, time) {
+        notes.forEach((note) => {
+            this.pad.player(note).start(time);
+        })
+        
+        //this.kick.triggerAttackRelease("C1", "8n", time, velocity)
+        // console.log("kicktime")
+    }
+}
 
 
 
+console.log("bs");
+let bs = new bellSample();
+console.log("ps");
+let ps = new padSample();
 
-//import * as Tone from 'tone'
-//import { getSample} from "./firebase.js";
-
-//import { DuoSynth, Freeverb, LFO } from 'tone';
-let buffer1 = new Tone.Buffer()
-let buffer2 = new Tone.Buffer()
-let buffer3 = new Tone.Buffer()
-let buffer4 = new Tone.Buffer()
 class Kick {
     constructor() {
         var kick = new Tone.MembraneSynth({
