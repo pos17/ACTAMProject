@@ -573,3 +573,24 @@ export function initMusic() {
     Tone.Transport.loop = true;
 
 }
+
+const myurl = new URL("../Samples/BellSamplesMelodies/01_BellD4.wav", import.meta.url)
+
+function playerplay() {
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", "../Samples/BellSamplesMelodies/01_BellD4.wav", true);
+	xhr.responseType = 'blob';
+	xhr.onload = function(){
+		var blob = URL.createObjectURL(this.response);
+		console.log('pressed');
+		var player = new Tone.Player();
+		player.load(blob);
+		player.toDestination();
+		player.autostart = false;
+        console.log("LOADED: ")
+        console.log(player.loaded);
+	};
+	xhr.send();
+}
+
+playerplay();
