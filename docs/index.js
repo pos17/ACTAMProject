@@ -999,7 +999,7 @@ function initMusic() {
         console.error("loop bars no consistent, melodyLoop: " + computedMelody.loopValue + ", chordsloop: " + computeChords.barLoop)
     }
     addNotePartToTransport(computedMelody.notesArray, getPlayingInstrument("melody"))
-    playChordSequence(computeChords.chordsList, getPlayingInstrument("chords"))
+    //playChordSequence(computeChords.chordsList, getPlayingInstrument("chords"))
     Tone.Transport.loopEnd = computedMelody.loopValue;
     Tone.Transport.loop = true;
 
