@@ -18,12 +18,12 @@ async function initializeMyApp() {
     //const context = new Tone.Context({ latencyHint: "playback" });
     // set this context as the global Context
     //Tone.setContext(context);
-    Tone.context.lookAhead = 0.2;
+    Tone.context.lookAhead = 2;
     MVC.setNow()
     MVC.setMasterChain()
     console.log("master chain set")
     console.log(MVC.getMasterChain())
-    Tone.Destination.chain(MVC.getMasterChain().compressor, MVC.getMasterChain().hiddenGain, MVC.getMasterChain().mainGain)
+    // Tone.Destination.chain(MVC.getMasterChain().compressor, MVC.getMasterChain().hiddenGain, MVC.getMasterChain().mainGain)
     console.log("master chain get")
     MVC.setLimit(40)
     MVC.increase();
@@ -443,10 +443,11 @@ function addNotePartToTransport(notePart, instrument) {
 }
 
 function playChordSequence(chordsSequence, instrument) {
+    console.log('INSTRUMENT');
     console.log(instrument)
     chordsPlayed = new Tone.Part(((time, value) => {
-        //console.log("value to be played")
-        //console.log(value)
+        console.log("value to be played")
+        console.log(value)
         instrument.triggerAttackRelease(value.notes, value.duration, time, 0.5)
     }), chordsSequence).start(0)
     //Tone.debug = true
@@ -530,6 +531,9 @@ function fromChordToNotes(chordName) {
     console.log(notesArray)
     return notesArray
 }
+
+console.log("fromChordToNotes");
+console.log(fromChordToNotes("A7"));
 /*
 Tone.Transport.schedule(()=>{
   console.log("sticazzi");
@@ -542,12 +546,29 @@ export function initMusic() {
     Tone.Transport.cancel()
     let computedMelody = parseMelodyString(MVC.getMelodyString())
     let computeChords = parseChordsString(MVC.getChordString())
+
+    let gino = [
+        {
+            duration: "2m",
+            notes: "a3",
+            time: "0:0:0"
+        },
+        {
+            duration: "2m",
+            notes: "g3",
+            time: "2:0:0"
+        },
+    ]
+
     console.log(computedMelody)
     if (computeChords.barLoop != computedMelody.loopValue) {
         console.error("loop bars no consistent, melodyLoop: " + computedMelody.loopValue + ", chordsloop: " + computeChords.barLoop)
     }
     addNotePartToTransport(computedMelody.notesArray, MVC.getPlayingInstrument("melody"))
-    //playChordSequence(computeChords.chordsList, MVC.getPlayingInstrument("chords"))
+    console.log("CHORDLIST");
+    console.log(computeChords.chordsList);
+    // playChordSequence(computeChords.chordsList, MVC.getPlayingInstrument("chords"))
+    // playChordSequence(gino, MVC.getPlayingInstrument("chords"))
     Tone.Transport.loopEnd = computedMelody.loopValue;
     Tone.Transport.loop = true;
 

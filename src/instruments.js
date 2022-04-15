@@ -767,7 +767,7 @@ class Bass4 {
 
 }
 
-class Synth1 {
+class Synth1a {
     constructor (){
 
         const synth = new Tone.PolySynth(Tone.DuoSynth)
@@ -844,10 +844,12 @@ class Synth1 {
         })
         const volume = new Tone.Volume()
 
-        synth.connect(merge, 0, 0)
-        saw.connect(merge, 0, 1)
+        // synth.connect(merge, 0, 0)
+        // saw.connect(merge, 0, 1)
 
-        merge.chain(mono, phaser, filter, dly, tremolo, volume, Tone.Destination)
+        // merge.chain(mono, phaser, filter, dly, tremolo, volume, Tone.Destination)
+        // saw.chain(phaser, filter, dly, tremolo, volume, Tone.Destination)
+        saw.chain(volume, Tone.Destination)
 
         lfo.connect(filter.frequency)
 
@@ -1132,6 +1134,44 @@ class Synth4 {
 
     triggerAttackRelease(note, duration, time, velocity) {
         this.synth1.triggerAttackRelease(note, duration, time, velocity)
+    }
+
+    setVolume(volValue) {
+        this.volume.volume.value = volValue
+    }
+
+    connect(node) {
+        this.lastNode.disconnect(Tone.Destination)
+        this.lastNode.connect(node)
+    } 
+}
+
+
+class Synth1 {
+    constructor (){
+        const saw = new Tone.PolySynth(Tone.Synth)
+        saw.set({
+            envelope: {
+                attack: 1,
+                decay: 1,
+                sustain: 0.4,
+                release: 0.500
+            },
+            oscillator: {
+                type: 'sawtooth'
+            },
+            volume: -20,
+        })
+        const volume = new Tone.Volume()
+        saw.chain(volume, Tone.Destination)
+        this.synth2 = saw
+        this.volume = volume
+        this.lastNode = volume
+    }
+
+    triggerAttackRelease(note, duration, time, velocity) {
+        //  this.synth1.triggerAttackRelease(note, duration, time, velocity)
+        this.synth2.triggerAttackRelease(note, duration, time, velocity)
     }
 
     setVolume(volValue) {
