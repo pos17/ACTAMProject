@@ -1,11 +1,5 @@
-//import { Note, Chord, Interval} from "@tonaljs/tonal";
-//import * as Tone from "tone"
+//const { Tonal } = require("@tonaljs/tonal");
 
-//const { Tone } = require("tone/build/esm/core/Tone");
-
-//import * as Instr from './instruments.js';
-//import * as MVC from "./modelViewController.js"
-//import { getAsset, getDocumentElement } from "./firebase.js";
 let app;
 let db;
 let storage;
@@ -63,8 +57,6 @@ const state = {
     },
 }
 
-
-
 /**
  *  Function to initialize the main settings of the player 
  */
@@ -77,7 +69,7 @@ async function initializeMyApp() {
     // set this context as the global Context
     //Tone.setContext(context);
     initializeFirebase();
-    Tone.context.lookAhead = 5;
+    Tone.context.lookAhead = 0.1;
     setNow()
     setMasterChain()
     console.log("master chain set")
@@ -95,17 +87,9 @@ async function initializeMyApp() {
     assignClick()
     updatePage(0)
     setLimit(100)
-    //Tone.context.latencyHint = 'playback'
     console.log("i nodi")
     prepareCanvas();
-    /*
-    await generateNodes()
-    console.log(generateMelody())
-    let notePart = parseMelodyString("f+4 c+8 a8 e+4 c+8 a8\nd+8 e+8 cb8 d+8 db+8 bb8 g8 ab8\na4 f8 d8 g8 a8 f8 e8\neb16 g16 bb8 d+8 db+8 r8 f8 f16 g8 f16")
-    console.log("notepart")
-    console.log(notePart)
-    addNotePartToTransport(notePart, getInstrument("Marimba")) 
-    */
+    
 
 }
 
@@ -669,7 +653,7 @@ function buildInstruments() {
 function startMusic() {
     //Tone.Transport.loop = true;
     Tone.Transport.bpm.value = 60
-    Tone.Transport.start("+0.8", "0:0:0");
+    Tone.Transport.start("+0.5", "0:0:0");
 
     setPlaying(true);
 }
@@ -888,8 +872,6 @@ parseMelodyString("F+4 C+8 a8 e+4 c+8 a8\nd+8 e+8 cb8 d+8 db+8 bb8 g8 ab8\na4 f8
  */
 
 function addNotePartToTransport(notePart, instrument) {
-    //console.log("notePart2")
-    //console.log(notePart)
     const part = new Tone.Part((time, value) => {
         instrument.triggerAttack(value.note, time, 0.5)
         //console.log("note: " + value.note + " ,time: " + time + " duration: " + value.duration)
@@ -1845,13 +1827,6 @@ class DrawableImage {
 
 
 
-// Initialize Firebase
-//const firebase = require("firebase");
-// Required for side-effects
-//require("firebase/firestore");
-
-//import "firebase/firestore";
-
 function initializeFirebase() {
     const firebaseConfig = {
 
@@ -2109,43 +2084,43 @@ class bellSample {
     constructor() {
         state.isLoading = state.isLoading +1;
         let bellUrls =  {
-            c3:"001_BellC3.wav",
-            db3:"002_BellCs3.wav",
-            d3:"003_BellD3.wav",
-            eb3:"004_BellDs3.wav",
-            e3:"005_BellE3.wav",
-            f3:"006_BellF3.wav",
-            gb3:"007_BellFs3.wav",
-            g3:"008_BellG3.wav",
-            ab3:"009_BellGs3.wav",
-            a3:"010_BellA3.wav",
-            bb3:"011_BellAs3.wav",
-            b3:"012_BellB3.wav",
-            c4:"013_BellC4.wav",
-            db4:"014_BellCs4.wav",
-            d4:"01_BellD4.wav",
-            eb4:"02_BellDs4.wav",
-            e4:"03_BellE4.wav",
-            f4:"04_BellF4.wav",
-            gb4:"05_BellFs4.wav",
-            g4:"06_BellG4.wav",
-            ab4:"07_BellGs4.wav",
-            a4:"08_BellA4.wav",
-            bb4:"09_BellAs4.wav",
-            b4:"10_BellB4.wav",
-            c5:"11_BellC5.wav",
-            db5:"12_BellCs5.wav",
-            d5:"13_BellD5.wav",
-            eb5:"14_BellDs5.wav",
-            e5:"15_BellE5.wav",
-            f5:"16_BellF5.wav",
-            gb5:"17_BellFs5.wav",
-            g5:"18_BellG5.wav",
-            ab5:"19_BellGs5.wav",
-            a5:"20_BellA5.wav",
-            bb5:"21_BellAs5.wav",
-            b5:"22_BellB5.wav",
-            c6:"23_BellC6.wav",
+            48:"001_BellC3.wav",
+            49:"002_BellCs3.wav",
+            50:"003_BellD3.wav",
+            51:"004_BellDs3.wav",
+            52:"005_BellE3.wav",
+            53:"006_BellF3.wav",
+            54:"007_BellFs3.wav",
+            55:"008_BellG3.wav",
+            56:"009_BellGs3.wav",
+            57:"010_BellA3.wav",
+            58:"011_BellAs3.wav",
+            59:"012_BellB3.wav",
+            60:"013_BellC4.wav",
+            61:"014_BellCs4.wav",
+            62:"01_BellD4.wav",
+            63:"02_BellDs4.wav",
+            64:"03_BellE4.wav",
+            65:"04_BellF4.wav",
+            66:"05_BellFs4.wav",
+            67:"06_BellG4.wav",
+            68:"07_BellGs4.wav",
+            69:"08_BellA4.wav",
+            70:"09_BellAs4.wav",
+            71:"10_BellB4.wav",
+            72:"11_BellC5.wav",
+            73:"12_BellCs5.wav",
+            74:"13_BellD5.wav",
+            75:"14_BellDs5.wav",
+            76:"15_BellE5.wav",
+            77:"16_BellF5.wav",
+            78:"17_BellFs5.wav",
+            79:"18_BellG5.wav",
+            80:"19_BellGs5.wav",
+            81:"20_BellA5.wav",
+            82:"21_BellAs5.wav",
+            83:"22_BellB5.wav",
+            84:"23_BellC6.wav",
         };
         let bellUrls2 = {};
         Object.keys(bellUrls).forEach(key => {
@@ -2161,7 +2136,11 @@ class bellSample {
     }
 
     triggerAttack(note, time) {
-        this.bell.player(note).start(time);
+        let ntp = Tonal.Note.midi(note);
+        if(ntp == "") {
+            console.error("wrong note feeding: " + "note");
+        }
+        this.bell.player(ntp).start(time);
         //this.kick.triggerAttackRelease("C1", "8n", time, velocity)
         // console.log("kicktime")
     }
@@ -2172,31 +2151,31 @@ class padSample {
     constructor() {
         state.isLoading = state.isLoading +1;
         let padUrls =  {
-            C2:"01_SynthC2.wav",
-            Db2:"02_SynthCs2.wav",
-            D2:"03_SynthD2.wav",
-            Eb2:"04_SynthDs2.wav",
-            E2:"05_SynthE2.wav",
-            F2:"06_SynthF2.wav",
-            Gb2:"07_SynthFs2.wav",
-            G2:"08_SynthG2.wav",
-            Ab2:"09_SynthGs2.wav",
-            A2:"10_SynthA2.wav",
-            Bb2:"11_SynthAs2.wav",
-            B2:"12_SynthB2.wav",
-            C3:"13_SynthC3.wav",
-            Db3:"14_SynthCs3.wav",
-            D3:"15_SynthD3.wav",
-            Eb3:"16_SynthDs3.wav",
-            E3:"17_SynthE3.wav",
-            F3:"18_SynthF3.wav",
-            Gb3:"19_SynthFs3.wav",
-            G3:"20_SynthG3.wav",
-            Ab3:"21_SynthGs3.wav",
-            A3:"22_SynthA3.wav",
-            Bb3:"23_SynthAs3.wav",
-            B3:"24_SynthB3.wav",
-            C4:"25_SynthC4.wav",
+            36:"01_SynthC2.wav",
+            37:"02_SynthCs2.wav",
+            38:"03_SynthD2.wav",
+            39:"04_SynthDs2.wav",
+            40:"05_SynthE2.wav",
+            41:"06_SynthF2.wav",
+            42:"07_SynthFs2.wav",
+            43:"08_SynthG2.wav",
+            44:"09_SynthGs2.wav",
+            45:"10_SynthA2.wav",
+            46:"11_SynthAs2.wav",
+            47:"12_SynthB2.wav",
+            48:"13_SynthC3.wav",
+            49:"14_SynthCs3.wav",
+            50:"15_SynthD3.wav",
+            51:"16_SynthDs3.wav",
+            52:"17_SynthE3.wav",
+            53:"18_SynthF3.wav",
+            54:"19_SynthFs3.wav",
+            55:"20_SynthG3.wav",
+            56:"21_SynthGs3.wav",
+            57:"22_SynthA3.wav",
+            58:"23_SynthAs3.wav",
+            59:"24_SynthB3.wav",
+            60:"25_SynthC4.wav",
         };
         let padUrls2 = {};
         Object.keys(padUrls).forEach(key => {
@@ -2213,7 +2192,11 @@ class padSample {
 
     triggerAttackRelease(notes, time) {
         notes.forEach((note) => {
-            this.pad.player(note).start(time);
+            let ntp = Tonal.Note.midi(note);
+            if(ntp == "") {
+                console.error("wrong note feeding: " + "note");
+            }
+            this.pad.player(ntp).start(time);
         })
         
         //this.kick.triggerAttackRelease("C1", "8n", time, velocity)
