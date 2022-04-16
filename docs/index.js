@@ -210,8 +210,6 @@ function modifyIdList(idValue) {
         } break;
         case ("landscape"): {
             state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
-            //state.drawing.chords.instrument = modifyingValue.instrument
-            //state.drawing.chords.effect = modifyingValue.effect
         } break;
         case ("building"): {
             state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
@@ -234,14 +232,12 @@ function modifyIdList(idValue) {
                     count[element] = 1;
                 }
             }
-            //console.log("in?1")
             if (count[modifyingValue.id] > 2) {
                 while (state.drawing.idList[modifyingValue.elementType].indexOf(modifyingValue.id) != -1) {
                     let index = state.drawing.idList[modifyingValue.elementType].indexOf(modifyingValue.id)
                     state.drawing.idList[modifyingValue.elementType].splice(index, 1)
                 }
             } else {
-                //console.log("in?2")
                 state.drawing.idList[modifyingValue.elementType].push(modifyingValue.id)
             }
         } break;
@@ -561,27 +557,6 @@ function buildInstruments() {
     let drumChannel = new Tone.Channel()
 
     console.log("here I am")
-    /* //build modulation effects
-    state.effects.harmony.chorus = new Tone.Chorus()
-    state.effects.melody.chorus = new Tone.Chorus()
-    state.effects.harmony.chorus.wet.value = 0
-    state.effects.melody.chorus.wet.value = 0 */
-
-
-    //build time effects
-    /*
-   state.effects.harmony.reverb = new Tone.Reverb()
-   state.effects.harmony.reverb.wet.value = 0
-   state.effects.melody.reverb = await new Tone.Reverb()
-   state.effects.melody.reverb.wet.value = 0
-       //TODO: set correct time for delay
-   state.effects.melody.delay = new Tone.PingPongDelay()
-   state.effects.harmony.delay = new Tone.PingPongDelay()
-   state.effects.melody.delay.wet.value = 0
-   state.effects.harmony.delay.wet.value = 0
-   console.log(state.effects.harmony.delay.get())
-       //creating effects chain
-   */
     harmonyChannel.chain(
         Tone.Destination
     )
@@ -651,7 +626,6 @@ function buildInstruments() {
 }
 
 function startMusic() {
-    //Tone.Transport.loop = true;
     Tone.Transport.bpm.value = 60
     Tone.Transport.start("+0.5", "0:0:0");
 
@@ -660,7 +634,6 @@ function startMusic() {
 
 function stopMusic() {
     Tone.Transport.stop();
-    //Tone.Transport.cancel(0)
     setPlaying(false);
 }
 
@@ -859,9 +832,6 @@ function count(str, find) {
     return (str.split(find)).length - 1;
 }
 
-console.log("melody parsing")
-parseMelodyString("F+4 C+8 a8 e+4 c+8 a8\nd+8 e+8 cb8 d+8 db+8 bb8 g8 ab8\na4 f8 d8 g8 a8 f8 e8\neb16 g16 bb8 d+8 db+8 r8 f8 f16 g8 f16")
-
 
 /**
  * 
@@ -897,11 +867,7 @@ function parseChordsString(chordsString) {
     barsArray = chordsString.split("|")
     barsArray.shift()
     barsArray.pop()
-
-    //cleaned array
     let numOfBars = barsArray.length
-    //console.log(barsArray)
-    //console.log(numOfBars)
     let barCount = 0;
     let quarterCount = 0;
     let sixteenthCount = 0;
@@ -948,10 +914,10 @@ function parseChordsString(chordsString) {
         barLoop: barLoop
     }
 }
-
+/*
 console.log("testParsing")
 parseChordsString("| F6 | Em7 A7 | Dm7 | Cm7 F7 |")
-
+*/
 function fromChordToNotes(chordName) {
     var notesArray = Tonal.Chord.get(chordName).notes
     var distanceFromC = Tonal.Interval.distance("C", notesArray[notesArray.length - 1])
@@ -968,13 +934,7 @@ function fromChordToNotes(chordName) {
     console.log(notesArray)
     return notesArray
 }
-/*
-Tone.Transport.schedule(()=>{
-  console.log("sticazzi");
-  console.log("state of chords")
-  console.log(state.playingPartChords.state)
-  },"0:0:0")
-*/
+
 
 function initMusic() {
     Tone.Transport.cancel()
@@ -1001,29 +961,21 @@ var t = Tone.Time('16m').toMilliseconds()
 var omega = 0; /* canvas angular speed */
 var factor = 4;
 var time0 = new Date();
+
+
+
 function prepareCanvas() {
     const canvasDiv = document.getElementById('canvas-div');
-
-    
-
     canvas = document.getElementById("main-canvas")
     canvas.className = "canvases";
-
     canvas.width = 256 * factor;
     canvas.height = 128 * factor;
     canvasDiv.appendChild(canvas);
-
-    ctx = canvas.getContext('2d');
-
-    //fintanto che non capisco come gira il discorso background, il bg è notturno, si cambia poi in caso 
-
-
-    
-    
+    ctx = canvas.getContext('2d');    
     var moonRadius = canvas.width / 1.1;
-
-    //var t = Tone.Time('16m').toMilliseconds()
 }
+
+
 async function initImages() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     console.log(getImageToDraw("astrumDay"))
@@ -1129,33 +1081,9 @@ function createEnvironment() {
     background.drawThisImage(1, alphaSunrise, lightOn, canvas.height, canvas.width, ctx, factor)
     background.drawThisImage(2, alphaSunset, lightOn, canvas.height, canvas.width, ctx, factor)
     background.drawThisImage(3, alphaDay, lightOn, canvas.height, canvas.width, ctx, factor)
-
-
-    /*
-    state.assets.stars.forEach((star)=>{
-        drawThisImage(star.img, star.left, star.bottom)
-    })
-    */
-    //console.log("HereWeAre")
-
-    // ANIMATED IMAGES
-    //var s = moonRadius - Math.sqrt(Math.pow(moonRadius,2)-(Math.pow(canvas.width,2)/4))
-    //var a = 2 * Math.acos(1-(s/moonRadius))
-
-    //console.log("HereWeAre1")
     ctx.save();
     ctx.translate(Math.round(w / 2), Math.round(hAstra - 15 * factor))
-    // var angle = ((a/60)*time.getSeconds()+(a/60000)*time.getMilliseconds());
-    // var angle = ((2*Math.PI/6000)*time.getSeconds()) + ((2*Math.PI/100000)*time.getMilliseconds());
-
-    //ctx.rotate(angle);
-
-    // if(angle%(2*Math.PI) < 0.1) {
-    //     Model.state.queueDay = 3
-    // } else if ((angle%(2*Math.PI) > 3.11 )&&(angle%(2*Math.PI) <3.13)) {
-    //     Model.state.queueDay = 1
-    // }
-
+    
     ctx.save()
 
     let moon = getImageToDraw("astrumNight")
@@ -1181,7 +1109,6 @@ function createEnvironment() {
     if (flyObjs.length != 0) {
         console.log("num of objs")
         console.log(flyObjs.length)
-        // console.log(flyObjs)
         for (let flyObj of flyObjs) {
             ctx.save()
             ctx.translate((-w) + (((2 * flyObj.getProperty().shift * 2 * w) + ((flyObj.getProperty().velocity * angle) * w)) % (2 * w)), flyObj.getProperty().shift * (h / 2)/*(h / 10)*/)
@@ -1202,60 +1129,6 @@ function createEnvironment() {
     setFrameReq(window.requestAnimationFrame(countFPS));
 }
 
-
-
-
-/*
-function blendBG() {
-    var opaSunSet = parseFloat(skySunSet.style.opacity.split()[0])
-    var opaDay = parseFloat(skyDay.style.opacity.split()[0])
-
-    if (opaSunSet<=1){
-        var opac = opaSunSet + 0.0005;
-        skySunSet.style.opacity = `${opac}`
-    } else {
-        if (opaDay<=1){
-            var opac = opaDay + 0.0005;
-            skyDay.style.opacity = `${opac}`
-        }
-    }
-}
-*/
-// initImages(state.environment);  
-//initImages(
-//);  
-
-
-/* CREATING MENU' */
-/*
-  async function initJSON() {
-    for(let datum of Model.state.possibleValues.data) {
-        datum.image = new_assets[datum.imageName]
-    }
-}
-*/
-/*
-function drawThisImage (img, left, bottom,alpha=1,hasLight=false,lightOn) {
-    var h = img.naturalHeight*factor;
-    var w = img.naturalWidth*factor;
-    var x = left * canvas.width;
-    var y = (1-bottom) * canvas.height;
-    ctx.globalAlpha = alpha
-    console.log("here6")
-    if(hasLight) {
-        if(lightOn) {
-            ctx.drawImage(img.lightOn, x, y-h, w, h)
-        } else {
-            ctx.drawImage(img.lightOff, x, y-h, w, h)
-        }
-    } else {
-        ctx.drawImage(img, x, y-h, w, h)    
-    }
-    ctx.drawImage(img, x, y-h, w, h)
-    ctx.globalAlpha = 1
-}
-*/
-
 /**
  * types of images:
  * 0: standard only one behaviour and one type of image
@@ -1265,15 +1138,6 @@ function drawThisImage (img, left, bottom,alpha=1,hasLight=false,lightOn) {
  * 4: flyingObjec
  */
 
-
-
-
-
-
-
-
-
-
 var generateButton = document.createElement('button')
 var helpButton = document.createElement('button')
 var menuPanel = document.createElement('div')
@@ -1282,8 +1146,6 @@ menuPanel.className = 'menu-panel'
 var btn_left = document.getElementById('btn-sx')
 var btn_center = document.getElementById('btn-ct')
 var btn_right = document.getElementById('btn-dx')
-
-
 
 async function createMenu() {
     console.log("menu Creation")
@@ -1339,9 +1201,6 @@ function assignClick() {
             console.log("elements")
             console.log(env)
             console.log(el)
-            //console.log(Model.state.drawing)
-            //Model.state.drawing.
-            //document.querySelectorAll('.'+ el).forEach((elem)=>{elem.classList.remove('selected-btn')})
             modifyIdList(id)
 
             visualizeSelectedTokens()
@@ -1374,191 +1233,13 @@ function visualizeSelectedTokens() {
 }
 
 
-/*
- async function createMenu () {
-    console.log("menu Creation")
-    var btnContainer = document.getElementById("tokenGrid")// document.createElement('div')
-    btnContainer.className = 'token-btn-container'
-
-    //if the menu isn't initialized a new element is created
-    if(Model.state.elementTypes==undefined || Model.state.environments==undefined) {
-        let data  = await getMenuTypes()
-        Model.state.elementTypes = data.primaryTypes
-        Model.state.environments = data.environments
-    }
-    
-    console.log(Model.state.elementTypes)
-    for (let elType of Model.state.elementTypes) {
-        console.log(elType)
-        var btnDiv = document.createElement('div')
-        btnDiv.className = 'token-btn-div'    
-        
-        let toPutIn = []
-        if(Model.state.possibleValues == 0) {
-            toPutIn = await getElementsByType(elType)
-            for(let datum of toPutIn) {
-                Model.state.possibleValues.push(datum)
-            }
-        } else {
-            for(let datum of Model.state.possibleValues) {
-                if(datum.elementType === elType) {
-                    toPutIn.push(datum)
-                }
-            }
-        }   
-        console.log("toPutIn:")
-        console.log(toPutIn)
-        if(toPutIn.length == 0) {
-            toPutIn = await getElementsByType(elType)
-            for(let datum of toPutIn) {
-                Model.state.possibleValues.push(datum)
-            }
-        }
-
-        toPutIn = toPutIn.sort((a,b) => {
-            return Model.state.environments.indexOf(a.environment) - Model.state.environments.indexOf(b.environment)
-
-        })
-        console.log("toPutIn$")
-        console.log(toPutIn)
-        for (let datum of toPutIn) {
-            console.log('datum: ')
-            console.log(datum)
-            console.log(datum.image.previewUrl)
-            var aNewSrc =await getAsset(datum.image.previewUrl) 
-            var img = document.createElement('img')
-            img.src = aNewSrc
-            img.className = 'token-image'
-
-            var btn = document.createElement('button')
-            btn.id = datum.id
-            btn.className = 'nes-btn'
-            btn.classList.add('token-btn')
-            btn.classList.add(datum.elementType)
-            btn.classList.add(datum.environment)
-            btn.type = "button"
-            btn.style.margin = '7px'
-            btn.style.marginLeft = 'auto'
-            btn.style.marginRight = 'auto'
-
-            btn.appendChild(img)
-            btnDiv.appendChild(btn)
-        }
-        btnContainer.appendChild(btnDiv)
-    }
-
-    menuPanel.appendChild(btnContainer)
-
-    generateButton.className = 'nes-btn is-success'
-    generateButton.innerText = 'GENERATE'
-    generateButton.style.display = 'block'
-    generateButton.style.margin = 'auto'
-    generateButton.style.marginTop = '20px'
-    generateButton.style.verticalAlign = 'middle'
-
-    helpButton.className = 'nes-btn is-warning'
-    helpButton.innerText = '?'
-    helpButton.style.display = 'block'
-    helpButton.style.margin = 'auto' 
-    helpButton.style.marginTop = '20px'
-    helpButton.style.verticalAlign = 'middle'
-
-    var btnDiv = document.createElement('div')
-        btnDiv.style.display = 'block'
-        btnDiv.style.height = 'max-content'
-        btnDiv.style.marginTop = '10%'
-        btnDiv.style.textAlign = 'center'
-
-    var title = document.createElement('p')
-        title.innerText = 'MENU'
-        title.style.backgroundColor = 'rgb(245, 247, 99)'
-        title.style.padding = '10px'
-        title.style.borderRadius = '5px'
-        title.style.marginTop = '40%'
-        title.style.fontSize = 'x-large'
-    
-
-    btnDiv.appendChild(helpButton)
-    btnDiv.appendChild(generateButton)
-    btnDiv.appendChild(title)
-
-    menuPanel.appendChild(btnDiv)
-
-    container.appendChild(menuPanel)
-
-    console.log('envToGen: ')
-    visualizeSelectedTokens()
-}
-*/
-
-
-
-/* -------------------------------------------------------- */
-
-//  function playableButton (ready) {
-//     if (ready) {
-//         playButton.classList.replace('is-disabled', 'is-success');
-//     }
-// }
 
 function showInitPanel() {
     document.getElementById("panel-container").hidden = !document.getElementById("panel-container").hidden
     document.getElementById('front-panel').hidden = false
     document.getElementById('start-panel').hidden = true;
 }
-/*
-var okButton = document.getElementById('ok-button');
-okButton.onclick = () => {
-    var word1 = document.getElementById('name-field1').value
-    var word2 = document.getElementById('name-field2').value
-    // Model.setSeedWords(word1, word2);
-    if ((word1 != "")&&(word2 != "")) {
-        document.getElementById('front-panel').hidden = true;
-        document.getElementById('start-panel').hidden = false;
-        Model.state.emitter.updateReadyToPlay()
-        Tone.start()
-        Tone.context.latencyHint = "playback"
-    }    
-}*/
 
-// var playButton = document.getElementById('play-button');
-// playButton.onclick = ()=> {
-//     if (playButton.classList.contains('is-success')){
-//         showInitPanel();
-//         Model.startMusic(); 
-
-//         }
-// }
-/*
-btn_right.onclick = async () => {
-    //console.log(Model.state)
-    await updateState()
-    await initImages()
-    document.getElementById("canva-container").hidden = false;
-    document.getElementById("menu-container").hidden = true;
-    //document.getElementById("container").hidden = true; 
-    console.log("Hey there")
-    //menuPanel.style.display = 'none'
-    Tone.start()
-    //Model.propagateStateChanges(false)
-    //Model.startMusic()
-    //updatePage(0)
-    //console.log(Model.state)
-
-}
-*/
-/*
-document.getElementById('menu').onclick = () => {
-    //Model.stopMusic()
-    console.log("merda")
-    menuPanel.style.display = 'inline-flex  '
-}
-*/
-/**
- * 
- * @param {*} aPage 0 selecting tokens
- *                  1 player page 
- */
 async function updatePage(aPage) {
     setNavPage(aPage)
     console.log("page")
@@ -1927,21 +1608,13 @@ async function getMenuTypes() {
             console.log("Document data:", doc.data());
             return doc.data();
         } else {
-            // doc.data() will be undefined in this case
             console.log("No such document!");
         }
     } catch (error) {
         console.log("Error getting document:", error);
     };
-    console.log("ci sono arrivato qui2")
-    /*
-    if (docSnap.exists()) {
-        return docSnap.data();
-    } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
-    }
-    */
+    //console.log("ci sono arrivato qui2")
+    
 }
 
 async function getElementsByType(type) {
@@ -1950,34 +1623,18 @@ async function getElementsByType(type) {
     const querySnapshot = await getDocs(q);
     elementsToRet = []
     querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
         elementsToRet.push(doc.data());
     });
     return elementsToRet
 }
 
 async function getElements() {
-    //const q = query(collection(db, "elements"));
     let elementsToRet =[];
     let querySnapshot = await db.collection("elements").get()
     querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
         console.log(doc.id, " => ", doc.data());
         elementsToRet.push(doc.data());
     });
-
-
-    // let el = db.collection("elements");
-    // //const querySnapshot = await getDocs(el);
-    // //elementsToRet = []
-    // let querySnapshot = await el.get();
-
-    // console.log("qsn")
-    // console.log(doc.data())
-    // querySnapshot.forEach((doc) => {
-    //     // doc.data() is never undefined for query doc snapshots
-    //     elementsToRet.push(doc.data());
-    // });
     return elementsToRet
 }
 
@@ -2007,12 +1664,9 @@ async function getNodes() {
 
 
 
-/***
- * 
- * 
+/**
  * 
  * markov nodes 
- * 
  * 
  */
 
@@ -2074,9 +1728,16 @@ class MarkovMelody {
         }
     }
 
-
 }
 
+async function loadingMusicElements() {
+    return new Promise()
+}
+
+
+/*
+ * instruments 
+ */
 
 
 class bellSample {
