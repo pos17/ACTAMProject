@@ -67,15 +67,14 @@ async function initializeMyApp() {
     // prioritize sustained playback
     //const context = new Tone.Context({ latencyHint: "playback" });
     // set this context as the global Context
-    //Tone.setContext(context);
     initializeFirebase();
     Tone.context.lookAhead = 0.1;
     setNow()
     setMasterChain()
-    console.log("master chain set")
+    //console.log("master chain set")
     console.log(getMasterChain())
     Tone.Destination.chain(getMasterChain().compressor, getMasterChain().hiddenGain, getMasterChain().mainGain)
-    console.log("master chain get")
+    //console.log("master chain get")
     setLimit(40)
     increase();
     await initiateState()
@@ -86,14 +85,18 @@ async function initializeMyApp() {
     await createMenu()
     assignClick()
     updatePage(0)
-    setLimit(100)
-    console.log("i nodi")
-    prepareCanvas();
     
-
+    //console.log("i nodi")
+    prepareCanvas();
+    await generateNodes();
+    setLimit(100)
+    console.log("state")
+    console.log(state)
 }
 
-
+/**
+ * the functions that starts the whole system 
+ */
 initializeMyApp()
 
 /***
@@ -1260,6 +1263,9 @@ async function updatePage(aPage) {
 
 
 async function playerPage() {
+    let audioObj = state.melodyNodes.generateMelody()
+    state.drawing.audio.melody= audioObj.melody;
+    state.drawing.audio.chords= audioObj.chords;
     await updateState()
     await initImages()
     initMusic()
@@ -1651,14 +1657,16 @@ async function getDocumentElement(docId) {
 }
 
 async function getNodes() {
-    const q = query(collection(db, "nodes"));
+    //const q = query(collection(db, "nodes"));
 
-    const querySnapshot = await getDocs(q);
-    elementsToRet = []
+    const querySnapshot = await db.collection("nodes").get();//getDocs(q);
+    let elementsToRet = []
     querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
         elementsToRet.push(doc.data());
     });
+    console.log("elToRet")
+    console.log(elementsToRet)
     return elementsToRet
 }
 
@@ -1860,8 +1868,7 @@ class padSample {
             this.pad.player(ntp).start(time);
         })
         
-        //this.kick.triggerAttackRelease("C1", "8n", time, velocity)
-        // console.log("kicktime")
+        
     }
 }
 
