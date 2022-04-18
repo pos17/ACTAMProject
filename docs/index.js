@@ -727,16 +727,28 @@ function parseMelodyString(melodyString) {
                     barIndex = barIndex + 1;
                     quarterIndex = quarterIndex + 2
                     break;
+                case "1m..":
+                    barIndex = barIndex + 1;
+                    quarterIndex = quarterIndex + 3
+                    break;
                 case "2n":
                     quarterIndex = quarterIndex + 2;
                     break;
                 case "2n.":
                     quarterIndex = quarterIndex + 3;
                     break;
+                case "2n..":
+                    quarterIndex = quarterIndex + 3;
+                    sixteenthIndex = sixteenthIndex + 2;
+                    break;
                 case "4n":
                     quarterIndex = quarterIndex + 1;
                     break;
                 case "4n.":
+                    quarterIndex = quarterIndex + 1;
+                    sixteenthIndex = sixteenthIndex + 2;
+                    break;
+                case "4n..":
                     quarterIndex = quarterIndex + 1;
                     sixteenthIndex = sixteenthIndex + 2;
                     break;
