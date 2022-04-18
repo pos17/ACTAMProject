@@ -629,7 +629,7 @@ function buildInstruments() {
 }
 
 function startMusic() {
-    Tone.Transport.bpm.value = 60
+    Tone.Transport.bpm.value = 80
     Tone.Transport.start("+0.5", "0:0:0");
 
     setPlaying(true);
@@ -705,6 +705,11 @@ function generatePart(noteSequence) {
 function parseMelodyString(melodyString) {
     let notesToRet = [];
     let barsArray = melodyString.split("\n")
+    console.log("melody Parsed by bar")
+    console.log(barsArray)
+    barsArray.pop();
+    console.log("melody Parsed by bar after pop last empty element")
+    console.log(barsArray)
     let barsNum = barsArray.length
     let barIndex = 0;
     let quarterIndex = 0;
@@ -750,7 +755,7 @@ function parseMelodyString(melodyString) {
                     break;
                 case "4n..":
                     quarterIndex = quarterIndex + 1;
-                    sixteenthIndex = sixteenthIndex + 2;
+                    sixteenthIndex = sixteenthIndex + 3;
                     break;
                 case "8n":
                     sixteenthIndex = sixteenthIndex + 2;
