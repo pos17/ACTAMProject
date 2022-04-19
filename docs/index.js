@@ -151,7 +151,7 @@ function setMasterChain() {
             threshold: -15,
             ratio: 7,
         }),
-        hiddenGain: new Tone.Gain(0.3),
+        hiddenGain: new Tone.Gain(0.8 ),
         mainGain: new Tone.Gain(1),
         mainVolumeSave: 1
     }
@@ -1895,7 +1895,9 @@ class padSample {
         
         
     }
-}   
+} 
+
+let ps = new padSample();
 
 /**
  *********************** PADS *************************
@@ -1929,7 +1931,7 @@ class Synth1 {
                 console.error("wrong note feeding: " + "note");
             }
             this.pad.player(ntp).start(time);
-            this.pad.player(ntp).stop(time+duration);
+            //this.pad.player(ntp).stop(time+duration);
             // this.pad.player(ntp).fadeOut='4n';
         })
     }
@@ -1969,7 +1971,7 @@ class Synth2 {
                 console.error("wrong note feeding: " + "note");
             }
             this.pad.player(ntp).start(time);
-            this.pad.player(ntp).stop(time+duration);
+            //this.pad.player(ntp).stop(time+duration);
             // this.pad.player(ntp).fadeOut='4n';
         })
     }
@@ -2009,7 +2011,7 @@ class Synth3 {
                 console.error("wrong note feeding: " + "note");
             }
             this.pad.player(ntp).start(time);
-            this.pad.player(ntp).stop(time+duration);
+            //this.pad.player(ntp).stop(time+duration);
             // this.pad.player(ntp).fadeOut='4n';
         })
     }
@@ -2049,7 +2051,7 @@ class Synth4 {
                 console.error("wrong note feeding: " + "note");
             }
             this.pad.player(ntp).start(time);
-            this.pad.player(ntp).stop(time+duration);
+            //this.pad.player(ntp).stop(time+duration);
             // this.pad.player(ntp).fadeOut='4n';
         })
     }
@@ -2134,7 +2136,7 @@ class Moog {
             console.error("wrong note feeding: " + "note");
         }
         this.mel.player(ntp).start(time);
-        this.mel.player(ntp).stop(time+duration);
+        //this.mel.player(ntp).stop(time+duration);
         // this.mel.player(ntp).fadeOut='4n';
     }
 
