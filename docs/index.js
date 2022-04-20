@@ -637,7 +637,7 @@ function buildInstruments() {
 }
 
 function startMusic() {
-    Tone.Transport.bpm.value = 80
+    Tone.Transport.bpm.value = 60
     Tone.Transport.start("+0.5", "0:0:0");
 
     setPlaying(true);
