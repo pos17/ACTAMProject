@@ -1942,6 +1942,7 @@ class Synth1 {
     }
 }
 
+// TODO: Arpeggiator
 class Synth2 {
     
     constructor() {
