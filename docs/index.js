@@ -20,6 +20,7 @@ const state = {
         limit: 0,
         lastUpdate: undefined,
     },
+    hiddenGainVal:0.8,
     isLoading: 0,
     imagesToDraw: {},
     environments: undefined,
@@ -151,7 +152,7 @@ function setMasterChain() {
             threshold: -15,
             ratio: 7,
         }),
-        hiddenGain: new Tone.Gain(0.8 ),
+        hiddenGain: new Tone.Gain(state.hiddenGainVal),
         mainGain: new Tone.Gain(1),
         mainVolumeSave: 1
     }
@@ -282,7 +283,7 @@ async function updateState() {
 
             } break;
             case ("landscape"): {
-                state.startingId = modifyingValue.nodeId;
+                state.startingId = modifyingValue.audio.nodeId;
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
                 state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
             } break;
@@ -638,6 +639,7 @@ function buildInstruments() {
 }
 
 function startMusic() {
+    state.master.hiddenGain.gain.rampTo(state.hiddenGainVal,0.2)
     Tone.Transport.bpm.value = 60
     Tone.Transport.start("+0.5", "0:0:0");
 
@@ -645,6 +647,7 @@ function startMusic() {
 }
 
 function stopMusic() {
+    state.master.hiddenGain.gain.rampTo(0,0.2)
     Tone.Transport.stop();
     setPlaying(false);
 }
@@ -1289,10 +1292,11 @@ async function updatePage(aPage) {
 
 
 async function playerPage() {
+    
+    await updateState()
     let audioObj = state.melodyNodes.generateMelody(state.startingId);
     state.drawing.audio.melody= audioObj.melody;
     state.drawing.audio.chords= audioObj.chords;
-    await updateState()
     await initImages()
     initMusic()
     Tone.start()
@@ -1307,6 +1311,7 @@ async function playerPage() {
     document.getElementById("menu-container").hidden = true;
     document.getElementById("menu-navbar").hidden = true;
     document.getElementById("upbar").hidden = true;
+    
     startMusic()
 }
 
@@ -1747,6 +1752,10 @@ class MarkovMelody {
 
     _nextRandomNode(aNode) {
         let possibleNodes = aNode.links
+        if(!Array.isArray(possibleNodes)) {
+            possibleNodes = Array.from(Object.values(possibleNodes));
+        }
+        console.log(possibleNodes)
         let totalWeights = 0;
         for (var i = 0; i < possibleNodes.length; i++) {
             totalWeights = totalWeights + possibleNodes[i].prob
