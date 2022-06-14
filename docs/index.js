@@ -1620,6 +1620,7 @@ async function getSample(instr, note) {
     }
 }
 
+
 //-------------------------------database handling--------------------------//
 async function getMenuTypes() {
     const docRef = db.collection("menu").doc("menuTypes");
@@ -1758,6 +1759,7 @@ class MarkovMelody {
 async function loadingMusicElements() {
     return new Promise()
 }
+
 
 
 /*
