@@ -282,6 +282,7 @@ async function updateState() {
 
             } break;
             case ("landscape"): {
+                state.startingId = modifyingValue.nodeId;
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
                 state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
             } break;
@@ -1288,7 +1289,7 @@ async function updatePage(aPage) {
 
 
 async function playerPage() {
-    let audioObj = state.melodyNodes.generateMelody()
+    let audioObj = state.melodyNodes.generateMelody(state.startingId);
     state.drawing.audio.melody= audioObj.melody;
     state.drawing.audio.chords= audioObj.chords;
     await updateState()
