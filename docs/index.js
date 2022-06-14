@@ -1914,7 +1914,7 @@ class Synth1 {
         let padUrls =  {};
         
         for (let i=0; i<numCycles; i++){
-            padUrls[initNote+i] = ENV1_BASE_URL+`/01_SynthSamplesC2C4/Synth1_${i+1}.wav`
+            padUrls[initNote+i] = ENV1_BASE_URL+`/01_SynthSamplesC2C4/Synth1_${i+1}.mp3`
         };
         var pad = new Tone.Players(padUrls,() => {
             state.isLoading = state.isLoading-1;
@@ -1955,7 +1955,7 @@ class Synth2 {
         let padUrls =  {};
         
         for (let i=0; i<numCycles; i++){
-            padUrls[initNote+i] = ENV2_BASE_URL+`/02_SynthSamplesC2C4/Synth2_${i+1}.wav`
+            padUrls[initNote+i] = ENV2_BASE_URL+`/02_SynthSamplesC2C4/Synth2_${i+1}.mp3`
         };
         var pad = new Tone.Players(padUrls,() => {
             state.isLoading = state.isLoading-1;
@@ -1995,7 +1995,7 @@ class Synth3 {
         let padUrls =  {};
         
         for (let i=0; i<numCycles; i++){
-            padUrls[initNote+i] = ENV3_BASE_URL+`/03_SynthSamplesC2C4/Synth3_${i+1}.wav`
+            padUrls[initNote+i] = ENV3_BASE_URL+`/03_SynthSamplesC2C4/Synth3_${i+1}.mp3`
         };
         var pad = new Tone.Players(padUrls,() => {
             state.isLoading = state.isLoading-1;
@@ -2035,7 +2035,7 @@ class Synth4 {
         let padUrls =  {};
         
         for (let i=0; i<numCycles; i++){
-            padUrls[initNote+i] = ENV4_BASE_URL+`/04_SynthSamplesC2C4/Synth4_${i+1}.wav`
+            padUrls[initNote+i] = ENV4_BASE_URL+`/04_SynthSamplesC2C4/Synth4_${i+1}.mp3`
         };
         var pad = new Tone.Players(padUrls,() => {
             state.isLoading = state.isLoading-1;
@@ -2084,7 +2084,7 @@ class Synth4 {
         let melUrls =  {};
         
         for (let i=0; i<numCycles; i++){
-            melUrls[initNote+i] = ENV1_BASE_URL+`/01_BellSamplesC3C6/Bell_${i+1}.wav`
+            melUrls[initNote+i] = ENV1_BASE_URL+`/01_BellSamplesC3C6/Bell_${i+1}.mp3`
         };
         var mel = new Tone.Players(melUrls,() => {
             state.isLoading = state.isLoading-1;
@@ -2098,7 +2098,8 @@ class Synth4 {
     }
 
     triggerAttack(note, time) {
-        let ntp = Tonal.Note.midi(note);
+        // transposed of 1 ocv
+        let ntp = Tonal.Note.midi(note)+12;
         if(ntp == "") {
             console.error("wrong note feeding: " + "note");
         }
@@ -2122,7 +2123,7 @@ class Moog {
         let melUrls =  {};
         
         for (let i=0; i<numCycles; i++){
-            melUrls[initNote+i] = ENV2_BASE_URL+`/02_MoogSamplesC3C6/Moog_${i+1}.wav`
+            melUrls[initNote+i] = ENV2_BASE_URL+`/02_MoogSamplesC3C6/Moog_${i+1}.mp3`
         };
         var mel = new Tone.Players(melUrls,() => {
             state.isLoading = state.isLoading-1;
@@ -2159,7 +2160,7 @@ class Sitar {
         let melUrls =  {};
         
         for (let i=0; i<numCycles; i++){
-            melUrls[initNote+i] = ENV3_BASE_URL+`/03_SitarSamplesC3C6/Sitar_${i+1}.wav`
+            melUrls[initNote+i] = ENV3_BASE_URL+`/03_SitarSamplesC3C6/Sitar_${i+1}.mp3`
         };
         var mel = new Tone.Players(melUrls,() => {
             state.isLoading = state.isLoading-1;
@@ -2171,7 +2172,8 @@ class Sitar {
     }
 
     triggerAttack(note, time) {
-        let ntp = Tonal.Note.midi(note);
+        // transposed of 1 ocv
+        let ntp = Tonal.Note.midi(note)+12;
         if(ntp == "") {
             console.error("wrong note feeding: " + "note");
         }
@@ -2195,7 +2197,7 @@ class Marimba {
         let melUrls =  {};
         
         for (let i=0; i<numCycles; i++){
-            melUrls[initNote+i] = ENV4_BASE_URL+`/04_MarimbaSamplesC3C6/Marimba_${i+1}.wav`
+            melUrls[initNote+i] = ENV4_BASE_URL+`/04_MarimbaSamplesC3C6/Marimba_${i+1}.mp3`
         };
         var mel = new Tone.Players(melUrls,() => {
             state.isLoading = state.isLoading-1;
@@ -2207,7 +2209,8 @@ class Marimba {
     }
 
     triggerAttack(note, time) {
-        let ntp = Tonal.Note.midi(note);
+        // transposed of 1 ocv
+        let ntp = Tonal.Note.midi(note)+12;
         if(ntp == "") {
             console.error("wrong note feeding: " + "note");
         }
@@ -2239,7 +2242,7 @@ let test4 = new Marimba();
         let bassUrls =  {};
         
         for (let i=0; i<numCycles; i++){
-            bassUrls[initNote+i] = ENV1_BASE_URL+`/01_BassSamplesC1C3/Bass1_${i+1}.wav`
+            bassUrls[initNote+i] = ENV1_BASE_URL+`/01_BassSamplesC1C3/Bass1_${i+1}.mp3`
         };
         var bass = new Tone.Players(bassUrls,() => {
             state.isLoading = state.isLoading-1;
@@ -2279,7 +2282,7 @@ class Bass2 {
         let bassUrls =  {};
         
         for (let i=0; i<numCycles; i++){
-            bassUrls[initNote+i] = ENV2_BASE_URL+`/02_BassSamplesC1C3/Bass2_${i+1}.wav`
+            bassUrls[initNote+i] = ENV2_BASE_URL+`/02_BassSamplesC1C3/Bass2_${i+1}.mp3`
         };
         var bass = new Tone.Players(bassUrls,() => {
             state.isLoading = state.isLoading-1;
@@ -2319,7 +2322,7 @@ class Bass3 {
         let bassUrls =  {};
         
         for (let i=0; i<numCycles; i++){
-            bassUrls[initNote+i] = ENV3_BASE_URL+`/03_BassSamplesC1C3/Bass3_${i+1}.wav`
+            bassUrls[initNote+i] = ENV3_BASE_URL+`/03_BassSamplesC1C3/Bass3_${i+1}.mp3`
         };
         var bass = new Tone.Players(bassUrls,() => {
             state.isLoading = state.isLoading-1;
@@ -2359,7 +2362,7 @@ class Bass4 {
         let bassUrls =  {};
         
         for (let i=0; i<numCycles; i++){
-            bassUrls[initNote+i] = ENV4_BASE_URL+`/04_BassSamplesC1C3/Bass4_${i+1}.wav`
+            bassUrls[initNote+i] = ENV4_BASE_URL+`/04_BassSamplesC1C3/Bass4_${i+1}.mp3`
         };
         var bass = new Tone.Players(bassUrls,() => {
             state.isLoading = state.isLoading-1;
