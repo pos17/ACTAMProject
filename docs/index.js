@@ -2242,9 +2242,18 @@ class Marimba {
             state.isLoading = state.isLoading - 1;
             console.log("Marimba loaded")
         });
-        mel.toDestination();
+        mel.set({
+            volume: +3,
+        })
+        const dly = new Tone.FeedbackDelay({
+            delayTime: '8n.',
+            feedback: 0.1,
+            wet: 0.1
+        })
+        mel.connect(dly);
+        dly.toDestination();
         this.mel = mel;
-
+        this.lastnode = dly;
     }
 
     triggerAttack(note, duration, time) {
@@ -2259,8 +2268,8 @@ class Marimba {
     }
 
     connect(node) {
-        this.mel.disconnect(Tone.Destination)
-        this.mel.connect(node)
+        this.lastnode.disconnect(Tone.Destination)
+        this.lastnode.connect(node)
     }
 }
 
