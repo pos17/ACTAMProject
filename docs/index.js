@@ -2,6 +2,11 @@
 
 // const { Tone } = require("tone/build/esm/core/Tone");
 
+//const { time } = require("console");
+//const { Tone } = require("tone/build/esm/core/Tone");
+
+// const { Tone } = require("tone/build/esm/core/Tone");
+
 let app;
 let db;
 let storage;
@@ -12,7 +17,8 @@ const ENV1_BASE_URL = "./Samples/Env1";
 const ENV2_BASE_URL = "./Samples/Env2";
 const ENV3_BASE_URL = "./Samples/Env3";
 const ENV4_BASE_URL = "./Samples/Env4";
-const BASE_MIDI_NOTES_NUM = {"C1": 24, "C2": 36, "C3": 48, "C4": 60, "C5": 72, "C6": 84};
+const DRUM_BASE_URL = "./Samples/Drum/";
+const BASE_MIDI_NOTES_NUM = { "C1": 24, "C2": 36, "C3": 48, "C4": 60, "C5": 72, "C6": 84 };
 
 const state = {
     loadingPage: {
@@ -93,7 +99,7 @@ async function initializeMyApp() {
     await createMenu()
     assignClick()
     updatePage(0)
-    
+
     //console.log("i nodi")
     prepareCanvas();
     await generateNodes();
@@ -151,7 +157,7 @@ function setMasterChain() {
             threshold: -15,
             ratio: 7,
         }),
-        hiddenGain: new Tone.Gain(0.8 ),
+        hiddenGain: new Tone.Gain(0.8),
         mainGain: new Tone.Gain(1),
         mainVolumeSave: 1
     }
@@ -634,11 +640,18 @@ function buildInstruments() {
     setInstrument("Synth2", synth2)
     setInstrument("Synth3", synth3)
     setInstrument("Synth4", synth4)
+
+    /* drum machine */
+    let drum = new DrumMachine();
+    setInstrument("Drum", drum)
+
 }
 
 function startMusic() {
     Tone.Transport.bpm.value = 60
+
     Tone.Transport.start("+0.5", "0:0:0");
+    getInstrument("Drum").playPattern([3, 3, 3, 3]);
 
     setPlaying(true);
 }
@@ -871,7 +884,7 @@ function count(str, find) {
 
 function addNotePartToTransport(notePart, instrument) {
     const part = new Tone.Part((time, value) => {
-        instrument.triggerAttack(value.note, time, 0.5)
+        instrument.triggerAttack(value.note, value.duration, time, 0.5)
         //console.log("note: " + value.note + " ,time: " + time + " duration: " + value.duration)
     }, notePart).start(0)
     return part
@@ -999,7 +1012,7 @@ function prepareCanvas() {
     canvas.width = 256 * factor;
     canvas.height = 128 * factor;
     canvasDiv.appendChild(canvas);
-    ctx = canvas.getContext('2d');    
+    ctx = canvas.getContext('2d');
     var moonRadius = canvas.width / 1.1;
 }
 
@@ -1111,7 +1124,7 @@ function createEnvironment() {
     background.drawThisImage(3, alphaDay, lightOn, canvas.height, canvas.width, ctx, factor)
     ctx.save();
     ctx.translate(Math.round(w / 2), Math.round(hAstra - 15 * factor))
-    
+
     ctx.save()
 
     let moon = getImageToDraw("astrumNight")
@@ -1289,8 +1302,8 @@ async function updatePage(aPage) {
 
 async function playerPage() {
     let audioObj = state.melodyNodes.generateMelody()
-    state.drawing.audio.melody= audioObj.melody;
-    state.drawing.audio.chords= audioObj.chords;
+    state.drawing.audio.melody = audioObj.melody;
+    state.drawing.audio.chords = audioObj.chords;
     await updateState()
     await initImages()
     initMusic()
@@ -1646,7 +1659,7 @@ async function getMenuTypes() {
         console.log("Error getting document:", error);
     };
     //console.log("ci sono arrivato qui2")
-    
+
 }
 
 async function getElementsByType(type) {
@@ -1661,7 +1674,7 @@ async function getElementsByType(type) {
 }
 
 async function getElements() {
-    let elementsToRet =[];
+    let elementsToRet = [];
     let querySnapshot = await db.collection("elements").get()
     querySnapshot.forEach((doc) => {
         console.log(doc.id, " => ", doc.data());
@@ -1776,64 +1789,64 @@ async function loadingMusicElements() {
 
 
 class bellSample {
-    
+
     constructor() {
-        state.isLoading = state.isLoading +1;
-        let bellUrls =  {
-            48:"001_BellC3.wav",
-            49:"002_BellCs3.wav",
-            50:"003_BellD3.wav",
-            51:"004_BellDs3.wav",
-            52:"005_BellE3.wav",
-            53:"006_BellF3.wav",
-            54:"007_BellFs3.wav",
-            55:"008_BellG3.wav",
-            56:"009_BellGs3.wav",
-            57:"010_BellA3.wav",
-            58:"011_BellAs3.wav",
-            59:"012_BellB3.wav",
-            60:"013_BellC4.wav",
-            61:"014_BellCs4.wav",
-            62:"01_BellD4.wav",
-            63:"02_BellDs4.wav",
-            64:"03_BellE4.wav",
-            65:"04_BellF4.wav",
-            66:"05_BellFs4.wav",
-            67:"06_BellG4.wav",
-            68:"07_BellGs4.wav",
-            69:"08_BellA4.wav",
-            70:"09_BellAs4.wav",
-            71:"10_BellB4.wav",
-            72:"11_BellC5.wav",
-            73:"12_BellCs5.wav",
-            74:"13_BellD5.wav",
-            75:"14_BellDs5.wav",
-            76:"15_BellE5.wav",
-            77:"16_BellF5.wav",
-            78:"17_BellFs5.wav",
-            79:"18_BellG5.wav",
-            80:"19_BellGs5.wav",
-            81:"20_BellA5.wav",
-            82:"21_BellAs5.wav",
-            83:"22_BellB5.wav",
-            84:"23_BellC6.wav",
+        state.isLoading = state.isLoading + 1;
+        let bellUrls = {
+            48: "001_BellC3.wav",
+            49: "002_BellCs3.wav",
+            50: "003_BellD3.wav",
+            51: "004_BellDs3.wav",
+            52: "005_BellE3.wav",
+            53: "006_BellF3.wav",
+            54: "007_BellFs3.wav",
+            55: "008_BellG3.wav",
+            56: "009_BellGs3.wav",
+            57: "010_BellA3.wav",
+            58: "011_BellAs3.wav",
+            59: "012_BellB3.wav",
+            60: "013_BellC4.wav",
+            61: "014_BellCs4.wav",
+            62: "01_BellD4.wav",
+            63: "02_BellDs4.wav",
+            64: "03_BellE4.wav",
+            65: "04_BellF4.wav",
+            66: "05_BellFs4.wav",
+            67: "06_BellG4.wav",
+            68: "07_BellGs4.wav",
+            69: "08_BellA4.wav",
+            70: "09_BellAs4.wav",
+            71: "10_BellB4.wav",
+            72: "11_BellC5.wav",
+            73: "12_BellCs5.wav",
+            74: "13_BellD5.wav",
+            75: "14_BellDs5.wav",
+            76: "15_BellE5.wav",
+            77: "16_BellF5.wav",
+            78: "17_BellFs5.wav",
+            79: "18_BellG5.wav",
+            80: "19_BellGs5.wav",
+            81: "20_BellA5.wav",
+            82: "21_BellAs5.wav",
+            83: "22_BellB5.wav",
+            84: "23_BellC6.wav",
         };
         let bellUrls2 = {};
         Object.keys(bellUrls).forEach(key => {
-            bellUrls2[key] = "./BellSamplesMelodies/"+bellUrls[key];
+            bellUrls2[key] = "./BellSamplesMelodies/" + bellUrls[key];
         });
-        var bell = new Tone.Players(bellUrls2,() => {
-            state.isLoading = state.isLoading-1;
+        var bell = new Tone.Players(bellUrls2, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("bell loaded")
-            });
+        });
         bell.toDestination();
         this.bell = bell;
-        
+
     }
 
     triggerAttack(note, time) {
         let ntp = Tonal.Note.midi(note);
-        if(ntp == "") {
+        if (ntp == "") {
             console.error("wrong note feeding: " + "note");
         }
         this.bell.player(ntp).start(time);
@@ -1843,61 +1856,61 @@ class bellSample {
 }
 
 class padSample {
-    
+
     constructor() {
-        state.isLoading = state.isLoading +1;
-        let padUrls =  {
-            36:"01_SynthC2.wav",
-            37:"02_SynthCs2.wav",
-            38:"03_SynthD2.wav",
-            39:"04_SynthDs2.wav",
-            40:"05_SynthE2.wav",
-            41:"06_SynthF2.wav",
-            42:"07_SynthFs2.wav",
-            43:"08_SynthG2.wav",
-            44:"09_SynthGs2.wav",
-            45:"10_SynthA2.wav",
-            46:"11_SynthAs2.wav",
-            47:"12_SynthB2.wav",
-            48:"13_SynthC3.wav",
-            49:"14_SynthCs3.wav",
-            50:"15_SynthD3.wav",
-            51:"16_SynthDs3.wav",
-            52:"17_SynthE3.wav",
-            53:"18_SynthF3.wav",
-            54:"19_SynthFs3.wav",
-            55:"20_SynthG3.wav",
-            56:"21_SynthGs3.wav",
-            57:"22_SynthA3.wav",
-            58:"23_SynthAs3.wav",
-            59:"24_SynthB3.wav",
-            60:"25_SynthC4.wav",
+        state.isLoading = state.isLoading + 1;
+        let padUrls = {
+            36: "01_SynthC2.wav",
+            37: "02_SynthCs2.wav",
+            38: "03_SynthD2.wav",
+            39: "04_SynthDs2.wav",
+            40: "05_SynthE2.wav",
+            41: "06_SynthF2.wav",
+            42: "07_SynthFs2.wav",
+            43: "08_SynthG2.wav",
+            44: "09_SynthGs2.wav",
+            45: "10_SynthA2.wav",
+            46: "11_SynthAs2.wav",
+            47: "12_SynthB2.wav",
+            48: "13_SynthC3.wav",
+            49: "14_SynthCs3.wav",
+            50: "15_SynthD3.wav",
+            51: "16_SynthDs3.wav",
+            52: "17_SynthE3.wav",
+            53: "18_SynthF3.wav",
+            54: "19_SynthFs3.wav",
+            55: "20_SynthG3.wav",
+            56: "21_SynthGs3.wav",
+            57: "22_SynthA3.wav",
+            58: "23_SynthAs3.wav",
+            59: "24_SynthB3.wav",
+            60: "25_SynthC4.wav",
         };
         let padUrls2 = {};
         Object.keys(padUrls).forEach(key => {
-            padUrls2[key] = "./SynthSample/"+padUrls[key];
+            padUrls2[key] = "./SynthSample/" + padUrls[key];
         });
-        var pad = new Tone.Players(padUrls2,() => {
-            state.isLoading = state.isLoading-1;
+        var pad = new Tone.Players(padUrls2, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("pad loaded")
-            });
+        });
         pad.toDestination();
         this.pad = pad;
-        
+
     }
 
     triggerAttackRelease(notes, time) {
         notes.forEach((note) => {
             let ntp = Tonal.Note.midi(note);
-            if(ntp == "") {
+            if (ntp == "") {
                 console.error("wrong note feeding: " + "note");
             }
             this.pad.player(ntp).start(time);
         })
-        
-        
+
+
     }
-} 
+}
 
 let ps = new padSample();
 
@@ -1905,31 +1918,31 @@ let ps = new padSample();
  *********************** PADS *************************
  */
 class Synth1 {
-    
+
     constructor() {
-        state.isLoading = state.isLoading +1;
+        state.isLoading = state.isLoading + 1;
         let initNote = BASE_MIDI_NOTES_NUM["C2"];
-        let numCycles = BASE_MIDI_NOTES_NUM["C4"]-initNote+1;
-        let padUrls =  {};
-        
-        for (let i=0; i<numCycles; i++){
-            padUrls[initNote+i] = ENV1_BASE_URL+`/01_SynthSamplesC2C4/Synth1_${i+1}.mp3`
+        let numCycles = BASE_MIDI_NOTES_NUM["C4"] - initNote + 1;
+        let padUrls = {};
+
+        for (let i = 0; i < numCycles; i++) {
+            padUrls[initNote + i] = ENV1_BASE_URL + `/01_SynthSamplesC2C4/Synth1_${i + 1}.mp3`
         };
-        var pad = new Tone.Players(padUrls,() => {
-            state.isLoading = state.isLoading-1;
+        var pad = new Tone.Players(padUrls, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("padEnv1 loaded")
-            });
+        });
         pad.toDestination();
         this.pad = pad;
         // console.log("PAD");
         // console.log(pad);
-        
+
     }
 
     triggerAttackRelease(notes, duration, time) {
         notes.forEach((note) => {
             let ntp = Tonal.Note.midi(note);
-            if(ntp == "") {
+            if (ntp == "") {
                 console.error("wrong note feeding: " + "note");
             }
             this.pad.player(ntp).start(time);
@@ -1946,71 +1959,94 @@ class Synth1 {
 
 // TODO: Arpeggiator
 class Synth2 {
-    
+
     constructor() {
-        state.isLoading = state.isLoading +1;
+        state.isLoading = state.isLoading + 1;
         let initNote = BASE_MIDI_NOTES_NUM["C2"];
-        let numCycles = BASE_MIDI_NOTES_NUM["C4"]-initNote+1;
-        let padUrls =  {};
-        
-        for (let i=0; i<numCycles; i++){
-            padUrls[initNote+i] = ENV2_BASE_URL+`/02_SynthSamplesC2C4/Synth2_${i+1}.mp3`
+        let numCycles = BASE_MIDI_NOTES_NUM["C4"] - initNote + 1;
+        let padUrls = {};
+
+        for (let i = 0; i < numCycles; i++) {
+            padUrls[initNote + i] = ENV2_BASE_URL + `/02_SynthSamplesC2C4/Synth2_${i + 1}.mp3`
         };
-        var pad = new Tone.Players(padUrls,() => {
-            state.isLoading = state.isLoading-1;
+        var pad = new Tone.Players(padUrls, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("padEnv2 loaded")
-            });
+        });
         pad.toDestination();
+        pad.set({
+            volume: 0.0,
+        });
         this.pad = pad;
         // console.log("PAD");
         // console.log(pad);
-        
+
     }
 
     triggerAttackRelease(notes, duration, time) {
-        notes.forEach((note) => {
-            let ntp = Tonal.Note.midi(note);
-            if(ntp == "") {
-                console.error("wrong note feeding: " + "note");
-            }
+        // notes.forEach((note) => {
+        //     let ntp = Tonal.Note.midi(note);
+        //     if (ntp == "") {
+        //         console.error("wrong note feeding: " + "note");
+        //     }
+        //     this.pad.player(ntp).start(time);
+        //     //this.pad.player(ntp).stop(time+duration);
+        //     // this.pad.player(ntp).fadeOut='4n';
+        // })
+        console.log("NotesPAD2: " + notes);
+        console.log(time);
+        console.log(time + Tone.Time(duration).toSeconds());
+        let pattern = [0, 1, 2, 1]
+        let dur = Tone.Time(duration).toSeconds();
+        let incr = dur / 16;
+
+        for (let i = 0; i < 16; i++) {
+            let ntp = Tonal.Note.midi(notes[pattern[i % 4]]);
             this.pad.player(ntp).start(time);
-            //this.pad.player(ntp).stop(time+duration);
-            // this.pad.player(ntp).fadeOut='4n';
-        })
+            time += incr
+        }
+
+        /* const pattern = new Tone.Pattern((atime, note) => {
+            let ntp = Tonal.Note.midi(note);
+            this.pad.player(ntp).start(atime);
+            console.log("PAD2 time: " + atime + " note: " + note);
+        }, notes, "upDown").start(0);
+        pattern.stop(time + Tone.Time(duration).toSeconds());
+        pattern.interval = "16n"; */
     }
 
     connect(node) {
-        this.pad.disconnect(Tone.Destination)
-        this.pad.connect(node)
+        this.pad.disconnect(Tone.Destination);
+        this.pad.connect(node);
     }
 }
 
 class Synth3 {
-    
+
     constructor() {
-        state.isLoading = state.isLoading +1;
+        state.isLoading = state.isLoading + 1;
         let initNote = BASE_MIDI_NOTES_NUM["C2"];
-        let numCycles = BASE_MIDI_NOTES_NUM["C4"]-initNote+1;
-        let padUrls =  {};
-        
-        for (let i=0; i<numCycles; i++){
-            padUrls[initNote+i] = ENV3_BASE_URL+`/03_SynthSamplesC2C4/Synth3_${i+1}.mp3`
+        let numCycles = BASE_MIDI_NOTES_NUM["C4"] - initNote + 1;
+        let padUrls = {};
+
+        for (let i = 0; i < numCycles; i++) {
+            padUrls[initNote + i] = ENV3_BASE_URL + `/03_SynthSamplesC2C4/Synth3_${i + 1}.mp3`
         };
-        var pad = new Tone.Players(padUrls,() => {
-            state.isLoading = state.isLoading-1;
+        var pad = new Tone.Players(padUrls, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("padEnv3 loaded")
-            });
+        });
         pad.toDestination();
         this.pad = pad;
         // console.log("PAD");
         // console.log(pad);
-        
+
     }
 
     triggerAttackRelease(notes, duration, time) {
         notes.forEach((note) => {
             let ntp = Tonal.Note.midi(note);
-            if(ntp == "") {
+            if (ntp == "") {
                 console.error("wrong note feeding: " + "note");
             }
             this.pad.player(ntp).start(time);
@@ -2026,31 +2062,31 @@ class Synth3 {
 }
 
 class Synth4 {
-    
+
     constructor() {
-        state.isLoading = state.isLoading +1;
+        state.isLoading = state.isLoading + 1;
         let initNote = BASE_MIDI_NOTES_NUM["C2"];
-        let numCycles = BASE_MIDI_NOTES_NUM["C4"]-initNote+1;
-        let padUrls =  {};
-        
-        for (let i=0; i<numCycles; i++){
-            padUrls[initNote+i] = ENV4_BASE_URL+`/04_SynthSamplesC2C4/Synth4_${i+1}.mp3`
+        let numCycles = BASE_MIDI_NOTES_NUM["C4"] - initNote + 1;
+        let padUrls = {};
+
+        for (let i = 0; i < numCycles; i++) {
+            padUrls[initNote + i] = ENV4_BASE_URL + `/04_SynthSamplesC2C4/Synth4_${i + 1}.mp3`
         };
-        var pad = new Tone.Players(padUrls,() => {
-            state.isLoading = state.isLoading-1;
+        var pad = new Tone.Players(padUrls, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("padEnv4 loaded")
-            });
+        });
         pad.toDestination();
         this.pad = pad;
         // console.log("PAD");
         // console.log(pad);
-        
+
     }
 
     triggerAttackRelease(notes, duration, time) {
         notes.forEach((note) => {
             let ntp = Tonal.Note.midi(note);
-            if(ntp == "") {
+            if (ntp == "") {
                 console.error("wrong note feeding: " + "note");
             }
             this.pad.player(ntp).start(time);
@@ -2074,37 +2110,37 @@ class Synth4 {
  *********************** MELODY *************************
  */
 
- class Bell {
-    
+class Bell {
+
     constructor() {
-        state.isLoading = state.isLoading +1;
+        state.isLoading = state.isLoading + 1;
         let initNote = BASE_MIDI_NOTES_NUM["C3"];
-        let numCycles = BASE_MIDI_NOTES_NUM["C6"]-initNote+1;
-        let melUrls =  {};
-        
-        for (let i=0; i<numCycles; i++){
-            melUrls[initNote+i] = ENV1_BASE_URL+`/01_BellSamplesC3C6/Bell_${i+1}.mp3`
+        let numCycles = BASE_MIDI_NOTES_NUM["C6"] - initNote + 1;
+        let melUrls = {};
+
+        for (let i = 0; i < numCycles; i++) {
+            melUrls[initNote + i] = ENV1_BASE_URL + `/01_BellSamplesC3C6/Bell_${i + 1}.mp3`
         };
-        var mel = new Tone.Players(melUrls,() => {
-            state.isLoading = state.isLoading-1;
+        var mel = new Tone.Players(melUrls, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("Bell loaded")
-            });
+        });
         mel.toDestination();
         this.mel = mel;
-        // console.log("PAD");
-        // console.log(mel);
-        
+        console.log("PAD");
+        console.log(mel);
+        console.log("URLS");
+        console.log(melUrls);
+
     }
 
-    triggerAttack(note, time) {
+    triggerAttack(note, duration, time) {
         // transposed of 1 ocv
-        let ntp = Tonal.Note.midi(note)+12;
-        if(ntp == "") {
+        let ntp = Tonal.Note.midi(note) + 12;
+        if (ntp == "") {
             console.error("wrong note feeding: " + "note");
         }
         this.mel.player(ntp).start(time);
-        // this.mel.player(ntp).stop(time+duration);
-        // this.mel.player(ntp).fadeOut='4n';
     }
 
     connect(node) {
@@ -2114,34 +2150,35 @@ class Synth4 {
 }
 
 class Moog {
-    
+
     constructor() {
-        state.isLoading = state.isLoading +1;
+        state.isLoading = state.isLoading + 1;
         let initNote = BASE_MIDI_NOTES_NUM["C3"];
-        let numCycles = BASE_MIDI_NOTES_NUM["C6"]-initNote+1;
-        let melUrls =  {};
-        
-        for (let i=0; i<numCycles; i++){
-            melUrls[initNote+i] = ENV2_BASE_URL+`/02_MoogSamplesC3C6/Moog_${i+1}.mp3`
+        let numCycles = BASE_MIDI_NOTES_NUM["C6"] - initNote + 1;
+        let melUrls = {};
+
+        for (let i = 0; i < numCycles; i++) {
+            melUrls[initNote + i] = ENV2_BASE_URL + `/02_MoogSamplesC3C6/Moog_${i + 1}.mp3`
         };
-        var mel = new Tone.Players(melUrls,() => {
-            state.isLoading = state.isLoading-1;
+        var mel = new Tone.Players(melUrls, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("Moog loaded")
-            });
+        });
         mel.toDestination();
         this.mel = mel;
 
     }
 
-    triggerAttack(note, time) {
-        let duration = '4n';
-        let ntp = Tonal.Note.midi(note);
-        if(ntp == "") {
+    triggerAttack(note, duration, time) {
+        // let duration = '4n';
+        let ntp = Tonal.Note.midi(note) + 12;
+        if (ntp == "") {
             console.error("wrong note feeding: " + "note");
         }
         this.mel.player(ntp).start(time);
-        //this.mel.player(ntp).stop(time+duration);
-        // this.mel.player(ntp).fadeOut='4n';
+        this.mel.player(ntp).fadeOut = '16n';
+        this.mel.player(ntp).stop(time + Tone.Time(duration).toSeconds());
+
     }
 
     connect(node) {
@@ -2151,29 +2188,29 @@ class Moog {
 }
 
 class Sitar {
-    
+
     constructor() {
-        state.isLoading = state.isLoading +1;
+        state.isLoading = state.isLoading + 1;
         let initNote = BASE_MIDI_NOTES_NUM["C3"];
-        let numCycles = BASE_MIDI_NOTES_NUM["C6"]-initNote+1;
-        let melUrls =  {};
-        
-        for (let i=0; i<numCycles; i++){
-            melUrls[initNote+i] = ENV3_BASE_URL+`/03_SitarSamplesC3C6/Sitar_${i+1}.mp3`
+        let numCycles = BASE_MIDI_NOTES_NUM["C6"] - initNote + 1;
+        let melUrls = {};
+
+        for (let i = 0; i < numCycles; i++) {
+            melUrls[initNote + i] = ENV3_BASE_URL + `/03_SitarSamplesC3C6/Sitar_${i + 1}.mp3`
         };
-        var mel = new Tone.Players(melUrls,() => {
-            state.isLoading = state.isLoading-1;
+        var mel = new Tone.Players(melUrls, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("Sitar loaded")
-            });
+        });
         mel.toDestination();
         this.mel = mel;
-        
+
     }
 
-    triggerAttack(note, time) {
+    triggerAttack(note, duration, time) {
         // transposed of 1 ocv
-        let ntp = Tonal.Note.midi(note)+12;
-        if(ntp == "") {
+        let ntp = Tonal.Note.midi(note) + 12;
+        if (ntp == "") {
             console.error("wrong note feeding: " + "note");
         }
         this.mel.player(ntp).start(time);
@@ -2188,29 +2225,29 @@ class Sitar {
 }
 
 class Marimba {
-    
+
     constructor() {
-        state.isLoading = state.isLoading +1;
+        state.isLoading = state.isLoading + 1;
         let initNote = BASE_MIDI_NOTES_NUM["C3"];
-        let numCycles = BASE_MIDI_NOTES_NUM["C6"]-initNote+1;
-        let melUrls =  {};
-        
-        for (let i=0; i<numCycles; i++){
-            melUrls[initNote+i] = ENV4_BASE_URL+`/04_MarimbaSamplesC3C6/Marimba_${i+1}.mp3`
+        let numCycles = BASE_MIDI_NOTES_NUM["C6"] - initNote + 1;
+        let melUrls = {};
+
+        for (let i = 0; i < numCycles; i++) {
+            melUrls[initNote + i] = ENV4_BASE_URL + `/04_MarimbaSamplesC3C6/Marimba_${i + 1}.mp3`
         };
-        var mel = new Tone.Players(melUrls,() => {
-            state.isLoading = state.isLoading-1;
+        var mel = new Tone.Players(melUrls, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("Marimba loaded")
-            });
+        });
         mel.toDestination();
         this.mel = mel;
-        
+
     }
 
-    triggerAttack(note, time) {
+    triggerAttack(note, duration, time) {
         // transposed of 1 ocv
-        let ntp = Tonal.Note.midi(note)+12;
-        if(ntp == "") {
+        let ntp = Tonal.Note.midi(note) + 12;
+        if (ntp == "") {
             console.error("wrong note feeding: " + "note");
         }
         this.mel.player(ntp).start(time);
@@ -2232,36 +2269,36 @@ let test4 = new Marimba();
 /**
  *********************** BASS *************************
  */
- class Bass1 {
-    
+class Bass1 {
+
     constructor() {
-        state.isLoading = state.isLoading +1;
+        state.isLoading = state.isLoading + 1;
         let initNote = BASE_MIDI_NOTES_NUM["C1"];
-        let numCycles = BASE_MIDI_NOTES_NUM["C3"]-initNote+1;
-        let bassUrls =  {};
-        
-        for (let i=0; i<numCycles; i++){
-            bassUrls[initNote+i] = ENV1_BASE_URL+`/01_BassSamplesC1C3/Bass1_${i+1}.mp3`
+        let numCycles = BASE_MIDI_NOTES_NUM["C3"] - initNote + 1;
+        let bassUrls = {};
+
+        for (let i = 0; i < numCycles; i++) {
+            bassUrls[initNote + i] = ENV1_BASE_URL + `/01_BassSamplesC1C3/Bass1_${i + 1}.mp3`
         };
-        var bass = new Tone.Players(bassUrls,() => {
-            state.isLoading = state.isLoading-1;
+        var bass = new Tone.Players(bassUrls, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("Bass1 loaded")
-            });
+        });
         bass.toDestination();
         this.bass = bass;
         // console.log("bass");
         // console.log(bass);
-        
+
     }
 
     triggerAttackRelease(notes, duration, time) {
         notes.forEach((note) => {
             let ntp = Tonal.Note.midi(note);
-            if(ntp == "") {
+            if (ntp == "") {
                 console.error("wrong note feeding: " + "note");
             }
             this.bass.player(ntp).start(time);
-            this.bass.player(ntp).stop(time+duration);
+            this.bass.player(ntp).stop(time + duration);
             // this.bass.player(ntp).fadeOut='4n';
         })
     }
@@ -2273,35 +2310,35 @@ let test4 = new Marimba();
 }
 
 class Bass2 {
-    
+
     constructor() {
-        state.isLoading = state.isLoading +1;
+        state.isLoading = state.isLoading + 1;
         let initNote = BASE_MIDI_NOTES_NUM["C1"];
-        let numCycles = BASE_MIDI_NOTES_NUM["C3"]-initNote+1;
-        let bassUrls =  {};
-        
-        for (let i=0; i<numCycles; i++){
-            bassUrls[initNote+i] = ENV2_BASE_URL+`/02_BassSamplesC1C3/Bass2_${i+1}.mp3`
+        let numCycles = BASE_MIDI_NOTES_NUM["C3"] - initNote + 1;
+        let bassUrls = {};
+
+        for (let i = 0; i < numCycles; i++) {
+            bassUrls[initNote + i] = ENV2_BASE_URL + `/02_BassSamplesC1C3/Bass2_${i + 1}.mp3`
         };
-        var bass = new Tone.Players(bassUrls,() => {
-            state.isLoading = state.isLoading-1;
+        var bass = new Tone.Players(bassUrls, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("Bass2 loaded")
-            });
+        });
         bass.toDestination();
         this.bass = bass;
         // console.log("bass");
         // console.log(bass);
-        
+
     }
 
     triggerAttackRelease(notes, duration, time) {
         notes.forEach((note) => {
             let ntp = Tonal.Note.midi(note);
-            if(ntp == "") {
+            if (ntp == "") {
                 console.error("wrong note feeding: " + "note");
             }
             this.bass.player(ntp).start(time);
-            this.bass.player(ntp).stop(time+duration);
+            this.bass.player(ntp).stop(time + duration);
             // this.bass.player(ntp).fadeOut='4n';
         })
     }
@@ -2313,35 +2350,35 @@ class Bass2 {
 }
 
 class Bass3 {
-    
+
     constructor() {
-        state.isLoading = state.isLoading +1;
+        state.isLoading = state.isLoading + 1;
         let initNote = BASE_MIDI_NOTES_NUM["C1"];
-        let numCycles = BASE_MIDI_NOTES_NUM["C3"]-initNote+1;
-        let bassUrls =  {};
-        
-        for (let i=0; i<numCycles; i++){
-            bassUrls[initNote+i] = ENV3_BASE_URL+`/03_BassSamplesC1C3/Bass3_${i+1}.mp3`
+        let numCycles = BASE_MIDI_NOTES_NUM["C3"] - initNote + 1;
+        let bassUrls = {};
+
+        for (let i = 0; i < numCycles; i++) {
+            bassUrls[initNote + i] = ENV3_BASE_URL + `/03_BassSamplesC1C3/Bass3_${i + 1}.mp3`
         };
-        var bass = new Tone.Players(bassUrls,() => {
-            state.isLoading = state.isLoading-1;
+        var bass = new Tone.Players(bassUrls, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("Bass3 loaded")
-            });
+        });
         bass.toDestination();
         this.bass = bass;
         // console.log("bass");
         // console.log(bass);
-        
+
     }
 
     triggerAttackRelease(notes, duration, time) {
         notes.forEach((note) => {
             let ntp = Tonal.Note.midi(note);
-            if(ntp == "") {
+            if (ntp == "") {
                 console.error("wrong note feeding: " + "note");
             }
             this.bass.player(ntp).start(time);
-            this.bass.player(ntp).stop(time+duration);
+            this.bass.player(ntp).stop(time + duration);
             // this.bass.player(ntp).fadeOut='4n';
         })
     }
@@ -2353,35 +2390,35 @@ class Bass3 {
 }
 
 class Bass4 {
-    
+
     constructor() {
-        state.isLoading = state.isLoading +1;
+        state.isLoading = state.isLoading + 1;
         let initNote = BASE_MIDI_NOTES_NUM["C1"];
-        let numCycles = BASE_MIDI_NOTES_NUM["C3"]-initNote+1;
-        let bassUrls =  {};
-        
-        for (let i=0; i<numCycles; i++){
-            bassUrls[initNote+i] = ENV4_BASE_URL+`/04_BassSamplesC1C3/Bass4_${i+1}.mp3`
+        let numCycles = BASE_MIDI_NOTES_NUM["C3"] - initNote + 1;
+        let bassUrls = {};
+
+        for (let i = 0; i < numCycles; i++) {
+            bassUrls[initNote + i] = ENV4_BASE_URL + `/04_BassSamplesC1C3/Bass4_${i + 1}.mp3`
         };
-        var bass = new Tone.Players(bassUrls,() => {
-            state.isLoading = state.isLoading-1;
+        var bass = new Tone.Players(bassUrls, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("Bass4 loaded")
-            });
+        });
         bass.toDestination();
         this.bass = bass;
         // console.log("bass");
         // console.log(bass);
-        
+
     }
 
     triggerAttackRelease(notes, duration, time) {
         notes.forEach((note) => {
             let ntp = Tonal.Note.midi(note);
-            if(ntp == "") {
+            if (ntp == "") {
                 console.error("wrong note feeding: " + "note");
             }
             this.bass.player(ntp).start(time);
-            this.bass.player(ntp).stop(time+duration);
+            this.bass.player(ntp).stop(time + duration);
             // this.bass.player(ntp).fadeOut='4n';
         })
     }
@@ -2396,125 +2433,543 @@ class Bass4 {
  *********************** RYTHMIC *************************
  */
 class Kick {
+
     constructor() {
-        var kick = new Tone.MembraneSynth({
-            envelope: {
-                attack: 0.01,
-                decay: 0.01,
-                sustain: 0.3,
-                release: 0.2
-            },
-            frequency: 50,
-        }).toDestination();
+        state.isLoading = state.isLoading + 1;
+        var kickUrl = DRUM_BASE_URL + "Kick_Sample.mp3"
+        var kick = new Tone.Player(kickUrl, () => {
+            state.isLoading = state.isLoading - 1;
+            console.log("Kick Loaded")
+            // this.playPart1();
+        });
+        kick.toDestination();
+
         this.kick = kick;
     }
 
     trigger(time, velocity) {
-        this.kick.triggerAttackRelease("C1", "8n", time, velocity)
+        this.kick.start(time);
         // console.log("kicktime")
     }
+
+    playPart(aPart) {
+        switch (aPart) {
+            case 0:
+                break;
+            case 1: {
+                const part = new Tone.Part(
+                    ((time) => {
+                        this.kick.start(time);
+                    }),
+                    [{ time: "0:0:0" },
+                    { time: "0:2:0" },
+                    ]
+                ).start(0);
+                part.loop = true;
+                console.log("Part playing");
+            }
+                break;
+
+            case 2: {
+                const part = new Tone.Part(
+                    ((time) => {
+                        this.kick.start(time);
+                    }),
+                    [{ time: "0:0:0" },
+                    { time: "0:0:3" },
+                    { time: "0:2:2" },
+                    ]
+                ).start(0);
+                part.loop = true;
+                console.log("Part playing");
+            }
+                break;
+
+            case 3: {
+                const part = new Tone.Part(
+                    ((time) => {
+                        this.kick.start(time);
+                    }),
+                    [{ time: "0:0:0" },
+                    { time: "0:2:3" },
+                    { time: "0:3:0" },
+                    ]
+                ).start(0);
+                part.loop = true;
+                console.log("Part playing");
+            }
+                break;
+
+            default:
+                console.log("Invalid Pattern ID for Kick");
+                break;
+        }
+    }
+
+    /*  playPart1() {
+         const part = new Tone.Part(
+             ((time) => {
+                 this.kick.start(time);
+             }),
+             [{ time: "0:0:0" },
+             { time: "0:2:0" },
+             ]
+         ).start(0);
+         part.loop = true;
+         console.log("Part playing");
+     }
+     playPart2() {
+         const part = new Tone.Part(
+             ((time) => {
+                 this.kick.start(time);
+             }),
+             [{ time: "0:0:0" },
+             { time: "0:0:3" },
+             { time: "0:2:2" },
+             ]
+         ).start(0);
+         part.loop = true;
+         console.log("Part playing");
+     }
+     playPart3() {
+         const part = new Tone.Part(
+             ((time) => {
+                 this.kick.start(time);
+             }),
+             [{ time: "0:0:0" },
+             { time: "0:2:3" },
+             { time: "0:3:0" },
+             ]
+         ).start(0);
+         part.loop = true;
+         console.log("Part playing");
+     } */
 }
 
 class Snare {
     constructor() {
-        var snare = new Tone.NoiseSynth({
-            noise: {
-                type: 'pink'
-            },
-            envelope: {
-                attack: 0.01,
-                decay: 0.1,
-                sustain: 0.1,
-                release: 0.1
-            },
-        })
-
-        var filter = new Tone.Filter({
-            frequency: 15000,
-            type: "lowpass",
-        }).toDestination()
-
-        var gain = new Tone.Gain({
-            gain: 3,
+        state.isLoading = state.isLoading + 1;
+        var snareUrl = DRUM_BASE_URL + "Snare2_Sample.mp3"
+        var snare = new Tone.Player(snareUrl, () => {
+            state.isLoading = state.isLoading - 1;
+            console.log("Snare Loaded")
         });
+        snare.toDestination();
 
-        var freqEnv = new Tone.FrequencyEnvelope({
-            attack: 0,
-            decay: 0.01,
-            sustain: 0.5,
-            release: 0.2,
-            baseFrequency: "10000hz",
-            octaves: -2,
-        }).connect(filter.frequency)
-
-        snare.chain(gain, filter);
-
-        this.env = freqEnv;
         this.snare = snare;
     }
 
     trigger(time, velocity) {
-        this.env.triggerAttackRelease("8n", time, velocity);
-        this.snare.triggerAttackRelease("8n", time, velocity);
-        // console.log("snaretime")
+        this.snare.start(time);
+        // console.log("kicktime")
     }
+
+    playPart(aPart) {
+        switch (aPart) {
+            case 0:
+                break;
+            case 1: {
+                const part = new Tone.Part(
+                    ((time) => {
+                        this.snare.start(time);
+                    }),
+                    [{ time: "0:1:0" },
+                    { time: "0:3:0" }]
+                ).start(0);
+                part.loop = true;
+                console.log("Part playing");
+            }
+                break;
+
+            case 2: {
+                const part = new Tone.Part(
+                    ((time) => {
+                        this.snare.start(time);
+                    }),
+                    [{ time: "0:1:0" },
+                    { time: "0:3:0" },
+                    { time: "0:3:2" },
+                    ]
+                ).start(0);
+                part.loop = true;
+                console.log("Part playing");
+            }
+                break;
+
+            case 3: {
+                const part = new Tone.Part(
+                    ((time) => {
+                        this.snare.start(time);
+                    }),
+                    [{ time: "0:0:3" },
+                    { time: "0:1:2" },
+                    { time: "0:3:2" },
+                    ]
+                ).start(0);
+                part.loop = true;
+                console.log("Part playing");
+            }
+                break;
+
+            default:
+                console.log("Invalid Pattern ID for Snare");
+                break;
+        }
+    }
+
+    /* playPart1() {
+        const part = new Tone.Part(
+            ((time) => {
+                this.snare.start(time);
+            }),
+            [{ time: "0:1:0" },
+            { time: "0:3:0" }]
+        ).start(0);
+        part.loop = true;
+        console.log("Part playing");
+    }
+    playPart2() {
+        const part = new Tone.Part(
+            ((time) => {
+                this.snare.start(time);
+            }),
+            [{ time: "0:1:0" },
+            { time: "0:3:0" },
+            { time: "0:3:2" },
+            ]
+        ).start(0);
+        part.loop = true;
+        console.log("Part playing");
+    }
+    playPart3() {
+        const part = new Tone.Part(
+            ((time) => {
+                this.snare.start(time);
+            }),
+            [{ time: "0:1:1" },
+            // { time: "0:3:0" },
+            { time: "0:3:2" },
+            ]
+        ).start(0);
+        part.loop = true;
+        console.log("Part playing");
+    } */
 }
 
-class HiHatClosed {
+class HiHat {
     constructor() {
-        var hihat = new Tone.NoiseSynth({
-            volume: -5,
-            envelope: {
-                attack: 0,
-                decay: 0,
-                sustain: 0.4,
-                release: 0.1
-            },
-        }
-        );
+        state.isLoading = state.isLoading + 1;
+        var hihatUrl1 = DRUM_BASE_URL + "ShakHH_Hi_Sample.mp3"
+        var hihatUrl2 = DRUM_BASE_URL + "ShakHH_Lo_Sample.mp3"
+        var hihat = new Tone.Players({ 0: hihatUrl1, 1: hihatUrl2 }, () => {
+            state.isLoading = state.isLoading - 1;
+            console.log("HH Loaded")
+        });
+        hihat.toDestination();
+        console.log("Players Name: " + hihat.name);
 
-        var filter = new Tone.Filter({
-            frequency: 5000,
-            type: "highpass",
-            rolloff: -24,
-        }).toDestination();
-
-        hihat.connect(filter);
         this.hihat = hihat;
     }
 
     trigger(time, velocity) {
-        this.hihat.triggerAttackRelease(0.01, time, velocity)
+        this.hihat.start(time);
     }
+
+    playPart(aPart) {
+        switch (aPart) {
+            case 0:
+                break;
+            case 1: {
+                const part = new Tone.Part(
+                    ((time, value) => {
+                        this.hihat.player(value.note).start(time);
+                    }),
+                    [
+                        { time: "0:0:0", note: 0 },
+                        { time: "0:0:2", note: 1 },
+                        { time: "0:1:0", note: 0 },
+                        { time: "0:1:2", note: 1 },
+                        { time: "0:2:0", note: 0 },
+                        { time: "0:2:2", note: 1 },
+                        { time: "0:3:0", note: 0 },
+                        { time: "0:3:2", note: 1 },
+                    ]
+                ).start(0);
+                part.loop = true;
+                part.humanize = 0.02;
+                console.log("Part playing");
+            }
+                break;
+
+            case 2: {
+                const part = new Tone.Part(
+                    ((time, value) => {
+                        this.hihat.player(value.note).start(time);
+                    }),
+                    [
+                        // 0: Hi, 1: Lo
+                        { time: "0:0:0", note: 0 },
+                        { time: "0:0:2", note: 1 },
+                        { time: "0:0:3", note: 1 },
+                        { time: "0:1:0", note: 0 },
+                        { time: "0:1:2", note: 1 },
+                        { time: "0:2:0", note: 0 },
+                        { time: "0:2:2", note: 1 },
+                        { time: "0:2:3", note: 1 },
+                        { time: "0:3:0", note: 0 },
+                        { time: "0:3:2", note: 1 },
+                    ]
+                ).start(0);
+                part.loop = true;
+                part.humanize = 0.02;
+                console.log("Part playing");
+            }
+                break;
+
+            case 3: {
+                const part = new Tone.Part(
+                    ((time, value) => {
+                        this.hihat.player(value.note).start(time);
+                    }),
+                    [
+                        // 0: Hi, 1: Lo
+                        { time: "0:0:0", note: 0 },
+                        { time: "0:0:1", note: 1 },
+                        { time: "0:0:2", note: 0 },
+                        { time: "0:0:3", note: 1 },
+                        { time: "0:1:0", note: 0 },
+                        { time: "0:1:1", note: 1 },
+                        { time: "0:1:2", note: 0 },
+                        { time: "0:1:3", note: 1 },
+                        { time: "0:2:0", note: 0 },
+                        { time: "0:2:1", note: 1 },
+                        { time: "0:2:2", note: 0 },
+                        { time: "0:2:3", note: 1 },
+                        { time: "0:3:0", note: 0 },
+                        { time: "0:3:1", note: 1 },
+                        { time: "0:3:2", note: 0 },
+                        { time: "0:3:3", note: 1 },
+                    ]
+                ).start(0);
+                part.loop = true;
+                part.humanize = 0.02;
+                console.log("Part playing");
+            }
+                break;
+
+            default:
+                console.log("Invalid Pattern ID for Snare");
+                break;
+        }
+    }
+
+    /* playPart1() {
+        const part = new Tone.Part(
+            ((time, value) => {
+                this.hihat.player(value.note).start(time);
+            }),
+            [
+                { time: "0:0:0", note: 0 },
+                { time: "0:0:2", note: 1 },
+                { time: "0:1:0", note: 0 },
+                { time: "0:1:2", note: 1 },
+                { time: "0:2:0", note: 0 },
+                { time: "0:2:2", note: 1 },
+                { time: "0:3:0", note: 0 },
+                { time: "0:3:2", note: 1 },
+            ]
+        ).start(0);
+        part.loop = true;
+        part.humanize = 0.02;
+        console.log("Part playing");
+    }
+    playPart2() {
+        const part = new Tone.Part(
+            ((time, value) => {
+                this.hihat.player(value.note).start(time);
+            }),
+            [
+                // 0: Hi, 1: Lo
+                { time: "0:0:0", note: 0 },
+                { time: "0:0:2", note: 1 },
+                { time: "0:0:3", note: 1 },
+                { time: "0:1:0", note: 0 },
+                { time: "0:1:2", note: 1 },
+                { time: "0:2:0", note: 0 },
+                { time: "0:2:2", note: 1 },
+                { time: "0:2:3", note: 1 },
+                { time: "0:3:0", note: 0 },
+                { time: "0:3:2", note: 1 },
+            ]
+        ).start(0);
+        part.loop = true;
+        part.humanize = 0.02;
+        console.log("Part playing");
+    }
+    playPart3() {
+        const part = new Tone.Part(
+            ((time, value) => {
+                this.hihat.player(value.note).start(time);
+            }),
+            [
+                // 0: Hi, 1: Lo
+                { time: "0:0:0", note: 0 },
+                { time: "0:0:1", note: 1 },
+                { time: "0:0:2", note: 0 },
+                { time: "0:0:3", note: 1 },
+                { time: "0:1:0", note: 0 },
+                { time: "0:1:1", note: 1 },
+                { time: "0:1:2", note: 0 },
+                { time: "0:1:3", note: 1 },
+                { time: "0:2:0", note: 0 },
+                { time: "0:2:1", note: 1 },
+                { time: "0:2:2", note: 0 },
+                { time: "0:2:3", note: 1 },
+                { time: "0:3:0", note: 0 },
+                { time: "0:3:1", note: 1 },
+                { time: "0:3:2", note: 0 },
+                { time: "0:3:3", note: 1 },
+            ]
+        ).start(0);
+        part.loop = true;
+        part.humanize = 0.02;
+        console.log("Part playing");
+    } */
 }
 
-class HiHatOpen {
+class Perc {
     constructor() {
-        var hihat = new Tone.NoiseSynth({
-            volume: -5,
-            envelope: {
-                attack: 0,
-                decay: 0,
-                sustain: 0.4,
-                release: 0.02
-            },
-        }
-        );
+        state.isLoading = state.isLoading + 1;
+        var percUrl = DRUM_BASE_URL + "Perc_Sample.mp3"
+        var perc = new Tone.Player(percUrl, () => {
+            state.isLoading = state.isLoading - 1;
+            console.log("Perc Loaded")
+        });
+        perc.toDestination();
 
-        var filter = new Tone.Filter({
-            frequency: 3000,
-            type: "highpass",
-            rolloff: -24,
-        }).toDestination();
-
-        hihat.connect(filter);
-        this.hihat = hihat;
+        this.perc = perc;
     }
 
     trigger(time, velocity) {
-        this.hihat.triggerAttackRelease(0.1, time, velocity)
+        this.perc.start(time);
+        // console.log("kicktime")
     }
+
+    playPart(aPart) {
+        switch (aPart) {
+            case 0:
+                break;
+            case 1: {
+                const part = new Tone.Part(
+                    ((time) => {
+                        this.perc.start(time);
+                    }),
+                    [{ time: "0:1:0" },
+                    { time: "0:3:0" },
+                    { time: "0:3:3" },
+                    ]
+                ).start(0);
+                part.loop = true;
+                console.log("Part playing");
+            }
+                break;
+
+            case 2: {
+                const part = new Tone.Part(
+                    ((time) => {
+                        this.perc.start(time);
+                    }),
+                    [{ time: "0:1:0" },
+                    { time: "0:1:1" },
+                    { time: "0:2:3" },
+                    { time: "0:3:0" },
+                    ]
+                ).start(0);
+                part.loop = true;
+                console.log("Part playing");
+            }
+                break;
+
+            case 3: {
+                const part = new Tone.Part(
+                    ((time) => {
+                        this.perc.start(time);
+                    }),
+                    [{ time: "0:0:3" },
+                    { time: "0:1:1" },
+                    { time: "0:2:3" },
+                    { time: "0:3:1" },
+                    ]
+                ).start(0);
+                part.loop = true;
+                console.log("Part playing");
+            }
+                break;
+
+            default:
+                console.log("Invalid Pattern ID for Perc");
+                break;
+        }
+    }
+
+    /* playPart1() {
+        const part = new Tone.Part(
+            ((time) => {
+                this.snare.start(time);
+            }),
+            [{ time: "0:1:0" },
+            { time: "0:3:0" }]
+        ).start(0);
+        part.loop = true;
+        console.log("Part playing");
+    }
+    playPart2() {
+        const part = new Tone.Part(
+            ((time) => {
+                this.snare.start(time);
+            }),
+            [{ time: "0:1:0" },
+            { time: "0:3:0" },
+            { time: "0:3:2" },
+            ]
+        ).start(0);
+        part.loop = true;
+        console.log("Part playing");
+    }
+    playPart3() {
+        const part = new Tone.Part(
+            ((time) => {
+                this.snare.start(time);
+            }),
+            [{ time: "0:1:1" },
+            // { time: "0:3:0" },
+            { time: "0:3:2" },
+            ]
+        ).start(0);
+        part.loop = true;
+        console.log("Part playing");
+    } */
 }
+
+class DrumMachine {
+    constructor() {
+        this.kick = new Kick();
+        this.snare = new Snare();
+        this.hihat = new HiHat();
+        this.perc = new Perc();
+    }
+
+    // array = [kick, snare, hihat]
+    playPattern(array) {
+        this.kick.playPart(array[0]);
+        this.snare.playPart(array[1]);
+        this.hihat.playPart(array[2]);
+        this.perc.playPart(array[3])
+    }
+
+}
+
+
 
 // class Pad {
 //     constructor() {
