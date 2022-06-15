@@ -16,6 +16,7 @@ const state = {
         limit: 0,
         lastUpdate: undefined,
     },
+    transPlaying:false,
     hiddenGainVal:0.8,
     isLoading: 0,
     imagesToDraw: {},
@@ -58,6 +59,7 @@ const state = {
             chords: "| F6 | Em7 A7 | Dm7 | Cm7 F7 |",
             melody: "f+4 c+8 a8 e+4 c+8 a8\nd+8 e+8 cb8 d+8 db+8 bb8 g8 ab8\na4 f8 d8 g8 a8 f8 e8\neb8 g16 bb16 d+8 db+8 r8 f8 f16 g8 f16",
             instruments: {},
+            cloudsInst: [0,0,0,0],
         }
     },
 }
@@ -174,11 +176,21 @@ function getMasterVolume() {
 function setLimit(toValue) {
     state.loadingPage.limit = toValue
 }
+/*
+function resolveAfter2Seconds() {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve('resolved');
+      }, 2000);
+    });
+  }
+*/
 
 function increase() {
     let element = document.getElementById("loadingId");
     let fromValue = state.loadingPage.value;
     let limit = state.loadingPage.limit;
+    
     if ((Date.now() - state.loadingPage.lastUpdate) > (1000 / 30)) {
         if (fromValue < limit) {
             state.loadingPage.value = fromValue + 1;
@@ -252,15 +264,17 @@ function modifyIdList(idValue) {
         } break;
 
     }
-    console.log(state.drawing)
+    //console.log(state.drawing)
+    console.log(getIdList());
 }
 
 async function updateState() {
     let ids = getIdList()
+    console.log("ID VALUES:");
+    console.log(ids)
     let flyObjsArr = []
     state.imagesToDraw["flyingObject"] = flyObjsArr
-
-
+    
     for (let id of ids) {
         let modifyingValue = state.elements.find(element => element.id == id)
         console.log("modifyingValue")
@@ -311,21 +325,21 @@ async function updateState() {
                 state.imagesToDraw[modifyingValue.elementType] = [];
                 let i = 0
                 for (let img of state.drawing.image[modifyingValue.elementType]) {
-                    console.log("Im here to check images to draw ")
-                    console.log(state.imagesToDraw)
-                    console.log(img)
+                    //console.log("Im here to check images to draw ")
+                    //console.log(state.imagesToDraw)
+                    //console.log(img)
                     if (state.drawing.image[modifyingValue.elementType].indexOf(img) < i) {
                         var elToCopy = state.imagesToDraw[modifyingValue.elementType][state.drawing.image[modifyingValue.elementType].indexOf(img)]
-                        console.log(elToCopy)
+                        //console.log(elToCopy)
                         var newEl = elToCopy.clone()
-                        console.log(newEl)
+                        //console.log(newEl)
                         newEl.changeRandomParams()
-                        console.log(newEl)
+                        //console.log(newEl)
                         state.imagesToDraw[modifyingValue.elementType].push(newEl);
-                        console.log("pushing a recycled element")
+                        //console.log("pushing a recycled element")
                     } else {
                         state.imagesToDraw[modifyingValue.elementType].push(await DrawableImage.build(img))
-                        console.log("pushing a recycled element")
+                        console.log("pushing a not recycled element")
                     }
                     i++
                 }
@@ -639,9 +653,9 @@ function startMusic() {
     state.master.hiddenGain.gain.rampTo(state.hiddenGainVal,0.2)
     Tone.Transport.bpm.value = 60
     Tone.Transport.start("+0.5", "0:0:0");
-
     setPlaying(true);
 }
+
 
 function stopMusic() {
     state.master.hiddenGain.gain.rampTo(0,0.2)
@@ -1287,33 +1301,48 @@ async function updatePage(aPage) {
     }
 }
 
+function disableScrolling(){
+    var x=window.scrollX;
+    var y=window.scrollY;
+    window.onscroll=function(){window.scrollTo(x, y);};
+}
+
+function enableScrolling(){
+    window.onscroll=function(){};
+}
 
 async function playerPage() {
-    //document.getElementById("container").hidden = true
+    //window.scrollTo(0,0); 
+    //disableScrolling();
     document.getElementById("initialLoadingPanel").style.visibility = 'visible'
+    document.getElementById("container").hidden = true
     state.loadingPage.value = 0;
     setLimit(100);
     increase();
     await updateState()
+    console.log("state::")
+    console.log(state)
     let audioObj = state.melodyNodes.generateMelody(state.startingId);
     state.drawing.audio.melody= audioObj.melody;
     state.drawing.audio.chords= audioObj.chords;
     await initImages()
+    document.getElementById("container").hidden = false
     initMusic()
-    Tone.start()
+    Tone.start() 
     document.getElementById("btn-vol").onclick = volumeButton
     let volSlider = document.getElementById("volume-slider")
     volumeUpdate(70)
     volSlider.addEventListener('input', function () { volumeUpdate(volSlider.value) }, false);
-    document.getElementById("btn-dx1").onclick = () => { openFullscreen("main-canvas") }
+    document.getElementById("btn-dx1").onclick = () => { openFullscreen('main-canvas') }
     document.getElementById("btn-stop").onclick = () => { updatePage(0); stopMusic() }
+    document.getElementById("btn-play").onclick = () => { togglePlayPause(); }
     document.getElementById("player-navbar").hidden = false;
     document.getElementById("canva-container").hidden = false;
     document.getElementById("menu-container").hidden = true;
     document.getElementById("menu-navbar").hidden = true;
     document.getElementById("upbar").hidden = true;
-    //document.getElementById("container").hidden = false
     document.getElementById("initialLoadingPanel").style.visibility = 'hidden'
+    //enableScrolling();
     startMusic()
 }
 
@@ -1336,7 +1365,8 @@ async function menuPage() {
  * fullscreen handling part 
  */
 function openFullscreen(element) {
-    elem = document.getElementById(element)
+    console.log(element)
+    var elem = document.getElementById(element)
     if (elem.requestFullscreen) {
         elem.requestFullscreen();
     } else if (elem.webkitRequestFullscreen) { /* Safari */
@@ -1430,12 +1460,11 @@ function volumeButton() {
 
 
 class DrawableImage {
-    constructor(anImageArray, left, bottom, anImageType, property) {
+    constructor(anImageArray, left, bottom, anImageType) {
         this.imageType = anImageType;
         this.imageArray = anImageArray;
         this.left = left;
         this.bottom = bottom;
-        this.property = property
     }
 
     static async build(image) {
@@ -1446,6 +1475,7 @@ class DrawableImage {
             anImage.src = await getAsset(url)
             imageArray.push(anImage)
         }
+        /*
         let property = {}
         switch (image.imageType) {
             case (4):
@@ -1457,12 +1487,14 @@ class DrawableImage {
             image.bottom = Math.random()
             image.left = Math.random()
         }
-        return new DrawableImage(imageArray, image.left, image.bottom, image.imageType, property)
+        */
+        return new DrawableImage(imageArray, image.left, image.bottom, image.imageType)
     }
 
     clone() {
-        return new DrawableImage(this.imageArray, this.left, this.bottom, this.imageType, this.property);
+        return new DrawableImage(this.imageArray, this.left, this.bottom, this.imageType);
     }
+    /*
     changeRandomParams() {
         if (this.imageType == 4) {
             this.bottom = Math.random()
@@ -1478,7 +1510,7 @@ class DrawableImage {
             console.error("wrong imageType for utilizing changeRandomParams")
         }
     }
-
+    */
     drawThisImage(imageToDraw = 0, alpha0 = 1, lightOn, canvasHeight = 0, canvasWidth = 0, ctx, factor) {
         var h = this.imageArray[imageToDraw].naturalHeight * factor;
         var w = this.imageArray[imageToDraw].naturalWidth * factor;
@@ -1527,9 +1559,11 @@ class DrawableImage {
     getNImages() {
         return this.imageArray.length
     }
+    /*
     getProperty() {
         return this.property
     }
+    */
 }
 
 
