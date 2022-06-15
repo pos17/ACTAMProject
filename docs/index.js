@@ -897,10 +897,12 @@ function playChordSequence(chordsSequence, instrument) {
         //console.log(value)
 
         instrument.triggerAttackRelease(value.notes, value.duration, time, 1)
+        getPlayingInstrument("bass").triggerAttackRelease(value.notes, value.duration, time);
     }), chordsSequence).start(0)
     //Tone.debug = true
     return chordsPlayed
 }
+
 
 function parseChordsString(chordsString) {
     let chordsToRet = []
@@ -987,6 +989,7 @@ function initMusic() {
     }
     addNotePartToTransport(computedMelody.notesArray, getPlayingInstrument("melody"))
     playChordSequence(computeChords.chordsList, getPlayingInstrument("chords"))
+    // playChordSequence(computeChords.chordsList, getPlayingInstrument("chords"))
     Tone.Transport.loopEnd = computedMelody.loopValue;
     Tone.Transport.loop = true;
 
@@ -2292,15 +2295,21 @@ class Bass1 {
     }
 
     triggerAttackRelease(notes, duration, time) {
-        notes.forEach((note) => {
-            let ntp = Tonal.Note.midi(note);
-            if (ntp == "") {
-                console.error("wrong note feeding: " + "note");
-            }
-            this.bass.player(ntp).start(time);
-            this.bass.player(ntp).stop(time + duration);
-            // this.bass.player(ntp).fadeOut='4n';
-        })
+        let ntp1 = Tonal.Note.midi(notes[0]) - 12;
+        let ntp5 = Tonal.Note.midi(notes[2]) - 12;
+        let dur = Tone.Time(duration).toSeconds();
+        let halftime = dur / 2;
+        if (ntp1 == "" || ntp5 == "") {
+            console.error("wrong note feeding: " + "note");
+        }
+        this.bass.player(ntp1).start(time);
+        this.bass.player(ntp1).fadeOut = '8n';
+        this.bass.player(ntp1).stop(time + halftime);
+
+        this.bass.player(ntp5).start(time + halftime);
+        this.bass.player(ntp5).fadeOut = '8n';
+        this.bass.player(ntp5).stop(time + dur);
+
     }
 
     connect(node) {
@@ -2332,15 +2341,21 @@ class Bass2 {
     }
 
     triggerAttackRelease(notes, duration, time) {
-        notes.forEach((note) => {
-            let ntp = Tonal.Note.midi(note);
-            if (ntp == "") {
-                console.error("wrong note feeding: " + "note");
-            }
-            this.bass.player(ntp).start(time);
-            this.bass.player(ntp).stop(time + duration);
-            // this.bass.player(ntp).fadeOut='4n';
-        })
+        let ntp1 = Tonal.Note.midi(notes[0]) - 12;
+        let ntp5 = Tonal.Note.midi(notes[2]) - 12;
+        let dur = Tone.Time(duration).toSeconds();
+        let halftime = dur / 2;
+        if (ntp1 == "" || ntp5 == "") {
+            console.error("wrong note feeding: " + "note");
+        }
+        this.bass.player(ntp1).start(time);
+        this.bass.player(ntp1).fadeOut = '8n';
+        this.bass.player(ntp1).stop(time + halftime);
+
+        this.bass.player(ntp5).start(time + halftime);
+        this.bass.player(ntp5).fadeOut = '8n';
+        this.bass.player(ntp5).stop(time + dur);
+
     }
 
     connect(node) {
@@ -2372,15 +2387,21 @@ class Bass3 {
     }
 
     triggerAttackRelease(notes, duration, time) {
-        notes.forEach((note) => {
-            let ntp = Tonal.Note.midi(note);
-            if (ntp == "") {
-                console.error("wrong note feeding: " + "note");
-            }
-            this.bass.player(ntp).start(time);
-            this.bass.player(ntp).stop(time + duration);
-            // this.bass.player(ntp).fadeOut='4n';
-        })
+        let ntp1 = Tonal.Note.midi(notes[0]) - 12;
+        let ntp5 = Tonal.Note.midi(notes[2]) - 12;
+        let dur = Tone.Time(duration).toSeconds();
+        let halftime = dur / 2;
+        if (ntp1 == "" || ntp5 == "") {
+            console.error("wrong note feeding: " + "note");
+        }
+        this.bass.player(ntp1).start(time);
+        this.bass.player(ntp1).fadeOut = '8n';
+        this.bass.player(ntp1).stop(time + halftime);
+
+        this.bass.player(ntp5).start(time + halftime);
+        this.bass.player(ntp5).fadeOut = '8n';
+        this.bass.player(ntp5).stop(time + dur);
+
     }
 
     connect(node) {
@@ -2412,15 +2433,21 @@ class Bass4 {
     }
 
     triggerAttackRelease(notes, duration, time) {
-        notes.forEach((note) => {
-            let ntp = Tonal.Note.midi(note);
-            if (ntp == "") {
-                console.error("wrong note feeding: " + "note");
-            }
-            this.bass.player(ntp).start(time);
-            this.bass.player(ntp).stop(time + duration);
-            // this.bass.player(ntp).fadeOut='4n';
-        })
+        let ntp1 = Tonal.Note.midi(notes[0]) - 12;
+        let ntp5 = Tonal.Note.midi(notes[2]) - 12;
+        let dur = Tone.Time(duration).toSeconds();
+        let halftime = dur / 2;
+        if (ntp1 == "" || ntp5 == "") {
+            console.error("wrong note feeding: " + "note");
+        }
+        this.bass.player(ntp1).start(time);
+        this.bass.player(ntp1).fadeOut = '8n';
+        this.bass.player(ntp1).stop(time + halftime);
+
+        this.bass.player(ntp5).start(time + halftime);
+        this.bass.player(ntp5).fadeOut = '8n';
+        this.bass.player(ntp5).stop(time + dur);
+
     }
 
     connect(node) {
