@@ -349,8 +349,14 @@ async function updateState() {
                 var templateToPush = await DrawableImage.build(state.drawing.image[item][idItem].image)
                 for (i = 0; i < state.drawing.image[item][idItem].quantity; i++) {
                     var valToPush = templateToPush.clone();
+<<<<<<< HEAD
                     valToPush.left = 0.5 * i + (Math.random() * 0.4);
                     valToPush.bottom = 0.8 - (0.5 * Math.random());
+=======
+                    valToPush.left = 0.5*i + (Math.random()*0.4) +0.3;
+                    var plusOrMinus = Math.random() < 0.5 ? -1 : 1;
+                    valToPush.bottom =  0.8-(i*0.2 + (plusOrMinus*0.1*Math.random()));
+>>>>>>> main
                     state.imagesToDraw[item].push(valToPush);
                 }
             }
@@ -694,7 +700,7 @@ function startMusic() {
     Tone.Transport.bpm.value = 60
 
     Tone.Transport.start("+0.5", "0:0:0");
-    getInstrument("Drum").playPattern([1, 1, 1, 1]);
+    getInstrument("Drum").playPattern(state.drawing.audio.cloudsInst);
 
     setPlaying(true);
 }
@@ -1116,7 +1122,7 @@ function createEnvironment() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.imageSmoothingEnabled = false;
-    var a = 5//0.5
+    var a = 1
     omega = a / t;
     let hAstra = h - getImageToDraw("floor").getNHeight() * factor - 25 * factor;
     let wAstra = w / 2 - ((getImageToDraw("astrumNight").getNWidth()) / 2 * factor)
