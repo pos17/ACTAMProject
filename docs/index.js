@@ -1,3 +1,4 @@
+
 let app;
 let db;
 let storage;
@@ -344,12 +345,12 @@ async function updateState() {
         } else {
             for (const idItem in state.drawing.image[item]) {
                 console.log(idItem)
-                state.drawing.audio.cloudsInst[idItem-22] = state.drawing.image[item][idItem].quantity;
+                state.drawing.audio.cloudsInst[idItem - 22] = state.drawing.image[item][idItem].quantity;
                 var templateToPush = await DrawableImage.build(state.drawing.image[item][idItem].image)
-                for(i = 0; i< state.drawing.image[item][idItem].quantity;i++) {
+                for (i = 0; i < state.drawing.image[item][idItem].quantity; i++) {
                     var valToPush = templateToPush.clone();
-                    valToPush.left = 0.5*i + (Math.random()*0.4);
-                    valToPush.bottom =  0.8-(0.5*Math.random());
+                    valToPush.left = 0.5 * i + (Math.random() * 0.4);
+                    valToPush.bottom = 0.8 - (0.5 * Math.random());
                     state.imagesToDraw[item].push(valToPush);
                 }
             }
@@ -587,7 +588,7 @@ async function propagateStateChanges(isFirst) {
 function buildInstruments() {
 
     //building audio channels
-    let melodyChannel = new Tone.Channel();
+    let melodyChannel = new Tone.Channel({ channelCount: 2 });
     let harmonyChannel = new Tone.Channel();
     let bassChannel = new Tone.Channel();
     let drumChannel = new Tone.Channel();
@@ -664,20 +665,27 @@ function buildInstruments() {
     let drum = new DrumMachine();
     setInstrument("Drum", drum);
 
-    /* // reverb sends
-    melodyChannel.send("reverbSend");
-    harmonyChannel.send("reverbSend");
+
 
     // building ambient effects
-    let reverb = new Tone.Reverb({
-        decay: 5,
+    let reverbChannel = new Tone.Channel(3).toDestination();
+    let merge = new Tone.Merge().connect(reverbChannel);
+
+    let reverbL = new Tone.Reverb({
+        decay: 5.2,
         predelay: 0.6,
         wet: 1,
-    }).toDestination();
-    let reverbChannel = new Tone.Channel(0, 0).receive("reverbSend");
-    reverbChannel.fan(reverb, reverb); */
+    }).connect(merge, 0, 0);
 
+    let reverbR = new Tone.Reverb({
+        decay: 5.1,
+        predelay: 0.5,
+        wet: 1,
+    }).connect(merge, 0, 1);
 
+    // reverb sends
+    melodyChannel.fan(reverbL, reverbR);
+    harmonyChannel.fan(reverbL, reverbR);
 
 }
 
@@ -1192,12 +1200,12 @@ function createEnvironment() {
         //console.log(flyObjs.length)
         for (let flyObj of flyObjs) {
             ctx.save()
-            ctx.translate(-w/5, 0) 
+            ctx.translate(-w / 5, 0)
             //ctx.translate() /* (((2 * flyObj.left * 2 * w) +*/ 
             var valLeft = flyObj.left
-            var newLeft =  (valLeft+(angle*0.0001) )%1.2
+            var newLeft = (valLeft + (angle * 0.0001)) % 1.2
             //console.log(newLeft)
-            flyObj.left = newLeft 
+            flyObj.left = newLeft
             flyObj.drawThisImage(0, alphaNight, lightOn, canvas.height, canvas.width, ctx, factor)
             flyObj.drawThisImage(1, alphaSunrise, lightOn, canvas.height, canvas.width, ctx, factor)
             flyObj.drawThisImage(2, alphaSunset, lightOn, canvas.height, canvas.width, ctx, factor)
@@ -2204,6 +2212,7 @@ class Bell {
             state.isLoading = state.isLoading - 1;
             console.log("Bell loaded")
         });
+        mel.volume.value = -6;
         mel.toDestination();
         this.mel = mel;
         // console.log("PAD");
@@ -2253,7 +2262,7 @@ class Moog {
             console.error("wrong note feeding: " + "note");
         }
         this.mel.player(ntp).start(time);
-        this.mel.player(ntp).fadeOut = '16n';
+        this.mel.player(ntp).fadeOut = '8n';
         this.mel.player(ntp).stop(time + Tone.Time(duration).toSeconds());
 
     }
@@ -2378,8 +2387,10 @@ class Bass1 {
     }
 
     triggerAttackRelease(notes, duration, time) {
+        console.log(notes);
         let ntp1 = Tonal.Note.midi(notes[0]) - 12;
         let ntp5 = Tonal.Note.midi(notes[2]) - 12;
+
         let dur = Tone.Time(duration).toSeconds();
         let halftime = dur / 2;
         if (ntp1 == "" || ntp5 == "") {
