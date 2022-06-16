@@ -686,7 +686,7 @@ function startMusic() {
     Tone.Transport.bpm.value = 60
 
     Tone.Transport.start("+0.5", "0:0:0");
-    getInstrument("Drum").playPattern([1, 1, 1, 1]);
+    getInstrument("Drum").playPattern(state.drawing.audio.cloudsInst);
 
     setPlaying(true);
 }
