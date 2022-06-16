@@ -352,7 +352,9 @@ async function updateState() {
                     var valToPush = templateToPush.clone();
                     valToPush.left = 0.5 * i + (Math.random() * 0.4) + 0.3;
                     var plusOrMinus = Math.random() < 0.5 ? -1 : 1;
-                    valToPush.bottom = 0.8 - (i * 0.2 + (plusOrMinus * 0.1 * Math.random()));
+                    var bottomToPush = 1 -(0.3) - (i * 0.2 + (- 0.1 * Math.random()));
+                    if (bottomToPush<0.5 ) bottomToPush = bottomToPush + 0.2
+                    valToPush.bottom = bottomToPush
                     state.imagesToDraw[item].push(valToPush);
                 }
             }
@@ -1387,8 +1389,8 @@ async function playerPage() {
     setLimit(100);
     increase();
     await updateState()
-    console.log("state::")
-    console.log(state)
+    //console.log("state::")
+    //console.log(state)
     let audioObj = state.melodyNodes.generateMelody(state.startingId);
     state.drawing.audio.melody = audioObj.melody;
     state.drawing.audio.chords = audioObj.chords;
