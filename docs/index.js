@@ -706,10 +706,16 @@ function togglePlayPause() {
         Tone.Transport.pause()
         state.isPlaying = false
         console.log(state.isPlaying)
+        state.master.hiddenGain.gain.rampTo(0, 0.2)
+        document.getElementById("btn-play-play").style.display = "block"
+        document.getElementById("btn-play-pause").style.display = "none"
     } else {
         Tone.Transport.start()
         state.isPlaying = true
-
+        setFrameReq(window.requestAnimationFrame(countFPS))
+        state.master.hiddenGain.gain.rampTo(state.hiddenGainVal, 0.2)
+        document.getElementById("btn-play-pause").style.display = "block"
+        document.getElementById("btn-play-play").style.display = "none"
     }
 }
 
