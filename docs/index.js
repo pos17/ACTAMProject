@@ -42,6 +42,8 @@ const state = {
     startingId: 0,
     master: {},
     playingPart: [],
+    loopProgressSaved:0,
+    loopTimes:0,
     drawing: {
         idList: {
             astrumDay: 21,
@@ -1048,8 +1050,9 @@ function initMusic() {
 var t = Tone.Time('16m').toMilliseconds()
 var omega = 0; /* canvas angular speed */
 var factor = 4;
-var time0 = new Date();
-
+var time0 = 0//Tone.Transport.now()*1000//.toMilliseconds()//new Date();
+console.log("time0")
+console.log(time0)
 
 
 function prepareCanvas() {
@@ -1108,8 +1111,17 @@ function createEnvironment() {
     let alphaSunset = 0
     let sunToDraw = 0
 
-    var time = Date.now()
-
+    var time = Tone.Transport.now()*1000//.toMilliseconds();//Date.now()
+    var loopProgress = Tone.Transport.progress
+    if(loopProgress<state.loopProgressSaved) {
+        state.loopTimes++
+    }
+    var time2 = (state.loopTimes+loopProgress)*(Tone.Transport.loopEnd)*1000
+    state.loopProgressSaved = loopProgress
+    console.log("time:")
+    console.log(time)
+    console.log("progress:")
+    console.log(Tone.Transport.progress)
     var h = canvas.height;
     var w = canvas.width;
 
@@ -1119,7 +1131,7 @@ function createEnvironment() {
     omega = a / t;
     let hAstra = h - getImageToDraw("floor").getNHeight() * factor - 25 * factor;
     let wAstra = w / 2 - ((getImageToDraw("astrumNight").getNWidth()) / 2 * factor)
-    var angle = (ALPHASTART + omega * (time - time0.getTime()))
+    var angle = (ALPHASTART + omega * (time2 - time0))//time0.getTime()))
 
     let angleD = angle % (2 * Math.PI)
     let transAngle = angle % (w)
