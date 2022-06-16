@@ -1,11 +1,3 @@
-//const { Tonal } = require("@tonaljs/tonal");
-
-// const { Tone } = require("tone/build/esm/core/Tone");
-
-//const { time } = require("console");
-//const { Tone } = require("tone/build/esm/core/Tone");
-
-// const { Tone } = require("tone/build/esm/core/Tone");
 
 let app;
 let db;
@@ -568,12 +560,12 @@ async function propagateStateChanges(isFirst) {
 function buildInstruments() {
 
     //building audio channels
-    let bassChannel = new Tone.Channel()
-    let harmonyChannel = new Tone.Channel()
-    let melodyChannel = new Tone.Channel()
-    let drumChannel = new Tone.Channel()
+    let melodyChannel = new Tone.Channel();
+    let harmonyChannel = new Tone.Channel();
+    let bassChannel = new Tone.Channel();
+    let drumChannel = new Tone.Channel();
 
-    console.log("here I am")
+    // console.log("here I am")
     harmonyChannel.chain(
         Tone.Destination
     )
@@ -643,7 +635,22 @@ function buildInstruments() {
 
     /* drum machine */
     let drum = new DrumMachine();
-    setInstrument("Drum", drum)
+    setInstrument("Drum", drum);
+
+    /* // reverb sends
+    melodyChannel.send("reverbSend");
+    harmonyChannel.send("reverbSend");
+
+    // building ambient effects
+    let reverb = new Tone.Reverb({
+        decay: 5,
+        predelay: 0.6,
+        wet: 1,
+    }).toDestination();
+    let reverbChannel = new Tone.Channel(0, 0).receive("reverbSend");
+    reverbChannel.fan(reverb, reverb); */
+
+
 
 }
 
@@ -651,7 +658,7 @@ function startMusic() {
     Tone.Transport.bpm.value = 60
 
     Tone.Transport.start("+0.5", "0:0:0");
-    getInstrument("Drum").playPattern([3, 3, 3, 3]);
+    getInstrument("Drum").playPattern([1, 1, 1, 1]);
 
     setPlaying(true);
 }
