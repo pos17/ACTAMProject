@@ -8,7 +8,7 @@ const ENV1_BASE_URL = "./Samples/Env1";
 const ENV2_BASE_URL = "./Samples/Env2";
 const ENV3_BASE_URL = "./Samples/Env3";
 const ENV4_BASE_URL = "./Samples/Env4";
-const BASE_MIDI_NOTES_NUM = {"C1": 24, "C2": 36, "C3": 48, "C4": 60, "C5": 72, "C6": 84};
+const BASE_MIDI_NOTES_NUM = { "C1": 24, "C2": 36, "C3": 48, "C4": 60, "C5": 72, "C6": 84 };
 
 const state = {
     loadingPage: {
@@ -16,8 +16,8 @@ const state = {
         limit: 0,
         lastUpdate: undefined,
     },
-    transPlaying:false,
-    hiddenGainVal:0.8,
+    transPlaying: false,
+    hiddenGainVal: 0.8,
     isLoading: 0,
     imagesToDraw: {},
     environments: undefined,
@@ -59,7 +59,7 @@ const state = {
             chords: "| F6 | Em7 A7 | Dm7 | Cm7 F7 |",
             melody: "f+4 c+8 a8 e+4 c+8 a8\nd+8 e+8 cb8 d+8 db+8 bb8 g8 ab8\na4 f8 d8 g8 a8 f8 e8\neb8 g16 bb16 d+8 db+8 r8 f8 f16 g8 f16",
             instruments: {},
-            cloudsInst: [0,0,0,0],
+            cloudsInst: [0, 0, 0, 0],
         }
     },
 }
@@ -92,7 +92,7 @@ async function initializeMyApp() {
     await createMenu()
     assignClick()
     updatePage(0)
-    
+
     //console.log("i nodi")
     prepareCanvas();
     await generateNodes();
@@ -190,7 +190,7 @@ function increase() {
     let element = document.getElementById("loadingId");
     let fromValue = state.loadingPage.value;
     let limit = state.loadingPage.limit;
-    
+
     if ((Date.now() - state.loadingPage.lastUpdate) > (1000 / 30)) {
         if (fromValue < limit) {
             state.loadingPage.value = fromValue + 1;
@@ -200,9 +200,9 @@ function increase() {
             document.getElementById("container").hidden = false
             document.getElementById("initialLoadingPanel").style.visibility = 'hidden'
 
-        }else {
-        window.requestAnimationFrame(increase)
-        state.loadingPage.lastUpdate = Date.now()
+        } else {
+            window.requestAnimationFrame(increase)
+            state.loadingPage.lastUpdate = Date.now()
         }
     } else {
         window.requestAnimationFrame(increase)
@@ -274,42 +274,44 @@ async function updateState() {
     console.log(ids)
     let flyObjsArr = []
     state.imagesToDraw["flyingObject"] = flyObjsArr
-    
+    state.drawing.image["flyingObject"] = {}
+    var i = 0;
     for (let id of ids) {
+        console.log(i++)
         let modifyingValue = state.elements.find(element => element.id == id)
         console.log("modifyingValue")
         console.log(modifyingValue)
         switch (modifyingValue.elementType) {
             case ("floor"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
-                console.log("ch")
-                console.log(state.drawing.audio.instruments["chords"])
+                //state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
+                //console.log("ch")
+                //console.log(state.drawing.audio.instruments["chords"])
                 state.drawing.audio.instruments["chords"] = modifyingValue.audio.instrument
 
             } break;
             case ("background"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
+                //state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
 
             } break;
             case ("landscape"): {
                 state.startingId = modifyingValue.audio.nodeId;
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
+                //state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
             } break;
             case ("building"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
-                console.log("mel")
-                console.log(state.drawing.audio.instruments["melody"])
+                //state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
+                //console.log("mel")
+                //console.log(state.drawing.audio.instruments["melody"])
                 state.drawing.audio.instruments["melody"] = modifyingValue.audio.instrument
             } break;
             case ("tree"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
-                console.log("bass")
-                console.log(state.drawing.audio.instruments["bass"])
+                //state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
+                //console.log("bass")
+                //console.log(state.drawing.audio.instruments["bass"])
                 state.drawing.audio.instruments["bass"] = modifyingValue.audio.instrument
             } break;
             case ("astrumDay"): {
@@ -318,35 +320,44 @@ async function updateState() {
             } break;
             case ("astrumNight"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
+                //state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
             } break;
             case ("flyingObject"): {
-                state.drawing.image[modifyingValue.elementType].push(modifyingValue.image)
-                state.imagesToDraw[modifyingValue.elementType] = [];
-                let i = 0
-                for (let img of state.drawing.image[modifyingValue.elementType]) {
-                    //console.log("Im here to check images to draw ")
-                    //console.log(state.imagesToDraw)
-                    //console.log(img)
-                    if (state.drawing.image[modifyingValue.elementType].indexOf(img) < i) {
-                        var elToCopy = state.imagesToDraw[modifyingValue.elementType][state.drawing.image[modifyingValue.elementType].indexOf(img)]
-                        //console.log(elToCopy)
-                        var newEl = elToCopy.clone()
-                        //console.log(newEl)
-                        newEl.changeRandomParams()
-                        //console.log(newEl)
-                        state.imagesToDraw[modifyingValue.elementType].push(newEl);
-                        //console.log("pushing a recycled element")
-                    } else {
-                        state.imagesToDraw[modifyingValue.elementType].push(await DrawableImage.build(img))
-                        console.log("pushing a not recycled element")
+                if (state.drawing.image[modifyingValue.elementType][modifyingValue.id] == undefined) {
+                    state.drawing.image[modifyingValue.elementType][modifyingValue.id] = {
+                        image: modifyingValue.image,
+                        quantity: 1
                     }
-                    i++
+                } else {
+                    state.drawing.image[modifyingValue.elementType][modifyingValue.id]["quantity"]++;
                 }
             } break;
 
         }
     }
+    for (const item in state.drawing.image) {
+        console.log("item::")
+        console.log(item)
+        if (item != "flyingObject") {
+            state.imagesToDraw[item] = await DrawableImage.build(state.drawing.image[item])
+        } else {
+            for (const idItem in state.drawing.image[item]) {
+                console.log(idItem)
+                state.drawing.audio.cloudsInst[idItem-22] = state.drawing.image[item][idItem].quantity;
+                var templateToPush = await DrawableImage.build(state.drawing.image[item][idItem].image)
+                for(i = 0; i< state.drawing.image[item][idItem].quantity;i++) {
+                    var valToPush = templateToPush.clone();
+                    valToPush.left = 0.5*i + (Math.random()*0.4);
+                    valToPush.bottom =  0.8-(0.5*Math.random());
+                    state.imagesToDraw[item].push(valToPush);
+                }
+            }
+        }
+    }
+    console.log("CLOUDS ARRAY")
+
+    console.log(state.drawing.audio.cloudsInst)
+
 }
 
 function getIdList() {
@@ -650,7 +661,7 @@ function buildInstruments() {
 }
 
 function startMusic() {
-    state.master.hiddenGain.gain.rampTo(state.hiddenGainVal,0.2)
+    state.master.hiddenGain.gain.rampTo(state.hiddenGainVal, 0.2)
     Tone.Transport.bpm.value = 60
     Tone.Transport.start("+0.5", "0:0:0");
     setPlaying(true);
@@ -658,7 +669,7 @@ function startMusic() {
 
 
 function stopMusic() {
-    state.master.hiddenGain.gain.rampTo(0,0.2)
+    state.master.hiddenGain.gain.rampTo(0, 0.2)
     Tone.Transport.stop();
     setPlaying(false);
 }
@@ -1014,7 +1025,7 @@ function prepareCanvas() {
     canvas.width = 256 * factor;
     canvas.height = 128 * factor;
     canvasDiv.appendChild(canvas);
-    ctx = canvas.getContext('2d');    
+    ctx = canvas.getContext('2d');
     var moonRadius = canvas.width / 1.1;
 }
 
@@ -1126,7 +1137,7 @@ function createEnvironment() {
     background.drawThisImage(3, alphaDay, lightOn, canvas.height, canvas.width, ctx, factor)
     ctx.save();
     ctx.translate(Math.round(w / 2), Math.round(hAstra - 15 * factor))
-    
+
     ctx.save()
 
     let moon = getImageToDraw("astrumNight")
@@ -1150,11 +1161,16 @@ function createEnvironment() {
     ctx.save()
     let flyObjs = getImageToDraw("flyingObject")
     if (flyObjs.length != 0) {
-        console.log("num of objs")
-        console.log(flyObjs.length)
+        //console.log("num of objs")
+        //console.log(flyObjs.length)
         for (let flyObj of flyObjs) {
             ctx.save()
-            ctx.translate((-w) + (((2 * flyObj.getProperty().shift * 2 * w) + ((flyObj.getProperty().velocity * angle) * w)) % (2 * w)), flyObj.getProperty().shift * (h / 2)/*(h / 10)*/)
+            ctx.translate(-w/5, 0) 
+            //ctx.translate() /* (((2 * flyObj.left * 2 * w) +*/ 
+            var valLeft = flyObj.left
+            var newLeft =  (valLeft+(angle*0.0001) )%1.2
+            //console.log(newLeft)
+            flyObj.left = newLeft 
             flyObj.drawThisImage(0, alphaNight, lightOn, canvas.height, canvas.width, ctx, factor)
             flyObj.drawThisImage(1, alphaSunrise, lightOn, canvas.height, canvas.width, ctx, factor)
             flyObj.drawThisImage(2, alphaSunset, lightOn, canvas.height, canvas.width, ctx, factor)
@@ -1301,14 +1317,14 @@ async function updatePage(aPage) {
     }
 }
 
-function disableScrolling(){
-    var x=window.scrollX;
-    var y=window.scrollY;
-    window.onscroll=function(){window.scrollTo(x, y);};
+function disableScrolling() {
+    var x = window.scrollX;
+    var y = window.scrollY;
+    window.onscroll = function () { window.scrollTo(x, y); };
 }
 
-function enableScrolling(){
-    window.onscroll=function(){};
+function enableScrolling() {
+    window.onscroll = function () { };
 }
 
 async function playerPage() {
@@ -1323,12 +1339,12 @@ async function playerPage() {
     console.log("state::")
     console.log(state)
     let audioObj = state.melodyNodes.generateMelody(state.startingId);
-    state.drawing.audio.melody= audioObj.melody;
-    state.drawing.audio.chords= audioObj.chords;
+    state.drawing.audio.melody = audioObj.melody;
+    state.drawing.audio.chords = audioObj.chords;
     await initImages()
     document.getElementById("container").hidden = false
     initMusic()
-    Tone.start() 
+    Tone.start()
     document.getElementById("btn-vol").onclick = volumeButton
     let volSlider = document.getElementById("volume-slider")
     volumeUpdate(70)
@@ -1541,8 +1557,8 @@ class DrawableImage {
                 posY = y - h
                 break;
             case (4):
-                posX = 0;
-                posY = 0;
+                posX = x;
+                posY = y - h;
                 break;
         }
         ctx.drawImage(this.imageArray[imageToDraw], posX, posY, w, h)
@@ -1558,6 +1574,9 @@ class DrawableImage {
     }
     getNImages() {
         return this.imageArray.length
+    }
+    getLeft() {
+        return this.left;
     }
     /*
     getProperty() {
@@ -1688,7 +1707,7 @@ async function getMenuTypes() {
         console.log("Error getting document:", error);
     };
     //console.log("ci sono arrivato qui2")
-    
+
 }
 
 async function getElementsByType(type) {
@@ -1703,7 +1722,7 @@ async function getElementsByType(type) {
 }
 
 async function getElements() {
-    let elementsToRet =[];
+    let elementsToRet = [];
     let querySnapshot = await db.collection("elements").get()
     querySnapshot.forEach((doc) => {
         console.log(doc.id, " => ", doc.data());
@@ -1788,7 +1807,7 @@ class MarkovMelody {
 
     _nextRandomNode(aNode) {
         let possibleNodes = aNode.links
-        if(!Array.isArray(possibleNodes)) {
+        if (!Array.isArray(possibleNodes)) {
             possibleNodes = Array.from(Object.values(possibleNodes));
         }
         console.log(possibleNodes)
@@ -1822,64 +1841,64 @@ async function loadingMusicElements() {
 
 
 class bellSample {
-    
+
     constructor() {
-        state.isLoading = state.isLoading +1;
-        let bellUrls =  {
-            48:"001_BellC3.wav",
-            49:"002_BellCs3.wav",
-            50:"003_BellD3.wav",
-            51:"004_BellDs3.wav",
-            52:"005_BellE3.wav",
-            53:"006_BellF3.wav",
-            54:"007_BellFs3.wav",
-            55:"008_BellG3.wav",
-            56:"009_BellGs3.wav",
-            57:"010_BellA3.wav",
-            58:"011_BellAs3.wav",
-            59:"012_BellB3.wav",
-            60:"013_BellC4.wav",
-            61:"014_BellCs4.wav",
-            62:"01_BellD4.wav",
-            63:"02_BellDs4.wav",
-            64:"03_BellE4.wav",
-            65:"04_BellF4.wav",
-            66:"05_BellFs4.wav",
-            67:"06_BellG4.wav",
-            68:"07_BellGs4.wav",
-            69:"08_BellA4.wav",
-            70:"09_BellAs4.wav",
-            71:"10_BellB4.wav",
-            72:"11_BellC5.wav",
-            73:"12_BellCs5.wav",
-            74:"13_BellD5.wav",
-            75:"14_BellDs5.wav",
-            76:"15_BellE5.wav",
-            77:"16_BellF5.wav",
-            78:"17_BellFs5.wav",
-            79:"18_BellG5.wav",
-            80:"19_BellGs5.wav",
-            81:"20_BellA5.wav",
-            82:"21_BellAs5.wav",
-            83:"22_BellB5.wav",
-            84:"23_BellC6.wav",
+        state.isLoading = state.isLoading + 1;
+        let bellUrls = {
+            48: "001_BellC3.wav",
+            49: "002_BellCs3.wav",
+            50: "003_BellD3.wav",
+            51: "004_BellDs3.wav",
+            52: "005_BellE3.wav",
+            53: "006_BellF3.wav",
+            54: "007_BellFs3.wav",
+            55: "008_BellG3.wav",
+            56: "009_BellGs3.wav",
+            57: "010_BellA3.wav",
+            58: "011_BellAs3.wav",
+            59: "012_BellB3.wav",
+            60: "013_BellC4.wav",
+            61: "014_BellCs4.wav",
+            62: "01_BellD4.wav",
+            63: "02_BellDs4.wav",
+            64: "03_BellE4.wav",
+            65: "04_BellF4.wav",
+            66: "05_BellFs4.wav",
+            67: "06_BellG4.wav",
+            68: "07_BellGs4.wav",
+            69: "08_BellA4.wav",
+            70: "09_BellAs4.wav",
+            71: "10_BellB4.wav",
+            72: "11_BellC5.wav",
+            73: "12_BellCs5.wav",
+            74: "13_BellD5.wav",
+            75: "14_BellDs5.wav",
+            76: "15_BellE5.wav",
+            77: "16_BellF5.wav",
+            78: "17_BellFs5.wav",
+            79: "18_BellG5.wav",
+            80: "19_BellGs5.wav",
+            81: "20_BellA5.wav",
+            82: "21_BellAs5.wav",
+            83: "22_BellB5.wav",
+            84: "23_BellC6.wav",
         };
         let bellUrls2 = {};
         Object.keys(bellUrls).forEach(key => {
-            bellUrls2[key] = "./BellSamplesMelodies/"+bellUrls[key];
+            bellUrls2[key] = "./BellSamplesMelodies/" + bellUrls[key];
         });
-        var bell = new Tone.Players(bellUrls2,() => {
-            state.isLoading = state.isLoading-1;
+        var bell = new Tone.Players(bellUrls2, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("bell loaded")
-            });
+        });
         bell.toDestination();
         this.bell = bell;
-        
+
     }
 
     triggerAttack(note, time) {
         let ntp = Tonal.Note.midi(note);
-        if(ntp == "") {
+        if (ntp == "") {
             console.error("wrong note feeding: " + "note");
         }
         this.bell.player(ntp).start(time);
@@ -1889,61 +1908,61 @@ class bellSample {
 }
 
 class padSample {
-    
+
     constructor() {
-        state.isLoading = state.isLoading +1;
-        let padUrls =  {
-            36:"01_SynthC2.wav",
-            37:"02_SynthCs2.wav",
-            38:"03_SynthD2.wav",
-            39:"04_SynthDs2.wav",
-            40:"05_SynthE2.wav",
-            41:"06_SynthF2.wav",
-            42:"07_SynthFs2.wav",
-            43:"08_SynthG2.wav",
-            44:"09_SynthGs2.wav",
-            45:"10_SynthA2.wav",
-            46:"11_SynthAs2.wav",
-            47:"12_SynthB2.wav",
-            48:"13_SynthC3.wav",
-            49:"14_SynthCs3.wav",
-            50:"15_SynthD3.wav",
-            51:"16_SynthDs3.wav",
-            52:"17_SynthE3.wav",
-            53:"18_SynthF3.wav",
-            54:"19_SynthFs3.wav",
-            55:"20_SynthG3.wav",
-            56:"21_SynthGs3.wav",
-            57:"22_SynthA3.wav",
-            58:"23_SynthAs3.wav",
-            59:"24_SynthB3.wav",
-            60:"25_SynthC4.wav",
+        state.isLoading = state.isLoading + 1;
+        let padUrls = {
+            36: "01_SynthC2.wav",
+            37: "02_SynthCs2.wav",
+            38: "03_SynthD2.wav",
+            39: "04_SynthDs2.wav",
+            40: "05_SynthE2.wav",
+            41: "06_SynthF2.wav",
+            42: "07_SynthFs2.wav",
+            43: "08_SynthG2.wav",
+            44: "09_SynthGs2.wav",
+            45: "10_SynthA2.wav",
+            46: "11_SynthAs2.wav",
+            47: "12_SynthB2.wav",
+            48: "13_SynthC3.wav",
+            49: "14_SynthCs3.wav",
+            50: "15_SynthD3.wav",
+            51: "16_SynthDs3.wav",
+            52: "17_SynthE3.wav",
+            53: "18_SynthF3.wav",
+            54: "19_SynthFs3.wav",
+            55: "20_SynthG3.wav",
+            56: "21_SynthGs3.wav",
+            57: "22_SynthA3.wav",
+            58: "23_SynthAs3.wav",
+            59: "24_SynthB3.wav",
+            60: "25_SynthC4.wav",
         };
         let padUrls2 = {};
         Object.keys(padUrls).forEach(key => {
-            padUrls2[key] = "./SynthSample/"+padUrls[key];
+            padUrls2[key] = "./SynthSample/" + padUrls[key];
         });
-        var pad = new Tone.Players(padUrls2,() => {
-            state.isLoading = state.isLoading-1;
+        var pad = new Tone.Players(padUrls2, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("pad loaded")
-            });
+        });
         pad.toDestination();
         this.pad = pad;
-        
+
     }
 
     triggerAttackRelease(notes, time) {
         notes.forEach((note) => {
             let ntp = Tonal.Note.midi(note);
-            if(ntp == "") {
+            if (ntp == "") {
                 console.error("wrong note feeding: " + "note");
             }
             this.pad.player(ntp).start(time);
         })
-        
-        
+
+
     }
-} 
+}
 
 let ps = new padSample();
 
@@ -1951,31 +1970,31 @@ let ps = new padSample();
  *********************** PADS *************************
  */
 class Synth1 {
-    
+
     constructor() {
-        state.isLoading = state.isLoading +1;
+        state.isLoading = state.isLoading + 1;
         let initNote = BASE_MIDI_NOTES_NUM["C2"];
-        let numCycles = BASE_MIDI_NOTES_NUM["C4"]-initNote+1;
-        let padUrls =  {};
-        
-        for (let i=0; i<numCycles; i++){
-            padUrls[initNote+i] = ENV1_BASE_URL+`/01_SynthSamplesC2C4/Synth1_${i+1}.mp3`
+        let numCycles = BASE_MIDI_NOTES_NUM["C4"] - initNote + 1;
+        let padUrls = {};
+
+        for (let i = 0; i < numCycles; i++) {
+            padUrls[initNote + i] = ENV1_BASE_URL + `/01_SynthSamplesC2C4/Synth1_${i + 1}.mp3`
         };
-        var pad = new Tone.Players(padUrls,() => {
-            state.isLoading = state.isLoading-1;
+        var pad = new Tone.Players(padUrls, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("padEnv1 loaded")
-            });
+        });
         pad.toDestination();
         this.pad = pad;
         // console.log("PAD");
         // console.log(pad);
-        
+
     }
 
     triggerAttackRelease(notes, duration, time) {
         notes.forEach((note) => {
             let ntp = Tonal.Note.midi(note);
-            if(ntp == "") {
+            if (ntp == "") {
                 console.error("wrong note feeding: " + "note");
             }
             this.pad.player(ntp).start(time);
@@ -1992,31 +2011,31 @@ class Synth1 {
 
 // TODO: Arpeggiator
 class Synth2 {
-    
+
     constructor() {
-        state.isLoading = state.isLoading +1;
+        state.isLoading = state.isLoading + 1;
         let initNote = BASE_MIDI_NOTES_NUM["C2"];
-        let numCycles = BASE_MIDI_NOTES_NUM["C4"]-initNote+1;
-        let padUrls =  {};
-        
-        for (let i=0; i<numCycles; i++){
-            padUrls[initNote+i] = ENV2_BASE_URL+`/02_SynthSamplesC2C4/Synth2_${i+1}.mp3`
+        let numCycles = BASE_MIDI_NOTES_NUM["C4"] - initNote + 1;
+        let padUrls = {};
+
+        for (let i = 0; i < numCycles; i++) {
+            padUrls[initNote + i] = ENV2_BASE_URL + `/02_SynthSamplesC2C4/Synth2_${i + 1}.mp3`
         };
-        var pad = new Tone.Players(padUrls,() => {
-            state.isLoading = state.isLoading-1;
+        var pad = new Tone.Players(padUrls, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("padEnv2 loaded")
-            });
+        });
         pad.toDestination();
         this.pad = pad;
         // console.log("PAD");
         // console.log(pad);
-        
+
     }
 
     triggerAttackRelease(notes, duration, time) {
         notes.forEach((note) => {
             let ntp = Tonal.Note.midi(note);
-            if(ntp == "") {
+            if (ntp == "") {
                 console.error("wrong note feeding: " + "note");
             }
             this.pad.player(ntp).start(time);
@@ -2032,31 +2051,31 @@ class Synth2 {
 }
 
 class Synth3 {
-    
+
     constructor() {
-        state.isLoading = state.isLoading +1;
+        state.isLoading = state.isLoading + 1;
         let initNote = BASE_MIDI_NOTES_NUM["C2"];
-        let numCycles = BASE_MIDI_NOTES_NUM["C4"]-initNote+1;
-        let padUrls =  {};
-        
-        for (let i=0; i<numCycles; i++){
-            padUrls[initNote+i] = ENV3_BASE_URL+`/03_SynthSamplesC2C4/Synth3_${i+1}.mp3`
+        let numCycles = BASE_MIDI_NOTES_NUM["C4"] - initNote + 1;
+        let padUrls = {};
+
+        for (let i = 0; i < numCycles; i++) {
+            padUrls[initNote + i] = ENV3_BASE_URL + `/03_SynthSamplesC2C4/Synth3_${i + 1}.mp3`
         };
-        var pad = new Tone.Players(padUrls,() => {
-            state.isLoading = state.isLoading-1;
+        var pad = new Tone.Players(padUrls, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("padEnv3 loaded")
-            });
+        });
         pad.toDestination();
         this.pad = pad;
         // console.log("PAD");
         // console.log(pad);
-        
+
     }
 
     triggerAttackRelease(notes, duration, time) {
         notes.forEach((note) => {
             let ntp = Tonal.Note.midi(note);
-            if(ntp == "") {
+            if (ntp == "") {
                 console.error("wrong note feeding: " + "note");
             }
             this.pad.player(ntp).start(time);
@@ -2072,31 +2091,31 @@ class Synth3 {
 }
 
 class Synth4 {
-    
+
     constructor() {
-        state.isLoading = state.isLoading +1;
+        state.isLoading = state.isLoading + 1;
         let initNote = BASE_MIDI_NOTES_NUM["C2"];
-        let numCycles = BASE_MIDI_NOTES_NUM["C4"]-initNote+1;
-        let padUrls =  {};
-        
-        for (let i=0; i<numCycles; i++){
-            padUrls[initNote+i] = ENV4_BASE_URL+`/04_SynthSamplesC2C4/Synth4_${i+1}.mp3`
+        let numCycles = BASE_MIDI_NOTES_NUM["C4"] - initNote + 1;
+        let padUrls = {};
+
+        for (let i = 0; i < numCycles; i++) {
+            padUrls[initNote + i] = ENV4_BASE_URL + `/04_SynthSamplesC2C4/Synth4_${i + 1}.mp3`
         };
-        var pad = new Tone.Players(padUrls,() => {
-            state.isLoading = state.isLoading-1;
+        var pad = new Tone.Players(padUrls, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("padEnv4 loaded")
-            });
+        });
         pad.toDestination();
         this.pad = pad;
         // console.log("PAD");
         // console.log(pad);
-        
+
     }
 
     triggerAttackRelease(notes, duration, time) {
         notes.forEach((note) => {
             let ntp = Tonal.Note.midi(note);
-            if(ntp == "") {
+            if (ntp == "") {
                 console.error("wrong note feeding: " + "note");
             }
             this.pad.player(ntp).start(time);
@@ -2120,32 +2139,32 @@ class Synth4 {
  *********************** MELODY *************************
  */
 
- class Bell {
-    
+class Bell {
+
     constructor() {
-        state.isLoading = state.isLoading +1;
+        state.isLoading = state.isLoading + 1;
         let initNote = BASE_MIDI_NOTES_NUM["C3"];
-        let numCycles = BASE_MIDI_NOTES_NUM["C6"]-initNote+1;
-        let melUrls =  {};
-        
-        for (let i=0; i<numCycles; i++){
-            melUrls[initNote+i] = ENV1_BASE_URL+`/01_BellSamplesC3C6/Bell_${i+1}.mp3`
+        let numCycles = BASE_MIDI_NOTES_NUM["C6"] - initNote + 1;
+        let melUrls = {};
+
+        for (let i = 0; i < numCycles; i++) {
+            melUrls[initNote + i] = ENV1_BASE_URL + `/01_BellSamplesC3C6/Bell_${i + 1}.mp3`
         };
-        var mel = new Tone.Players(melUrls,() => {
-            state.isLoading = state.isLoading-1;
+        var mel = new Tone.Players(melUrls, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("Bell loaded")
-            });
+        });
         mel.toDestination();
         this.mel = mel;
         // console.log("PAD");
         // console.log(mel);
-        
+
     }
 
     triggerAttack(note, time) {
         // transposed of 1 ocv
-        let ntp = Tonal.Note.midi(note)+12;
-        if(ntp == "") {
+        let ntp = Tonal.Note.midi(note) + 12;
+        if (ntp == "") {
             console.error("wrong note feeding: " + "note");
         }
         this.mel.player(ntp).start(time);
@@ -2160,20 +2179,20 @@ class Synth4 {
 }
 
 class Moog {
-    
+
     constructor() {
-        state.isLoading = state.isLoading +1;
+        state.isLoading = state.isLoading + 1;
         let initNote = BASE_MIDI_NOTES_NUM["C3"];
-        let numCycles = BASE_MIDI_NOTES_NUM["C6"]-initNote+1;
-        let melUrls =  {};
-        
-        for (let i=0; i<numCycles; i++){
-            melUrls[initNote+i] = ENV2_BASE_URL+`/02_MoogSamplesC3C6/Moog_${i+1}.mp3`
+        let numCycles = BASE_MIDI_NOTES_NUM["C6"] - initNote + 1;
+        let melUrls = {};
+
+        for (let i = 0; i < numCycles; i++) {
+            melUrls[initNote + i] = ENV2_BASE_URL + `/02_MoogSamplesC3C6/Moog_${i + 1}.mp3`
         };
-        var mel = new Tone.Players(melUrls,() => {
-            state.isLoading = state.isLoading-1;
+        var mel = new Tone.Players(melUrls, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("Moog loaded")
-            });
+        });
         mel.toDestination();
         this.mel = mel;
 
@@ -2182,7 +2201,7 @@ class Moog {
     triggerAttack(note, time) {
         let duration = '4n';
         let ntp = Tonal.Note.midi(note);
-        if(ntp == "") {
+        if (ntp == "") {
             console.error("wrong note feeding: " + "note");
         }
         this.mel.player(ntp).start(time);
@@ -2197,29 +2216,29 @@ class Moog {
 }
 
 class Sitar {
-    
+
     constructor() {
-        state.isLoading = state.isLoading +1;
+        state.isLoading = state.isLoading + 1;
         let initNote = BASE_MIDI_NOTES_NUM["C3"];
-        let numCycles = BASE_MIDI_NOTES_NUM["C6"]-initNote+1;
-        let melUrls =  {};
-        
-        for (let i=0; i<numCycles; i++){
-            melUrls[initNote+i] = ENV3_BASE_URL+`/03_SitarSamplesC3C6/Sitar_${i+1}.mp3`
+        let numCycles = BASE_MIDI_NOTES_NUM["C6"] - initNote + 1;
+        let melUrls = {};
+
+        for (let i = 0; i < numCycles; i++) {
+            melUrls[initNote + i] = ENV3_BASE_URL + `/03_SitarSamplesC3C6/Sitar_${i + 1}.mp3`
         };
-        var mel = new Tone.Players(melUrls,() => {
-            state.isLoading = state.isLoading-1;
+        var mel = new Tone.Players(melUrls, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("Sitar loaded")
-            });
+        });
         mel.toDestination();
         this.mel = mel;
-        
+
     }
 
     triggerAttack(note, time) {
         // transposed of 1 ocv
-        let ntp = Tonal.Note.midi(note)+12;
-        if(ntp == "") {
+        let ntp = Tonal.Note.midi(note) + 12;
+        if (ntp == "") {
             console.error("wrong note feeding: " + "note");
         }
         this.mel.player(ntp).start(time);
@@ -2234,29 +2253,29 @@ class Sitar {
 }
 
 class Marimba {
-    
+
     constructor() {
-        state.isLoading = state.isLoading +1;
+        state.isLoading = state.isLoading + 1;
         let initNote = BASE_MIDI_NOTES_NUM["C3"];
-        let numCycles = BASE_MIDI_NOTES_NUM["C6"]-initNote+1;
-        let melUrls =  {};
-        
-        for (let i=0; i<numCycles; i++){
-            melUrls[initNote+i] = ENV4_BASE_URL+`/04_MarimbaSamplesC3C6/Marimba_${i+1}.mp3`
+        let numCycles = BASE_MIDI_NOTES_NUM["C6"] - initNote + 1;
+        let melUrls = {};
+
+        for (let i = 0; i < numCycles; i++) {
+            melUrls[initNote + i] = ENV4_BASE_URL + `/04_MarimbaSamplesC3C6/Marimba_${i + 1}.mp3`
         };
-        var mel = new Tone.Players(melUrls,() => {
-            state.isLoading = state.isLoading-1;
+        var mel = new Tone.Players(melUrls, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("Marimba loaded")
-            });
+        });
         mel.toDestination();
         this.mel = mel;
-        
+
     }
 
     triggerAttack(note, time) {
         // transposed of 1 ocv
-        let ntp = Tonal.Note.midi(note)+12;
-        if(ntp == "") {
+        let ntp = Tonal.Note.midi(note) + 12;
+        if (ntp == "") {
             console.error("wrong note feeding: " + "note");
         }
         this.mel.player(ntp).start(time);
@@ -2278,36 +2297,36 @@ let test4 = new Marimba();
 /**
  *********************** BASS *************************
  */
- class Bass1 {
-    
+class Bass1 {
+
     constructor() {
-        state.isLoading = state.isLoading +1;
+        state.isLoading = state.isLoading + 1;
         let initNote = BASE_MIDI_NOTES_NUM["C1"];
-        let numCycles = BASE_MIDI_NOTES_NUM["C3"]-initNote+1;
-        let bassUrls =  {};
-        
-        for (let i=0; i<numCycles; i++){
-            bassUrls[initNote+i] = ENV1_BASE_URL+`/01_BassSamplesC1C3/Bass1_${i+1}.mp3`
+        let numCycles = BASE_MIDI_NOTES_NUM["C3"] - initNote + 1;
+        let bassUrls = {};
+
+        for (let i = 0; i < numCycles; i++) {
+            bassUrls[initNote + i] = ENV1_BASE_URL + `/01_BassSamplesC1C3/Bass1_${i + 1}.mp3`
         };
-        var bass = new Tone.Players(bassUrls,() => {
-            state.isLoading = state.isLoading-1;
+        var bass = new Tone.Players(bassUrls, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("Bass1 loaded")
-            });
+        });
         bass.toDestination();
         this.bass = bass;
         // console.log("bass");
         // console.log(bass);
-        
+
     }
 
     triggerAttackRelease(notes, duration, time) {
         notes.forEach((note) => {
             let ntp = Tonal.Note.midi(note);
-            if(ntp == "") {
+            if (ntp == "") {
                 console.error("wrong note feeding: " + "note");
             }
             this.bass.player(ntp).start(time);
-            this.bass.player(ntp).stop(time+duration);
+            this.bass.player(ntp).stop(time + duration);
             // this.bass.player(ntp).fadeOut='4n';
         })
     }
@@ -2319,35 +2338,35 @@ let test4 = new Marimba();
 }
 
 class Bass2 {
-    
+
     constructor() {
-        state.isLoading = state.isLoading +1;
+        state.isLoading = state.isLoading + 1;
         let initNote = BASE_MIDI_NOTES_NUM["C1"];
-        let numCycles = BASE_MIDI_NOTES_NUM["C3"]-initNote+1;
-        let bassUrls =  {};
-        
-        for (let i=0; i<numCycles; i++){
-            bassUrls[initNote+i] = ENV2_BASE_URL+`/02_BassSamplesC1C3/Bass2_${i+1}.mp3`
+        let numCycles = BASE_MIDI_NOTES_NUM["C3"] - initNote + 1;
+        let bassUrls = {};
+
+        for (let i = 0; i < numCycles; i++) {
+            bassUrls[initNote + i] = ENV2_BASE_URL + `/02_BassSamplesC1C3/Bass2_${i + 1}.mp3`
         };
-        var bass = new Tone.Players(bassUrls,() => {
-            state.isLoading = state.isLoading-1;
+        var bass = new Tone.Players(bassUrls, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("Bass2 loaded")
-            });
+        });
         bass.toDestination();
         this.bass = bass;
         // console.log("bass");
         // console.log(bass);
-        
+
     }
 
     triggerAttackRelease(notes, duration, time) {
         notes.forEach((note) => {
             let ntp = Tonal.Note.midi(note);
-            if(ntp == "") {
+            if (ntp == "") {
                 console.error("wrong note feeding: " + "note");
             }
             this.bass.player(ntp).start(time);
-            this.bass.player(ntp).stop(time+duration);
+            this.bass.player(ntp).stop(time + duration);
             // this.bass.player(ntp).fadeOut='4n';
         })
     }
@@ -2359,35 +2378,35 @@ class Bass2 {
 }
 
 class Bass3 {
-    
+
     constructor() {
-        state.isLoading = state.isLoading +1;
+        state.isLoading = state.isLoading + 1;
         let initNote = BASE_MIDI_NOTES_NUM["C1"];
-        let numCycles = BASE_MIDI_NOTES_NUM["C3"]-initNote+1;
-        let bassUrls =  {};
-        
-        for (let i=0; i<numCycles; i++){
-            bassUrls[initNote+i] = ENV3_BASE_URL+`/03_BassSamplesC1C3/Bass3_${i+1}.mp3`
+        let numCycles = BASE_MIDI_NOTES_NUM["C3"] - initNote + 1;
+        let bassUrls = {};
+
+        for (let i = 0; i < numCycles; i++) {
+            bassUrls[initNote + i] = ENV3_BASE_URL + `/03_BassSamplesC1C3/Bass3_${i + 1}.mp3`
         };
-        var bass = new Tone.Players(bassUrls,() => {
-            state.isLoading = state.isLoading-1;
+        var bass = new Tone.Players(bassUrls, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("Bass3 loaded")
-            });
+        });
         bass.toDestination();
         this.bass = bass;
         // console.log("bass");
         // console.log(bass);
-        
+
     }
 
     triggerAttackRelease(notes, duration, time) {
         notes.forEach((note) => {
             let ntp = Tonal.Note.midi(note);
-            if(ntp == "") {
+            if (ntp == "") {
                 console.error("wrong note feeding: " + "note");
             }
             this.bass.player(ntp).start(time);
-            this.bass.player(ntp).stop(time+duration);
+            this.bass.player(ntp).stop(time + duration);
             // this.bass.player(ntp).fadeOut='4n';
         })
     }
@@ -2399,35 +2418,35 @@ class Bass3 {
 }
 
 class Bass4 {
-    
+
     constructor() {
-        state.isLoading = state.isLoading +1;
+        state.isLoading = state.isLoading + 1;
         let initNote = BASE_MIDI_NOTES_NUM["C1"];
-        let numCycles = BASE_MIDI_NOTES_NUM["C3"]-initNote+1;
-        let bassUrls =  {};
-        
-        for (let i=0; i<numCycles; i++){
-            bassUrls[initNote+i] = ENV4_BASE_URL+`/04_BassSamplesC1C3/Bass4_${i+1}.mp3`
+        let numCycles = BASE_MIDI_NOTES_NUM["C3"] - initNote + 1;
+        let bassUrls = {};
+
+        for (let i = 0; i < numCycles; i++) {
+            bassUrls[initNote + i] = ENV4_BASE_URL + `/04_BassSamplesC1C3/Bass4_${i + 1}.mp3`
         };
-        var bass = new Tone.Players(bassUrls,() => {
-            state.isLoading = state.isLoading-1;
+        var bass = new Tone.Players(bassUrls, () => {
+            state.isLoading = state.isLoading - 1;
             console.log("Bass4 loaded")
-            });
+        });
         bass.toDestination();
         this.bass = bass;
         // console.log("bass");
         // console.log(bass);
-        
+
     }
 
     triggerAttackRelease(notes, duration, time) {
         notes.forEach((note) => {
             let ntp = Tonal.Note.midi(note);
-            if(ntp == "") {
+            if (ntp == "") {
                 console.error("wrong note feeding: " + "note");
             }
             this.bass.player(ntp).start(time);
-            this.bass.player(ntp).stop(time+duration);
+            this.bass.player(ntp).stop(time + duration);
             // this.bass.player(ntp).fadeOut='4n';
         })
     }
