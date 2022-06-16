@@ -2219,7 +2219,7 @@ class Bell {
             state.isLoading = state.isLoading - 1;
             console.log("Bell loaded")
         });
-        mel.volume.value = -6;
+        mel.volume.value = -9;
         mel.toDestination();
         this.mel = mel;
         // console.log("PAD");
@@ -2233,6 +2233,7 @@ class Bell {
         if (ntp == "") {
             console.error("wrong note feeding: " + "note");
         }
+        // this.mel.fadeIn = 0.1
         this.mel.player(ntp).start(time);
     }
 
