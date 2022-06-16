@@ -42,8 +42,8 @@ const state = {
     startingId: 0,
     master: {},
     playingPart: [],
-    loopProgressSaved:0,
-    loopTimes:0,
+    loopProgressSaved: 0,
+    loopTimes: 0,
     drawing: {
         idList: {
             astrumDay: 21,
@@ -346,13 +346,13 @@ async function updateState() {
         } else {
             for (const idItem in state.drawing.image[item]) {
                 console.log(idItem)
-                state.drawing.audio.cloudsInst[idItem-22] = state.drawing.image[item][idItem].quantity;
+                state.drawing.audio.cloudsInst[idItem - 22] = state.drawing.image[item][idItem].quantity;
                 var templateToPush = await DrawableImage.build(state.drawing.image[item][idItem].image)
-                for(i = 0; i< state.drawing.image[item][idItem].quantity;i++) {
+                for (i = 0; i < state.drawing.image[item][idItem].quantity; i++) {
                     var valToPush = templateToPush.clone();
-                    valToPush.left = 0.5*i + (Math.random()*0.4) +0.3;
+                    valToPush.left = 0.5 * i + (Math.random() * 0.4) + 0.3;
                     var plusOrMinus = Math.random() < 0.5 ? -1 : 1;
-                    valToPush.bottom =  0.8-(i*0.2 + (plusOrMinus*0.1*Math.random()));
+                    valToPush.bottom = 0.8 - (i * 0.2 + (plusOrMinus * 0.1 * Math.random()));
                     state.imagesToDraw[item].push(valToPush);
                 }
             }
@@ -1111,12 +1111,12 @@ function createEnvironment() {
     let alphaSunset = 0
     let sunToDraw = 0
 
-    var time = Tone.Transport.now()*1000//.toMilliseconds();//Date.now()
+    var time = Tone.Transport.now() * 1000//.toMilliseconds();//Date.now()
     var loopProgress = Tone.Transport.progress
-    if(loopProgress<state.loopProgressSaved) {
+    if (loopProgress < state.loopProgressSaved) {
         state.loopTimes++
     }
-    var time2 = (state.loopTimes+loopProgress)*(Tone.Transport.loopEnd)*1000
+    var time2 = (state.loopTimes + loopProgress) * (Tone.Transport.loopEnd) * 1000
     state.loopProgressSaved = loopProgress
     console.log("time:")
     console.log(time)
@@ -1211,12 +1211,12 @@ function createEnvironment() {
         //console.log(flyObjs.length)
         for (let flyObj of flyObjs) {
             ctx.save()
-            ctx.translate(-w/5, 0) 
+            ctx.translate(-w / 5, 0)
             //ctx.translate() /* (((2 * flyObj.left * 2 * w) +*/ 
             var valLeft = flyObj.left
-            var newLeft =  (valLeft+(angle*0.0001) )%1.2
+            var newLeft = (valLeft + (angle * 0.0001)) % 1.2
             //console.log(newLeft)
-            flyObj.left = newLeft 
+            flyObj.left = newLeft
             flyObj.drawThisImage(0, alphaNight, lightOn, canvas.height, canvas.width, ctx, factor)
             flyObj.drawThisImage(1, alphaSunrise, lightOn, canvas.height, canvas.width, ctx, factor)
             flyObj.drawThisImage(2, alphaSunset, lightOn, canvas.height, canvas.width, ctx, factor)
@@ -1261,37 +1261,42 @@ async function createMenu() {
         console.log('datum: ')
         console.log(datum)
         console.log(datum.image.previewUrl)
-        var aNewSrc = await getAsset(datum.image.previewUrl)
-        var img = document.createElement('img')
-        img.src = aNewSrc
-        img.className = 'token-image'
-        var btnDiv = document.createElement('div')
-        var btn = document.createElement('button')
-        btn.id = datum.id
-        btn.className = 'nes-btn'
-        btn.classList.add('token-btn')
-        btn.classList.add(datum.elementType)
-        btn.classList.add(datum.environment)
+        console.log(datum.elementType)
+        if ((datum.elementType == "background" )|| (datum.elementType == "astrumDay" )||( datum.elementType == "astrumNight")){}
+        else {
+            
+            var aNewSrc = await getAsset(datum.image.previewUrl)
+            var img = document.createElement('img')
+            img.src = aNewSrc
+            img.className = 'token-image'
+            var btnDiv = document.createElement('div')
+            var btn = document.createElement('button')
+            btn.id = datum.id
+            btn.className = 'nes-btn'
+            btn.classList.add('token-btn')
+            btn.classList.add(datum.elementType)
+            btn.classList.add(datum.environment)
 
-        btn.style.margin = '7px'
-        btn.style.marginLeft = 'auto'
-        btn.style.marginRight = 'auto'
-        btn.appendChild(img)
-        btnDiv.classList.add("token-div")
-        if (datum.elementType == "flyingObject") {
-            var tokenAdd = document.createElement('div')
-            tokenAdd.id = "tAdd" + btn.id
-            tokenAdd.classList.add("token-add");
-            tokenAdd.append("0")
-            btnDiv.appendChild(btn)
-            btnDiv.appendChild(tokenAdd)
-            btnContainer.appendChild(btnDiv)
+            btn.style.margin = '7px'
+            btn.style.marginLeft = 'auto'
+            btn.style.marginRight = 'auto'
+            btn.appendChild(img)
+            btnDiv.classList.add("token-div")
+            if (datum.elementType == "flyingObject") {
+                var tokenAdd = document.createElement('div')
+                tokenAdd.id = "tAdd" + btn.id
+                tokenAdd.classList.add("token-add");
+                tokenAdd.append("0")
+                btnDiv.appendChild(btn)
+                btnDiv.appendChild(tokenAdd)
+                btnContainer.appendChild(btnDiv)
 
-            console.log("ciao nuvoletta")
+                console.log("ciao nuvoletta")
 
-        } else {
-            btnDiv.appendChild(btn)
-            btnContainer.appendChild(btnDiv)
+            } else {
+                btnDiv.appendChild(btn)
+                btnContainer.appendChild(btnDiv)
+            }
         }
     }
 }
