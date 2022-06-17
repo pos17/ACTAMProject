@@ -687,6 +687,7 @@ function buildInstruments() {
 }
 
 function startMusic() {
+    while(state.isLoading!=0){}
     state.master.hiddenGain.gain.rampTo(state.hiddenGainVal, 0.2)
     Tone.Transport.bpm.value = 60
 
