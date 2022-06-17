@@ -202,7 +202,7 @@ function increase() {
     let fromValue = state.loadingPage.value;
     let limit = state.loadingPage.limit;
 
-    if ((Date.now() - state.loadingPage.lastUpdate) > (1000 / 30)) {
+    if ((Date.now() - state.loadingPage.lastUpdate) > (1000 / 15)) {
         if (fromValue < limit) {
             state.loadingPage.value = fromValue + 1;
             element.value = state.loadingPage.value;
