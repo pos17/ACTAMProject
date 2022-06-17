@@ -20,7 +20,7 @@ const state = {
     },
     transPlaying: false,
     hiddenGainVal: 0.8,
-    isLoading: 0,
+    isLoadingInstr: 0,
     imagesToDraw: {},
     environments: undefined,
     elementTypes: undefined,
@@ -43,6 +43,8 @@ const state = {
     startingId: 0,
     master: {},
     playingPart: [],
+    loopProgressSaved: 0,
+    loopTimes: 0,
     drawing: {
         idList: {
             astrumDay: 21,
@@ -178,6 +180,14 @@ function getMasterVolume() {
 function setLimit(toValue) {
     state.loadingPage.limit = toValue
 }
+async function waitBarLoaded() {
+    return new Promise(resolve => {
+        if (state.loadingPage.value >= 100) {
+            resolve();
+            console.log("bar loaded")
+        }
+    });
+}
 /*
 function resolveAfter2Seconds() {
     return new Promise(resolve => {
@@ -193,7 +203,7 @@ function increase() {
     let fromValue = state.loadingPage.value;
     let limit = state.loadingPage.limit;
 
-    if ((Date.now() - state.loadingPage.lastUpdate) > (1000 / 30)) {
+    if ((Date.now() - state.loadingPage.lastUpdate) > (1000 / 15)) {
         if (fromValue < limit) {
             state.loadingPage.value = fromValue + 1;
             element.value = state.loadingPage.value;
@@ -201,13 +211,21 @@ function increase() {
         if (fromValue >= 100) {
             document.getElementById("container").hidden = false
             document.getElementById("initialLoadingPanel").style.visibility = 'hidden'
-
+            state.loadingPage.resolvePromise()
+            console.log("promise solved")
         } else {
             window.requestAnimationFrame(increase)
             state.loadingPage.lastUpdate = Date.now()
         }
     } else {
         window.requestAnimationFrame(increase)
+    }
+
+    if (state.loadingPage.value <= 0) {
+        state.loadingPage.finishPromise = new Promise(resolve => {
+            state.loadingPage.resolvePromise = resolve;
+            console.log("promise launched")
+        });
     }
 }
 
@@ -351,7 +369,9 @@ async function updateState() {
                     var valToPush = templateToPush.clone();
                     valToPush.left = 0.5 * i + (Math.random() * 0.4) + 0.3;
                     var plusOrMinus = Math.random() < 0.5 ? -1 : 1;
-                    valToPush.bottom = 0.8 - (i * 0.2 + (plusOrMinus * 0.1 * Math.random()));
+                    var bottomToPush = 1 - (0.3) - (i * 0.2 + (- 0.1 * Math.random()));
+                    if (bottomToPush < 0.5) bottomToPush = bottomToPush + 0.2
+                    valToPush.bottom = bottomToPush
                     state.imagesToDraw[item].push(valToPush);
                 }
             }
@@ -690,7 +710,19 @@ function buildInstruments() {
 
 }
 
-function startMusic() {
+async function waitInstLoaded() {
+    return new Promise(resolve => {
+        while (state.isLoading == 0) {
+            resolve();
+            console.log("all Instruments are loaded")
+            console.log(state.isLoading)
+        }
+    });
+}
+
+
+async function startMusic() {
+
     state.master.hiddenGain.gain.rampTo(state.hiddenGainVal, 0.2)
     Tone.Transport.bpm.value = 60
 
@@ -1056,8 +1088,9 @@ function initMusic() {
 var t = Tone.Time('16m').toMilliseconds()
 var omega = 0; /* canvas angular speed */
 var factor = 4;
-var time0 = new Date();
-
+var time0 = 0//Tone.Transport.now()*1000//.toMilliseconds()//new Date();
+console.log("time0")
+console.log(time0)
 
 
 function prepareCanvas() {
@@ -1116,8 +1149,17 @@ function createEnvironment() {
     let alphaSunset = 0
     let sunToDraw = 0
 
-    var time = Date.now()
-
+    var time = Tone.Transport.now() * 1000//.toMilliseconds();//Date.now()
+    var loopProgress = Tone.Transport.progress
+    if (loopProgress < state.loopProgressSaved) {
+        state.loopTimes++
+    }
+    var time2 = (state.loopTimes + loopProgress) * (Tone.Transport.loopEnd) * 1000
+    state.loopProgressSaved = loopProgress
+    //console.log("time:")
+    //console.log(time)
+    //console.log("progress:")
+    //console.log(Tone.Transport.progress)
     var h = canvas.height;
     var w = canvas.width;
 
@@ -1127,7 +1169,7 @@ function createEnvironment() {
     omega = a / t;
     let hAstra = h - getImageToDraw("floor").getNHeight() * factor - 25 * factor;
     let wAstra = w / 2 - ((getImageToDraw("astrumNight").getNWidth()) / 2 * factor)
-    var angle = (ALPHASTART + omega * (time - time0.getTime()))
+    var angle = (ALPHASTART + omega * (time2 - time0))//time0.getTime()))
 
     let angleD = angle % (2 * Math.PI)
     let transAngle = angle % (w)
@@ -1257,37 +1299,42 @@ async function createMenu() {
         console.log('datum: ')
         console.log(datum)
         console.log(datum.image.previewUrl)
-        var aNewSrc = await getAsset(datum.image.previewUrl)
-        var img = document.createElement('img')
-        img.src = aNewSrc
-        img.className = 'token-image'
-        var btnDiv = document.createElement('div')
-        var btn = document.createElement('button')
-        btn.id = datum.id
-        btn.className = 'nes-btn'
-        btn.classList.add('token-btn')
-        btn.classList.add(datum.elementType)
-        btn.classList.add(datum.environment)
+        console.log(datum.elementType)
+        if ((datum.elementType == "background") || (datum.elementType == "astrumDay") || (datum.elementType == "astrumNight")) { }
+        else {
 
-        btn.style.margin = '7px'
-        btn.style.marginLeft = 'auto'
-        btn.style.marginRight = 'auto'
-        btn.appendChild(img)
-        btnDiv.classList.add("token-div")
-        if (datum.elementType == "flyingObject") {
-            var tokenAdd = document.createElement('div')
-            tokenAdd.id = "tAdd" + btn.id
-            tokenAdd.classList.add("token-add");
-            tokenAdd.append("0")
-            btnDiv.appendChild(btn)
-            btnDiv.appendChild(tokenAdd)
-            btnContainer.appendChild(btnDiv)
+            var aNewSrc = await getAsset(datum.image.previewUrl)
+            var img = document.createElement('img')
+            img.src = aNewSrc
+            img.className = 'token-image'
+            var btnDiv = document.createElement('div')
+            var btn = document.createElement('button')
+            btn.id = datum.id
+            btn.className = 'nes-btn'
+            btn.classList.add('token-btn')
+            btn.classList.add(datum.elementType)
+            btn.classList.add(datum.environment)
 
-            console.log("ciao nuvoletta")
+            btn.style.margin = '7px'
+            btn.style.marginLeft = 'auto'
+            btn.style.marginRight = 'auto'
+            btn.appendChild(img)
+            btnDiv.classList.add("token-div")
+            if (datum.elementType == "flyingObject") {
+                var tokenAdd = document.createElement('div')
+                tokenAdd.id = "tAdd" + btn.id
+                tokenAdd.classList.add("token-add");
+                tokenAdd.append("0")
+                btnDiv.appendChild(btn)
+                btnDiv.appendChild(tokenAdd)
+                btnContainer.appendChild(btnDiv)
 
-        } else {
-            btnDiv.appendChild(btn)
-            btnContainer.appendChild(btnDiv)
+                console.log("ciao nuvoletta")
+
+            } else {
+                btnDiv.appendChild(btn)
+                btnContainer.appendChild(btnDiv)
+            }
         }
     }
 }
@@ -1372,18 +1419,24 @@ function enableScrolling() {
 async function playerPage() {
     //window.scrollTo(0,0); 
     //disableScrolling();
+    state.loadingPage.value = 0;
+    console.log("value loading page:")
+    console.log(state.loadingPage.value)
+    increase();
+    setLimit(60);
     document.getElementById("initialLoadingPanel").style.visibility = 'visible'
     document.getElementById("container").hidden = true
     state.loadingPage.value = 0;
-    setLimit(100);
-    increase();
+    setLimit(85);
+
     await updateState()
-    console.log("state::")
-    console.log(state)
+    //console.log("state::")
+    //console.log(state)
     let audioObj = state.melodyNodes.generateMelody(state.startingId);
     state.drawing.audio.melody = audioObj.melody;
     state.drawing.audio.chords = audioObj.chords;
-    await initImages()
+    setLimit(99);
+
     document.getElementById("container").hidden = false
     initMusic()
     Tone.start()
@@ -1399,9 +1452,15 @@ async function playerPage() {
     document.getElementById("menu-container").hidden = true;
     document.getElementById("menu-navbar").hidden = true;
     document.getElementById("upbar").hidden = true;
-    document.getElementById("initialLoadingPanel").style.visibility = 'hidden'
-    //enableScrolling();
+    //document.getElementById("initialLoadingPanel").style.visibility = 'hidden'
+    await state.isLoadingInstr;
+    setLimit(100);
+    state.isPlaying = true;
+    await initImages()
+    await state.loadingPage.finishPromise;
     startMusic()
+
+
 }
 
 async function menuPage() {
@@ -1885,7 +1944,10 @@ async function loadingMusicElements() {
 class bellSample {
 
     constructor() {
-        state.isLoading = state.isLoading + 1;
+        var resolvePromise;
+        state.isLoadingInstr = new Promise(resolve => {
+            resolvePromise = resolve;
+        });
         let bellUrls = {
             48: "001_BellC3.wav",
             49: "002_BellCs3.wav",
@@ -1930,7 +1992,7 @@ class bellSample {
             bellUrls2[key] = "./BellSamplesMelodies/" + bellUrls[key];
         });
         var bell = new Tone.Players(bellUrls2, () => {
-            state.isLoading = state.isLoading - 1;
+            resolvePromise();
             console.log("bell loaded")
         });
         bell.toDestination();
@@ -1952,7 +2014,10 @@ class bellSample {
 class padSample {
 
     constructor() {
-        state.isLoading = state.isLoading + 1;
+        var resolvePromise;
+        state.isLoadingInstr = new Promise(resolve => {
+            resolvePromise = resolve;
+        });
         let padUrls = {
             36: "01_SynthC2.wav",
             37: "02_SynthCs2.wav",
@@ -1985,7 +2050,7 @@ class padSample {
             padUrls2[key] = "./SynthSample/" + padUrls[key];
         });
         var pad = new Tone.Players(padUrls2, () => {
-            state.isLoading = state.isLoading - 1;
+            resolvePromise()
             console.log("pad loaded")
         });
         pad.toDestination();
@@ -2014,7 +2079,10 @@ let ps = new padSample();
 class Synth1 {
 
     constructor() {
-        state.isLoading = state.isLoading + 1;
+        var resolvePromise;
+        state.isLoadingInstr = new Promise(resolve => {
+            resolvePromise = resolve;
+        });
         let initNote = BASE_MIDI_NOTES_NUM["C2"];
         let numCycles = BASE_MIDI_NOTES_NUM["C4"] - initNote + 1;
         let padUrls = {};
@@ -2023,7 +2091,7 @@ class Synth1 {
             padUrls[initNote + i] = ENV1_BASE_URL + `/01_SynthSamplesC2C4/Synth1_${i + 1}.mp3`
         };
         var pad = new Tone.Players(padUrls, () => {
-            state.isLoading = state.isLoading - 1;
+            resolvePromise()
             console.log("padEnv1 loaded")
         });
         pad.toDestination();
@@ -2055,7 +2123,10 @@ class Synth1 {
 class Synth2 {
 
     constructor() {
-        state.isLoading = state.isLoading + 1;
+        var resolvePromise;
+        state.isLoadingInstr = new Promise(resolve => {
+            resolvePromise = resolve;
+        });
         let initNote = BASE_MIDI_NOTES_NUM["C2"];
         let numCycles = BASE_MIDI_NOTES_NUM["C4"] - initNote + 1;
         let padUrls = {};
@@ -2064,7 +2135,7 @@ class Synth2 {
             padUrls[initNote + i] = ENV2_BASE_URL + `/02_SynthSamplesC2C4/Synth2_${i + 1}.mp3`
         };
         var pad = new Tone.Players(padUrls, () => {
-            state.isLoading = state.isLoading - 1;
+            resolvePromise()
             console.log("padEnv2 loaded")
         });
         pad.toDestination();
@@ -2118,7 +2189,10 @@ class Synth2 {
 class Synth3 {
 
     constructor() {
-        state.isLoading = state.isLoading + 1;
+        var resolvePromise;
+        state.isLoadingInstr = new Promise(resolve => {
+            resolvePromise = resolve;
+        });
         let initNote = BASE_MIDI_NOTES_NUM["C2"];
         let numCycles = BASE_MIDI_NOTES_NUM["C4"] - initNote + 1;
         let padUrls = {};
@@ -2127,7 +2201,7 @@ class Synth3 {
             padUrls[initNote + i] = ENV3_BASE_URL + `/03_SynthSamplesC2C4/Synth3_${i + 1}.mp3`
         };
         var pad = new Tone.Players(padUrls, () => {
-            state.isLoading = state.isLoading - 1;
+            resolvePromise()
             console.log("padEnv3 loaded")
         });
         pad.toDestination();
@@ -2158,7 +2232,10 @@ class Synth3 {
 class Synth4 {
 
     constructor() {
-        state.isLoading = state.isLoading + 1;
+        var resolvePromise;
+        state.isLoadingInstr = new Promise(resolve => {
+            resolvePromise = resolve;
+        });
         let initNote = BASE_MIDI_NOTES_NUM["C2"];
         let numCycles = BASE_MIDI_NOTES_NUM["C4"] - initNote + 1;
         let padUrls = {};
@@ -2167,7 +2244,7 @@ class Synth4 {
             padUrls[initNote + i] = ENV4_BASE_URL + `/04_SynthSamplesC2C4/Synth4_${i + 1}.mp3`
         };
         var pad = new Tone.Players(padUrls, () => {
-            state.isLoading = state.isLoading - 1;
+            resolvePromise
             console.log("padEnv4 loaded")
         });
         pad.toDestination();
@@ -2207,7 +2284,10 @@ class Synth4 {
 class Bell {
 
     constructor() {
-        state.isLoading = state.isLoading + 1;
+        var resolvePromise;
+        state.isLoadingInstr = new Promise(resolve => {
+            resolvePromise = resolve;
+        });
         let initNote = BASE_MIDI_NOTES_NUM["C3"];
         let numCycles = BASE_MIDI_NOTES_NUM["C6"] - initNote + 1;
         let melUrls = {};
@@ -2216,7 +2296,7 @@ class Bell {
             melUrls[initNote + i] = ENV1_BASE_URL + `/01_BellSamplesC3C6/Bell_${i + 1}.mp3`
         };
         var mel = new Tone.Players(melUrls, () => {
-            state.isLoading = state.isLoading - 1;
+            resolvePromise()
             console.log("Bell loaded")
         });
         mel.volume.value = -9;
@@ -2246,7 +2326,10 @@ class Bell {
 class Moog {
 
     constructor() {
-        state.isLoading = state.isLoading + 1;
+        var resolvePromise;
+        state.isLoadingInstr = new Promise(resolve => {
+            resolvePromise = resolve;
+        });
         let initNote = BASE_MIDI_NOTES_NUM["C3"];
         let numCycles = BASE_MIDI_NOTES_NUM["C6"] - initNote + 1;
         let melUrls = {};
@@ -2255,7 +2338,7 @@ class Moog {
             melUrls[initNote + i] = ENV2_BASE_URL + `/02_MoogSamplesC3C6/Moog_${i + 1}.mp3`
         };
         var mel = new Tone.Players(melUrls, () => {
-            state.isLoading = state.isLoading - 1;
+            resolvePromise()
             console.log("Moog loaded")
         });
         mel.toDestination();
@@ -2284,7 +2367,10 @@ class Moog {
 class Sitar {
 
     constructor() {
-        state.isLoading = state.isLoading + 1;
+        var resolvePromise;
+        state.isLoadingInstr = new Promise(resolve => {
+            resolvePromise = resolve;
+        });
         let initNote = BASE_MIDI_NOTES_NUM["C3"];
         let numCycles = BASE_MIDI_NOTES_NUM["C6"] - initNote + 1;
         let melUrls = {};
@@ -2293,7 +2379,7 @@ class Sitar {
             melUrls[initNote + i] = ENV3_BASE_URL + `/03_SitarSamplesC3C6/Sitar_${i + 1}.mp3`
         };
         var mel = new Tone.Players(melUrls, () => {
-            state.isLoading = state.isLoading - 1;
+            resolvePromise()
             console.log("Sitar loaded")
         });
         mel.toDestination();
@@ -2321,7 +2407,10 @@ class Sitar {
 class Marimba {
 
     constructor() {
-        state.isLoading = state.isLoading + 1;
+        var resolvePromise;
+        state.isLoadingInstr = new Promise(resolve => {
+            resolvePromise = resolve;
+        });
         let initNote = BASE_MIDI_NOTES_NUM["C3"];
         let numCycles = BASE_MIDI_NOTES_NUM["C6"] - initNote + 1;
         let melUrls = {};
@@ -2330,7 +2419,7 @@ class Marimba {
             melUrls[initNote + i] = ENV4_BASE_URL + `/04_MarimbaSamplesC3C6/Marimba_${i + 1}.mp3`
         };
         var mel = new Tone.Players(melUrls, () => {
-            state.isLoading = state.isLoading - 1;
+            resolvePromise()
             console.log("Marimba loaded")
         });
         mel.set({
@@ -2375,7 +2464,10 @@ let test4 = new Marimba();
 class Bass1 {
 
     constructor() {
-        state.isLoading = state.isLoading + 1;
+        var resolvePromise;
+        state.isLoadingInstr = new Promise(resolve => {
+            resolvePromise = resolve;
+        });
         let initNote = BASE_MIDI_NOTES_NUM["C1"];
         let numCycles = BASE_MIDI_NOTES_NUM["C3"] - initNote + 1;
         let bassUrls = {};
@@ -2384,7 +2476,7 @@ class Bass1 {
             bassUrls[initNote + i] = ENV1_BASE_URL + `/01_BassSamplesC1C3/Bass1_${i + 1}.mp3`
         };
         var bass = new Tone.Players(bassUrls, () => {
-            state.isLoading = state.isLoading - 1;
+            resolvePromise()
             console.log("Bass1 loaded")
         });
         bass.toDestination();
@@ -2423,7 +2515,10 @@ class Bass1 {
 class Bass2 {
 
     constructor() {
-        state.isLoading = state.isLoading + 1;
+        var resolvePromise;
+        state.isLoadingInstr = new Promise(resolve => {
+            resolvePromise = resolve;
+        });
         let initNote = BASE_MIDI_NOTES_NUM["C1"];
         let numCycles = BASE_MIDI_NOTES_NUM["C3"] - initNote + 1;
         let bassUrls = {};
@@ -2432,7 +2527,7 @@ class Bass2 {
             bassUrls[initNote + i] = ENV2_BASE_URL + `/02_BassSamplesC1C3/Bass2_${i + 1}.mp3`
         };
         var bass = new Tone.Players(bassUrls, () => {
-            state.isLoading = state.isLoading - 1;
+            resolvePromise()
             console.log("Bass2 loaded")
         });
         bass.toDestination();
@@ -2469,7 +2564,10 @@ class Bass2 {
 class Bass3 {
 
     constructor() {
-        state.isLoading = state.isLoading + 1;
+        var resolvePromise;
+        state.isLoadingInstr = new Promise(resolve => {
+            resolvePromise = resolve;
+        });
         let initNote = BASE_MIDI_NOTES_NUM["C1"];
         let numCycles = BASE_MIDI_NOTES_NUM["C3"] - initNote + 1;
         let bassUrls = {};
@@ -2478,7 +2576,7 @@ class Bass3 {
             bassUrls[initNote + i] = ENV3_BASE_URL + `/03_BassSamplesC1C3/Bass3_${i + 1}.mp3`
         };
         var bass = new Tone.Players(bassUrls, () => {
-            state.isLoading = state.isLoading - 1;
+            resolvePromise()
             console.log("Bass3 loaded")
         });
         bass.toDestination();
@@ -2515,7 +2613,10 @@ class Bass3 {
 class Bass4 {
 
     constructor() {
-        state.isLoading = state.isLoading + 1;
+        var resolvePromise;
+        state.isLoadingInstr = new Promise(resolve => {
+            resolvePromise = resolve;
+        });
         let initNote = BASE_MIDI_NOTES_NUM["C1"];
         let numCycles = BASE_MIDI_NOTES_NUM["C3"] - initNote + 1;
         let bassUrls = {};
@@ -2524,7 +2625,7 @@ class Bass4 {
             bassUrls[initNote + i] = ENV4_BASE_URL + `/04_BassSamplesC1C3/Bass4_${i + 1}.mp3`
         };
         var bass = new Tone.Players(bassUrls, () => {
-            state.isLoading = state.isLoading - 1;
+            resolvePromise()
             console.log("Bass4 loaded")
         });
         bass.toDestination();
@@ -2564,10 +2665,13 @@ class Bass4 {
 class Kick {
 
     constructor() {
-        state.isLoading = state.isLoading + 1;
+        var resolvePromise;
+        state.isLoadingInstr = new Promise(resolve => {
+            resolvePromise = resolve;
+        });
         var kickUrl = DRUM_BASE_URL + "Kick_Sample.mp3"
         var kick = new Tone.Player(kickUrl, () => {
-            state.isLoading = state.isLoading - 1;
+            resolvePromise()
             console.log("Kick Loaded")
             // this.playPart1();
         });
@@ -2677,10 +2781,13 @@ class Kick {
 
 class Snare {
     constructor() {
-        state.isLoading = state.isLoading + 1;
+        var resolvePromise;
+        state.isLoadingInstr = new Promise(resolve => {
+            resolvePromise = resolve;
+        });
         var snareUrl = DRUM_BASE_URL + "Snare2_Sample.mp3"
         var snare = new Tone.Player(snareUrl, () => {
-            state.isLoading = state.isLoading - 1;
+            resolvePromise()
             console.log("Snare Loaded")
         });
         snare.toDestination();
@@ -2787,11 +2894,14 @@ class Snare {
 
 class HiHat {
     constructor() {
-        state.isLoading = state.isLoading + 1;
+        var resolvePromise;
+        state.isLoadingInstr = new Promise(resolve => {
+            resolvePromise = resolve;
+        });
         var hihatUrl1 = DRUM_BASE_URL + "ShakHH_Hi_Sample.mp3"
         var hihatUrl2 = DRUM_BASE_URL + "ShakHH_Lo_Sample.mp3"
         var hihat = new Tone.Players({ 0: hihatUrl1, 1: hihatUrl2 }, () => {
-            state.isLoading = state.isLoading - 1;
+            resolvePromise()
             console.log("HH Loaded")
         });
         hihat.toDestination();
@@ -2968,10 +3078,13 @@ class HiHat {
 
 class Perc {
     constructor() {
-        state.isLoading = state.isLoading + 1;
+        var resolvePromise;
+        state.isLoadingInstr = new Promise(resolve => {
+            resolvePromise = resolve;
+        });
         var percUrl = DRUM_BASE_URL + "Perc_Sample.mp3"
         var perc = new Tone.Player(percUrl, () => {
-            state.isLoading = state.isLoading - 1;
+            resolvePromise()
             console.log("Perc Loaded")
         });
         perc.toDestination();
