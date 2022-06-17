@@ -1447,9 +1447,11 @@ async function playerPage() {
     //document.getElementById("initialLoadingPanel").style.visibility = 'hidden'
     await state.isLoadingInstr;
     setLimit(100);
+    state.isPlaying = true;
+    await initImages()
     await state.loadingPage.finishPromise;
     startMusic()
-    await initImages()
+    
 
 }
 
