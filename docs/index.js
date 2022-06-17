@@ -361,6 +361,9 @@ async function updateState() {
         if (item != "flyingObject") {
             state.imagesToDraw[item] = await DrawableImage.build(state.drawing.image[item])
         } else {
+            console.log("cloudsList:")
+            console.log(state.drawing.image);
+            state.drawing.audio.cloudsInst = [0, 0, 0, 0]
             for (const idItem in state.drawing.image[item]) {
                 console.log(idItem)
                 state.drawing.audio.cloudsInst[idItem - 22] = state.drawing.image[item][idItem].quantity;
