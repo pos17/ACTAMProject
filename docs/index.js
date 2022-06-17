@@ -381,7 +381,6 @@ async function updateState() {
         }
     }
     console.log("CLOUDS ARRAY")
-
     console.log(state.drawing.audio.cloudsInst)
 
 }
