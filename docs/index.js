@@ -61,7 +61,9 @@ const state = {
         audio: {
             chords: "| F6 | Em7 A7 | Dm7 | Cm7 F7 |",
             melody: "f+4 c+8 a8 e+4 c+8 a8\nd+8 e+8 cb8 d+8 db+8 bb8 g8 ab8\na4 f8 d8 g8 a8 f8 e8\neb8 g16 bb16 d+8 db+8 r8 f8 f16 g8 f16",
-            instruments: {},
+            instruments: {
+                chords:"",
+            },
             cloudsInst: [0, 0, 0, 0],
         }
     },
@@ -212,6 +214,7 @@ function increase() {
             document.getElementById("initialLoadingPanel").style.visibility = 'hidden'
             state.loadingPage.resolvePromise()
             console.log("promise solved")
+            console.log(state.drawing)
         } else {
             window.requestAnimationFrame(increase)
             state.loadingPage.lastUpdate = Date.now()
@@ -1451,7 +1454,7 @@ async function playerPage() {
     await initImages()
     await state.loadingPage.finishPromise;
     startMusic()
-    
+
 
 }
 
@@ -1850,8 +1853,25 @@ async function getNodes() {
     return elementsToRet
 }
 
-
-
+function saveSnapshot(snapshotName) {
+    console.log("snapshotLaunched");
+    db.collection("snapshots").add(
+        {
+            name:snapshotName,
+            idList:state.drawing.idList,
+            melody:state.drawing.audio.melody,
+            chords:state.drawing.audio.chords
+        }
+    )
+    .then((docRef) => {
+        console.log("Document written with ID: ", docRef.id);
+    })
+    .catch((error) => {
+        console.error("Error adding document: ", error);
+    });
+    
+}
+document.getElementById('confirm-save-dialog').onclick =function() {saveSnapshot(document.getElementById('name_field').value )}
 /**
  * 
  * markov nodes 

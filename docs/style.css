@@ -316,11 +316,14 @@ img {
     display: inline-block;
     padding: 3px;
 }
-
+.div-back {
+    background-color: #a4dada;
+}
 .up {
     transform: rotate(-135deg);
     -webkit-transform: rotate(-135deg);
 }
+
 #upbar {
     /*overflow: hidden;*/
     background-color: rgb(105, 201, 206);
@@ -485,6 +488,14 @@ img {
     transform-origin: 85px 85px;
     transform: rotate(-90deg);
   } 
+
+.dialog-padding {
+    padding-top: 5vh;
+    padding-bottom: 5vh;
+}
+
+
+
   .dropup {
     /* position: relative;
     display: inline-block; */
