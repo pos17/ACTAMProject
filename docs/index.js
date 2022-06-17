@@ -45,6 +45,7 @@ const state = {
     playingPart: [],
     loopProgressSaved: 0,
     loopTimes: 0,
+    theme: 0, // 0: bright, 1: dark
     drawing: {
         idList: {
             astrumDay: 21,
@@ -1093,6 +1094,44 @@ var factor = 4;
 var time0 = 0//Tone.Transport.now()*1000//.toMilliseconds()//new Date();
 console.log("time0")
 console.log(time0)
+
+let themeButton = document.getElementById('themeSelector');
+// updateTheme();
+themeButton.onclick = updateTheme;
+
+function updateTheme() {
+    console.log("THEME CLICKED");
+    let body = document.body;
+    let upbar = document.getElementById("upbar");
+    let navbar = document.querySelectorAll(".navbar");
+    let cloudsLabels = document.querySelectorAll(".token-add");
+    console.log(getComputedStyle(body))
+
+    // let playerNavbar = document.getElementById("player-navbar");
+    if (state.theme == 0) {
+        //apply dark theme
+        body.setAttribute("style", "background-color : #09202d  !important");
+        upbar.setAttribute("style", "background-color : #010a18  !important");
+        navbar.forEach((bar) => { bar.setAttribute("style", "background-color : #010a18  !important"); })
+        cloudsLabels.forEach((label) => { label.setAttribute("style", "color: white !important") });
+        // body.style.backgroundColor = 0x09202d;
+        // upbar.style.backgroundColor = 0x010a18;
+        // navbar.forEach((bar) => { bar.style.backgroundColor = 0x010a18; })
+        // playerNavbar.style.backgroundColor = 0x010a18;
+    }
+    else {
+        //apply bright theme
+        body.setAttribute("style", "background-color : #a4dada  !important");
+        upbar.setAttribute("style", "background-color : #69c9ce  !important");
+        navbar.forEach((bar) => { bar.setAttribute("style", "background-color : #69c9ce  !important"); })
+        cloudsLabels.forEach((label) => { label.setAttribute("style", "color: black !important") });
+        // body.style.backgroundColor = 0xa4dada;
+        // upbar.style.backgroundColor = 0x69c9ce;
+        // navbar.forEach((bar) => { bar.style.backgroundColor = 0x69c9ce; })
+        // playerNavbar.style.backgroundColor = 0x69c9ce;
+    }
+    state.theme = (state.theme + 1) % 2;
+};
 
 
 function prepareCanvas() {

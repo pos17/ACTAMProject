@@ -7,8 +7,8 @@ body {
     width: 100%;
     min-width: 900px;
     height: inherit;
-    /* background-color: #a4dada !important; */
-    background-color: #09202d !important;
+    background-color: #a4dada !important;
+    /* background-color: #09202d !important; */
     /* background-color: coral; */
     /* position: absolute; */
 }
@@ -329,8 +329,8 @@ img {
 
 #upbar {
     /*overflow: hidden;*/
-    background-color: rgb(105, 201, 206);
-    background-color: #010a18;
+    background-color: #69c9ce;
+    /* background-color: #010a18; */
     position: fixed;
     top: 0;
     width: 100%;
@@ -360,8 +360,8 @@ img {
 
 .navbar {
     /*overflow: hidden;*/
-    background-color: rgb(105, 201, 206);
-    background-color: #010a18;
+    background-color: #69c9ce;
+    /* background-color: #010a18; */
     position: fixed;
     bottom: 0;
     width: 100%;
