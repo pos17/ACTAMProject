@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    
+    <link rel="icon" type="image/x-icon" href="./assets/favicon.ico">
 
 
 
@@ -48,10 +48,19 @@
         </div>
         <div id="upbar" class="upbar">
             <a class="upbar-names">Theme</a>
-            <div class="dropdown">
-                <button class="dropbtn">Dropdown</button>
-                <div class="dropdown-content">
-                </div>
+            <div id="saveRecall">
+                <a class="upbar-names">
+                    SAVE
+                    <!-- <button class="nes-btn dropbtn">SAVE</button> -->
+                    <div class="dropdown-content">
+                    </div>
+                </a>
+                <a class="upbar-names">
+                    RECALL
+                    <!-- <button class="nes-btn dropbtn">RECALL</button> -->
+                    <div class="dropdown-content">
+                    </div>
+                </a>
             </div>
             <!-- <a id="main-fs-button">
                 <img src="../assets/TRANSPORT BTNS/Full Screen icon.png" class="upbar-icon" style="
@@ -60,20 +69,21 @@
             </a> -->
         </div>
         <div id="menu-navbar" class="navbar">
-            <button class="nes-btn nav-btn" id="btn-sx">GUIDE</button>
+            <button class="nes-btn nav-btn" id="btn-sx">LOAD</button>
             <button class="nes-btn nav-btn" id="btn-ct">MUSIC</button>
             <button type="button" class="nes-btn nav-btn is-success" id="btn-dx">PLAY</button>
         </div>
 
         <div id="player-navbar" class="navbar" hidden="true">
             <!-- <button class="nes-btn nav-btn" id="btn-sx1">BACK</button> -->
-
+            <button class="nes-btn playerbar-btn" id="btn-sx">SAVE</button>
             <button class="nes-btn playerbar-btn" id="btn-stop">
                 <img src="./assets/TRANSPORT BTNS/Transport stop no-btn.png" class="button-icon" />
             </button>
             <button class="nes-btn playerbar-btn" id="btn-play">
                 <img id="btn-play-pause" src="./assets/TRANSPORT BTNS/Transport pause no-btn.png" class="button-icon" />
-                <img id="btn-play-play"src="./assets/TRANSPORT BTNS/Transport play no-btn.png" class="button-icon" style="display: none;" />
+                <img id="btn-play-play" src="./assets/TRANSPORT BTNS/Transport play no-btn.png" class="button-icon"
+                    style="display: none;" />
             </button>
 
 
@@ -83,7 +93,8 @@
                         style="display: none;" />
                     <img id="vol-low" src="./assets/TRANSPORT BTNS/Volume Low icon.png" class="button-icon"
                         style="display: none;" />
-                    <img id="vol-mid" src="./assets/TRANSPORT BTNS/Volume Med icon.png" class="button-icon" style="display: block;" />
+                    <img id="vol-mid" src="./assets/TRANSPORT BTNS/Volume Med icon.png" class="button-icon"
+                        style="display: block;" />
                     <img id="vol-high" src="./assets/TRANSPORT BTNS/Volumr High icon.png" class="button-icon"
                         style="display: none;" />
                 </button>
@@ -113,8 +124,8 @@
 
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>   
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>  
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
     <!-- <script type="module">
         import * as Instr from "./instruments.js"
     </script> -->
