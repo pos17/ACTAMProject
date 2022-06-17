@@ -179,6 +179,14 @@ function getMasterVolume() {
 function setLimit(toValue) {
     state.loadingPage.limit = toValue
 }
+async function waitBarLoaded() {
+    return new Promise(resolve => {
+        if (state.loadingPage.value >= 100) {
+            resolve();
+            console.log("bar loaded")
+        }
+    });
+}
 /*
 function resolveAfter2Seconds() {
     return new Promise(resolve => {
@@ -193,7 +201,7 @@ function increase() {
     let element = document.getElementById("loadingId");
     let fromValue = state.loadingPage.value;
     let limit = state.loadingPage.limit;
-
+    
     if ((Date.now() - state.loadingPage.lastUpdate) > (1000 / 30)) {
         if (fromValue < limit) {
             state.loadingPage.value = fromValue + 1;
@@ -202,13 +210,21 @@ function increase() {
         if (fromValue >= 100) {
             document.getElementById("container").hidden = false
             document.getElementById("initialLoadingPanel").style.visibility = 'hidden'
-
+            state.loadingPage.resolvePromise()
+            console.log("promise solved")
         } else {
             window.requestAnimationFrame(increase)
             state.loadingPage.lastUpdate = Date.now()
         }
     } else {
         window.requestAnimationFrame(increase)
+    }
+
+    if(state.loadingPage.value <=0) {
+        state.loadingPage.finishPromise = new Promise(resolve => {
+            state.loadingPage.resolvePromise = resolve;
+            console.log("promise launched")
+        });
     }
 }
 
@@ -352,8 +368,8 @@ async function updateState() {
                     var valToPush = templateToPush.clone();
                     valToPush.left = 0.5 * i + (Math.random() * 0.4) + 0.3;
                     var plusOrMinus = Math.random() < 0.5 ? -1 : 1;
-                    var bottomToPush = 1 -(0.3) - (i * 0.2 + (- 0.1 * Math.random()));
-                    if (bottomToPush<0.5 ) bottomToPush = bottomToPush + 0.2
+                    var bottomToPush = 1 - (0.3) - (i * 0.2 + (- 0.1 * Math.random()));
+                    if (bottomToPush < 0.5) bottomToPush = bottomToPush + 0.2
                     valToPush.bottom = bottomToPush
                     state.imagesToDraw[item].push(valToPush);
                 }
@@ -686,8 +702,18 @@ function buildInstruments() {
 
 }
 
+async function waitInstLoaded() {
+    return new Promise(resolve => {
+        if (state.isLoading == 0) {
+            resolve();
+            console.log("all Instruments are loaded")
+            console.log(state.isLoading)
+        }
+    });
+}
+
 function startMusic() {
-    while(state.isLoading!=0){}
+    //await waitInstLoaded();
     state.master.hiddenGain.gain.rampTo(state.hiddenGainVal, 0.2)
     Tone.Transport.bpm.value = 60
 
@@ -1121,10 +1147,10 @@ function createEnvironment() {
     }
     var time2 = (state.loopTimes + loopProgress) * (Tone.Transport.loopEnd) * 1000
     state.loopProgressSaved = loopProgress
-    console.log("time:")
-    console.log(time)
-    console.log("progress:")
-    console.log(Tone.Transport.progress)
+    //console.log("time:")
+    //console.log(time)
+    //console.log("progress:")
+    //console.log(Tone.Transport.progress)
     var h = canvas.height;
     var w = canvas.width;
 
@@ -1265,9 +1291,9 @@ async function createMenu() {
         console.log(datum)
         console.log(datum.image.previewUrl)
         console.log(datum.elementType)
-        if ((datum.elementType == "background" )|| (datum.elementType == "astrumDay" )||( datum.elementType == "astrumNight")){}
+        if ((datum.elementType == "background") || (datum.elementType == "astrumDay") || (datum.elementType == "astrumNight")) { }
         else {
-            
+
             var aNewSrc = await getAsset(datum.image.previewUrl)
             var img = document.createElement('img')
             img.src = aNewSrc
@@ -1384,18 +1410,24 @@ function enableScrolling() {
 async function playerPage() {
     //window.scrollTo(0,0); 
     //disableScrolling();
+    state.loadingPage.value =0;
+    console.log("value loading page:")
+    console.log(state.loadingPage.value)
+    increase();
+    setLimit(60);
     document.getElementById("initialLoadingPanel").style.visibility = 'visible'
     document.getElementById("container").hidden = true
     state.loadingPage.value = 0;
-    setLimit(100);
-    increase();
+    setLimit(85);
+    
     await updateState()
     //console.log("state::")
     //console.log(state)
     let audioObj = state.melodyNodes.generateMelody(state.startingId);
     state.drawing.audio.melody = audioObj.melody;
     state.drawing.audio.chords = audioObj.chords;
-    await initImages()
+    setLimit(99);
+    
     document.getElementById("container").hidden = false
     initMusic()
     Tone.start()
@@ -1411,9 +1443,13 @@ async function playerPage() {
     document.getElementById("menu-container").hidden = true;
     document.getElementById("menu-navbar").hidden = true;
     document.getElementById("upbar").hidden = true;
-    document.getElementById("initialLoadingPanel").style.visibility = 'hidden'
-    //enableScrolling();
+    //document.getElementById("initialLoadingPanel").style.visibility = 'hidden'
+    setLimit(100);
+    
+    await state.loadingPage.finishPromise;
     startMusic()
+    await initImages()
+
 }
 
 async function menuPage() {
