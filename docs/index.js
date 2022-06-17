@@ -201,7 +201,7 @@ function increase() {
     let element = document.getElementById("loadingId");
     let fromValue = state.loadingPage.value;
     let limit = state.loadingPage.limit;
-    
+
     if ((Date.now() - state.loadingPage.lastUpdate) > (1000 / 30)) {
         if (fromValue < limit) {
             state.loadingPage.value = fromValue + 1;
@@ -220,7 +220,7 @@ function increase() {
         window.requestAnimationFrame(increase)
     }
 
-    if(state.loadingPage.value <=0) {
+    if (state.loadingPage.value <= 0) {
         state.loadingPage.finishPromise = new Promise(resolve => {
             state.loadingPage.resolvePromise = resolve;
             console.log("promise launched")
@@ -704,7 +704,7 @@ function buildInstruments() {
 
 async function waitInstLoaded() {
     return new Promise(resolve => {
-        if (state.isLoading == 0) {
+        while (state.isLoading == 0) {
             resolve();
             console.log("all Instruments are loaded")
             console.log(state.isLoading)
@@ -712,8 +712,9 @@ async function waitInstLoaded() {
     });
 }
 
-function startMusic() {
-    //await waitInstLoaded();
+
+async function startMusic() {
+    
     state.master.hiddenGain.gain.rampTo(state.hiddenGainVal, 0.2)
     Tone.Transport.bpm.value = 60
 
@@ -1410,7 +1411,7 @@ function enableScrolling() {
 async function playerPage() {
     //window.scrollTo(0,0); 
     //disableScrolling();
-    state.loadingPage.value =0;
+    state.loadingPage.value = 0;
     console.log("value loading page:")
     console.log(state.loadingPage.value)
     increase();
@@ -1419,7 +1420,7 @@ async function playerPage() {
     document.getElementById("container").hidden = true
     state.loadingPage.value = 0;
     setLimit(85);
-    
+
     await updateState()
     //console.log("state::")
     //console.log(state)
@@ -1427,7 +1428,7 @@ async function playerPage() {
     state.drawing.audio.melody = audioObj.melody;
     state.drawing.audio.chords = audioObj.chords;
     setLimit(99);
-    
+
     document.getElementById("container").hidden = false
     initMusic()
     Tone.start()
@@ -1444,8 +1445,8 @@ async function playerPage() {
     document.getElementById("menu-navbar").hidden = true;
     document.getElementById("upbar").hidden = true;
     //document.getElementById("initialLoadingPanel").style.visibility = 'hidden'
+    while(state.isLoading!=0){}
     setLimit(100);
-    
     await state.loadingPage.finishPromise;
     startMusic()
     await initImages()
