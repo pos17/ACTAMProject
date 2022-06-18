@@ -1,22 +1,41 @@
-# ACTAMProject
-Project for Advanced Coding Tools and Metodologies Course at Politecnico di Milano
-<p align="center"><img width="1280" src="https://github.com/Pox17/ACTAMProject/blob/main/GitAssets/casaPIXEL.png"></p>
+# **CASETTA**
 
+
+![](./GitAssets/casaPIXEL.png)
+
+- [**CASETTA**](#casetta)
+  - [User Guide](#user-guide)
+    - [Caption: elements and music](#caption-elements-and-music)
+      - [Melody Instrument](#melody-instrument)
+      - [Chords Instrument](#chords-instrument)
+      - [Bass](#bass)
+      - [Music Style](#music-style)
+      - [Rythmic Pattern](#rythmic-pattern)
+  - [Music generation](#music-generation)
+      - [Markov Chain](#markov-chain)
+      - [Leadsheet Notation](#leadsheet-notation)
+      - [Styles](#styles)
+  - [Implementation](#implementation)
+    - [Menu implementation](#menu-implementation)
+    - [Firebase](#firebase)
+    - [Audio Generation](#audio-generation)
+  - [Results and final considerations](#results-and-final-considerations)
+  - [Group members](#group-members)
 ##
 
-## How to use it
+## User Guide
 
 ### Caption: elements and music
 
-#### Environment 1: Desert
+#### Melody Instrument
 
-#### Environment 2: Mountain
+#### Chords Instrument
 
-#### Environment 3: Sea
+#### Bass
 
-#### Environment 4: Mountain
+#### Music Style
 
-#### General elements
+#### Rythmic Pattern
 
 ## Music generation 
 
@@ -26,10 +45,14 @@ Project for Advanced Coding Tools and Metodologies Course at Politecnico di Mila
 
 ## Implementation
 
+### Menu implementation
+### Firebase
+### Audio Generation
+
 ## Results and final considerations
 
- Group members
-- Paolo Ostan
-- Stefano Dona
-- Sofia Parrinelli
+## Group members
+- Paolo Ostan (paolo.ostan@mail.polimi.it)
+- Stefano Donà (stefano2.dona@mail.polimi.it) 
+- Sofia Parrinelli (sofia.parrinelli@mail.polimi.it)
 
