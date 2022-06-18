@@ -13,11 +13,13 @@ body {
 }
 
 .button-icon {
-    image-rendering: crisp-edges;
+    /* image-rendering: crisp-edges; */
+    image-rendering: pixelated;
     height: 50px;
 }
 .upbar-icon {
-    image-rendering: crisp-edges;
+    /* image-rendering: crisp-edges; */
+    image-rendering: pixelated;
     height: 50px;
 }
 
@@ -62,7 +64,8 @@ body {
     z-index: 1;
     top: 0px;
     left: 0px;
-    image-rendering: crisp-edges;
+    /* image-rendering: crisp-edges; */
+    image-rendering: pixelated;
     /*border-radius: 10px;*/
     border: solid black 5px;
 }
@@ -71,7 +74,8 @@ body {
     width: 100%;
     height: auto;
     bottom: 0%;
-    image-rendering: crisp-edges;
+    /* image-rendering: crisp-edges; */
+    image-rendering: pixelated;
     border-radius: 10px;
     z-index: 0;
 }
@@ -191,7 +195,8 @@ p {
 }
 
 img {
-    image-rendering: crisp-edges;
+    /* image-rendering: crisp-edges; */
+    image-rendering: pixelated;
 }
 
 
@@ -316,11 +321,14 @@ img {
     display: inline-block;
     padding: 3px;
 }
-
+.div-back {
+    background-color: #a4dada;
+}
 .up {
     transform: rotate(-135deg);
     -webkit-transform: rotate(-135deg);
 }
+
 #upbar {
     /*overflow: hidden;*/
     background-color: rgb(105, 201, 206);
@@ -485,6 +493,14 @@ img {
     transform-origin: 85px 85px;
     transform: rotate(-90deg);
   } 
+
+.dialog-padding {
+    padding-top: 5vh;
+    padding-bottom: 5vh;
+}
+
+
+
   .dropup {
     /* position: relative;
     display: inline-block; */
