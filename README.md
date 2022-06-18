@@ -6,7 +6,7 @@ Project for Advanced Coding Tools and Metodologies Course at Politecnico di Mila
 - Paolo Ostan
 - Stefano Dona
 - Sofia Parrinelli
-- 
+
 
 ## How to use it
 
