@@ -49,17 +49,9 @@
         <div id="upbar" class="upbar">
             <a class="upbar-names">Theme</a>
             <div id="saveRecall">
-                <a class="upbar-names">
-                    SAVE
-                    <!-- <button class="nes-btn dropbtn">SAVE</button> -->
-                    <div class="dropdown-content">
-                    </div>
-                </a>
-                <a class="upbar-names">
-                    RECALL
-                    <!-- <button class="nes-btn dropbtn">RECALL</button> -->
-                    <div class="dropdown-content">
-                    </div>
+               
+                <a class="upbar-names"> GUIDE 
+                    <!-- <i class="nes-icon github is-small"></i> -->
                 </a>
             </div>
             <!-- <a id="main-fs-button">
@@ -69,7 +61,7 @@
             </a> -->
         </div>
         <div id="menu-navbar" class="navbar">
-            <button class="nes-btn nav-btn" id="btn-sx">LOAD</button>
+            <button class="nes-btn nav-btn" id="btn-sx"  onclick="document.getElementById('dialog-load').showModal();">LOAD</button>
             <button class="nes-btn nav-btn" id="btn-ct">MUSIC</button>
             <button type="button" class="nes-btn nav-btn is-success" id="btn-dx">PLAY</button>
         </div>
@@ -79,7 +71,7 @@
             <div id="save-container" class="dropup playerbar-btn">
 
                 <button type="button" class="nes-btn dropupsavebtn " id="btn-save"
-                    onclick="document.getElementById('dialog-default').showModal();">
+                    onclick="document.getElementById('dialog-save').showModal();">
                     <img id="save-icon" src="./assets/TRANSPORT BTNS/Floppy icon.png" class="button-icon" style="display: block;" />
                 </button>
 
@@ -124,13 +116,34 @@
             </button>
         </div>
         <!-- loading page declaration -->
-        <dialog class="nes-dialog" id="dialog-default">
+        <dialog class="nes-dialog" id="dialog-save">
             <form method="dialog">
                 <p class="title">SAVE ENVIRONMENT</p>
                 <p>Choose a name and save the environment generated</p>
 
                 <menu class="dialog-menu">
                     <input type="text" id="name_field" class="nes-input ">
+                    <div style="padding: 1rem;">
+                        <button class="nes-btn dialog-padding">Cancel</button>
+                        <button id = "confirm-save-dialog" class="nes-btn is-primary"">Confirm</button>
+                    </div>
+                </menu>
+            </form>
+        </dialog>
+
+        <dialog class="nes-dialog" id="dialog-load">
+            <form method="dialog">
+                <p class="title">LOAD ENVIRONMENT</p>
+                <p>Choose an environment to load</p>
+
+                <menu class="dialog-menu">
+                    <div class="nes-select">
+                        <select required id="default_select">
+                          <option value="" disabled selected hidden>Select...</option>
+                          <option value="0">To be</option>
+                          <option value="1">Not to be</option>
+                        </select>
+                      </div>
                     <div style="padding: 1rem;">
                         <button class="nes-btn dialog-padding">Cancel</button>
                         <button id = "confirm-save-dialog" class="nes-btn is-primary"">Confirm</button>

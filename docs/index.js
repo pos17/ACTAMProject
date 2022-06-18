@@ -1247,7 +1247,7 @@ function createEnvironment() {
             ctx.translate(-w / 5, 0)
             //ctx.translate() /* (((2 * flyObj.left * 2 * w) +*/ 
             var valLeft = flyObj.left
-            var newLeft = (valLeft + (angle * 0.0001)) % 1.2
+            var newLeft = (valLeft + (angle * 0.00002)) % 1.2
             //console.log(newLeft)
             flyObj.left = newLeft
             flyObj.drawThisImage(0, alphaNight, lightOn, canvas.height, canvas.width, ctx, factor)
@@ -1411,6 +1411,17 @@ function enableScrolling() {
     window.onscroll = function () { };
 }
 
+
+function loadMelody() {
+    let modifyingValue = state.elements.find(element => element.id == state.drawing.idList.landscape);
+    state.startingId = modifyingValue.audio.nodeId;
+    let audioObj = state.melodyNodes.generateMelody(state.startingId);
+    state.drawing.audio.melody = audioObj.melody;
+    state.drawing.audio.chords = audioObj.chords;
+}
+
+
+
 async function playerPage() {
     //window.scrollTo(0,0); 
     //disableScrolling();
@@ -1427,9 +1438,7 @@ async function playerPage() {
     await updateState()
     //console.log("state::")
     //console.log(state)
-    let audioObj = state.melodyNodes.generateMelody(state.startingId);
-    state.drawing.audio.melody = audioObj.melody;
-    state.drawing.audio.chords = audioObj.chords;
+    
     setLimit(99);
 
     document.getElementById("container").hidden = false
@@ -1463,6 +1472,7 @@ async function menuPage() {
     visualizeSelectedTokens()
     //document.getElementById("main-fs-button").onclick = () => { openFullscreen("main-body") }
     document.getElementById("btn-dx").onclick = () => { updatePage(1); }
+    document.getElementById("btn-ct").onclick= function(){loadMelody()}
     document.getElementById("player-navbar").hidden = true;
     document.getElementById("canva-container").hidden = true;
     document.getElementById("menu-container").hidden = false;
