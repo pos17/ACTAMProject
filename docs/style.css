@@ -427,6 +427,46 @@ img {
     width: 60%;
 }
 
+.loading-message {
+    position: absolute;
+    text-align: center;
+    top: 30%;
+    color: white;
+    font-size: x-large;
+    display: block;
+
+}
+
+@keyframes textAnimation {
+    0% {
+        content: "GENERATING ENVIRONMENT"
+    }
+
+    25% {
+        content: "GENERATING ENVIRONMENT."
+    }
+
+    50% {
+        content: "GENERATING ENVIRONMENT.."
+    }
+
+    75% {
+        content: "GENERATING ENVIRONMENT..."
+    }
+
+    100% {
+        content: "GENERATING ENVIRONMENT"
+    }
+}
+
+/* The element to apply the animation to */
+#secondLoadingMessage::after {
+    content: "";
+    animation: textAnimation 1.5s linear infinite;
+}
+
+
+
 
 /*loadingPage code END*/
 

@@ -1,4 +1,5 @@
 
+
 let app;
 let db;
 let storage;
@@ -17,6 +18,22 @@ const state = {
         value: 0,
         limit: 0,
         lastUpdate: undefined,
+        lastUpdateMessage: undefined,
+        loadingText: {
+            0: "Pick an element and build your environment",
+            1: "Modify music with elements",
+            2: "Try different combinations!",
+            3: "Like it? Save it. Load it.",
+            4: "If you're bored try \"MUSIC\" button",
+            5: "Click pause if you need some rest",
+            6: "Relax watching some pixelated sheeps",
+            7: "Phone cabs are not so old...",
+            8: "Palms? Seems to be in L.A.",
+            9: "Be careful with cacti!",
+            10: "Keep it loud with volume slider",
+            11: "It's a good day for a swim",
+            12: "Aahh...there's nothing better than the shade of a tree",
+        }
     },
     transPlaying: false,
     hiddenGainVal: 0.8,
@@ -104,6 +121,7 @@ async function initializeMyApp() {
     setLimit(100)
     //console.log("state")
     //console.log(state)
+    document.getElementById("loadingMessage").hidden = true;
 }
 
 /**
@@ -144,7 +162,8 @@ function getImage() {
 
 
 function setNow() {
-    state.loadingPage.lastUpdate = Date.now()
+    state.loadingPage.lastUpdate = Date.now();
+    state.loadingPage.lastUpdateMessage = Date.now();
 }
 function getMasterChain() {
     return state.master
@@ -200,6 +219,7 @@ function resolveAfter2Seconds() {
 */
 
 function increase() {
+    let loadingText = document.getElementById("loadingMessage");
     let element = document.getElementById("loadingId");
     let fromValue = state.loadingPage.value;
     let limit = state.loadingPage.limit;
@@ -208,6 +228,27 @@ function increase() {
         if (fromValue < limit) {
             state.loadingPage.value = fromValue + 1;
             element.value = state.loadingPage.value;
+
+            if (limit < 50 && (Date.now() - state.loadingPage.lastUpdateMessage) > 3000) {
+                let id = Math.round(Math.random() * Object.keys(state.loadingPage.loadingText).length);
+                let text = Object.values(state.loadingPage.loadingText)[id];
+                loadingText.textContent = text;
+                state.loadingPage.lastUpdateMessage = Date.now();
+            }
+            else if (limit < 100 && (Date.now() - state.loadingPage.lastUpdateMessage) > 3000) {
+                let id = Math.round(Math.random() * Object.keys(state.loadingPage.loadingText).length);
+                let text = Object.values(state.loadingPage.loadingText)[id];
+                loadingText.textContent = text;
+                state.loadingPage.lastUpdateMessage = Date.now();
+            }
+
+
+            // if ((Date.now() - state.loadingPage.lastUpdateMessage) > (3000)) {
+            //     let id = Math.floor(Math.random() * Object.keys(state.loadingPage.loadingText).length);
+            //     let text = Object.values(state.loadingPage.loadingText)[id];
+            //     loadingText.textContent = text;
+            //     state.loadingPage.lastUpdateMessage = Date.now();
+            // }
         }
         if (fromValue >= 100) {
             document.getElementById("container").hidden = false
@@ -1096,7 +1137,7 @@ console.log("time0")
 console.log(time0)
 
 let themeButton = document.getElementById('themeSelector');
-// updateTheme();
+updateTheme();
 themeButton.onclick = updateTheme;
 
 function updateTheme() {
@@ -1107,30 +1148,53 @@ function updateTheme() {
     let cloudsLabels = document.querySelectorAll(".token-add");
     console.log(getComputedStyle(body))
 
-    // let playerNavbar = document.getElementById("player-navbar");
-    if (state.theme == 0) {
-        //apply dark theme
-        body.setAttribute("style", "background-color : #09202d  !important");
-        upbar.setAttribute("style", "background-color : #010a18  !important");
-        navbar.forEach((bar) => { bar.setAttribute("style", "background-color : #010a18  !important"); })
-        cloudsLabels.forEach((label) => { label.setAttribute("style", "color: white !important") });
-        // body.style.backgroundColor = 0x09202d;
-        // upbar.style.backgroundColor = 0x010a18;
-        // navbar.forEach((bar) => { bar.style.backgroundColor = 0x010a18; })
-        // playerNavbar.style.backgroundColor = 0x010a18;
+    switch (state.theme) {
+        case 0:
+            //apply bright theme
+            body.setAttribute("style", "background-color : #a4dada  !important");
+            upbar.setAttribute("style", "background-color : #69c9ce  !important");
+            navbar.forEach((bar) => { bar.setAttribute("style", "background-color : #69c9ce  !important"); })
+            cloudsLabels.forEach((label) => { label.setAttribute("style", "color: black !important") });
+            break;
+
+        case 1:
+            //apply dark theme
+            body.setAttribute("style", "background-color : #09202d  !important");
+            upbar.setAttribute("style", "background-color : #010a18  !important");
+            navbar.forEach((bar) => { bar.setAttribute("style", "background-color : #010a18  !important"); })
+            cloudsLabels.forEach((label) => { label.setAttribute("style", "color: white !important") });
+            break;
+
+        case 2:
+            //apply red theme
+            body.setAttribute("style", "background-color : #D8572A  !important");
+            upbar.setAttribute("style", "background-color : #C32F27  !important");
+            navbar.forEach((bar) => { bar.setAttribute("style", "background-color : #C32F27  !important"); })
+            cloudsLabels.forEach((label) => { label.setAttribute("style", "color: white !important") });
+            break;
+
+        case 3:
+            //apply green theme
+            body.setAttribute("style", "background-color : #68D89B  !important");
+            upbar.setAttribute("style", "background-color : #4F9D69  !important");
+            navbar.forEach((bar) => { bar.setAttribute("style", "background-color : #4F9D69  !important"); })
+            cloudsLabels.forEach((label) => { label.setAttribute("style", "color: black !important") });
+            break;
+
+        case 4:
+            //apply green theme
+            body.setAttribute("style", "background-color : #FFD95C  !important");
+            upbar.setAttribute("style", "background-color : #FFD100  !important");
+            navbar.forEach((bar) => { bar.setAttribute("style", "background-color : #FFD100  !important"); })
+            cloudsLabels.forEach((label) => { label.setAttribute("style", "color: black !important") });
+            break;
+
+        default:
+            console.log("THEME ERROR");
+            break;
     }
-    else {
-        //apply bright theme
-        body.setAttribute("style", "background-color : #a4dada  !important");
-        upbar.setAttribute("style", "background-color : #69c9ce  !important");
-        navbar.forEach((bar) => { bar.setAttribute("style", "background-color : #69c9ce  !important"); })
-        cloudsLabels.forEach((label) => { label.setAttribute("style", "color: black !important") });
-        // body.style.backgroundColor = 0xa4dada;
-        // upbar.style.backgroundColor = 0x69c9ce;
-        // navbar.forEach((bar) => { bar.style.backgroundColor = 0x69c9ce; })
-        // playerNavbar.style.backgroundColor = 0x69c9ce;
-    }
-    state.theme = (state.theme + 1) % 2;
+
+    state.theme = (state.theme + 1) % 5;
 };
 
 
@@ -1466,6 +1530,7 @@ async function playerPage() {
     increase();
     setLimit(60);
     document.getElementById("initialLoadingPanel").style.visibility = 'visible'
+    document.getElementById("secondLoadingMessage").hidden = false;
     document.getElementById("container").hidden = true
     state.loadingPage.value = 0;
     setLimit(85);
@@ -1500,7 +1565,7 @@ async function playerPage() {
     await initImages()
     await state.loadingPage.finishPromise;
     startMusic()
-
+    document.getElementById("secondLoadingMessage").hidden = true
 
 }
 
