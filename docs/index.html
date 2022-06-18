@@ -61,7 +61,7 @@
             </a> -->
         </div>
         <div id="menu-navbar" class="navbar">
-            <button class="nes-btn nav-btn" id="btn-sx"  onclick="document.getElementById('dialog-load').showModal();">LOAD</button>
+            <button class="nes-btn nav-btn" id="btn-sx"  >LOAD</button>
             <button class="nes-btn nav-btn" id="btn-ct">MUSIC</button>
             <button type="button" class="nes-btn nav-btn is-success" id="btn-dx">PLAY</button>
         </div>
@@ -125,6 +125,7 @@
                     <input type="text" id="name_field" class="nes-input ">
                     <div style="padding: 1rem;">
                         <button class="nes-btn dialog-padding">Cancel</button>
+                        
                         <button id = "confirm-save-dialog" class="nes-btn is-primary"">Confirm</button>
                     </div>
                 </menu>
@@ -138,15 +139,14 @@
 
                 <menu class="dialog-menu">
                     <div class="nes-select">
-                        <select required id="default_select">
+                        <select required id="loading_select">
                           <option value="" disabled selected hidden>Select...</option>
-                          <option value="0">To be</option>
-                          <option value="1">Not to be</option>
                         </select>
                       </div>
                     <div style="padding: 1rem;">
                         <button class="nes-btn dialog-padding">Cancel</button>
-                        <button id = "confirm-save-dialog" class="nes-btn is-primary"">Confirm</button>
+                        <button id = "delete-load-dialog" class="nes-btn is-primary"">Delete</button>
+                        <button id = "confirm-load-dialog" class="nes-btn is-primary"">Confirm</button>
                     </div>
                 </menu>
             </form>

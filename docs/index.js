@@ -35,11 +35,13 @@ const state = {
     readyModel: false,
     readyToPlay: false,
     isPlaying: true,
+    isMelodyGenerated: false,
     key: "c", //main key of the system
     bpm: 60,
     totalLength: "",
     navigationPage: 0,
     startingId: 0,
+    snapshots:[],
     master: {},
     playingPart: [],
     loopProgressSaved: 0,
@@ -62,7 +64,7 @@ const state = {
             chords: "| F6 | Em7 A7 | Dm7 | Cm7 F7 |",
             melody: "f+4 c+8 a8 e+4 c+8 a8\nd+8 e+8 cb8 d+8 db+8 bb8 g8 ab8\na4 f8 d8 g8 a8 f8 e8\neb8 g16 bb16 d+8 db+8 r8 f8 f16 g8 f16",
             instruments: {
-                chords:"",
+                chords: "",
             },
             cloudsInst: [0, 0, 0, 0],
         }
@@ -253,6 +255,8 @@ function modifyIdList(idValue) {
         } break;
         case ("landscape"): {
             state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
+            state.isMelodyGenerated = false;
+            document.getElementById("btn-ct").classList.remove("is-primary")
         } break;
         case ("building"): {
             state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
@@ -1413,11 +1417,15 @@ function enableScrolling() {
 
 
 function loadMelody() {
-    let modifyingValue = state.elements.find(element => element.id == state.drawing.idList.landscape);
-    state.startingId = modifyingValue.audio.nodeId;
-    let audioObj = state.melodyNodes.generateMelody(state.startingId);
-    state.drawing.audio.melody = audioObj.melody;
-    state.drawing.audio.chords = audioObj.chords;
+    if (!state.isMelodyGenerated) {
+        let modifyingValue = state.elements.find(element => element.id == state.drawing.idList.landscape);
+        state.startingId = modifyingValue.audio.nodeId;
+        let audioObj = state.melodyNodes.generateMelody(state.startingId);
+        state.drawing.audio.melody = audioObj.melody;
+        state.drawing.audio.chords = audioObj.chords;
+        state.isMelodyGenerated = true;
+        document.getElementById("btn-ct").classList.add("is-primary")
+    }
 }
 
 
@@ -1438,7 +1446,7 @@ async function playerPage() {
     await updateState()
     //console.log("state::")
     //console.log(state)
-    
+    loadMelody()
     setLimit(99);
 
     document.getElementById("container").hidden = false
@@ -1448,6 +1456,7 @@ async function playerPage() {
     let volSlider = document.getElementById("volume-slider")
     volumeUpdate(70)
     volSlider.addEventListener('input', function () { volumeUpdate(volSlider.value) }, false);
+    document.getElementById('confirm-save-dialog').onclick = function () { saveSnapshot(document.getElementById('name_field').value) }
     document.getElementById("btn-dx1").onclick = () => { openFullscreen('main-canvas') }
     document.getElementById("btn-stop").onclick = () => { updatePage(0); stopMusic() }
     document.getElementById("btn-play").onclick = () => { togglePlayPause(); }
@@ -1472,15 +1481,45 @@ async function menuPage() {
     visualizeSelectedTokens()
     //document.getElementById("main-fs-button").onclick = () => { openFullscreen("main-body") }
     document.getElementById("btn-dx").onclick = () => { updatePage(1); }
-    document.getElementById("btn-ct").onclick= function(){loadMelody()}
+    document.getElementById("btn-ct").onclick = function () { state.isMelodyGenerated = false; loadMelody() }
+    document.getElementById("btn-sx").onclick= prepareLoadingSnapshot;
     document.getElementById("player-navbar").hidden = true;
     document.getElementById("canva-container").hidden = true;
     document.getElementById("menu-container").hidden = false;
     document.getElementById("menu-navbar").hidden = false;
     document.getElementById("upbar").hidden = false;
+    document.getElementById("confirm-load-dialog").onclick = function(){
+        console.log("loading select");
+        console.log(document.getElementById("loading_select").value)
+        loadSnapshot(document.getElementById("loading_select").value)
+    }
+    document.getElementById("delete-load-dialog").onclick = function(){
+        console.log("loading select");
+        console.log(document.getElementById("loading_select").value)
+        removeSnapshot(document.getElementById("loading_select").value)
+    }
+
 
 }
 
+async function prepareLoadingSnapshot() {
+    await getSnapshotsList();
+    loading_select = document.getElementById("loading_select")
+    console.log("loading_select")
+    console.log(loading_select)
+    console.log("loading select length:")
+    console.log(loading_select.length)
+    while(loading_select.length>0) {
+        loading_select.remove(0);
+    }
+    for (var k=0; k<state.snapshots.length; k++) {
+        var option = document.createElement("option");
+        option.text = state.snapshots[k].name;
+        option.value=state.snapshots[k].docId;
+        loading_select.add(option);
+    }
+    document.getElementById('dialog-load').showModal();
+}
 
 
 /**
@@ -1867,21 +1906,61 @@ function saveSnapshot(snapshotName) {
     console.log("snapshotLaunched");
     db.collection("snapshots").add(
         {
-            name:snapshotName,
-            idList:state.drawing.idList,
-            melody:state.drawing.audio.melody,
-            chords:state.drawing.audio.chords
+            name: snapshotName,
+            idList: state.drawing.idList,
+            melody: state.drawing.audio.melody,
+            chords: state.drawing.audio.chords
         }
     )
-    .then((docRef) => {
-        console.log("Document written with ID: ", docRef.id);
-    })
-    .catch((error) => {
-        console.error("Error adding document: ", error);
+        .then((docRef) => {
+            console.log("Document written with ID: ", docRef.id);
+        })
+        .catch((error) => {
+            console.error("Error adding document: ", error);
+        });
+
+}
+
+function loadSnapshot(id) {
+    let selectedSnapshot = state.snapshots.find(element => element.docId == id)
+    state.drawing.idList = selectedSnapshot.idList
+    state.drawing.chords = selectedSnapshot.chords
+    state.drawing.melody = selectedSnapshot.melody
+    visualizeSelectedTokens()
+    state.isMelodyGenerated=true;
+    document.getElementById("btn-ct").classList.add("is-primary")
+}
+function removeSnapshot(id) {
+    db.collection("snapshots").doc(id).delete().then(() => {
+        console.log("Document successfully deleted!");
+    }).catch((error) => {
+        console.error("Error removing document: ", error);
     });
+}
+
+async function getSnapshotsList() {
+    console.log("download started")
+    let querySnapshot = await db.collection("snapshots").get();
+    let snapshots = [];
+    //console.log(querySnapshot)
+    querySnapshot.forEach((doc) => {
+        console.log(doc)
+        snapshots.push({
+            name: doc.data().name,
+            melody: doc.data().melody,
+            chords: doc.data().chords,
+            idList: doc.data().idList,
+            docId:doc.id
+        });
+    });
+    state.snapshots = snapshots;
+    console.log("download ended")
+    console.log("values:")
+    console.log(snapshots)
     
 }
-document.getElementById('confirm-save-dialog').onclick =function() {saveSnapshot(document.getElementById('name_field').value )}
+
+
 /**
  * 
  * markov nodes 
