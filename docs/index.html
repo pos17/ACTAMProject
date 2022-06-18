@@ -49,8 +49,8 @@
         <div id="upbar" class="upbar">
             <a class="upbar-names">Theme</a>
             <div id="saveRecall">
-               
-                <a class="upbar-names"> GUIDE 
+
+                <a class="upbar-names"> GUIDE
                     <!-- <i class="nes-icon github is-small"></i> -->
                 </a>
             </div>
@@ -61,7 +61,7 @@
             </a> -->
         </div>
         <div id="menu-navbar" class="navbar">
-            <button class="nes-btn nav-btn" id="btn-sx"  >LOAD</button>
+            <button class="nes-btn nav-btn" id="btn-sx">LOAD</button>
             <button class="nes-btn nav-btn" id="btn-ct">MUSIC</button>
             <button type="button" class="nes-btn nav-btn is-success" id="btn-dx">PLAY</button>
         </div>
@@ -72,7 +72,8 @@
 
                 <button type="button" class="nes-btn dropupsavebtn " id="btn-save"
                     onclick="document.getElementById('dialog-save').showModal();">
-                    <img id="save-icon" src="./assets/TRANSPORT BTNS/Floppy icon.png" class="button-icon" style="display: block;" />
+                    <img id="save-icon" src="./assets/TRANSPORT BTNS/Floppy icon.png" class="button-icon"
+                        style="display: block;" />
                 </button>
 
             </div>
@@ -125,49 +126,55 @@
                     <input type="text" id="name_field" class="nes-input ">
                     <div style="padding: 1rem;">
                         <button class="nes-btn dialog-padding">Cancel</button>
-                        
-                        <button id = "confirm-save-dialog" class="nes-btn is-primary"">Confirm</button>
+
+                        <button id="confirm-save-dialog" class="nes-btn is-primary"">Confirm</button>
                     </div>
                 </menu>
             </form>
         </dialog>
 
-        <dialog class="nes-dialog" id="dialog-load">
-            <form method="dialog">
-                <p class="title">LOAD ENVIRONMENT</p>
-                <p>Choose an environment to load</p>
+        <dialog class=" nes-dialog" id="dialog-load">
+                            <form method="dialog">
+                                <p class="title">LOAD ENVIRONMENT</p>
+                                <p>Choose an environment to load</p>
 
-                <menu class="dialog-menu">
-                    <div class="nes-select">
-                        <select required id="loading_select">
-                          <option value="" disabled selected hidden>Select...</option>
-                        </select>
-                      </div>
-                    <div style="padding: 1rem;">
-                        <button class="nes-btn dialog-padding">Cancel</button>
-                        <button id = "delete-load-dialog" class="nes-btn is-primary"">Delete</button>
-                        <button id = "confirm-load-dialog" class="nes-btn is-primary"">Confirm</button>
+                                <menu class="dialog-menu">
+                                    <div class="nes-select">
+                                        <select required id="loading_select">
+                                            <option value="" disabled selected hidden>Select...</option>
+                                        </select>
+                                    </div>
+                                    <div style="padding: 1rem;">
+                                        <button class="nes-btn dialog-padding">Cancel</button>
+                                        <button id="delete-load-dialog" class="nes-btn is-primary"">Delete</button>
+                        <button id = " confirm-load-dialog" class="nes-btn is-primary"">Confirm</button>
                     </div>
                 </menu>
             </form>
         </dialog>
     </div>
-    <div id="initialLoadingPanel" class="loader-wrapper">
-        <progress id="loadingId" class="nes-progress is-success loader" value="0" max="100"></progress>
-    </div>
+    <div id=" initialLoadingPanel" class="loader-wrapper">
+                                            <div id="loadingMessage" class="loading-message">LOADING...</div>
+                                            <div id="secondLoadingMessage" class="loading-message" hidden="true"></div>
+                                            <progress id="loadingId" class="nes-progress is-success loader" value="0"
+                                                max="100"></progress>
+                                    </div>
 
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
-    <!-- <script type="module">
+                                    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+                                    <script
+                                        src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+                                    <script
+                                        src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+                                    <!-- <script type="module">
         import * as Instr from "./instruments.js"
     </script> -->
 
-    <script src="https://unpkg.com/tone@14.7.77/build/Tone"></script>
-    <script src="https://unpkg.com/@tonejs/midi@2.0.26/build/Midi"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tonaljs/tonal/browser/tonal.min.js"></script>
-    <script type="module" src="index.js"></script>
+                                    <script src="https://unpkg.com/tone@14.7.77/build/Tone"></script>
+                                    <script src="https://unpkg.com/@tonejs/midi@2.0.26/build/Midi"></script>
+                                    <script
+                                        src="https://cdn.jsdelivr.net/npm/@tonaljs/tonal/browser/tonal.min.js"></script>
+                                    <script type="module" src="index.js"></script>
 
 </body>
 

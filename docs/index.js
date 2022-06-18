@@ -1,3 +1,5 @@
+
+
 let app;
 let db;
 let storage;
@@ -16,6 +18,22 @@ const state = {
         value: 0,
         limit: 0,
         lastUpdate: undefined,
+        lastUpdateMessage: undefined,
+        loadingText: {
+            0: "Pick an element and build your environment",
+            1: "Modify music with elements",
+            2: "Try different combinations!",
+            3: "Like it? Save it. Load it.",
+            4: "If you're bored try \"MUSIC\" button",
+            5: "Click pause if you need some rest",
+            6: "Relax watching some pixelated sheeps",
+            7: "Phone cabs are not so old...",
+            8: "Palms? Seems to be in L.A.",
+            9: "Be careful with cacti!",
+            10: "Keep it loud with volume slider",
+            11: "It's a good day for a swim",
+            12: "Aahh...there's nothing better than the shade of a tree",
+        }
     },
     transPlaying: false,
     hiddenGainVal: 0.8,
@@ -41,11 +59,12 @@ const state = {
     totalLength: "",
     navigationPage: 0,
     startingId: 0,
-    snapshots:[],
+    snapshots: [],
     master: {},
     playingPart: [],
     loopProgressSaved: 0,
     loopTimes: 0,
+    theme: 0, // 0: bright, 1: dark
     drawing: {
         idList: {
             astrumDay: 21,
@@ -106,6 +125,7 @@ async function initializeMyApp() {
     setLimit(100)
     //console.log("state")
     //console.log(state)
+    document.getElementById("loadingMessage").hidden = true;
 }
 
 /**
@@ -146,7 +166,8 @@ function getImage() {
 
 
 function setNow() {
-    state.loadingPage.lastUpdate = Date.now()
+    state.loadingPage.lastUpdate = Date.now();
+    state.loadingPage.lastUpdateMessage = Date.now();
 }
 function getMasterChain() {
     return state.master
@@ -202,6 +223,7 @@ function resolveAfter2Seconds() {
 */
 
 function increase() {
+    let loadingText = document.getElementById("loadingMessage");
     let element = document.getElementById("loadingId");
     let fromValue = state.loadingPage.value;
     let limit = state.loadingPage.limit;
@@ -210,6 +232,27 @@ function increase() {
         if (fromValue < limit) {
             state.loadingPage.value = fromValue + 1;
             element.value = state.loadingPage.value;
+
+            if (limit < 50 && (Date.now() - state.loadingPage.lastUpdateMessage) > 3000) {
+                let id = Math.round(Math.random() * Object.keys(state.loadingPage.loadingText).length);
+                let text = Object.values(state.loadingPage.loadingText)[id];
+                loadingText.textContent = text;
+                state.loadingPage.lastUpdateMessage = Date.now();
+            }
+            else if (limit < 100 && (Date.now() - state.loadingPage.lastUpdateMessage) > 3000) {
+                let id = Math.round(Math.random() * Object.keys(state.loadingPage.loadingText).length);
+                let text = Object.values(state.loadingPage.loadingText)[id];
+                loadingText.textContent = text;
+                state.loadingPage.lastUpdateMessage = Date.now();
+            }
+
+
+            // if ((Date.now() - state.loadingPage.lastUpdateMessage) > (3000)) {
+            //     let id = Math.floor(Math.random() * Object.keys(state.loadingPage.loadingText).length);
+            //     let text = Object.values(state.loadingPage.loadingText)[id];
+            //     loadingText.textContent = text;
+            //     state.loadingPage.lastUpdateMessage = Date.now();
+            // }
         }
         if (fromValue >= 100) {
             document.getElementById("container").hidden = false
@@ -367,6 +410,9 @@ async function updateState() {
         if (item != "flyingObject") {
             state.imagesToDraw[item] = await DrawableImage.build(state.drawing.image[item])
         } else {
+            console.log("cloudsList:")
+            console.log(state.drawing.image);
+            state.drawing.audio.cloudsInst = [0, 0, 0, 0]
             for (const idItem in state.drawing.image[item]) {
                 console.log(idItem)
                 state.drawing.audio.cloudsInst[idItem - 22] = state.drawing.image[item][idItem].quantity;
@@ -384,7 +430,6 @@ async function updateState() {
         }
     }
     console.log("CLOUDS ARRAY")
-
     console.log(state.drawing.audio.cloudsInst)
 
 }
@@ -615,7 +660,7 @@ async function propagateStateChanges(isFirst) {
 function buildInstruments() {
 
     //building audio channels
-    let melodyChannel = new Tone.Channel();
+    let melodyChannel = new Tone.Channel({ channelCount: 2 });
     let harmonyChannel = new Tone.Channel();
     let bassChannel = new Tone.Channel();
     let drumChannel = new Tone.Channel();
@@ -692,20 +737,27 @@ function buildInstruments() {
     let drum = new DrumMachine();
     setInstrument("Drum", drum);
 
-    /* // reverb sends
-    melodyChannel.send("reverbSend");
-    harmonyChannel.send("reverbSend");
+
 
     // building ambient effects
-    let reverb = new Tone.Reverb({
-        decay: 5,
+    let reverbChannel = new Tone.Channel(3).toDestination();
+    let merge = new Tone.Merge().connect(reverbChannel);
+
+    let reverbL = new Tone.Reverb({
+        decay: 5.2,
         predelay: 0.6,
         wet: 1,
-    }).toDestination();
-    let reverbChannel = new Tone.Channel(0, 0).receive("reverbSend");
-    reverbChannel.fan(reverb, reverb); */
+    }).connect(merge, 0, 0);
 
+    let reverbR = new Tone.Reverb({
+        decay: 5.1,
+        predelay: 0.5,
+        wet: 1,
+    }).connect(merge, 0, 1);
 
+    // reverb sends
+    melodyChannel.fan(reverbL, reverbR);
+    harmonyChannel.fan(reverbL, reverbR);
 
 }
 
@@ -1091,6 +1143,67 @@ var time0 = 0//Tone.Transport.now()*1000//.toMilliseconds()//new Date();
 console.log("time0")
 console.log(time0)
 
+let themeButton = document.getElementById('themeSelector');
+updateTheme();
+themeButton.onclick = updateTheme;
+
+function updateTheme() {
+    console.log("THEME CLICKED");
+    let body = document.body;
+    let upbar = document.getElementById("upbar");
+    let navbar = document.querySelectorAll(".navbar");
+    let cloudsLabels = document.querySelectorAll(".token-add");
+    console.log(getComputedStyle(body))
+
+    switch (state.theme) {
+        case 0:
+            //apply bright theme
+            body.setAttribute("style", "background-color : #a4dada  !important");
+            upbar.setAttribute("style", "background-color : #69c9ce  !important");
+            navbar.forEach((bar) => { bar.setAttribute("style", "background-color : #69c9ce  !important"); })
+            cloudsLabels.forEach((label) => { label.setAttribute("style", "color: black !important") });
+            break;
+
+        case 1:
+            //apply dark theme
+            body.setAttribute("style", "background-color : #09202d  !important");
+            upbar.setAttribute("style", "background-color : #010a18  !important");
+            navbar.forEach((bar) => { bar.setAttribute("style", "background-color : #010a18  !important"); })
+            cloudsLabels.forEach((label) => { label.setAttribute("style", "color: white !important") });
+            break;
+
+        case 2:
+            //apply red theme
+            body.setAttribute("style", "background-color : #D8572A  !important");
+            upbar.setAttribute("style", "background-color : #C32F27  !important");
+            navbar.forEach((bar) => { bar.setAttribute("style", "background-color : #C32F27  !important"); })
+            cloudsLabels.forEach((label) => { label.setAttribute("style", "color: white !important") });
+            break;
+
+        case 3:
+            //apply green theme
+            body.setAttribute("style", "background-color : #68D89B  !important");
+            upbar.setAttribute("style", "background-color : #4F9D69  !important");
+            navbar.forEach((bar) => { bar.setAttribute("style", "background-color : #4F9D69  !important"); })
+            cloudsLabels.forEach((label) => { label.setAttribute("style", "color: black !important") });
+            break;
+
+        case 4:
+            //apply green theme
+            body.setAttribute("style", "background-color : #FFD95C  !important");
+            upbar.setAttribute("style", "background-color : #FFD100  !important");
+            navbar.forEach((bar) => { bar.setAttribute("style", "background-color : #FFD100  !important"); })
+            cloudsLabels.forEach((label) => { label.setAttribute("style", "color: black !important") });
+            break;
+
+        default:
+            console.log("THEME ERROR");
+            break;
+    }
+
+    state.theme = (state.theme + 1) % 5;
+};
+
 
 function prepareCanvas() {
     const canvasDiv = document.getElementById('canvas-div');
@@ -1439,6 +1552,7 @@ async function playerPage() {
     increase();
     setLimit(60);
     document.getElementById("initialLoadingPanel").style.visibility = 'visible'
+    document.getElementById("secondLoadingMessage").hidden = false;
     document.getElementById("container").hidden = true
     state.loadingPage.value = 0;
     setLimit(85);
@@ -1472,7 +1586,7 @@ async function playerPage() {
     await initImages()
     await state.loadingPage.finishPromise;
     startMusic()
-
+    document.getElementById("secondLoadingMessage").hidden = true
 
 }
 
@@ -1482,18 +1596,18 @@ async function menuPage() {
     //document.getElementById("main-fs-button").onclick = () => { openFullscreen("main-body") }
     document.getElementById("btn-dx").onclick = () => { updatePage(1); }
     document.getElementById("btn-ct").onclick = function () { state.isMelodyGenerated = false; loadMelody() }
-    document.getElementById("btn-sx").onclick= prepareLoadingSnapshot;
+    document.getElementById("btn-sx").onclick = prepareLoadingSnapshot;
     document.getElementById("player-navbar").hidden = true;
     document.getElementById("canva-container").hidden = true;
     document.getElementById("menu-container").hidden = false;
     document.getElementById("menu-navbar").hidden = false;
     document.getElementById("upbar").hidden = false;
-    document.getElementById("confirm-load-dialog").onclick = function(){
+    document.getElementById("confirm-load-dialog").onclick = function () {
         console.log("loading select");
         console.log(document.getElementById("loading_select").value)
         loadSnapshot(document.getElementById("loading_select").value)
     }
-    document.getElementById("delete-load-dialog").onclick = function(){
+    document.getElementById("delete-load-dialog").onclick = function () {
         console.log("loading select");
         console.log(document.getElementById("loading_select").value)
         removeSnapshot(document.getElementById("loading_select").value)
@@ -1509,13 +1623,13 @@ async function prepareLoadingSnapshot() {
     console.log(loading_select)
     console.log("loading select length:")
     console.log(loading_select.length)
-    while(loading_select.length>0) {
+    while (loading_select.length > 0) {
         loading_select.remove(0);
     }
-    for (var k=0; k<state.snapshots.length; k++) {
+    for (var k = 0; k < state.snapshots.length; k++) {
         var option = document.createElement("option");
         option.text = state.snapshots[k].name;
-        option.value=state.snapshots[k].docId;
+        option.value = state.snapshots[k].docId;
         loading_select.add(option);
     }
     document.getElementById('dialog-load').showModal();
@@ -1927,7 +2041,7 @@ function loadSnapshot(id) {
     state.drawing.chords = selectedSnapshot.chords
     state.drawing.melody = selectedSnapshot.melody
     visualizeSelectedTokens()
-    state.isMelodyGenerated=true;
+    state.isMelodyGenerated = true;
     document.getElementById("btn-ct").classList.add("is-primary")
 }
 function removeSnapshot(id) {
@@ -1950,14 +2064,14 @@ async function getSnapshotsList() {
             melody: doc.data().melody,
             chords: doc.data().chords,
             idList: doc.data().idList,
-            docId:doc.id
+            docId: doc.id
         });
     });
     state.snapshots = snapshots;
     console.log("download ended")
     console.log("values:")
     console.log(snapshots)
-    
+
 }
 
 
@@ -2400,6 +2514,7 @@ class Bell {
             resolvePromise()
             console.log("Bell loaded")
         });
+        mel.volume.value = -9;
         mel.toDestination();
         this.mel = mel;
         // console.log("PAD");
@@ -2413,6 +2528,7 @@ class Bell {
         if (ntp == "") {
             console.error("wrong note feeding: " + "note");
         }
+        // this.mel.fadeIn = 0.1
         this.mel.player(ntp).start(time);
     }
 
@@ -2452,7 +2568,7 @@ class Moog {
             console.error("wrong note feeding: " + "note");
         }
         this.mel.player(ntp).start(time);
-        this.mel.player(ntp).fadeOut = '16n';
+        this.mel.player(ntp).fadeOut = '8n';
         this.mel.player(ntp).stop(time + Tone.Time(duration).toSeconds());
 
     }
@@ -2586,8 +2702,10 @@ class Bass1 {
     }
 
     triggerAttackRelease(notes, duration, time) {
+        console.log(notes);
         let ntp1 = Tonal.Note.midi(notes[0]) - 12;
         let ntp5 = Tonal.Note.midi(notes[2]) - 12;
+
         let dur = Tone.Time(duration).toSeconds();
         let halftime = dur / 2;
         if (ntp1 == "" || ntp5 == "") {
