@@ -2,11 +2,7 @@
 Project for Advanced Coding Tools and Metodologies Course at Politecnico di Milano
 <p align="center"><img width="1280" src="https://github.com/Pox17/ACTAMProject/blob/main/GitAssets/casaPIXEL.png"></p>
 
-## Group members
-- Paolo Ostan
-- Stefano Dona
-- Sofia Parrinelli
-
+##
 
 ## How to use it
 
@@ -32,4 +28,8 @@ Project for Advanced Coding Tools and Metodologies Course at Politecnico di Mila
 
 ## Results and final considerations
 
+ Group members
+- Paolo Ostan
+- Stefano Dona
+- Sofia Parrinelli
 
