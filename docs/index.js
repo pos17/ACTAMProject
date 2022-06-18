@@ -2037,9 +2037,11 @@ function saveSnapshot(snapshotName) {
 
 function loadSnapshot(id) {
     let selectedSnapshot = state.snapshots.find(element => element.docId == id)
+    console.log("select snapshot")
+    console.log(selectedSnapshot)
     state.drawing.idList = selectedSnapshot.idList
-    state.drawing.chords = selectedSnapshot.chords
-    state.drawing.melody = selectedSnapshot.melody
+    state.drawing.audio.chords = selectedSnapshot.chords
+    state.drawing.audio.melody = selectedSnapshot.melody
     visualizeSelectedTokens()
     state.isMelodyGenerated = true;
     document.getElementById("btn-ct").classList.add("is-primary")
