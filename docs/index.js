@@ -1246,10 +1246,10 @@ function countFPS() {
 function createEnvironment() {
 
     //const values to modify canvas elements 
-    const NIGHT_START = 0.5
-    const SUNRISE_START = 3.05
+    const NIGHT_START = 0.3
+    const SUNRISE_START = 3.14
     const SUNRISE_END = 3.30
-    const DAY_START = 4.0
+    const DAY_START = 3.70
     const SUNSET_START = 6.10
     const SUNSET_END = 0
     let lightOn = false
@@ -1278,9 +1278,10 @@ function createEnvironment() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.imageSmoothingEnabled = false;
     var a = 1
+    //var a = 6;
     omega = a / t;
     let hAstra = h - getImageToDraw("floor").getNHeight() * factor - 25 * factor;
-    let wAstra = w / 2 - ((getImageToDraw("astrumNight").getNWidth()) / 2 * factor)
+    let wAstra = w / 2 - ((getImageToDraw("astrumNight").getNWidth()) / 2 * factor) - (0.08 * w)
     var angle = (ALPHASTART + omega * (time2 - time0))//time0.getTime()))
 
     let angleD = angle % (2 * Math.PI)
@@ -1376,7 +1377,11 @@ function createEnvironment() {
     }
     ctx.restore()
     // STATIC ELEMENTS
-    getImageToDraw("landscape").drawThisImage(0, 1, lightOn, canvas.height, canvas.width, ctx, factor)
+    var landscape = getImageToDraw("landscape")//.drawThisImage(0, 1, lightOn, canvas.height, canvas.width, ctx, factor)
+    landscape.drawThisImage(0, alphaNight, lightOn, canvas.height, canvas.width, ctx, factor)
+    landscape.drawThisImage(1, alphaSunrise, lightOn, canvas.height, canvas.width, ctx, factor)
+    landscape.drawThisImage(2, alphaSunset, lightOn, canvas.height, canvas.width, ctx, factor)
+    landscape.drawThisImage(3, alphaDay, lightOn, canvas.height, canvas.width, ctx, factor)
     getImageToDraw("floor").drawThisImage(0, 1, lightOn, canvas.height, canvas.width, ctx, factor)
     getImageToDraw("building").drawThisImage(0, 1, lightOn, canvas.height, canvas.width, ctx, factor)
     getImageToDraw("tree").drawThisImage(0, 1, lightOn, canvas.height, canvas.width, ctx, factor)
@@ -1818,6 +1823,12 @@ class DrawableImage {
             case (4):
                 posX = x;
                 posY = y - h;
+                break;
+            case (5):
+                if (lightOn) imageToDraw = imageToDraw;
+                else imageToDraw = imageToDraw +4
+                posX = x;
+                posY = y - h
                 break;
         }
         ctx.drawImage(this.imageArray[imageToDraw], posX, posY, w, h)
