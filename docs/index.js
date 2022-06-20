@@ -1377,7 +1377,7 @@ function createEnvironment() {
     }
     ctx.restore()
     // STATIC ELEMENTS
-    var landscape=getImageToDraw("landscape")//.drawThisImage(0, 1, lightOn, canvas.height, canvas.width, ctx, factor)
+    var landscape = getImageToDraw("landscape")//.drawThisImage(0, 1, lightOn, canvas.height, canvas.width, ctx, factor)
     landscape.drawThisImage(0, alphaNight, lightOn, canvas.height, canvas.width, ctx, factor)
     landscape.drawThisImage(1, alphaSunrise, lightOn, canvas.height, canvas.width, ctx, factor)
     landscape.drawThisImage(2, alphaSunset, lightOn, canvas.height, canvas.width, ctx, factor)
@@ -1823,6 +1823,12 @@ class DrawableImage {
             case (4):
                 posX = x;
                 posY = y - h;
+                break;
+            case (5):
+                if (lightOn) imageToDraw = imageToDraw;
+                else imageToDraw = imageToDraw +4
+                posX = x;
+                posY = y - h
                 break;
         }
         ctx.drawImage(this.imageArray[imageToDraw], posX, posY, w, h)
