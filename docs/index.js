@@ -1246,9 +1246,9 @@ function countFPS() {
 function createEnvironment() {
 
     //const values to modify canvas elements 
-    const NIGHT_START = 0.5
-    const SUNRISE_START = 3.05
-    const SUNRISE_END = 3.30
+    const NIGHT_START = 0.3
+    const SUNRISE_START = 3.14
+    const SUNRISE_END = 3.20
     const DAY_START = 4.0
     const SUNSET_START = 6.10
     const SUNSET_END = 0
@@ -1278,9 +1278,10 @@ function createEnvironment() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.imageSmoothingEnabled = false;
     var a = 1
+    //var a = 4;
     omega = a / t;
     let hAstra = h - getImageToDraw("floor").getNHeight() * factor - 25 * factor;
-    let wAstra = w / 2 - ((getImageToDraw("astrumNight").getNWidth()) / 2 * factor)
+    let wAstra = w / 2 - ((getImageToDraw("astrumNight").getNWidth()) / 2 * factor) - (0.08 * w)
     var angle = (ALPHASTART + omega * (time2 - time0))//time0.getTime()))
 
     let angleD = angle % (2 * Math.PI)
