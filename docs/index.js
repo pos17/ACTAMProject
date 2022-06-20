@@ -1425,7 +1425,7 @@ async function createMenu() {
             btn.className = 'nes-btn'
             btn.classList.add('token-btn')
             btn.classList.add(datum.elementType)
-            btn.classList.add(datum.environment)
+            
 
             btn.style.margin = '7px'
             btn.style.marginLeft = 'auto'
@@ -1433,6 +1433,7 @@ async function createMenu() {
             btn.appendChild(img)
             btnDiv.classList.add("token-div")
             if (datum.elementType == "flyingObject") {
+                btn.classList.add(datum.elementType +datum.id)
                 var tokenAdd = document.createElement('div')
                 tokenAdd.id = "tAdd" + btn.id
                 tokenAdd.classList.add("token-add");
@@ -1444,6 +1445,7 @@ async function createMenu() {
                 console.log("ciao nuvoletta")
 
             } else {
+                btn.classList.add(datum.environment)
                 btnDiv.appendChild(btn)
                 btnContainer.appendChild(btnDiv)
             }
@@ -1571,7 +1573,7 @@ async function playerPage() {
     volumeUpdate(70)
     volSlider.addEventListener('input', function () { volumeUpdate(volSlider.value) }, false);
     document.getElementById('confirm-save-dialog').onclick = function () { saveSnapshot(document.getElementById('name_field').value) }
-    document.getElementById("btn-dx1").onclick = () => { openFullscreen('main-canvas') }
+    document.getElementById("btn-dx1").onclick = () => { openFullscreen('main-canvas');}
     document.getElementById("btn-stop").onclick = () => { updatePage(0); stopMusic() }
     document.getElementById("btn-play").onclick = () => { togglePlayPause(); }
     document.getElementById("player-navbar").hidden = false;
@@ -1587,15 +1589,35 @@ async function playerPage() {
     await state.loadingPage.finishPromise;
     startMusic()
     document.getElementById("secondLoadingMessage").hidden = true
-
+    if(tour.isActive()) {
+        tour.next()
+    }
 }
 
 async function menuPage() {
     //await createMenu()
     visualizeSelectedTokens()
     //document.getElementById("main-fs-button").onclick = () => { openFullscreen("main-body") }
-    document.getElementById("btn-dx").onclick = () => { updatePage(1); }
-    document.getElementById("btn-ct").onclick = function () { state.isMelodyGenerated = false; loadMelody() }
+    document.getElementById("btn-dx").onclick = () => { 
+        updatePage(1);  
+        if(tour.isActive()) {
+        let step = tour.steps.find(element => element.id == "playMusic")
+        step.hide() 
+        }
+    }
+    document.getElementById("btn-ct").onclick = function () { 
+        state.isMelodyGenerated = false;
+        loadMelody()
+        if(tour.isActive()) {
+            var step = tour.steps.find(element => element.id == "generateMusic")
+            //console.log(step)
+            console.log(step.options.buttons)
+            step.options.buttons[1].disabled = false;
+            console.log(step.options.buttons)
+            tour.back()
+            tour.next()
+        }
+    }
     document.getElementById("btn-sx").onclick = prepareLoadingSnapshot;
     document.getElementById("player-navbar").hidden = true;
     document.getElementById("canva-container").hidden = true;
@@ -1649,6 +1671,7 @@ function openFullscreen(element) {
     } else if (elem.msRequestFullscreen) { /* IE11 */
         elem.msRequestFullscreen();
     }
+   
 }
 /* Close fullscreen */
 function closeFullscreen() {
@@ -3403,22 +3426,371 @@ const tour = new Shepherd.Tour({
     }
   });
 
+  // step #0
   tour.addStep({
-    id: 'example-step',
-    text: 'This step is attached to the bottom of the <code>.example-css-selector</code> element.',
+    id: 'melodyInstrChoice',
+    text: 'Choosing one of the buildings on this row you can choose the main melody instrument',
     attachTo: {
-      element: '.example-css-selector',
+      element: '.building',
+      on: 'left'
+    },
+    classes: 'example-step-extra-class',
+    buttons: [
+        {
+            text: 'Exit',
+            action: tour.complete
+        },
+        {
+        text: 'Next',
+        action: tour.next
+      }
+      
+    ]
+  });
+
+  // step #1
+  tour.addStep({
+    id: 'bassInstrChoice',
+    text: 'Choosing one of the trees on this row you can choose the bass instrument',
+    attachTo: {
+      element: '.tree',
+      on: 'left'
+    },
+    classes: 'example-step-extra-class',
+    buttons: [
+        {
+            text: 'Exit',
+            action: tour.complete
+        },
+        {
+        text: 'Next',
+        action: tour.next
+      }
+      
+    ]
+  });
+
+  // step #2
+  tour.addStep({
+    id: 'melodytypeChoice',
+    text: 'Choosing one of the landscapes on this row you can choose the type of melody you want to generate',
+    attachTo: {
+      element: '.landscape',
+      on: 'left'
+    },
+    classes: 'example-step-extra-class',
+    buttons: [
+        {
+            text: 'Exit',
+            action: tour.complete
+        },
+        {
+        text: 'Next',
+        action: tour.next
+      }
+      
+    ]
+  });
+
+  // step #3
+  tour.addStep({
+    id: 'chordsInstrChoice',
+    text: 'Choosing one of the floors on this row you can choose the chords instrument',
+    attachTo: {
+      element: '.floor',
+      on: 'left'
+    },
+    classes: 'example-step-extra-class',
+    buttons: [
+        {
+            text: 'Exit',
+            action: tour.complete
+        },
+        {
+        text: "Next",
+        action: tour.next,
+      }
+      
+    ]
+  });
+
+  // step #3
+  tour.addStep({
+    id: 'kickPatternChoice',
+    text: 'Choosing the number of clouds of this type allows to set kick-drum pattern',
+    attachTo: {
+      element: '.flyingObject22',
+      on: 'top'
+    },
+    classes: 'example-step-extra-class',
+    buttons: [
+        {
+            text: 'Exit',
+            action: tour.complete
+        },
+        {
+        text: "Next",
+        action: tour.next,
+      }
+      
+    ]
+  });
+
+  // step #3
+  tour.addStep({
+    id: 'snarePatternChoice',
+    text: 'Choosing the number of clouds of this type allows to set snare-drum pattern',
+    attachTo: {
+      element: '.flyingObject23',
+      on: 'top'
+    },
+    classes: 'example-step-extra-class',
+    buttons: [
+        {
+            text: 'Exit',
+            action: tour.complete
+        },
+        {
+        text: "Next",
+        action: tour.next,
+      }
+      
+    ]
+  });
+  
+  // step #3
+  tour.addStep({
+    id: 'hihatPatternChoice',
+    text: 'Choosing the number of clouds of this type allows to set hihat-drum pattern',
+    attachTo: {
+      element: '.flyingObject24',
+      on: 'top'
+    },
+    classes: 'example-step-extra-class',
+    buttons: [
+        {
+            text: 'Exit',
+            action: tour.complete
+        },
+        {
+        text: "Next",
+        action: tour.next,
+      }
+      
+    ]
+  });
+
+  // step #3
+  tour.addStep({
+    id: 'effectsPatternChoice',
+    text: 'Choosing the number of clouds of this type allows to set effects pattern',
+    attachTo: {
+      element: '.flyingObject25',
+      on: 'top'
+    },
+    classes: 'example-step-extra-class',
+    buttons: [
+        {
+            text: 'Exit',
+            action: tour.complete
+        },
+        {
+        text: "Next",
+        action: tour.next,
+      }
+      
+    ]
+  });
+
+// step #4
+  tour.addStep({
+    id: 'generateMusic',
+    text: 'This button allows you to generate a new musical sequence.',
+    attachTo: {
+      element: '.musicButtonTour',
       on: 'bottom'
     },
     classes: 'example-step-extra-class',
     buttons: [
+        {
+            text: 'Exit',
+            action: tour.complete
+        },
       {
         text: 'Next',
-        action: tour.next
+        action: tour.next,
+        disabled:true,
       }
     ]
   });
 
+  // step #4
+  tour.addStep({
+    id: 'playMusic',
+    text: 'This button allows you to start music',
+    attachTo: {
+      element: '.playButtonTour',
+      on: 'bottom'
+    },
+    classes: 'example-step-extra-class',
+    buttons: [
+        {
+            text: 'Exit',
+            action: tour.complete
+        },
+      {
+        text: 'Next',
+        action: function(){
+            let step = tour.steps.find(element => element.id == "playMusic")
+            step.hide()
+        },
+        disabled:true,
+      }
+    ]
+  });
+
+    // step #4
+    tour.addStep({
+        id: 'environment',
+        text: 'The main canvas visualizes the elements picked before',
+        attachTo: {
+          element: '.canvasTour',
+          on: 'top'
+        },
+        classes: 'example-step-extra-class',
+        buttons: [
+            {
+                text: 'Exit',
+                action: tour.complete
+            },
+          {
+            text: 'Next',
+            action:tour.next
+          }
+        ]
+      });
+
+    // step #4
+    tour.addStep({
+        id: 'playPause',
+        text: 'This button allows to pause or play the enviroment',
+        attachTo: {
+          element: '.playPauseTour',
+          on: 'top'
+        },
+        classes: 'example-step-extra-class',
+        buttons: [
+            {
+                text: 'Exit',
+                action: tour.complete
+            },
+          {
+            text: 'Next',
+            action:tour.next
+          }
+        ]
+      });
+      // step #4
+    tour.addStep({
+        id: 'volume',
+        text: 'This button allows to adjust the music volume',
+        attachTo: {
+          element: '.volumeTour',
+          on: 'left'
+        },
+        classes: 'example-step-extra-class',
+        buttons: [
+            {
+                text: 'Exit',
+                action: tour.complete
+            },
+          {
+            text: 'Next',
+            action:tour.next
+          }
+        ]
+      });
+        // step #4
+    tour.addStep({
+        id: 'fullscreen',
+        text: 'This button allows to set fullscreen playback',
+        attachTo: {
+          element: '.fullscreenTour',
+          on: 'top'
+        },
+        classes: 'example-step-extra-class',
+        buttons: [
+            {
+                text: 'Exit',
+                action: tour.complete
+            },
+          {
+            text: 'Next',
+            action:tour.next
+          }
+        ]
+      });
+         // step #4
+    tour.addStep({
+        id: 'save',
+        text: 'This button allows to save a snapshot of the environment created',
+        attachTo: {
+          element: '.saveSnapTour',
+          on: 'top'
+        },
+        classes: 'example-step-extra-class',
+        buttons: [
+            {
+                text: 'Exit',
+                action: tour.complete
+            },
+          {
+            text: 'Next',
+            action:tour.next
+          }
+        ]
+      });
+           // step #4
+    tour.addStep({
+        id: 'stop',
+        text: 'clicking on this button the music stops and the website returns to the menu page',
+        attachTo: {
+          element: '.stopTour',
+          on: 'top'
+        },
+        classes: 'example-step-extra-class',
+        buttons: [
+            {
+                text: 'Exit',
+                action: tour.complete
+            },
+          {
+            text: 'Next',
+            action:tour.next
+          }
+        ]
+      });
+    // step #5
+  tour.addStep({
+    id: 'Load new music',
+    text: 'This button allows you to load a music sequence generated previously.',
+    attachTo: {
+      element: '.loadButtonTour',
+      on: 'bottom'
+    },
+    classes: 'example-step-extra-class',
+    buttons: [
+        {
+            text: 'Exit',
+            action: tour.complete
+        },
+      {
+        text: 'Next',
+        action: tour.next,
+        disabled:true,
+      }
+    ]
+  });
   document.getElementById("guideTourStart").onclick= function() {
     tour.start();
   }

@@ -40,8 +40,8 @@
             </div>
             <div id="canva-container" hidden="true" ;>
                 <!--div used to embed the main canvas-->
-                <div id="canvas-div" class=" nes-container is-rounded">
-                    <canvas id="main-canvas" class="canvases"></canvas>
+                <div id="canvas-div" class=" nes-container is-rounded canvasTour">
+                    <canvas id="main-canvas" class="canvases "></canvas>
                 </div>
             </div>
             <!-- container per visualizzazione melodia -->
@@ -70,33 +70,33 @@
             </a> -->
         </div>
         <div id="menu-navbar" class="navbar">
-            <button class="nes-btn nav-btn" id="btn-sx">LOAD</button>
-            <button class="nes-btn nav-btn" id="btn-ct">MUSIC</button>
-            <button type="button" class="nes-btn nav-btn is-success" id="btn-dx">PLAY</button>
+            <button class="nes-btn nav-btn loadButtonTour" id="btn-sx">LOAD</button>
+            <button class="nes-btn nav-btn musicButtonTour" id="btn-ct">MUSIC</button>
+            <button type="button" class="nes-btn nav-btn is-success playButtonTour" id="btn-dx">PLAY</button>
         </div>
 
         <div id="player-navbar" class="navbar" hidden="true">
             <!-- <button class="nes-btn nav-btn" id="btn-sx1">BACK</button> -->
             <div id="save-container" class="dropup playerbar-btn">
 
-                <button type="button" class="nes-btn dropupsavebtn " id="btn-save"
+                <button type="button" class="nes-btn dropupsavebtn saveSnapTour" id="btn-save"
                     onclick="document.getElementById('dialog-save').showModal();">
                     <img id="save-icon" src="./assets/TRANSPORT BTNS/Floppy icon.png" class="button-icon"
                         style="display: block;" />
                 </button>
 
             </div>
-            <button class="nes-btn playerbar-btn" id="btn-stop">
+            <button class="nes-btn playerbar-btn stopTour" id="btn-stop">
                 <img src="./assets/TRANSPORT BTNS/Transport stop no-btn.png" class="button-icon" />
             </button>
-            <button class="nes-btn playerbar-btn" id="btn-play">
+            <button class="nes-btn playerbar-btn playPauseTour" id="btn-play">
                 <img id="btn-play-pause" src="./assets/TRANSPORT BTNS/Transport pause no-btn.png" class="button-icon" />
                 <img id="btn-play-play" src="./assets/TRANSPORT BTNS/Transport play no-btn.png" class="button-icon"
                     style="display: none;" />
             </button>
 
 
-            <div id="volume-container" class="dropup playerbar-btn">
+            <div id="volume-container" class="dropup playerbar-btn volumeTour">
                 <button type="button" class="nes-btn dropupbtn " id="btn-vol">
                     <img id="vol-no" src="./assets/TRANSPORT BTNS/Volume No icon.png" class="button-icon"
                         style="display: none;" />
@@ -107,7 +107,7 @@
                     <img id="vol-high" src="./assets/TRANSPORT BTNS/Volumr High icon.png" class="button-icon"
                         style="display: none;" />
                 </button>
-                <div class="dropup-content">
+                <div class="dropup-content volumeTour">
                     <div class="center-slider">
                         <div class="slider-wrapper">
                             <input id="volume-slider" type="range" min="0" max="100" value="70" step="10"
@@ -116,7 +116,7 @@
                     </div>
                 </div>
             </div>
-            <button type="button" class="nes-btn playerbar-btn" id="btn-dx1">
+            <button type="button" class="nes-btn playerbar-btn fullscreenTour" id="btn-dx1">
                 <img src="./assets/TRANSPORT BTNS/Full Screen icon.png" class="button-icon" style="
                     display: block;
                     margin: auto !important;" />
