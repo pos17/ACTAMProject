@@ -337,19 +337,23 @@ img {
 }
 
 #upbar {
-    /*overflow: hidden;*/
+    overflow: hidden;
     background-color: #69c9ce;
     /* background-color: #010a18; */
     position: fixed;
     top: 0;
     width: 100%;
     /*padding: 1vh;*/
-    display: flex;
+    /* display: flex; */
     justify-content: space-around;
     transition: top 0.5s;
 }
-
+.topnav-right {
+    float: right;
+    padding-right: 20px;
+  }
 #upbar a {
+    height: 100%;
     float: left;
     display: block;
     color: white;
@@ -360,7 +364,9 @@ img {
 .upbar-names {
     padding: 15px;
 }
-
+.upbar-icons {
+    padding: 9px;
+}
 #upbar a:hover {
     background-color: #ffffff;
     color: black;
