@@ -222,11 +222,39 @@ function resolveAfter2Seconds() {
   }
 */
 
+function isHidden(el) {
+    var style = window.getComputedStyle(el);
+    return (style.visibility === 'hidden')
+}
+
 function increase() {
     let loadingText = document.getElementById("loadingMessage");
     let element = document.getElementById("loadingId");
+    let panel = document.getElementById("initialLoadingPanel");
+    let secondLoadingMessage = document.getElementById("secondLoadingMessage")
     let fromValue = state.loadingPage.value;
     let limit = state.loadingPage.limit;
+
+    // color in theme
+    if (!isHidden(secondLoadingMessage)) {
+        switch (state.theme) {
+            case 0:
+                panel.setAttribute("style", "background-color : #a4dada !important");
+                break;
+            case 1:
+                panel.setAttribute("style", "background-color : #09202d !important");
+                break;
+            case 2:
+                panel.setAttribute("style", "background-color : #D8572A !important");
+                break;
+            case 3:
+                panel.setAttribute("style", "background-color : #68D89B !important");
+                break;
+            case 4:
+                panel.setAttribute("style", "background-color : #FFD95C !important");
+                break;
+        }
+    }
 
     if ((Date.now() - state.loadingPage.lastUpdate) > (1000 / 15)) {
         if (fromValue < limit) {
@@ -1158,7 +1186,7 @@ function updateTheme() {
     switch (state.theme) {
         case 0:
             //apply bright theme
-            body.setAttribute("style", "background-color : #a4dada  !important");
+            body.setAttribute("style", "background-color : #a4dada !important");
             upbar.setAttribute("style", "background-color : #69c9ce  !important");
             navbar.forEach((bar) => { bar.setAttribute("style", "background-color : #69c9ce  !important"); })
             cloudsLabels.forEach((label) => { label.setAttribute("style", "color: black !important") });
@@ -1826,7 +1854,7 @@ class DrawableImage {
                 break;
             case (5):
                 if (lightOn) imageToDraw = imageToDraw;
-                else imageToDraw = imageToDraw +4
+                else imageToDraw = imageToDraw + 4
                 posX = x;
                 posY = y - h
                 break;
