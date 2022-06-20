@@ -19,6 +19,7 @@ const state = {
         limit: 0,
         lastUpdate: undefined,
         lastUpdateMessage: undefined,
+        isFirstLoading: true,
         loadingText: {
             0: "Pick an element and build your environment",
             1: "Modify music with elements",
@@ -64,7 +65,7 @@ const state = {
     playingPart: [],
     loopProgressSaved: 0,
     loopTimes: 0,
-    theme: 0, // 0: bright, 1: dark
+    theme: 4, // 0: bright, 1: dark
     drawing: {
         idList: {
             astrumDay: 21,
@@ -222,11 +223,40 @@ function resolveAfter2Seconds() {
   }
 */
 
+function isHidden(el) {
+    var style = window.getComputedStyle(el);
+    return (style.visibility == 'hidden')
+}
+
 function increase() {
     let loadingText = document.getElementById("loadingMessage");
     let element = document.getElementById("loadingId");
+    let panel = document.getElementById("initialLoadingPanel");
+    let secondLoadingMessage = document.getElementById("secondLoadingMessage")
     let fromValue = state.loadingPage.value;
     let limit = state.loadingPage.limit;
+
+    // color in theme
+    if (!state.loadingPage.isFirstLoading) {
+        switch (state.theme) {
+            case 0:
+                panel.setAttribute("style", "background-color : #a4dada !important");
+                break;
+            case 1:
+                panel.setAttribute("style", "background-color : #09202d !important");
+                break;
+            case 2:
+                panel.setAttribute("style", "background-color : #D8572A !important");
+                break;
+            case 3:
+                panel.setAttribute("style", "background-color : #68D89B !important");
+                break;
+            case 4:
+                panel.setAttribute("style", "background-color : #FFD95C !important");
+                break;
+        }
+    }
+    else panel.setAttribute("style", "background-color : #242f3f !important");
 
     if ((Date.now() - state.loadingPage.lastUpdate) > (1000 / 15)) {
         if (fromValue < limit) {
@@ -1155,10 +1185,12 @@ function updateTheme() {
     let cloudsLabels = document.querySelectorAll(".token-add");
     console.log(getComputedStyle(body))
 
+    state.theme = (state.theme + 1) % 5;
+
     switch (state.theme) {
         case 0:
             //apply bright theme
-            body.setAttribute("style", "background-color : #a4dada  !important");
+            body.setAttribute("style", "background-color : #a4dada !important");
             upbar.setAttribute("style", "background-color : #69c9ce  !important");
             navbar.forEach((bar) => { bar.setAttribute("style", "background-color : #69c9ce  !important"); })
             cloudsLabels.forEach((label) => { label.setAttribute("style", "color: black !important") });
@@ -1201,7 +1233,7 @@ function updateTheme() {
             break;
     }
 
-    state.theme = (state.theme + 1) % 5;
+    
 };
 
 
@@ -1556,6 +1588,7 @@ function loadMelody() {
 async function playerPage() {
     //window.scrollTo(0,0); 
     //disableScrolling();
+    state.loadingPage.isFirstLoading = false;
     state.loadingPage.value = 0;
     console.log("value loading page:")
     console.log(state.loadingPage.value)
@@ -1831,7 +1864,7 @@ class DrawableImage {
                 break;
             case (5):
                 if (lightOn) imageToDraw = imageToDraw;
-                else imageToDraw = imageToDraw +4
+                else imageToDraw = imageToDraw + 4
                 posX = x;
                 posY = y - h
                 break;
