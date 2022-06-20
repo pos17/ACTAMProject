@@ -1277,8 +1277,8 @@ function createEnvironment() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.imageSmoothingEnabled = false;
-    //var a = 1
-    var a = 6;
+    var a = 1
+    //var a = 6;
     omega = a / t;
     let hAstra = h - getImageToDraw("floor").getNHeight() * factor - 25 * factor;
     let wAstra = w / 2 - ((getImageToDraw("astrumNight").getNWidth()) / 2 * factor) - (0.08 * w)
