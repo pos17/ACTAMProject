@@ -1382,7 +1382,12 @@ function createEnvironment() {
     landscape.drawThisImage(1, alphaSunrise, lightOn, canvas.height, canvas.width, ctx, factor)
     landscape.drawThisImage(2, alphaSunset, lightOn, canvas.height, canvas.width, ctx, factor)
     landscape.drawThisImage(3, alphaDay, lightOn, canvas.height, canvas.width, ctx, factor)
-    getImageToDraw("floor").drawThisImage(0, 1, lightOn, canvas.height, canvas.width, ctx, factor)
+    //getImageToDraw("floor").drawThisImage(0, 1, lightOn, canvas.height, canvas.width, ctx, factor)
+    var floor = getImageToDraw("floor")//.drawThisImage(0, 1, lightOn, canvas.height, canvas.width, ctx, factor)
+    floor.drawThisImage(0, alphaNight, lightOn, canvas.height, canvas.width, ctx, factor)
+    floor.drawThisImage(1, alphaSunrise, lightOn, canvas.height, canvas.width, ctx, factor)
+    floor.drawThisImage(2, alphaSunset, lightOn, canvas.height, canvas.width, ctx, factor)
+    floor.drawThisImage(3, alphaDay, lightOn, canvas.height, canvas.width, ctx, factor)
     getImageToDraw("building").drawThisImage(0, 1, lightOn, canvas.height, canvas.width, ctx, factor)
     getImageToDraw("tree").drawThisImage(0, 1, lightOn, canvas.height, canvas.width, ctx, factor)
 
