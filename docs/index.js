@@ -19,6 +19,7 @@ const state = {
         limit: 0,
         lastUpdate: undefined,
         lastUpdateMessage: undefined,
+        isFirstLoading: true,
         loadingText: {
             0: "Pick an element and build your environment",
             1: "Modify music with elements",
@@ -64,7 +65,7 @@ const state = {
     playingPart: [],
     loopProgressSaved: 0,
     loopTimes: 0,
-    theme: 0, // 0: bright, 1: dark
+    theme: 4, // 0: bright, 1: dark
     drawing: {
         idList: {
             astrumDay: 21,
@@ -224,7 +225,7 @@ function resolveAfter2Seconds() {
 
 function isHidden(el) {
     var style = window.getComputedStyle(el);
-    return (style.visibility === 'hidden')
+    return (style.visibility == 'hidden')
 }
 
 function increase() {
@@ -236,7 +237,7 @@ function increase() {
     let limit = state.loadingPage.limit;
 
     // color in theme
-    if (!isHidden(secondLoadingMessage)) {
+    if (!state.loadingPage.isFirstLoading) {
         switch (state.theme) {
             case 0:
                 panel.setAttribute("style", "background-color : #a4dada !important");
@@ -255,6 +256,7 @@ function increase() {
                 break;
         }
     }
+    else panel.setAttribute("style", "background-color : #242f3f !important");
 
     if ((Date.now() - state.loadingPage.lastUpdate) > (1000 / 15)) {
         if (fromValue < limit) {
@@ -1183,6 +1185,8 @@ function updateTheme() {
     let cloudsLabels = document.querySelectorAll(".token-add");
     console.log(getComputedStyle(body))
 
+    state.theme = (state.theme + 1) % 5;
+
     switch (state.theme) {
         case 0:
             //apply bright theme
@@ -1229,7 +1233,7 @@ function updateTheme() {
             break;
     }
 
-    state.theme = (state.theme + 1) % 5;
+    
 };
 
 
@@ -1579,6 +1583,7 @@ function loadMelody() {
 async function playerPage() {
     //window.scrollTo(0,0); 
     //disableScrolling();
+    state.loadingPage.isFirstLoading = false;
     state.loadingPage.value = 0;
     console.log("value loading page:")
     console.log(state.loadingPage.value)
