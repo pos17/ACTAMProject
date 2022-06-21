@@ -1,3 +1,5 @@
+const { Tone } = require("tone/build/esm/core/Tone");
+
 let app;
 let db;
 let storage;
@@ -700,13 +702,14 @@ function buildInstruments() {
     let harmonyChannel = new Tone.Channel();
     let bassChannel = new Tone.Channel();
     let drumChannel = new Tone.Channel();
-    state.lpf = new Tone.AutoFilter("0.2Hz", 300, 2).start();
-    state.lpf.set({
-        type: "sine",
-        wet: 1,
-        depth: 1,
+    // state.lpf = new Tone.AutoFilter("0.2Hz", 300, 2).start();
+    // state.lpf.set({
+    //     type: "sine",
+    //     wet: 1,
+    //     depth: 1,
 
-    })
+    // })
+    state.lpf = new Tone.Filter(20000, "lowpass", -24);
     state.lpf.connect(getMasterChain().channel);
     // let masterChannel = new Tone.Channel().connect(state.lpf);
 
@@ -815,9 +818,9 @@ function buildInstruments() {
 
 }
 
-function setFilterWet(aWet){
+function setFilterFreq(aFreq){
     state.lpf.set({
-        wet: aWet
+        frequency: aFreq
     })
 }
 
