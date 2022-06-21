@@ -700,7 +700,7 @@ function buildInstruments() {
     let harmonyChannel = new Tone.Channel();
     let bassChannel = new Tone.Channel();
     let drumChannel = new Tone.Channel();
-    state.lpf = new Tone.AutoFilter("0.2Hz", 3000, 2).start();
+    state.lpf = new Tone.AutoFilter("0.2Hz", 300, 2).start();
     state.lpf.set({
         type: "sine",
         wet: 1,
