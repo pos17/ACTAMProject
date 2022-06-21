@@ -1,5 +1,3 @@
-
-
 let app;
 let db;
 let storage;
@@ -66,6 +64,9 @@ const state = {
     loopProgressSaved: 0,
     loopTimes: 0,
     theme: 4, // 0: bright, 1: dark
+    lpf: undefined,
+    buttonSound: undefined,
+    nesBtnSound: undefined,
     drawing: {
         idList: {
             astrumDay: 21,
@@ -107,7 +108,9 @@ async function initializeMyApp() {
     setMasterChain()
     //console.log("master chain set")
     console.log(getMasterChain())
-    Tone.Destination.chain(getMasterChain().compressor, getMasterChain().hiddenGain, getMasterChain().mainGain)
+    // FIXME: funzionerà?
+    // Tone.Destination.chain(getMasterChain().compressor, getMasterChain().hiddenGain, getMasterChain().mainGain)
+    getMasterChain().channel.chain(getMasterChain().compressor, getMasterChain().hiddenGain, getMasterChain().mainGain, Tone.Destination)
     //console.log("master chain get")
     setLimit(40)
     increase();
@@ -127,6 +130,8 @@ async function initializeMyApp() {
     //console.log("state")
     //console.log(state)
     document.getElementById("loadingMessage").hidden = true;
+    state.buttonSound = new ButtonSound();
+    state.nesBtnSound = new NesBtnSound();
 }
 
 /**
@@ -181,6 +186,7 @@ function setMasterChain() {
         }),
         hiddenGain: new Tone.Gain(state.hiddenGainVal),
         mainGain: new Tone.Gain(1),
+        channel: new Tone.Channel(),
         mainVolumeSave: 1
     }
 }
@@ -694,19 +700,36 @@ function buildInstruments() {
     let harmonyChannel = new Tone.Channel();
     let bassChannel = new Tone.Channel();
     let drumChannel = new Tone.Channel();
+    state.lpf = new Tone.AutoFilter("0.2Hz", 3000, 2).start();
+    state.lpf.set({
+        type: "sine",
+        wet: 1,
+        depth: 1,
+
+    })
+    state.lpf.connect(getMasterChain().channel);
+    // let masterChannel = new Tone.Channel().connect(state.lpf);
 
     // console.log("here I am")
     harmonyChannel.chain(
-        Tone.Destination
+        // Tone.Destination
+        // masterChannel
+        state.lpf
     )
     bassChannel.chain(
-        Tone.Destination
+        // Tone.Destination
+        // masterChannel
+        state.lpf
     )
     melodyChannel.chain(
-        Tone.Destination
+        // Tone.Destination
+        // masterChannel
+        state.lpf
     )
     drumChannel.chain(
-        Tone.Destination
+        // Tone.Destination
+        // masterChannel
+        state.lpf
     )
 
     /*      building instruments         */
@@ -766,11 +789,12 @@ function buildInstruments() {
     /* drum machine */
     let drum = new DrumMachine();
     setInstrument("Drum", drum);
+    drum.connect(drumChannel);
 
 
 
     // building ambient effects
-    let reverbChannel = new Tone.Channel(3).toDestination();
+    let reverbChannel = new Tone.Channel(3).connect(getMasterChain().channel);
     let merge = new Tone.Merge().connect(reverbChannel);
 
     let reverbL = new Tone.Reverb({
@@ -789,6 +813,12 @@ function buildInstruments() {
     melodyChannel.fan(reverbL, reverbR);
     harmonyChannel.fan(reverbL, reverbR);
 
+}
+
+function setFilterWet(aWet){
+    state.lpf.set({
+        wet: aWet
+    })
 }
 
 async function waitInstLoaded() {
@@ -1447,6 +1477,23 @@ var btn_left = document.getElementById('btn-sx')
 var btn_center = document.getElementById('btn-ct')
 var btn_right = document.getElementById('btn-dx')
 
+document.querySelectorAll(".nes-btn").forEach((button)=>{
+    if(button.id != "btn-ct"){
+        button.addEventListener("click", () => {
+            state.nesBtnSound.trigger(Tone.now())
+        })
+    }
+})
+
+// btn_center.onclick = function () {
+//     console.log("BTN CT CLICKED");
+//     console.log(Tone.now());
+//     console.log(Tone.now);
+//     state.buttonSound.trigger(Tone.now())
+// }
+
+
+
 async function createMenu() {
     console.log("menu Creation")
     var btnContainer = document.getElementById("tokenGrid")// document.createElement('div')
@@ -1671,6 +1718,10 @@ async function menuPage() {
             tour.back()
             tour.next()
         }
+        console.log("BTN CT CLICKED");
+        console.log(Tone.now());
+        console.log(Tone.now);
+        state.buttonSound.trigger(Tone.now())
     }
     document.getElementById("btn-sx").onclick = prepareLoadingSnapshot;
     document.getElementById("player-navbar").hidden = true;
@@ -3035,45 +3086,11 @@ class Kick {
                 break;
         }
     }
-
-    /*  playPart1() {
-         const part = new Tone.Part(
-             ((time) => {
-                 this.kick.start(time);
-             }),
-             [{ time: "0:0:0" },
-             { time: "0:2:0" },
-             ]
-         ).start(0);
-         part.loop = true;
-         console.log("Part playing");
-     }
-     playPart2() {
-         const part = new Tone.Part(
-             ((time) => {
-                 this.kick.start(time);
-             }),
-             [{ time: "0:0:0" },
-             { time: "0:0:3" },
-             { time: "0:2:2" },
-             ]
-         ).start(0);
-         part.loop = true;
-         console.log("Part playing");
-     }
-     playPart3() {
-         const part = new Tone.Part(
-             ((time) => {
-                 this.kick.start(time);
-             }),
-             [{ time: "0:0:0" },
-             { time: "0:2:3" },
-             { time: "0:3:0" },
-             ]
-         ).start(0);
-         part.loop = true;
-         console.log("Part playing");
-     } */
+    connect(node) {
+        this.kick.disconnect(Tone.Destination)
+        this.kick.connect(node)
+    }
+ 
 }
 
 class Snare {
@@ -3149,44 +3166,11 @@ class Snare {
                 break;
         }
     }
+    connect(node) {
+        this.snare.disconnect(Tone.Destination)
+        this.snare.connect(node)
+    }
 
-    /* playPart1() {
-        const part = new Tone.Part(
-            ((time) => {
-                this.snare.start(time);
-            }),
-            [{ time: "0:1:0" },
-            { time: "0:3:0" }]
-        ).start(0);
-        part.loop = true;
-        console.log("Part playing");
-    }
-    playPart2() {
-        const part = new Tone.Part(
-            ((time) => {
-                this.snare.start(time);
-            }),
-            [{ time: "0:1:0" },
-            { time: "0:3:0" },
-            { time: "0:3:2" },
-            ]
-        ).start(0);
-        part.loop = true;
-        console.log("Part playing");
-    }
-    playPart3() {
-        const part = new Tone.Part(
-            ((time) => {
-                this.snare.start(time);
-            }),
-            [{ time: "0:1:1" },
-            // { time: "0:3:0" },
-            { time: "0:3:2" },
-            ]
-        ).start(0);
-        part.loop = true;
-        console.log("Part playing");
-    } */
 }
 
 class HiHat {
@@ -3298,79 +3282,11 @@ class HiHat {
                 break;
         }
     }
-
-    /* playPart1() {
-        const part = new Tone.Part(
-            ((time, value) => {
-                this.hihat.player(value.note).start(time);
-            }),
-            [
-                { time: "0:0:0", note: 0 },
-                { time: "0:0:2", note: 1 },
-                { time: "0:1:0", note: 0 },
-                { time: "0:1:2", note: 1 },
-                { time: "0:2:0", note: 0 },
-                { time: "0:2:2", note: 1 },
-                { time: "0:3:0", note: 0 },
-                { time: "0:3:2", note: 1 },
-            ]
-        ).start(0);
-        part.loop = true;
-        part.humanize = 0.02;
-        console.log("Part playing");
+    connect(node) {
+        this.hihat.disconnect(Tone.Destination)
+        this.hihat.connect(node)
     }
-    playPart2() {
-        const part = new Tone.Part(
-            ((time, value) => {
-                this.hihat.player(value.note).start(time);
-            }),
-            [
-                // 0: Hi, 1: Lo
-                { time: "0:0:0", note: 0 },
-                { time: "0:0:2", note: 1 },
-                { time: "0:0:3", note: 1 },
-                { time: "0:1:0", note: 0 },
-                { time: "0:1:2", note: 1 },
-                { time: "0:2:0", note: 0 },
-                { time: "0:2:2", note: 1 },
-                { time: "0:2:3", note: 1 },
-                { time: "0:3:0", note: 0 },
-                { time: "0:3:2", note: 1 },
-            ]
-        ).start(0);
-        part.loop = true;
-        part.humanize = 0.02;
-        console.log("Part playing");
-    }
-    playPart3() {
-        const part = new Tone.Part(
-            ((time, value) => {
-                this.hihat.player(value.note).start(time);
-            }),
-            [
-                // 0: Hi, 1: Lo
-                { time: "0:0:0", note: 0 },
-                { time: "0:0:1", note: 1 },
-                { time: "0:0:2", note: 0 },
-                { time: "0:0:3", note: 1 },
-                { time: "0:1:0", note: 0 },
-                { time: "0:1:1", note: 1 },
-                { time: "0:1:2", note: 0 },
-                { time: "0:1:3", note: 1 },
-                { time: "0:2:0", note: 0 },
-                { time: "0:2:1", note: 1 },
-                { time: "0:2:2", note: 0 },
-                { time: "0:2:3", note: 1 },
-                { time: "0:3:0", note: 0 },
-                { time: "0:3:1", note: 1 },
-                { time: "0:3:2", note: 0 },
-                { time: "0:3:3", note: 1 },
-            ]
-        ).start(0);
-        part.loop = true;
-        part.humanize = 0.02;
-        console.log("Part playing");
-    } */
+    
 }
 
 class Perc {
@@ -3450,6 +3366,10 @@ class Perc {
                 break;
         }
     }
+    connect(node) {
+        this.perc.disconnect(Tone.Destination)
+        this.perc.connect(node)
+    }
 }
 
 class DrumMachine {
@@ -3468,6 +3388,60 @@ class DrumMachine {
         this.perc.playPart(array[3])
     }
 
+    connect(node){
+        this.kick.connect(node);
+        this.snare.connect(node);
+        this.hihat.connect(node);
+        this.perc.connect(node);
+    }
+
+}
+
+class ButtonSound {
+    constructor() {
+        var resolvePromise;
+        state.isLoadingInstr = new Promise(resolve => {
+            resolvePromise = resolve;
+        });
+        var percUrl = "./Samples/Button/Button.mp3"
+        var perc = new Tone.Player(percUrl, () => {
+            resolvePromise()
+            console.log("soundBtn Loaded")
+        });
+        perc.toDestination();
+
+        this.perc = perc;
+    }
+
+    trigger(time) {
+        this.perc.start(time);
+        // console.log("kicktime")
+    }
+    
+}
+
+class NesBtnSound {
+    constructor() {
+        var resolvePromise;
+        state.isLoadingInstr = new Promise(resolve => {
+            resolvePromise = resolve;
+        });
+        var percUrl = "./Samples/Button/NesBtnSound.mp3"
+        var perc = new Tone.Player(percUrl, () => {
+            resolvePromise()
+            console.log("NesBtnSound Loaded")
+        });
+        perc.toDestination();
+
+        this.perc = perc;
+    }
+
+    trigger(time) {
+        this.perc.start(time);
+        console.log("nesbnsound yeah yeah")
+        this.perc.stop(time + 1);
+    }
+    
 }
 
 
