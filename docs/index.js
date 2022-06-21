@@ -1724,11 +1724,18 @@ async function menuPage() {
             tour.back()
             tour.next()
         }
-        document.getElementById('dialog-music').showModal();
+        //document.getElementById('dialog-music').showModal();
         console.log("BTN CT CLICKED");
         console.log(Tone.now());
         console.log(Tone.now);
         state.buttonSound.trigger(Tone.now())
+        setTimeout(() => {
+            document.getElementById('dialog-music').showModal()   
+            setTimeout(() => {
+                document.getElementById('dialog-music').close()   
+            }, 1000);
+        }, 750);
+        
     }
     document.getElementById("btn-sx").onclick = prepareLoadingSnapshot;
     document.getElementById("player-navbar").hidden = true;
