@@ -1,5 +1,3 @@
-const { Tone } = require("tone/build/esm/core/Tone");
-
 let app;
 let db;
 let storage;
@@ -815,13 +813,28 @@ function buildInstruments() {
     // reverb sends
     melodyChannel.fan(reverbL, reverbR);
     harmonyChannel.fan(reverbL, reverbR);
+    setFilterFreq(1000)
 
 }
 
-function setFilterFreq(aFreq){
+function setFilterFreq(val){
+    let aFreq = logMap(val, 0, 1, 2000, 20000)
     state.lpf.set({
         frequency: aFreq
     })
+}
+
+function logMap(inValue, inMin, inMax, outMin, outMax) {
+    var minp = inMin;
+    var maxp = inMax;
+  
+    var minv = Math.log(outMin);
+    var maxv = Math.log(outMax);
+  
+    // calculate adjustment factor
+    var scale = (maxv-minv) / (maxp-minp);
+  
+    return Math.exp(minv + scale*(inValue-minp));
 }
 
 async function waitInstLoaded() {
