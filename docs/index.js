@@ -1558,7 +1558,7 @@ function assignClick() {
             modifyIdList(id)
 
             visualizeSelectedTokens()
-
+            state.nesBtnSound.trigger(Tone.now())
         })
     })
 }
