@@ -3486,7 +3486,7 @@ const tour = new Shepherd.Tour({
 // step #0
 tour.addStep({
     id: 'melodyInstrChoice',
-    text: 'The building on this row allows to choose on the different instruments used to play the main melody',
+    text: 'The buildings on this row allow to choose between different instruments to play the main melody',
     attachTo: {
         element: '.building',
         on: 'left'
