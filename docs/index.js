@@ -1253,7 +1253,8 @@ async function initImages() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     console.log(getImageToDraw("astrumDay"))
     console.log(getImageToDraw("astrumNight"))
-
+    state.loopProgressSaved = 0;
+    state.loopTimes = 0;
     console.log("passato")
     setFrameReq(window.requestAnimationFrame(countFPS))
 }
@@ -1312,9 +1313,10 @@ function createEnvironment() {
     var a = 1
     //var a = 6;
     omega = a / t;
+    
     let hAstra = h - getImageToDraw("floor").getNHeight() * factor - 25 * factor;
     let wAstra = w / 2 - ((getImageToDraw("astrumNight").getNWidth()) / 2 * factor) - (0.08 * w)
-    var angle = (ALPHASTART + omega * (time2 - time0))//time0.getTime()))
+    var angle = ALPHASTART + (omega * (time2 - time0))//time0.getTime()))
 
     let angleD = angle % (2 * Math.PI)
     let transAngle = angle % (w)
@@ -1398,6 +1400,7 @@ function createEnvironment() {
             //ctx.translate() /* (((2 * flyObj.left * 2 * w) +*/ 
             var valLeft = flyObj.left
             var newLeft = (valLeft + (angle * 0.00002)) % 1.2
+            
             //console.log(newLeft)
             flyObj.left = newLeft
             flyObj.drawThisImage(0, alphaNight, lightOn, canvas.height, canvas.width, ctx, factor)
