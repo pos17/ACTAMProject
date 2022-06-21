@@ -2563,9 +2563,6 @@ class Bell {
         mel.volume.value = -9;
         mel.toDestination();
         this.mel = mel;
-        // console.log("PAD");
-        // console.log(mel);
-
     }
 
     triggerAttack(note, duration, time) {
