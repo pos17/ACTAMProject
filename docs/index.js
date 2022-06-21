@@ -813,7 +813,7 @@ function buildInstruments() {
     // reverb sends
     melodyChannel.fan(reverbL, reverbR);
     harmonyChannel.fan(reverbL, reverbR);
-    setFilterFreq(1000)
+    setFilterFreq(1)
 
 }
 
