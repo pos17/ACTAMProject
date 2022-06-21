@@ -1671,6 +1671,7 @@ async function menuPage() {
             tour.back()
             tour.next()
         }
+        document.getElementById('dialog-music').showModal();
     }
     document.getElementById("btn-sx").onclick = prepareLoadingSnapshot;
     document.getElementById("player-navbar").hidden = true;
