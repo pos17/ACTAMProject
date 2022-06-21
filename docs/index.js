@@ -1371,6 +1371,9 @@ function createEnvironment() {
         alphaSunset = 0
         alphaDay = 0
         lightOn = true
+        setFilterWet(1-alphaSunrise)
+        console.log(1-alphaSunrise)
+        console.log(state.lpf.wet)
     } else if (angleD < DAY_START) {
         alphaNight = 0
         alphaSunrise = 1 //- (1 / (DAY_START - SUNRISE_END)) * (angleD - SUNRISE_END)
@@ -1390,6 +1393,9 @@ function createEnvironment() {
         alphaDay = 1 - (1 / (2 * Math.PI - SUNSET_START)) * (angleD - SUNSET_START)
         lightOn = false
         sunToDraw = (1 / (2 * Math.PI - SUNSET_START)) * (angleD - SUNSET_START)
+        setFilterWet(1-alphaDay)
+        console.log(1-alphaDay)
+        console.log(state.lpf.wet)
     }
     let background = getImageToDraw("background");
     background.drawThisImage(0, alphaNight, lightOn, canvas.height, canvas.width, ctx, factor)
@@ -1718,10 +1724,18 @@ async function menuPage() {
             tour.back()
             tour.next()
         }
+        //document.getElementById('dialog-music').showModal();
         console.log("BTN CT CLICKED");
         console.log(Tone.now());
         console.log(Tone.now);
         state.buttonSound.trigger(Tone.now())
+        setTimeout(() => {
+            document.getElementById('dialog-music').showModal()   
+            setTimeout(() => {
+                document.getElementById('dialog-music').close()   
+            }, 1000);
+        }, 750);
+        
     }
     document.getElementById("btn-sx").onclick = prepareLoadingSnapshot;
     document.getElementById("player-navbar").hidden = true;
