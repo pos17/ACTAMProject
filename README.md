@@ -50,6 +50,11 @@ When a music part is not ready the button is white.
 
 When the music part is ready the same button becomes blue.
 
+Once the music is ready the user can click on the "PLAY" button and start the music playing. 
+<p float="left">
+  <img src="./GitAssets/EnvPlayer.png" width="900" /> 
+</p>
+
 ### NOTES 
 - Use on Mozilla Firefox for best user experience
 - Internet connection needed while using the website in order to correctly downloading all the components.
