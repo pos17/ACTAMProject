@@ -65,7 +65,9 @@ The instruments used to play the bass part is represented by the decorative elem
 Music style is dictated by the choose of the landscape element in the canva.
 
 #### Rhythmic Pattern
-Rhythmic patterns are represented by the number of clouds. Each cloud represents a different instrument like kick drum, snare drum, shakers and wood percussions. No clouds means no rhythmic pattern, therefore no rhythmic sound at all. Choosing one or more cloud for each type the pattern of that instrument get more complex.
+Rhythmic patterns are represented by the number of clouds. Each cloud represents a different instrument like kick drum, snare drum, shakers and wood percussions. No clouds means no rhythmic pattern, therefore no rhythmic sound at all. Choosing one or more cloud for each type the pattern of that instrument get more complex, according to the table below. Try different combinations to create your rhythm!
+
+![](./GitAssets/RhythmicTable.png)
 
 ## Music generation 
 
