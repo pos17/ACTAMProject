@@ -28,14 +28,19 @@
 ### Caption: elements and music
 
 #### Melody Instrument
+The instruments used to play the melodic part is represented by the building elements in the canva.
 
 #### Chords Instrument
+The instruments used to play the harmonic part is represented by the floor elements in the canva.
 
 #### Bass
+The instruments used to play the bass part is represented by the decorative elements in the canva.
 
 #### Music Style
+Music style is dictated by the choose of the landscape element in the canva.
 
-#### Rythmic Pattern
+#### Rhythmic Pattern
+Rhythmic patterns are represented by the number of clouds. Each cloud represents a different instrument like kick drum, snare drum, shakers and wood percussions. No clouds means no rhythmic pattern, therefore no rhythmic sound at all. Choosing one or more cloud for each type the pattern of that instrument get more complex.
 
 ## Music generation 
 
