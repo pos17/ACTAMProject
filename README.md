@@ -68,25 +68,65 @@ The bar positioned below the main visualizer allows the user to control the syst
 ### Caption: elements and music
 
 #### Melody Instrument
-The instruments used to play the melodic part is represented by the building elements in the canva. Selecting a building to populate your environment you can use different instruments
+The instruments used to play the melodic part is represented by the building elements in the canva. Selecting a building to populate your environment the system uses different instruments to play the melody part, dictated by the landscape. The instruments have been chosen in a way that characterize the their native environment.
 
-<p float="center">
-  <img src="./GitAssets/MelodyTable.png" width="90%"/>
+<p align="center">
+  <img src="./GitAssets/Tables/MelodyTable.png" width="70%"/>
 </p>
 
 #### Chords Instrument
-The instruments used to play the harmonic part is represented by the floor elements in the canva.
+The instruments used to play the harmonic part is represented by the floor elements in the canva. All pads are synthsized and mostly obtained by subtractive synthesis in Reaper DAW. Each one presents different characteristics in term on harmonic content, envelope and modulation effects. 
+
+<p align="center">
+  <img src="./GitAssets/Tables/PadTable.png" width="70%"/>
+</p>
 
 #### Bass
-The instruments used to play the bass part is represented by the decorative elements in the canva.
+The instruments used to play the bass part is represented by the decorative elements in the canva. All basses are synthsized and mostly obtained by subtractive synthesis in Reaper DAW. 
+Choosing different decorative element a different bass is used, which will play the root note and the fifth of the harmony chord.
+
+<p align="center">
+  <img src="./GitAssets/Tables/BassTable.png" width="70%"/>
+</p>
 
 #### Music Style
 Music style is dictated by the choose of the landscape element in the canva.
+All music parts of melody, harmony and bass obey to the nodes of the Markov chain generated for each landscape choice.
+
+<p align="center">
+  <img src="./GitAssets/Tables/MusicStyleTable.png" width="70%"/>
+</p>
+
+A brief overview of musical styles follows.
+
+Mountain:
+- predominant use of harmonic notes for melody 
+- use of both rhythmic and lyric styles 
+- large use of VI-V-I turnaround, with some modulations
+
+City:
+- use of syncopations and rhythmic lags
+- melodic phrases similar to lo-fi music
+- use of phrygian mode, with recurrent minor harmonies 
+
+Desert:
+- use of harmonic, phrygian, dominant phrygianand double harmonic scales
+- large ose of fourth turnarounds
+
+Seaside:
+- lot of enphasis on current harmony notes
+- use of long notes counterpoised to short secondary notes 
+- large use of minor harmony, use of weak cadences 
+
 
 #### Rhythmic Pattern
 Rhythmic patterns are represented by the number of clouds. Each cloud represents a different instrument like kick drum, snare drum, shakers and wood percussions. No clouds means no rhythmic pattern, therefore no rhythmic sound at all. Choosing one or more cloud for each type the pattern of that instrument get more complex, according to the table below. Try different combinations to create your rhythm!
 
-![](./GitAssets/RhythmicTable.png)
+<p align="center">
+  <img src="./GitAssets/Tables/RhythmicTable.png" width="90%"/>
+</p>
+
+<!-- ![](./GitAssets/RhythmicTable.png) -->
 
 ## Music generation 
 
