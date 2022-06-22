@@ -348,6 +348,16 @@ img {
     justify-content: space-around;
     transition: top 0.5s;
 }
+
+#title{
+    text-align: center;
+    position: absolute;
+    left: 50%;
+    font-size: xx-large;
+    transform: translate(-50%);
+    color: white;
+}
+
 .topnav-right {
     float: right;
     padding-right: 20px;
