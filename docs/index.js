@@ -813,7 +813,7 @@ function buildInstruments() {
     // reverb sends
     melodyChannel.fan(reverbL, reverbR);
     harmonyChannel.fan(reverbL, reverbR);
-    setFilterFreq(1)
+    // setFilterFreq(1)
 
 }
 
@@ -1367,6 +1367,7 @@ function createEnvironment() {
     let angleD = angle % (2 * Math.PI)
     let transAngle = angle % (w)
     // BACKGROUND IMAGE
+    // sunset -> night
     if (angleD < NIGHT_START) {
         alphaNight = 1//(1 / (NIGHT_START - SUNSET_END)) * (angleD - SUNSET_END)
         alphaSunrise = 0
@@ -1374,45 +1375,55 @@ function createEnvironment() {
         alphaDay = 0
         lightOn = true
         sunToDraw = 1
+        setFilterFreq(alphaSunset/2)
     }
+    // night
     else if (angleD < SUNRISE_START) {
         alphaNight = 1
         alphaSunrise = 0
         alphaSunset = 0
         alphaDay = 0
         lightOn = true
-    } else if (angleD < SUNRISE_END) {
+        setFilterFreq(0)
+    }
+    //  night -> sunrise
+    else if (angleD < SUNRISE_END) {
         alphaNight = 1 //- (1 / (SUNRISE_END - SUNRISE_START)) * (angleD - SUNRISE_START)
         alphaSunrise = (1 / (SUNRISE_END - SUNRISE_START)) * (angleD - SUNRISE_START)
         alphaSunset = 0
         alphaDay = 0
         lightOn = true
-        setFilterWet(1-alphaSunrise)
-        console.log(1-alphaSunrise)
-        console.log(state.lpf.wet)
-    } else if (angleD < DAY_START) {
+        setFilterFreq(alphaSunrise/2)
+    }
+    // sunrise -> day 
+    else if (angleD < DAY_START) {
         alphaNight = 0
         alphaSunrise = 1 //- (1 / (DAY_START - SUNRISE_END)) * (angleD - SUNRISE_END)
         alphaSunset = 0
         alphaDay = (1 / (DAY_START - SUNRISE_END)) * (angleD - SUNRISE_END)
         lightOn = false
-    } else if (angleD < SUNSET_START) {
+        setFilterFreq(0.5 + alphaDay/2)
+    } 
+    // day
+    else if (angleD < SUNSET_START) {
         alphaNight = 0
         alphaSunrise = 0
         alphaSunset = 0
         alphaDay = 1
         lightOn = false
-    } else {
+        setFilterFreq(1)
+    } 
+    // day -> sunset
+    else {
         alphaNight = 0
         alphaSunrise = 0
         alphaSunset = 1//(1 / (2 * Math.PI - SUNSET_START)) * (angleD - SUNSET_START)
         alphaDay = 1 - (1 / (2 * Math.PI - SUNSET_START)) * (angleD - SUNSET_START)
         lightOn = false
         sunToDraw = (1 / (2 * Math.PI - SUNSET_START)) * (angleD - SUNSET_START)
-        setFilterWet(1-alphaDay)
-        console.log(1-alphaDay)
-        console.log(state.lpf.wet)
+        setFilterFreq(0.5 + alphaDay/2)
     }
+
     let background = getImageToDraw("background");
     background.drawThisImage(0, alphaNight, lightOn, canvas.height, canvas.width, ctx, factor)
     background.drawThisImage(1, alphaSunrise, lightOn, canvas.height, canvas.width, ctx, factor)
