@@ -41,9 +41,13 @@ The system can be tested by the user in two ways:
 Through the main menu the user can choose one of the many combinations of environment components, in order to build the desired environment. 
 
 Once the user found the wanted combination the user can let the system generate the musical part to be played pressing the "MUSIC" button: 
-![](./GitAssets/MusicButtonWhite.png)
 When a music part is not ready the button is white. 
-![](./GitAssets/MusicButtonBlue.png)
+
+<p float="left">
+  <img src="./GitAssets/MusicButtonWhite.png" width="150" />
+  <img src="./GitAssets/MusicButtonBlue.png" width="150" /> 
+</p>
+
 When the music part is ready the same button becomes blue.
 
 ### NOTES 
