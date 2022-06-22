@@ -1718,11 +1718,11 @@ async function menuPage() {
         if (tour.isActive()) {
             var step = tour.steps.find(element => element.id == "generateMusic")
             //console.log(step)
-            console.log(step.options.buttons)
-            step.options.buttons[1].disabled = false;
-            console.log(step.options.buttons)
-            tour.back()
-            tour.next()
+            //console.log(step.options.buttons)
+            //step.options.buttons[1].disabled = false;
+            //console.log(step.options.buttons)
+            //tour.back()
+            //tour.next()
         }
         //document.getElementById('dialog-music').showModal();
         console.log("BTN CT CLICKED");
@@ -1733,7 +1733,10 @@ async function menuPage() {
             document.getElementById('dialog-music').showModal()   
             setTimeout(() => {
                 document.getElementById('dialog-music').close()   
-            }, 1000);
+                if(tour.isActive()) {
+                    tour.next();
+                }
+            }, 1500);
         }, 750);
         
     }
@@ -3663,8 +3666,10 @@ tour.addStep({
         },
         {
             text: 'Next',
-            action: tour.next,
-            disabled: true,
+            action:function(){document.getElementById("btn-ct").click();
+            // tour.next();
+        } 
+            
         }
     ]
 });
@@ -3688,8 +3693,9 @@ tour.addStep({
             action: function () {
                 let step = tour.steps.find(element => element.id == "playMusic")
                 step.hide()
+                document.getElementById("btn-dx").click();
+                //tour.next();
             },
-            disabled: true,
         }
     ]
 });
@@ -3811,8 +3817,10 @@ tour.addStep({
         },
         {
             text: 'Next',
-            action: tour.next,
-            disabled:true,
+            action: function() {
+                document.getElementById("btn-stop").click()
+                //tour.next()
+            },
         }
     ]
 });
