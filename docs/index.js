@@ -3589,7 +3589,7 @@ tour.addStep({
 // step #3
 tour.addStep({
     id: 'kickPatternChoice',
-    text: 'The number of clouds of the first type represents the rythmic pattern for kick-drum',
+    text: 'The number of clouds of the first type represents the rhythmic pattern for kick-drum',
     attachTo: {
         element: '.flyingObject22',
         on: 'top'
@@ -3611,7 +3611,7 @@ tour.addStep({
 // step #3
 tour.addStep({
     id: 'snarePatternChoice',
-    text: 'The number of clouds of the second type represents the rythmic pattern for snare-drum',
+    text: 'The number of clouds of the second type represents the rhythmic pattern for snare-drum',
     attachTo: {
         element: '.flyingObject23',
         on: 'top'
@@ -3633,7 +3633,7 @@ tour.addStep({
 // step #3
 tour.addStep({
     id: 'hihatPatternChoice',
-    text: 'The number of clouds of the third type represents the rythmic pattern for the hihat pattern',
+    text: 'The number of clouds of the third type represents the rhythmic pattern for the hihat',
     attachTo: {
         element: '.flyingObject24',
         on: 'top'
@@ -3655,7 +3655,7 @@ tour.addStep({
 // step #3
 tour.addStep({
     id: 'effectsPatternChoice',
-    text: 'The number of clouds of the second type represents the rythmic pattern for the percussive effects pattern',
+    text: 'The number of clouds of the fourth type represents the rhythmic pattern for the percussive effects',
     attachTo: {
         element: '.flyingObject25',
         on: 'top'
