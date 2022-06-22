@@ -6,6 +6,7 @@
 - [**BIO MASHUP**](#bio-mashup)
   - [INTRODUCTION](#introduction)
   - [User Guide](#user-guide)
+    - [Menu](#menu)
     - [NOTES](#notes)
     - [Caption: elements and music](#caption-elements-and-music)
       - [Melody Instrument](#melody-instrument)
@@ -18,7 +19,6 @@
       - [Leadsheet Notation](#leadsheet-notation)
       - [Styles](#styles)
   - [Implementation](#implementation)
-    - [Menu implementation](#menu-implementation)
     - [Audio Generation](#audio-generation)
   - [Results and final considerations](#results-and-final-considerations)
   - [Group members](#group-members)
@@ -33,9 +33,21 @@
 The system can be tested by the user in two ways: 
 - [Hosted website](https://pox17.github.io/ACTAMProject/)
 - Downloading the whole project from GitHub and running it using VS CODE live server
+  
+
+### Menu 
+![](./GitAssets/mainMenu.png)
+
+Through the main menu the user can choose one of the many combinations of environment components, in order to build the desired environment. 
+
+Once the user found the wanted combination the user can let the system generate the musical part to be played pressing the "MUSIC" button: 
+![](./GitAssets/MusicButtonWhite.png)
+When a music part is not ready the button is white. 
+![](./GitAssets/MusicButtonBlue.png)
+When the music part is ready the same button becomes blue.
 
 ### NOTES 
-- Tested on Mozilla Firefox
+- Use on Mozilla Firefox for best user experience
 - Internet connection needed while using the website in order to correctly downloading all the components.
 
 ### Caption: elements and music
@@ -70,9 +82,9 @@ Rhythmic patterns are represented by the number of clouds. Each cloud represents
 - [Shepherd.js](https://shepherdjs.dev/)
 
 
-### Menu implementation
 
 ### Audio Generation
+All the audio generation and synchronizing is implemented using Tone.js
 
 ## Results and final considerations
 
