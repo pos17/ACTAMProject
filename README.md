@@ -11,7 +11,7 @@
       - [Chords Instrument](#chords-instrument)
       - [Bass](#bass)
       - [Music Style](#music-style)
-      - [Rythmic Pattern](#rythmic-pattern)
+      - [Rhythmic Pattern](#rhythmic-pattern)
   - [Music generation](#music-generation)
       - [Markov Chain](#markov-chain)
       - [Leadsheet Notation](#leadsheet-notation)
@@ -24,7 +24,7 @@
 
 ## INTRODUCTION
   Project developed for the course "Advance Coding Tools and Methodologies", held in the Master degree of Music and Acoustic Engineering, based in "Politecnico di Milano". 
-  The project aims at the production of generative music threw the combination of different melodic and rythmic music styles, different instruments. Every component is represented by a simple and friendly visual component 
+  The project aims at the production of generative music threw the combination of different melodic and rythmic music styles, different instruments. Every component is represented by a simple and friendly visual component, combining the various component the user can build a visual and musical environment.
 ## User Guide
 
 ### Caption: elements and music
