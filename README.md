@@ -68,7 +68,11 @@ The bar positioned below the main visualizer allows the user to control the syst
 ### Caption: elements and music
 
 #### Melody Instrument
-The instruments used to play the melodic part is represented by the building elements in the canva.
+The instruments used to play the melodic part is represented by the building elements in the canva. Selecting a building to populate your environment you can use different instruments
+
+<p float="center">
+  <img src="./GitAssets/MelodyTable.png" width="90%"/>
+</p>
 
 #### Chords Instrument
 The instruments used to play the harmonic part is represented by the floor elements in the canva.
