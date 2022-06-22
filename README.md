@@ -6,6 +6,7 @@
 - [**BIO MASHUP**](#bio-mashup)
   - [INTRODUCTION](#introduction)
   - [User Guide](#user-guide)
+    - [NOTES](#notes)
     - [Caption: elements and music](#caption-elements-and-music)
       - [Melody Instrument](#melody-instrument)
       - [Chords Instrument](#chords-instrument)
@@ -25,7 +26,17 @@
 ## INTRODUCTION
   Project developed for the course "Advance Coding Tools and Methodologies", held in the Master degree of Music and Acoustic Engineering, based in "Politecnico di Milano". 
   The project aims at the production of generative music threw the combination of different melodic and rythmic music styles, different instruments. Every component is represented by a simple and friendly visual component, combining the various component the user can build a visual and musical environment.
+
+
 ## User Guide
+
+The system can be tested by the user in two ways: 
+- [Hosted website](https://pox17.github.io/ACTAMProject/)
+- Downloading the whole project from GitHub and running it using VS CODE live server
+
+### NOTES 
+- Tested on Mozilla Firefox
+- Internet connection needed while using the website in order to correctly downloading all the components.
 
 ### Caption: elements and music
 
@@ -42,7 +53,7 @@ The instruments used to play the bass part is represented by the decorative elem
 Music style is dictated by the choose of the landscape element in the canva.
 
 #### Rhythmic Pattern
-Rhythmic patterns are represented by the number of clouds. Each cloud represents a different instrument like kick drum, snare drum, shakers and wood percussions. No clouds means no rhythmic pattern, therefore no rhythmic sound at all. Choosing one or more cloud for each type the pattern of that instrument get more complex.
+Rhythmic patterns are represented by the number of clouds. Each cloud represents a different instrument like kick drum, snare drum, shakers and wood percussions. No clouds means no rhythmic pattern, therefore no rhythmic sound at all. Choosing one or more cloud for each type the pattern of that instrument get more complex, according to the table below. Try different combinations to create your rhythm!
 
 ![](./GitAssets/RhythmicTable.png)
 
@@ -53,7 +64,7 @@ Rhythmic patterns are represented by the number of clouds. Each cloud represents
 #### Styles
 
 ## Implementation
- Given the unusual nature of the system built, it is implemented using mostly raw HTML CSS and JAVASCRIPT code, some frameworks and instruments have been used for the development in order to speed up and enhance the results obtained by the system: 
+ Given the unusual nature of the system built, it is implemented using mostly raw HTML, CSS and JAVASCRIPT code, some frameworks and instruments have been used for the development in order to speed up and enhance the results obtained by the system: 
 
 - [Tone.js](https://tonejs.github.io/)
 - [Firebase](https://firebase.google.com/)
