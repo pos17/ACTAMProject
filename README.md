@@ -44,8 +44,8 @@ Once the user found the wanted combination the user can let the system generate 
 When a music part is not ready the button is white. 
 
 <p float="left">
-  <img src="./GitAssets/MusicButtonWhite.png" width="150" />
-  <img src="./GitAssets/MusicButtonBlue.png" width="150" /> 
+  <img src="./GitAssets/MusicButtonWhite.png" width="300" />
+  <img src="./GitAssets/MusicButtonBlue.png" width="300" /> 
 </p>
 
 When the music part is ready the same button becomes blue.
