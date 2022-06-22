@@ -52,9 +52,15 @@ When the music part is ready the same button becomes blue.
 
 Once the music is ready the user can click on the "PLAY" button and start the music playing. 
 <p float="left">
-  <img src="./GitAssets/EnvPlayer.png" width="900" /> 
+  <img src="./GitAssets/EnvPlayer.png" width="900"/> 
 </p>
 
+The bar positioned below the main visualizer allows the user to control the system while the playback is active: 
+- SAVE BUTTON: The button allows the user to safe the environment generated on the database.
+- STOP BUTTON: The stop button allows the user to stop the environment playback and to go back to the menu page. 
+- PLAY/PAUSE BUTTON: The play/pause button allows the user to pause and restart the playback of the system. 
+- VOLUME BUTTON: The volume button allows to silence and to restore the audio value of the system. If hovered a volume slider is visualized and allows the user to set the desired volume 
+- FULLSCREEN BUTTON: Clicking on the fullscreen button the main environment playback is expanded to fullscreen. Push the "ESC" button on the keyboard to get back to standard visualization.
 ### NOTES 
 - Use on Mozilla Firefox for best user experience
 - Internet connection needed while using the website in order to correctly downloading all the components.
