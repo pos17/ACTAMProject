@@ -124,6 +124,45 @@ Once the generated path retraces the starting node the generation ceases and the
 
 
 ### Leadsheet Notation
+
+Musical melodies and chords are communicated using a simplified version of Impro-Visor leadsheet notation.
+The Impro-Visor leadsheet notation provides a convenient way to create and communicate leadsheet content as a text file.
+
+There are two tracks in the leadsheet:
+
+- a chord track
+- a melody track
+
+
+Strings that begin with upper-case letters go with the chord
+track, as _C E# Gm_. 
+
+While strings that begin with lower-case letters go with the melody track, as _c e# g._
+
+#### Note placement
+The "+" after a melody note means that the note will be played an octave above the middle one, the same concept for "++", "+++" and so on.
+The "-",instead, indicate that the note will be played an octave below the middle one, and so on for "--", "---".
+
+#### Note duration
+
+1 = whole note (4/4)
+
+2 = half note (2/4)
+
+4 = quarter note (1/4)
+
+8 = eighth note (1/8)
+
+.. and so on..
+
+
+The dot "."  represents the respective point in common musical notation that extends the duration of the note by a time equal to its half: _a. g#._.
+
+#### Rest 
+
+represented by the letter _r_ plus its value in number,  following the same rules seen for the notes
+
+
 ### Styles
 A brief overview of musical styles follows.
 
