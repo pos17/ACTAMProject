@@ -112,25 +112,33 @@ Rhythmic patterns are represented by the number of clouds. Each cloud represents
 ### Markov Chain
 A Markov Chain (or Markov process) is a stochastic model describing a sequence of possible events in which the probability of each event depends only on the state attained in the previous event. Each event is represented by a **node** of the chain that is connected with itself and/or other nodes by **probability arcs**. So when the Markov Process begins it can last forever, thus giving birth to infinite generative music.
 
+<p align="center">
+  <img src="./GitAssets/MarkovChain.png" width="40%"/>
+</p>
+
 ### Leadsheet Notation
 ### Styles
 A brief overview of musical styles follows.
 
 Mountain:
+<img style="float:right" src="./GitAssets/AssetsHD/Mountains prev_HD.png" width="15%"/>
 - predominant use of harmonic notes for melody 
 - use of both rhythmic and lyric styles 
 - large use of VI-V-I turnaround, with some modulations
 
 City:
+<img style="float:right" src="./GitAssets/AssetsHD/Skyline prev_HD.png" width="15%"/>
 - use of syncopations and rhythmic lags
 - melodic phrases similar to lo-fi music
 - use of phrygian mode, with recurrent minor harmonies 
 
 Desert:
+<img style="float:right" src="./GitAssets/AssetsHD/Desert prev_HD.png" width="15%"/>
 - use of harmonic, phrygian, dominant phrygian and double harmonic scales
 - large use of fourth turnarounds
 
 Seaside:
+<img style="float:right" src="./GitAssets/AssetsHD/Sea prev_HD.png" width="15%"/>
 - lot of emphasis on current harmony notes
 - use of long notes counterpoised to short secondary notes 
 - large use of minor harmony, use of weak cadences 
@@ -146,7 +154,8 @@ Seaside:
 
 
 ### Audio Generation
-All the audio generation and synchronizing is implemented using Tone.js
+All the audio generation and synchronizing is implemented using Tone.js.
+
 
 ## Results and final considerations
 
