@@ -162,6 +162,12 @@ The dot "."  represents the respective point in common musical notation that ext
 
 represented by the letter _r_ plus its value in number,  following the same rules seen for the notes
 
+#### Example
+   **r4. c16 c#16 e16 g4. g16**
+  
+  ![](./GitAssets/barNotation.png)
+
+
 
 ### Styles
 A brief overview of musical styles follows.
