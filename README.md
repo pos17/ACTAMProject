@@ -15,9 +15,9 @@
       - [Music Style](#music-style)
       - [Rhythmic Pattern](#rhythmic-pattern)
   - [Music generation](#music-generation)
-      - [Markov Chain](#markov-chain)
-      - [Leadsheet Notation](#leadsheet-notation)
-      - [Styles](#styles)
+    - [Markov Chain](#markov-chain)
+    - [Leadsheet Notation](#leadsheet-notation)
+    - [Styles](#styles)
   - [Implementation](#implementation)
     - [Audio Generation](#audio-generation)
   - [Results and final considerations](#results-and-final-considerations)
@@ -97,6 +97,23 @@ All music parts of melody, harmony and bass obey to the nodes of the Markov chai
   <img src="./GitAssets/Tables/MusicStyleTable.png" width="70%"/>
 </p>
 
+
+#### Rhythmic Pattern
+Rhythmic patterns are represented by the number of clouds. Each cloud represents a different instrument like kick drum, snare drum, shakers and wood percussions. No clouds means no rhythmic pattern, therefore no rhythmic sound at all. Choosing one or more cloud for each type the pattern of that instrument get more complex, according to the table below. Try different combinations to create your rhythm!
+
+<p align="center">
+  <img src="./GitAssets/Tables/RhythmicTable.png" width="90%"/>
+</p>
+
+<!-- ![](./GitAssets/RhythmicTable.png) -->
+
+## Music generation 
+
+### Markov Chain
+A Markov Chain (or Markov process) is a stochastic model describing a sequence of possible events in which the probability of each event depends only on the state attained in the previous event. Each event is represented by a **node** of the chain that is connected with itself and/or other nodes by **probability arcs**. So when the Markov Process begins it can last forever, thus giving birth to infinite generative music.
+
+### Leadsheet Notation
+### Styles
 A brief overview of musical styles follows.
 
 Mountain:
@@ -110,29 +127,13 @@ City:
 - use of phrygian mode, with recurrent minor harmonies 
 
 Desert:
-- use of harmonic, phrygian, dominant phrygianand double harmonic scales
-- large ose of fourth turnarounds
+- use of harmonic, phrygian, dominant phrygian and double harmonic scales
+- large use of fourth turnarounds
 
 Seaside:
-- lot of enphasis on current harmony notes
+- lot of emphasis on current harmony notes
 - use of long notes counterpoised to short secondary notes 
 - large use of minor harmony, use of weak cadences 
-
-
-#### Rhythmic Pattern
-Rhythmic patterns are represented by the number of clouds. Each cloud represents a different instrument like kick drum, snare drum, shakers and wood percussions. No clouds means no rhythmic pattern, therefore no rhythmic sound at all. Choosing one or more cloud for each type the pattern of that instrument get more complex, according to the table below. Try different combinations to create your rhythm!
-
-<p align="center">
-  <img src="./GitAssets/Tables/RhythmicTable.png" width="90%"/>
-</p>
-
-<!-- ![](./GitAssets/RhythmicTable.png) -->
-
-## Music generation 
-
-#### Markov Chain
-#### Leadsheet Notation
-#### Styles
 
 ## Implementation
  Given the unusual nature of the system built, it is implemented using mostly raw HTML, CSS and JAVASCRIPT code, some frameworks and instruments have been used for the development in order to speed up and enhance the results obtained by the system: 
