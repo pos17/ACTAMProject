@@ -19,7 +19,6 @@
     - [Leadsheet Notation](#leadsheet-notation)
     - [Styles](#styles)
   - [Implementation](#implementation)
-    - [Audio Generation](#audio-generation)
   - [Results and final considerations](#results-and-final-considerations)
   - [Group members](#group-members)
 
@@ -144,9 +143,8 @@ Seaside:
 - [Shepherd.js](https://shepherdjs.dev/)
 
 
-
-### Audio Generation
-All the audio generation and synchronizing is implemented using Tone.js
+All the audio is played and synchronized through the development tools provided by Tone.js.
+All the data used to populate the system are stored in an instance of firestore database provided by the firebase application. 
 
 ## Results and final considerations
 
