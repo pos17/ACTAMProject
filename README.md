@@ -19,7 +19,6 @@
     - [Leadsheet Notation](#leadsheet-notation)
     - [Styles](#styles)
   - [Implementation](#implementation)
-    - [Audio Generation](#audio-generation)
   - [Results and final considerations](#results-and-final-considerations)
   - [Group members](#group-members)
 
@@ -43,7 +42,7 @@ Through the main menu the user can choose one of the many combinations of enviro
 Once the user found the wanted combination the user can let the system generate the musical part to be played pressing the "MUSIC" button: 
 When a music part is not ready the button is white. 
 
-<p float="left">
+<p align="center">
   <img src="./GitAssets/MusicButtonWhite.png" width="300" />
   <img src="./GitAssets/MusicButtonBlue.png" width="300" /> 
 </p>
@@ -51,7 +50,7 @@ When a music part is not ready the button is white.
 When the music part is ready the same button becomes blue.
 
 Once the music is ready the user can click on the "PLAY" button and start the music playing. 
-<p float="left">
+<p align="center">
   <img src="./GitAssets/EnvPlayer.png" width="900"/> 
 </p>
 
@@ -152,10 +151,15 @@ Seaside:
 - [Shepherd.js](https://shepherdjs.dev/)
 
 
+<<<<<<< HEAD
 
 ### Audio Generation
 All the audio generation and synchronizing is implemented using Tone.js.
 
+=======
+All the audio is played and synchronized through the development tools provided by Tone.js.
+All the data used to populate the system are stored in an instance of firestore database provided by the firebase application. 
+>>>>>>> 9c8fe46b0388e84d8820f9f84846fc02fe0fa7af
 
 ## Results and final considerations
 
