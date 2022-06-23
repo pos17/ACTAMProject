@@ -116,6 +116,13 @@ A Markov Chain (or Markov process) is a stochastic model describing a sequence o
   <img src="./GitAssets/MarkovChain.png" width="40%"/>
 </p>
 
+This process constitutes the **generative melodic model** for the project.
+each node contains the information of a musical **bar**, with its melody and chord. 
+The weights of the arcs that connect the nodes are constructed ensuring logical harmonic and melodic succession.
+In total we have four Markov Chains, each for an environment, and an starting node for each.
+Once the generated path retraces the starting node the generation ceases and the music repeats following the created path.
+
+
 ### Leadsheet Notation
 ### Styles
 A brief overview of musical styles follows.
@@ -136,11 +143,12 @@ Desert:
 <img style="float:right" src="./GitAssets/AssetsHD/Desert prev_HD.png" width="15%"/>
 - use of harmonic, phrygian, dominant phrygian and double harmonic scales
 - large use of fourth turnarounds
+- musical syncopations
 
 Seaside:
 <img style="float:right" src="./GitAssets/AssetsHD/Sea prev_HD.png" width="15%"/>
 - lot of emphasis on current harmony notes
-- use of long notes counterpoised to short secondary notes 
+- creation of loops similar to each other, one can be the variation of the other, for example one with the same melody but headless 
 - large use of minor harmony, use of weak cadences 
 
 ## Implementation
