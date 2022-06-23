@@ -43,7 +43,7 @@ Through the main menu the user can choose one of the many combinations of enviro
 Once the user found the wanted combination the user can let the system generate the musical part to be played pressing the "MUSIC" button: 
 When a music part is not ready the button is white. 
 
-<p float="left">
+<p align="center">
   <img src="./GitAssets/MusicButtonWhite.png" width="300" />
   <img src="./GitAssets/MusicButtonBlue.png" width="300" /> 
 </p>
@@ -51,7 +51,7 @@ When a music part is not ready the button is white.
 When the music part is ready the same button becomes blue.
 
 Once the music is ready the user can click on the "PLAY" button and start the music playing. 
-<p float="left">
+<p align="center">
   <img src="./GitAssets/EnvPlayer.png" width="900"/> 
 </p>
 
