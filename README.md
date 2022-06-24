@@ -10,13 +10,17 @@
     - [NOTES](#notes)
     - [Caption: elements and music](#caption-elements-and-music)
       - [Melody Instrument](#melody-instrument)
-      - [Chords Instrument](#chords-instrument)
       - [Bass](#bass)
+      - [Chords Instrument](#chords-instrument)
       - [Music Style](#music-style)
       - [Rhythmic Pattern](#rhythmic-pattern)
   - [Music generation](#music-generation)
     - [Markov Chain](#markov-chain)
     - [Leadsheet Notation](#leadsheet-notation)
+      - [Note placement](#note-placement)
+      - [Note duration](#note-duration)
+      - [Rest](#rest)
+      - [Example](#example)
     - [Styles](#styles)
   - [Implementation](#implementation)
     - [Audio Generation](#audio-generation)
@@ -74,19 +78,19 @@ The instruments used to play the melodic part is represented by the building ele
   <img src="./GitAssets/Tables/MelodyTable.png" width="70%"/>
 </p>
 
-#### Chords Instrument
-The instruments used to play the harmonic part is represented by the floor elements in the canva. All pads are synthsized and mostly obtained by subtractive synthesis in Reaper DAW. Each one presents different characteristics in term on harmonic content, envelope and modulation effects. 
-
-<p align="center">
-  <img src="./GitAssets/Tables/PadTable.png" width="70%"/>
-</p>
-
 #### Bass
 The instruments used to play the bass part is represented by the decorative elements in the canva. All basses are synthsized and mostly obtained by subtractive synthesis in Reaper DAW. 
 Choosing different decorative element a different bass is used, which will play the root note and the fifth of the harmony chord.
 
 <p align="center">
   <img src="./GitAssets/Tables/BassTable.png" width="70%"/>
+</p>
+
+#### Chords Instrument
+The instruments used to play the harmonic part is represented by the floor elements in the canva. All pads are synthsized and mostly obtained by subtractive synthesis in Reaper DAW. Each one presents different characteristics in term on harmonic content, envelope and modulation effects. 
+
+<p align="center">
+  <img src="./GitAssets/Tables/PadTable.png" width="70%"/>
 </p>
 
 #### Music Style
@@ -173,25 +177,33 @@ represented by the letter _r_ plus its value in number,  following the same rule
 A brief overview of musical styles follows.
 
 Mountain:
+
 <img style="float:right" src="./GitAssets/AssetsHD/Mountains prev_HD.png" width="15%"/>
+
 - predominant use of harmonic notes for melody 
 - use of both rhythmic and lyric styles 
 - large use of VI-V-I turnaround, with some modulations
 
 City:
+
 <img style="float:right" src="./GitAssets/AssetsHD/Skyline prev_HD.png" width="15%"/>
+
 - use of syncopations and rhythmic lags
 - melodic phrases similar to lo-fi music
 - use of phrygian mode, with recurrent minor harmonies 
 
 Desert:
+
 <img style="float:right" src="./GitAssets/AssetsHD/Desert prev_HD.png" width="15%"/>
+
 - use of harmonic, phrygian, dominant phrygian and double harmonic scales
 - large use of fourth turnarounds
 - musical syncopations
 
 Seaside:
+
 <img style="float:right" src="./GitAssets/AssetsHD/Sea prev_HD.png" width="15%"/>
+
 - lot of emphasis on current harmony notes
 - creation of loops similar to each other, one can be the variation of the other, for example one with the same melody but headless 
 - large use of minor harmony, use of weak cadences 
