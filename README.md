@@ -177,7 +177,6 @@ represented by the letter _r_ plus its value in number,  following the same rule
 A brief overview of musical styles follows.
 
 Mountain:
-
 <img align="right" src="./GitAssets/AssetsHD/Mountains prev_HD.png" width="15%"/>
 
 - predominant use of harmonic notes for melody 
@@ -185,7 +184,6 @@ Mountain:
 - large use of VI-V-I turnaround, with some modulations
 
 City:
-
 <img align="right" src="./GitAssets/AssetsHD/Skyline prev_HD.png" width="15%"/>
 
 - use of syncopations and rhythmic lags
@@ -193,7 +191,6 @@ City:
 - use of phrygian mode, with recurrent minor harmonies 
 
 Desert:
-
 <img align="right" src="./GitAssets/AssetsHD/Desert prev_HD.png" width="15%"/>
 
 - use of harmonic, phrygian, dominant phrygian and double harmonic scales
@@ -201,7 +198,6 @@ Desert:
 - musical syncopations
 
 Seaside:
-
 <img align="right" src="./GitAssets/AssetsHD/Sea prev_HD.png" width="15%"/>
 
 - lot of emphasis on current harmony notes
