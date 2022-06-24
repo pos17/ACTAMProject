@@ -25,7 +25,7 @@
 
 ## INTRODUCTION
   Project developed for the course "Advance Coding Tools and Methodologies", held in the Master degree of Music and Acoustic Engineering, based in "Politecnico di Milano". 
-  The project aims at the production of generative music threw the combination of different melodic and rythmic music styles, different instruments. Every component is represented by a simple and friendly visual component, combining the various component the user can build a visual and musical environment.
+  The project aims at the production of generative music through the combination of different melodic and rythmic music styles, different instruments. Every component is represented by a simple and friendly visual component, combining the various components the user can build a visual and musical environment.
 
 
 ## User Guide
@@ -40,7 +40,7 @@ The system can be tested by the user in two ways:
 
 Through the main menu the user can choose one of the many combinations of environment components, in order to build the desired environment. 
 
-Once the user found the wanted combination the user can let the system generate the musical part to be played pressing the "MUSIC" button: 
+Once the user found the wanted combination it' possible to let the system generate the musical part to be played pressing the "MUSIC" button: 
 When a music part is not ready the button is white. 
 
 <p align="center">
