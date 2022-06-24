@@ -178,7 +178,7 @@ A brief overview of musical styles follows.
 
 Mountain:
 
-<img style="float:right" src="./GitAssets/AssetsHD/Mountains prev_HD.png" width="15%"/>
+<img align="right" src="./GitAssets/AssetsHD/Mountains prev_HD.png" width="15%"/>
 
 - predominant use of harmonic notes for melody 
 - use of both rhythmic and lyric styles 
@@ -186,7 +186,7 @@ Mountain:
 
 City:
 
-<img style="float:right" src="./GitAssets/AssetsHD/Skyline prev_HD.png" width="15%"/>
+<img align="right" src="./GitAssets/AssetsHD/Skyline prev_HD.png" width="15%"/>
 
 - use of syncopations and rhythmic lags
 - melodic phrases similar to lo-fi music
@@ -194,7 +194,7 @@ City:
 
 Desert:
 
-<img style="float:right" src="./GitAssets/AssetsHD/Desert prev_HD.png" width="15%"/>
+<img align="right" src="./GitAssets/AssetsHD/Desert prev_HD.png" width="15%"/>
 
 - use of harmonic, phrygian, dominant phrygian and double harmonic scales
 - large use of fourth turnarounds
@@ -202,7 +202,7 @@ Desert:
 
 Seaside:
 
-<img style="float:right" src="./GitAssets/AssetsHD/Sea prev_HD.png" width="15%"/>
+<img align="right" src="./GitAssets/AssetsHD/Sea prev_HD.png" width="15%"/>
 
 - lot of emphasis on current harmony notes
 - creation of loops similar to each other, one can be the variation of the other, for example one with the same melody but headless 
