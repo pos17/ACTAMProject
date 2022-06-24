@@ -207,6 +207,7 @@ Seaside:
  Given the unusual nature of the system built, it is implemented using mostly raw HTML, CSS and JAVASCRIPT code, some frameworks and instruments have been used for the development in order to speed up and enhance the results obtained by the system: 
 
 - [Tone.js](https://tonejs.github.io/)
+- [Tonal.js](https://github.com/tonaljs/tonal)
 - [Firebase](https://firebase.google.com/)
 - [NES CSS](https://nostalgic-css.github.io/NES.css/)
 - [Shepherd.js](https://shepherdjs.dev/)
