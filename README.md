@@ -24,7 +24,6 @@
     - [Styles](#styles)
   - [Implementation](#implementation)
     - [Audio Generation](#audio-generation)
-  - [Results and final considerations](#results-and-final-considerations)
   - [Group members](#group-members)
 
 ## INTRODUCTION
@@ -217,8 +216,6 @@ Seaside:
 ### Audio Generation
 All the audio generation and synchronizing is implemented using Tone.js. The initial idea was to synthesize all sounds with the tools provided by Tone.js like Oscillators, Synths, Envelopes, Filters, Modulation Effects and Ambient Effects. Turned up that this solution did not prove efficient, so we opted for the [Player](https://tonejs.github.io/docs/14.7.77/Player.html) component combined with [Part](https://tonejs.github.io/docs/14.7.77/Part), that allows to play the music parts contained into markov chain nodes. **Player** is an AudioNode that allows to upload an audio sample and manipulate it through Tone.js framework. All sounds used in this system are samples, however they're unique because they're all have been synthesized in a DAW by developers.
 
-
-## Results and final considerations
 
 ## Group members
 - Paolo Ostan (paolo.ostan@mail.polimi.it)
