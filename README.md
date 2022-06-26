@@ -67,38 +67,38 @@ The bar positioned below the main visualizer allows the user to control the syst
 - SAVE BUTTON: The button allows the user to save the environment generated on the database.
 - STOP BUTTON: The stop button allows the user to stop the environment playback and to go back to the menu page. 
 - PLAY/PAUSE BUTTON: The play/pause button allows the user to pause and restart the playback of the system. 
-- VOLUME BUTTON: The volume button allows to silence and to restore the audio value of the system. If hovered a volume slider is visualized and allows the user to set the desired volume 
+- VOLUME BUTTON: The volume button allows to silence and restore the audio value of the system. If hovered a volume slider is visualized and allows the user to set the desired volume 
 - FULLSCREEN BUTTON: Clicking on the fullscreen button the main environment playback is expanded to fullscreen. Push the "ESC" button on the keyboard to get back to standard visualization.
 ### NOTES 
-- Use on Mozilla Firefox for best user experience
-- Internet connection needed while using the website in order to correctly downloading all the components.
+- Use Mozilla Firefox for best user experience
+- Internet connection needed while using the website in order to correctly download all the components.
 
 ### Caption: elements and music
 
 #### Melody Instrument
-The instruments used to play the melodic part is represented by the building elements in the canva. Selecting a building to populate your environment the system uses different instruments to play the melody part, dictated by the landscape. The instruments have been chosen in a way that characterize the their native environment.
+The instruments used to play the melodic part are represented by the building elements in the canvas. Selecting a building to populate your environment the system uses different instruments to play the melody part, dictated by the landscape. The instruments have been chosen in a way that characterizes their native environment.
 
 <p align="center">
   <img src="./GitAssets/Tables/MelodyTable.png" width="70%"/>
 </p>
 
 #### Bass
-The instruments used to play the bass part is represented by the decorative elements in the canva. All basses are synthsized and mostly obtained by subtractive synthesis in Reaper DAW. 
-Choosing different decorative element a different bass is used, which will play the root note and the fifth of the harmony chord.
+The instruments used to play the bass part are represented by the decorative elements in the canvas. All basses are synthsized and mostly obtained by subtractive synthesis in Reaper DAW. 
+Choosing different decorative elements a different bass is used, which will play the root note and the fifth of the chord.
 
 <p align="center">
   <img src="./GitAssets/Tables/BassTable.png" width="70%"/>
 </p>
 
 #### Chords Instrument
-The instruments used to play the harmonic part is represented by the floor elements in the canva. All pads are synthsized and mostly obtained by subtractive synthesis in Reaper DAW. Each one presents different characteristics in term on harmonic content, envelope and modulation effects. 
+The instruments used to play the harmonic part is represented by the floor elements in the canvas. All pads are synthsized and mostly obtained through subtractive synthesis in Reaper DAW. Each one presents different characteristics in term on harmonic content, envelope and modulation effects. 
 
 <p align="center">
   <img src="./GitAssets/Tables/PadTable.png" width="70%"/>
 </p>
 
 #### Music Style
-Music style is dictated by the choose of the landscape element in the canva.
+Music style is dictated by the choice of the landscape element in the canvas.
 All music parts of melody, harmony and bass obey to the nodes of the Markov chain generated for each landscape choice.
 
 <p align="center">
@@ -107,7 +107,7 @@ All music parts of melody, harmony and bass obey to the nodes of the Markov chai
 
 
 #### Rhythmic Pattern
-Rhythmic patterns are represented by the number of clouds. Each cloud represents a different instrument like kick drum, snare drum, shakers and wood percussions. No clouds means no rhythmic pattern, therefore no rhythmic sound at all. Choosing one or more cloud for each type the pattern of that instrument get more complex, according to the table below. Try different combinations to create your rhythm!
+Rhythmic patterns are represented by the number of clouds. Each cloud represents a different instrument like kick drum, snare drum, shakers and wood percussions. No clouds means no rhythmic pattern, therefore no rhythmic sound at all. Choosing one or more clouds for each type the pattern of that instrument gets more complex, according to the table below. Try different combinations to create your rhythm!
 
 <p align="center">
   <img src="./GitAssets/Tables/RhythmicTable.png" width="90%"/>
@@ -125,9 +125,9 @@ A Markov Chain (or Markov process) is a stochastic model describing a sequence o
 </p>
 
 This process constitutes the **generative melodic model** for the project.
-each node contains the information of a musical **bar**, with its melody and chord. 
+Each node contains the information of a musical **bar**, with its melody and chord. 
 The weights of the arcs that connect the nodes are constructed ensuring logical harmonic and melodic succession.
-In total we have four Markov Chains, each for an environment, and an starting node for each.
+In total we have four Markov Chains, one for each environment, and a starting node from which starts the chain.
 Once the generated path retraces the starting node the generation ceases and the music repeats following the created path.
 
 
@@ -148,8 +148,8 @@ track, as _C D# Gm_.
 While strings that begin with lower-case letters go with the melody track, as _c d# g._
 
 #### Note placement
-The "+" after a melody note means that the note will be played an octave above the middle one, the same concept for "++", "+++" and so on.
-The "-",instead, indicate that the note will be played an octave below the middle one, and so on for "--", "---".
+The "+" after a melody note means that the note will be played an octave above the middle one, the same concept for "++", "+++".
+The "-",instead, indicates that the note will be played an octave below the middle one, and so on for "--", "---".
 
 #### Note duration
 
@@ -161,10 +161,8 @@ The "-",instead, indicate that the note will be played an octave below the middl
 
 8 = eighth note (1/8)
 
-.. and so on..
 
-
-The dot "."  represents the respective point in common musical notation that extends the duration of the note by a time equal to its half: _a. g#._.
+The dot "."  represents the respective point in common musical notation that extends the duration of the note by a time equal to its half: _a4. g#2._.
 
 #### Rest 
 
@@ -183,9 +181,9 @@ A brief overview of musical styles follows.
 Mountain:
 <img align="right" src="./GitAssets/AssetsHD/Mountains prev_HD.png" width="15%"/>
 
-- predominant use of harmonic notes for melody 
+- predominant use for melody of constitutive notes of the chords  
 - use of both rhythmic and lyric styles 
-- large use of VI-V-I turnaround, with some modulations
+- large use of VI-V-I turnarounds, with some modulations
 
 City:
 <img align="right" src="./GitAssets/AssetsHD/Skyline prev_HD.png" width="15%"/>
@@ -209,7 +207,7 @@ Seaside:
 - large use of minor harmony, use of weak cadences 
 
 ## Implementation
- Given the unusual nature of the system built, it is implemented using mostly raw HTML, CSS and JAVASCRIPT code, some frameworks and instruments have been used for the development in order to speed up and enhance the results obtained by the system: 
+ Given the unusual nature of the system, it is implemented using mostly raw HTML, CSS and JAVASCRIPT code, some frameworks and instruments have been used for the development in order to speed up and enhance the results obtained by the system: 
 
 - [Tone.js](https://tonejs.github.io/)
 - [Tonal.js](https://github.com/tonaljs/tonal)
@@ -220,7 +218,7 @@ Seaside:
 
 
 ### Audio Generation
-All the audio generation and synchronizing is implemented using Tone.js. The initial idea was to synthesize all sounds with the tools provided by Tone.js like Oscillators, Synths, Envelopes, Filters, Modulation Effects and Ambient Effects. Turned up that this solution did not prove efficient, so we opted for the [Player](https://tonejs.github.io/docs/14.7.77/Player.html) component combined with [Part](https://tonejs.github.io/docs/14.7.77/Part), that allows to play the music parts contained into markov chain nodes. **Player** is an AudioNode that allows to upload an audio sample and manipulate it through Tone.js framework. All sounds used in this system are samples, however they're unique because they're all have been synthesized in a DAW by developers.
+All the audio generations and synchronizations are implemented using Tone.js. The initial idea was to synthesize all sounds with the tools provided by Tone.js like Oscillators, Synths, Envelopes, Filters, Modulation Effects and Ambient Effects. We later realized that this solution did not prove efficient, so we opted for the [Player](https://tonejs.github.io/docs/14.7.77/Player.html) component combined with [Part](https://tonejs.github.io/docs/14.7.77/Part), that allows to play the music parts contained into markov chain nodes. **Player** is an AudioNode that allows the user to upload an audio sample and manipulate it through Tone.js framework. All sounds used in this system are samples, however they're unique because they all have been synthesized in a DAW by developers.
 
 
 ## Group members
