@@ -143,9 +143,9 @@ There are two tracks in the leadsheet:
 
 
 Strings that begin with upper-case letters go with the chord
-track, as _C E# Gm_. 
+track, as _C D# Gm_. 
 
-While strings that begin with lower-case letters go with the melody track, as _c e# g._
+While strings that begin with lower-case letters go with the melody track, as _c d# g._
 
 #### Note placement
 The "+" after a melody note means that the note will be played an octave above the middle one, the same concept for "++", "+++" and so on.
