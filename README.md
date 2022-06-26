@@ -1,7 +1,12 @@
 # **BIO MASHUP**
 
 
-![](./GitAssets/casaPIXEL.png)
+<!-- ![](./GitAssets/Main Image.png) -->
+<p align="center">
+  <img src="./GitAssets/Main Image.png" width="100%" />
+
+</p>
+
 
 - [**BIO MASHUP**](#bio-mashup)
   - [INTRODUCTION](#introduction)
