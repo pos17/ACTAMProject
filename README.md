@@ -48,6 +48,7 @@
 <a href="https://www.youtube.com/watch?v=-P4hGdgGIA8" target="_blank">
  <img src="./GitAssets/EnvsThumbnail.jpg" alt="Watch the video" width="640" height="313" />
 </a>
+
 ## User Guide
 
 The system can be tested by the user in two ways: 
