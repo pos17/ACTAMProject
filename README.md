@@ -39,13 +39,13 @@
 
 ### Introduction Video
 
-<a href="https://www.youtube.com/watch?v=dbA7kzkFlpw" target="_blank">
+<a align="center" href="https://www.youtube.com/watch?v=dbA7kzkFlpw" target="_blank">
  <img src="./GitAssets/GuideVideoThumb.jpg" alt="Watch the video" width="640" height="313" />
 </a>
 
 ### Environments Overview video
 
-<a href="https://www.youtube.com/watch?v=-P4hGdgGIA8" target="_blank">
+<a align="center" href="https://www.youtube.com/watch?v=-P4hGdgGIA8" target="_blank">
  <img src="./GitAssets/EnvsThumbnail.jpg" alt="Watch the video" width="640" height="313" />
 </a>
 
