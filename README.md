@@ -40,13 +40,13 @@
 ### Introduction Video
 
 <a align="center" href="https://www.youtube.com/watch?v=dbA7kzkFlpw" target="_blank">
- <img src="./GitAssets/GuideVideoThumb.jpg" alt="Watch the video" width="640" height="313" />
+ <img src="./GitAssets/image_2022-06-27_23-43-16.png" alt="Watch the video" width="1920" height="1080" />
 </a>
 
 ### Environments Overview video
 
 <a align="center" href="https://www.youtube.com/watch?v=-P4hGdgGIA8" target="_blank">
- <img src="./GitAssets/EnvsThumbnail.jpg" alt="Watch the video" width="640" height="313" />
+ <img src="./GitAssets/EnvsThumbnail2.jpg" alt="Watch the video" width="1233" height="756" />
 </a>
 
 ## User Guide
