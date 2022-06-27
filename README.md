@@ -163,6 +163,8 @@ The "-",instead, indicates that the note will be played an octave below the midd
 
 8 = eighth note (1/8)
 
+16 = sixteenth (1/16)
+
 
 The dot "."  represents the respective point in common musical notation that extends the duration of the note by a time equal to its half: _a4. g#2._.
 
