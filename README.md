@@ -40,7 +40,7 @@
 
 The system can be tested by the user in two ways: 
 
-- <a href="https://pox17.github.io/ACTAMProject/" target="_blank">Hosted Website</a>
+- <a href="https://pox17.github.io/ACTAMProject/" target="_blank" rel="noopener noreferrer">Hosted Website</a>
 - Downloading the whole project from GitHub and running it using VS CODE live server
   
 
