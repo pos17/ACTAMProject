@@ -46,7 +46,7 @@
 ### Environments Overview video
 
 <a align="center" href="https://www.youtube.com/watch?v=-P4hGdgGIA8" target="_blank">
- <img src="./GitAssets/EnvsThumbnail2.jpg" alt="Watch the video" width="1233" height="756" />
+ <img src="./GitAssets/EnvsThumbnail2.jpg" alt="Watch the video" width="860" height="527" />
 </a>
 
 ## User Guide
