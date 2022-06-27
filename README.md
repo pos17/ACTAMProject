@@ -39,7 +39,7 @@
 ## User Guide
 
 The system can be tested by the user in two ways: 
-- [Hosted website](https://pox17.github.io/ACTAMProject/)
+- [Hosted website](https://pox17.github.io/ACTAMProject/){:target="_blank"}
 - Downloading the whole project from GitHub and running it using VS CODE live server
   
 
