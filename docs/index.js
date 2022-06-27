@@ -12,6 +12,7 @@ const DRUM_BASE_URL = "./Samples/Drum/";
 const BASE_MIDI_NOTES_NUM = { "C1": 24, "C2": 36, "C3": 48, "C4": 60, "C5": 72, "C6": 84 };
 
 const state = {
+    logON: false,
     loadingPage: {
         value: 0,
         limit: 0,
@@ -98,44 +99,34 @@ const state = {
 async function initializeMyApp() {
 
     //initialize the drawing values
-    //state.isFirst = true
+
     // prioritize sustained playback
-    //const context = new Tone.Context({ latencyHint: "playback" });
-    // set this context as the global Context
     initializeFirebase();
     Tone.context.lookAhead = 0.1;
     setNow()
     setMasterChain()
-    //console.log("master chain set")
-    console.log(getMasterChain())
-    // FIXME: funzionerà?
-    // Tone.Destination.chain(getMasterChain().compressor, getMasterChain().hiddenGain, getMasterChain().mainGain)
+    controlledLog("master chain set")
     getMasterChain().channel.chain(getMasterChain().compressor, getMasterChain().hiddenGain, getMasterChain().mainGain, Tone.Destination)
-    //console.log("master chain get")
     setLimit(40)
     increase();
     await initiateState()
     buildInstruments()
-    //console.log(state.instruments)
     setLimit(90)
     orderElements()
     await createMenu()
     assignClick()
     updatePage(0)
-
-    //console.log("i nodi")
     prepareCanvas();
+    controlledLog("nodes initialization")
     await generateNodes();
     setLimit(100)
-    //console.log("state")
-    //console.log(state)
     document.getElementById("loadingMessage").hidden = true;
     state.buttonSound = new ButtonSound();
     state.nesBtnSound = new NesBtnSound();
 }
 
 /**
- * the functions that starts the whole system 
+ * bootstrap to start the whole system 
  */
 initializeMyApp()
 
@@ -147,11 +138,12 @@ initializeMyApp()
  * 
  */
 
-
+/**
+ * state initialization
+ */
 
 async function initiateState() {
     let data = await getMenuTypes()
-    console.log("got?")
     state.elementTypes = data.primaryTypes
     state.environments = data.environments
     let elements = await getElements()
@@ -215,19 +207,11 @@ async function waitBarLoaded() {
     return new Promise(resolve => {
         if (state.loadingPage.value >= 100) {
             resolve();
-            console.log("bar loaded")
+            controlledLog("bar loaded")
         }
     });
 }
-/*
-function resolveAfter2Seconds() {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve('resolved');
-      }, 2000);
-    });
-  }
-*/
+
 
 function isHidden(el) {
     var style = window.getComputedStyle(el);
@@ -281,21 +265,13 @@ function increase() {
                 loadingText.textContent = text;
                 state.loadingPage.lastUpdateMessage = Date.now();
             }
-
-
-            // if ((Date.now() - state.loadingPage.lastUpdateMessage) > (3000)) {
-            //     let id = Math.floor(Math.random() * Object.keys(state.loadingPage.loadingText).length);
-            //     let text = Object.values(state.loadingPage.loadingText)[id];
-            //     loadingText.textContent = text;
-            //     state.loadingPage.lastUpdateMessage = Date.now();
-            // }
         }
         if (fromValue >= 100) {
             document.getElementById("container").hidden = false
             document.getElementById("initialLoadingPanel").style.visibility = 'hidden'
             state.loadingPage.resolvePromise()
-            console.log("promise solved")
-            console.log(state.drawing)
+            controlledLog("promise solved")
+            controlledLog(state.drawing)
         } else {
             window.requestAnimationFrame(increase)
             state.loadingPage.lastUpdate = Date.now()
@@ -307,7 +283,7 @@ function increase() {
     if (state.loadingPage.value <= 0) {
         state.loadingPage.finishPromise = new Promise(resolve => {
             state.loadingPage.resolvePromise = resolve;
-            console.log("promise launched")
+            controlledLog("promise launched")
         });
     }
 }
@@ -320,11 +296,10 @@ function increase() {
  * @param {int} idValue 
  */
 function modifyIdList(idValue) {
-    console.log(idValue)
-    //console.log(state.possibleValues)
+    controlledLog(idValue)
     let modifyingValue = state.elements.find(element => element.id == idValue)
-    console.log("modifying value")
-    console.log(modifyingValue)
+    controlledLog("modifying value")
+    controlledLog(modifyingValue)
     switch (modifyingValue.elementType) {
         case ("floor"): {
             state.drawing.idList[modifyingValue.elementType] = modifyingValue.id
@@ -369,54 +344,45 @@ function modifyIdList(idValue) {
         } break;
 
     }
-    //console.log(state.drawing)
-    console.log(getIdList());
+    controlledLog(getIdList());
 }
 
+/**
+ * function used to update the state of the system 
+ */
 async function updateState() {
     let ids = getIdList()
-    console.log("ID VALUES:");
-    console.log(ids)
+    controlledLog("ID VALUES:");
+    controlledLog(ids)
     let flyObjsArr = []
     state.imagesToDraw["flyingObject"] = flyObjsArr
     state.drawing.image["flyingObject"] = {}
     var i = 0;
     for (let id of ids) {
-        console.log(i++)
+        controlledLog(i++)
         let modifyingValue = state.elements.find(element => element.id == id)
-        console.log("modifyingValue")
-        console.log(modifyingValue)
+        controlledLog("modifyingValue")
+        controlledLog(modifyingValue)
         switch (modifyingValue.elementType) {
             case ("floor"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                //state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
-                //console.log("ch")
-                //console.log(state.drawing.audio.instruments["chords"])
                 state.drawing.audio.instruments["chords"] = modifyingValue.audio.instrument
 
             } break;
             case ("background"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                //state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
 
             } break;
             case ("landscape"): {
                 state.startingId = modifyingValue.audio.nodeId;
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                //state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
             } break;
             case ("building"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                //state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
-                //console.log("mel")
-                //console.log(state.drawing.audio.instruments["melody"])
                 state.drawing.audio.instruments["melody"] = modifyingValue.audio.instrument
             } break;
             case ("tree"): {
                 state.drawing.image[modifyingValue.elementType] = modifyingValue.image
-                //state.imagesToDraw[modifyingValue.elementType] = await DrawableImage.build(state.drawing.image[modifyingValue.elementType])
-                //console.log("bass")
-                //console.log(state.drawing.audio.instruments["bass"])
                 state.drawing.audio.instruments["bass"] = modifyingValue.audio.instrument
             } break;
             case ("astrumDay"): {
@@ -817,7 +783,7 @@ function buildInstruments() {
 
 }
 
-function setFilterFreq(val){
+function setFilterFreq(val) {
     let aFreq = logMap(val, 0, 1, 2000, 20000)
     state.lpf.set({
         frequency: aFreq
@@ -827,14 +793,14 @@ function setFilterFreq(val){
 function logMap(inValue, inMin, inMax, outMin, outMax) {
     var minp = inMin;
     var maxp = inMax;
-  
+
     var minv = Math.log(outMin);
     var maxv = Math.log(outMax);
-  
+
     // calculate adjustment factor
-    var scale = (maxv-minv) / (maxp-minp);
-  
-    return Math.exp(minv + scale*(inValue-minp));
+    var scale = (maxv - minv) / (maxp - minp);
+
+    return Math.exp(minv + scale * (inValue - minp));
 }
 
 async function waitInstLoaded() {
@@ -1279,7 +1245,7 @@ function updateTheme() {
             break;
     }
 
-    
+
 };
 
 
@@ -1359,7 +1325,7 @@ function createEnvironment() {
     var a = 1
     //var a = 6;
     omega = a / t;
-    
+
     let hAstra = h - getImageToDraw("floor").getNHeight() * factor - 25 * factor;
     let wAstra = w / 2 - ((getImageToDraw("astrumNight").getNWidth()) / 2 * factor) - (0.08 * w)
     var angle = ALPHASTART + (omega * (time2 - time0))//time0.getTime()))
@@ -1375,7 +1341,7 @@ function createEnvironment() {
         alphaDay = 0
         lightOn = true
         sunToDraw = 1
-        setFilterFreq(alphaSunset/2)
+        setFilterFreq(alphaSunset / 2)
     }
     // night
     else if (angleD < SUNRISE_START) {
@@ -1393,7 +1359,7 @@ function createEnvironment() {
         alphaSunset = 0
         alphaDay = 0
         lightOn = true
-        setFilterFreq(alphaSunrise/2)
+        setFilterFreq(alphaSunrise / 2)
     }
     // sunrise -> day 
     else if (angleD < DAY_START) {
@@ -1402,8 +1368,8 @@ function createEnvironment() {
         alphaSunset = 0
         alphaDay = (1 / (DAY_START - SUNRISE_END)) * (angleD - SUNRISE_END)
         lightOn = false
-        setFilterFreq(0.5 + alphaDay/2)
-    } 
+        setFilterFreq(0.5 + alphaDay / 2)
+    }
     // day
     else if (angleD < SUNSET_START) {
         alphaNight = 0
@@ -1412,7 +1378,7 @@ function createEnvironment() {
         alphaDay = 1
         lightOn = false
         setFilterFreq(1)
-    } 
+    }
     // day -> sunset
     else {
         alphaNight = 0
@@ -1421,7 +1387,7 @@ function createEnvironment() {
         alphaDay = 1 - (1 / (2 * Math.PI - SUNSET_START)) * (angleD - SUNSET_START)
         lightOn = false
         sunToDraw = (1 / (2 * Math.PI - SUNSET_START)) * (angleD - SUNSET_START)
-        setFilterFreq(0.5 + alphaDay/2)
+        setFilterFreq(0.5 + alphaDay / 2)
     }
 
     let background = getImageToDraw("background");
@@ -1463,7 +1429,7 @@ function createEnvironment() {
             //ctx.translate() /* (((2 * flyObj.left * 2 * w) +*/ 
             var valLeft = flyObj.left
             var newLeft = (valLeft + (angle * 0.00002)) % 1.2
-            
+
             //console.log(newLeft)
             flyObj.left = newLeft
             flyObj.drawThisImage(0, alphaNight, lightOn, canvas.height, canvas.width, ctx, factor)
@@ -1510,8 +1476,8 @@ var btn_left = document.getElementById('btn-sx')
 var btn_center = document.getElementById('btn-ct')
 var btn_right = document.getElementById('btn-dx')
 
-document.querySelectorAll(".nes-btn").forEach((button)=>{
-    if(button.id != "btn-ct"){
+document.querySelectorAll(".nes-btn").forEach((button) => {
+    if (button.id != "btn-ct") {
         button.addEventListener("click", () => {
             state.nesBtnSound.trigger(Tone.now())
         })
@@ -1757,15 +1723,15 @@ async function menuPage() {
         console.log(Tone.now);
         state.buttonSound.trigger(Tone.now())
         setTimeout(() => {
-            document.getElementById('dialog-music').showModal()   
+            document.getElementById('dialog-music').showModal()
             setTimeout(() => {
-                document.getElementById('dialog-music').close()   
-                if(tour.isActive()) {
+                document.getElementById('dialog-music').close()
+                if (tour.isActive()) {
                     tour.next();
                 }
             }, 1500);
         }, 750);
-        
+
     }
     document.getElementById("btn-sx").onclick = prepareLoadingSnapshot;
     document.getElementById("player-navbar").hidden = true;
@@ -1887,7 +1853,6 @@ function volumeUpdate(valueToSet) {
 }
 
 function volumeButton() {
-    console.log("accazzo")
     let testValue = getMasterVolume() * 100
     console.log(testValue)
     if (testValue > 0) {
@@ -3134,7 +3099,7 @@ class Kick {
         this.kick.disconnect(Tone.Destination)
         this.kick.connect(node)
     }
- 
+
 }
 
 class Snare {
@@ -3330,7 +3295,7 @@ class HiHat {
         this.hihat.disconnect(Tone.Destination)
         this.hihat.connect(node)
     }
-    
+
 }
 
 class Perc {
@@ -3432,7 +3397,7 @@ class DrumMachine {
         this.perc.playPart(array[3])
     }
 
-    connect(node){
+    connect(node) {
         this.kick.connect(node);
         this.snare.connect(node);
         this.hihat.connect(node);
@@ -3461,7 +3426,7 @@ class ButtonSound {
         this.perc.start(time);
         // console.log("kicktime")
     }
-    
+
 }
 
 class NesBtnSound {
@@ -3485,7 +3450,7 @@ class NesBtnSound {
         console.log("nesbnsound yeah yeah")
         this.perc.stop(time + 1);
     }
-    
+
 }
 
 
@@ -3693,10 +3658,11 @@ tour.addStep({
         },
         {
             text: 'Next',
-            action:function(){document.getElementById("btn-ct").click();
-            // tour.next();
-        } 
-            
+            action: function () {
+                document.getElementById("btn-ct").click();
+                // tour.next();
+            }
+
         }
     ]
 });
@@ -3844,7 +3810,7 @@ tour.addStep({
         },
         {
             text: 'Next',
-            action: function() {
+            action: function () {
                 document.getElementById("btn-stop").click()
                 //tour.next()
             },
@@ -3873,4 +3839,10 @@ tour.addStep({
 });
 document.getElementById("guideTourStart").onclick = function () {
     tour.start();
+}
+
+function controlledLog(val) {
+    if (state.logON) {
+        console.log(val)
+    }
 }
