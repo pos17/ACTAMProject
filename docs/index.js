@@ -11,7 +11,9 @@ const ENV4_BASE_URL = "./Samples/Env4";
 const DRUM_BASE_URL = "./Samples/Drum/";
 const BASE_MIDI_NOTES_NUM = { "C1": 24, "C2": 36, "C3": 48, "C4": 60, "C5": 72, "C6": 84 };
 
+
 const state = {
+    //if needed to activate logs to debug put logON to true
     logON: false,
     loadingPage: {
         value: 0,
@@ -407,16 +409,16 @@ async function updateState() {
         }
     }
     for (const item in state.drawing.image) {
-        console.log("item::")
-        console.log(item)
+        controlledLog("item::")
+        controlledLog(item)
         if (item != "flyingObject") {
             state.imagesToDraw[item] = await DrawableImage.build(state.drawing.image[item])
         } else {
-            console.log("cloudsList:")
-            console.log(state.drawing.image);
+            controlledLog("cloudsList:")
+            controlledLog(state.drawing.image);
             state.drawing.audio.cloudsInst = [0, 0, 0, 0]
             for (const idItem in state.drawing.image[item]) {
-                console.log(idItem)
+                controlledLog(idItem)
                 state.drawing.audio.cloudsInst[idItem - 22] = state.drawing.image[item][idItem].quantity;
                 var templateToPush = await DrawableImage.build(state.drawing.image[item][idItem].image)
                 for (i = 0; i < state.drawing.image[item][idItem].quantity; i++) {
@@ -431,8 +433,8 @@ async function updateState() {
             }
         }
     }
-    console.log("CLOUDS ARRAY")
-    console.log(state.drawing.audio.cloudsInst)
+    controlledLog("CLOUDS ARRAY")
+    controlledLog(state.drawing.audio.cloudsInst)
 
 }
 
@@ -605,31 +607,26 @@ function getPlayingPart() {
  */
 async function propagateStateChanges(isFirst) {
 
-    console.log("state before propagation")
-    console.log(state)
+    controlledLog("state before propagation")
+    controlledLog(state)
     if (state.drawing.image.isChanged) {
         //TODO: adding function to reshape the image of the view 
         state.drawing.image.isChanged = false
     }
 
     if (state.drawing.chords.isChanged === true) {
-        console.log()
         if (state.playingPartChords) {
-            console.log("here I am")
             state.playingPartChords.cancel(0)
         } else {
-            console.log("here I am not")
         }
-        //FIXME: adding adapting loop
         Tone.Transport.loopEnd = state.drawing.loopLength;
-        //console.log(state.drawing.chords.instrument)
         Object.keys(state.effects.harmony).forEach(key => {
-            console.log(state.effects.harmony[key])
+            controlledLog(state.effects.harmony[key])
             state.effects.harmony[key].wet.value = 0;
         });
         for (i = 0; i < state.drawing.chords.effects.length; i++) {
-            console.log(state.drawing.chords.effects[i].effect)
-            console.log(state.effects.harmony)
+            controlledLog(state.drawing.chords.effects[i].effect)
+            controlledLog(state.effects.harmony)
 
             state.effects.harmony[state.drawing.chords.effects[i].effect].set(state.drawing.chords.effects[i].setup)
         }
@@ -653,8 +650,8 @@ async function propagateStateChanges(isFirst) {
         state.drawing.melody.playingPart = addNotePartToTransport(generatePart(state.drawing.melody.sequence), state.instruments[state.drawing.melody.instrument], 0)
         state.drawing.melody.isChanged = false
     }
-    console.log("state after propagation")
-    console.log(state)
+    controlledLog("state after propagation")
+    controlledLog(state)
 }
 
 
@@ -675,27 +672,16 @@ function buildInstruments() {
     // })
     state.lpf = new Tone.Filter(20000, "lowpass", -24);
     state.lpf.connect(getMasterChain().channel);
-    // let masterChannel = new Tone.Channel().connect(state.lpf);
-
-    // console.log("here I am")
     harmonyChannel.chain(
-        // Tone.Destination
-        // masterChannel
         state.lpf
     )
     bassChannel.chain(
-        // Tone.Destination
-        // masterChannel
         state.lpf
     )
     melodyChannel.chain(
-        // Tone.Destination
-        // masterChannel
         state.lpf
     )
     drumChannel.chain(
-        // Tone.Destination
-        // masterChannel
         state.lpf
     )
 
@@ -807,8 +793,8 @@ async function waitInstLoaded() {
     return new Promise(resolve => {
         while (state.isLoading == 0) {
             resolve();
-            console.log("all Instruments are loaded")
-            console.log(state.isLoading)
+            controlledLog("all Instruments are loaded")
+            controlledLog(state.isLoading)
         }
     });
 }
@@ -833,12 +819,11 @@ function stopMusic() {
 }
 
 
-//FIXME some delay play/pause
 function togglePlayPause() {
     if (state.isPlaying) {
         Tone.Transport.pause()
         state.isPlaying = false
-        console.log(state.isPlaying)
+        controlledLog(state.isPlaying)
         state.master.hiddenGain.gain.rampTo(0, 0.2)
         document.getElementById("btn-play-play").style.display = "block"
         document.getElementById("btn-play-pause").style.display = "none"
@@ -863,7 +848,7 @@ window.addEventListener("keydown", function (event) {
  * @returns 
  */
 function generatePart(noteSequence) {
-    console.log(noteSequence)
+    controlledLog(noteSequence)
     //var qpm = 
     var numofnotes = noteSequence.notes.length
     var notesToTranscribe = noteSequence.notes
@@ -871,13 +856,13 @@ function generatePart(noteSequence) {
     var stepsPerQuarter = noteSequence.quantizationInfo.stepsPerQuarter;
     for (var i = 0; i < numofnotes; i++) {
         noteFromArray = notesToTranscribe[i]
-        console.log(noteFromArray.quantizedStartStep)
+        controlledLog(noteFromArray.quantizedStartStep)
         var note = Note.fromMidi(noteFromArray.pitch)
         var velocity = 0.5;
         var measure = Math.floor(noteFromArray.quantizedStartStep / (4 * stepsPerQuarter))
         var quarter = Math.floor((noteFromArray.quantizedStartStep % (4 * stepsPerQuarter)) / 4)
         var sixteenth = Math.floor(noteFromArray.quantizedStartStep) - quarter * 4 - measure * 16;
-        console.log(measure)
+        controlledLog(measure)
         var timeString = measure + ":" + quarter + ":" + sixteenth;
         var durationSteps = noteFromArray.quantizedEndStep - noteFromArray.quantizedStartStep
         var measureDur = Math.floor(durationSteps / (4 * stepsPerQuarter))
@@ -892,7 +877,7 @@ function generatePart(noteSequence) {
         }
         notes.push(indexInput)
     }
-    console.log(notes)
+    controlledLog(notes)
     return notes
 }
 /**
@@ -903,18 +888,18 @@ function generatePart(noteSequence) {
 function parseMelodyString(melodyString) {
     let notesToRet = [];
     let barsArray = melodyString.split("\n")
-    console.log("melody Parsed by bar")
-    console.log(barsArray)
+    controlledLog("melody Parsed by bar")
+    controlledLog(barsArray)
     barsArray.pop();
-    console.log("melody Parsed by bar after pop last empty element")
-    console.log(barsArray)
+    controlledLog("melody Parsed by bar after pop last empty element")
+    controlledLog(barsArray)
     let barsNum = barsArray.length
     let barIndex = 0;
     let quarterIndex = 0;
     let sixteenthIndex = 0;
     for (let bar of barsArray) {
         let notesArray = bar.split(" ")
-        console.log(notesArray)
+        controlledLog(notesArray)
         for (let note of notesArray) {
             let noteMap = buildNoteFromString(note)
             let timeSig = barIndex + ":" + quarterIndex + ":" + sixteenthIndex
@@ -979,14 +964,14 @@ function parseMelodyString(melodyString) {
                 quarterIndex = carry;
             }
 
-            console.log(noteMap)
+            controlledLog(noteMap)
         }
 
     }
 
     let loopValue = barIndex + ":" + quarterIndex + ":" + sixteenthIndex;
-    console.log(barsArray)
-    console.log(notesToRet)
+    controlledLog(barsArray)
+    controlledLog(notesToRet)
     return {
         notesArray: notesToRet,
         loopValue: loopValue
@@ -1014,7 +999,7 @@ function buildNoteFromString(noteString) {
     }
     let points = count(noteString, ".");
     let mystr = noteString.substring(numPos, noteString.length - points);
-    console.log(mystr)
+    controlledLog(mystr)
 
     switch (mystr) {
         case "1": duration = "1m"
@@ -1036,7 +1021,7 @@ function buildNoteFromString(noteString) {
         note: midiNote,
         duration: duration
     }
-    console.log(noteToRet)
+    controlledLog(noteToRet)
     return noteToRet;
 }
 
@@ -1062,21 +1047,17 @@ function count(str, find) {
 function addNotePartToTransport(notePart, instrument) {
     const part = new Tone.Part((time, value) => {
         instrument.triggerAttack(value.note, value.duration, time, 0.5)
-        //console.log("note: " + value.note + " ,time: " + time + " duration: " + value.duration)
     }, notePart).start(0)
     return part
 }
 
 function playChordSequence(chordsSequence, instrument) {
-    console.log(instrument)
+    controlledLog(instrument)
     let chordsPlayed = new Tone.Part(((time, value) => {
-        //console.log("value to be played")
-        //console.log(value)
 
         instrument.triggerAttackRelease(value.notes, value.duration, time, 1)
         getPlayingInstrument("bass").triggerAttackRelease(value.notes, value.duration, time);
     }), chordsSequence).start(0)
-    //Tone.debug = true
     return chordsPlayed
 }
 
@@ -1093,14 +1074,14 @@ function parseChordsString(chordsString) {
     let sixteenthCount = 0;
     for (let bar of barsArray) {
         let chordsBar = bar.split(" ");
-        console.log(chordsBar)
+        controlledLog(chordsBar)
         chordsBar.shift()
         chordsBar.pop()
-        console.log(chordsBar)
+        controlledLog(chordsBar)
         quarterCount = 0;
         sixteenthCount = 0;
         let quarterAdd = 4 / chordsBar.length;
-        console.log(quarterAdd)
+        controlledLog(quarterAdd)
         for (let aChord of chordsBar) {
             var dur;
             switch (quarterAdd) {
@@ -1127,21 +1108,17 @@ function parseChordsString(chordsString) {
         }
         barCount++;
     }
-    console.log(chordsToRet)
+    controlledLog(chordsToRet)
     let barLoop = barCount + ":" + quarterCount + ":" + sixteenthCount
     return {
         chordsList: chordsToRet,
         barLoop: barLoop
     }
 }
-/*
-console.log("testParsing")
-parseChordsString("| F6 | Em7 A7 | Dm7 | Cm7 F7 |")
-*/
 function fromChordToNotes(chordName) {
     var notesArray = Tonal.Chord.get(chordName).notes
     var distanceFromC = Tonal.Interval.distance("C", notesArray[notesArray.length - 1])
-    console.log("distance from C: " + distanceFromC)
+    controlledLog("distance from C: " + distanceFromC)
     let noteOctave = 3
     for (var j = notesArray.length - 1; j >= 0; j--) {
         if (Tonal.Interval.semitones(Tonal.Interval.distance("C", notesArray[j])) > Tonal.Interval.semitones(distanceFromC)) {
@@ -1151,7 +1128,7 @@ function fromChordToNotes(chordName) {
         notesArray[j] = notesArray[j] + noteOctave
 
     }
-    console.log(notesArray)
+    controlledLog(notesArray)
     return notesArray
 }
 
@@ -1160,7 +1137,7 @@ function initMusic() {
     Tone.Transport.cancel()
     let computedMelody = parseMelodyString(getMelodyString())
     let computeChords = parseChordsString(getChordString())
-    console.log(computedMelody)
+    controlledLog(computedMelody)
     if (computeChords.barLoop != computedMelody.loopValue) {
         console.error("loop bars no consistent, melodyLoop: " + computedMelody.loopValue + ", chordsloop: " + computeChords.barLoop)
     }
@@ -1182,20 +1159,20 @@ var t = Tone.Time('16m').toMilliseconds()
 var omega = 0; /* canvas angular speed */
 var factor = 4;
 var time0 = 0//Tone.Transport.now()*1000//.toMilliseconds()//new Date();
-console.log("time0")
-console.log(time0)
+controlledLog("time0")
+controlledLog(time0)
 
 let themeButton = document.getElementById('themeSelector');
 updateTheme();
 themeButton.onclick = updateTheme;
 
 function updateTheme() {
-    console.log("THEME CLICKED");
+    controlledLog("THEME CLICKED");
     let body = document.body;
     let upbar = document.getElementById("upbar");
     let navbar = document.querySelectorAll(".navbar");
     let cloudsLabels = document.querySelectorAll(".token-add");
-    console.log(getComputedStyle(body))
+    controlledLog(getComputedStyle(body))
 
     state.theme = (state.theme + 1) % 5;
 
@@ -1241,7 +1218,7 @@ function updateTheme() {
             break;
 
         default:
-            console.log("THEME ERROR");
+            controlledLog("THEME ERROR");
             break;
     }
 
@@ -1263,25 +1240,21 @@ function prepareCanvas() {
 
 async function initImages() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    console.log(getImageToDraw("astrumDay"))
-    console.log(getImageToDraw("astrumNight"))
+    controlledLog(getImageToDraw("astrumDay"))
+    controlledLog(getImageToDraw("astrumNight"))
     state.loopProgressSaved = 0;
     state.loopTimes = 0;
-    console.log("passato")
     setFrameReq(window.requestAnimationFrame(countFPS))
 }
 
 function countFPS() {
     if (isPlaying()) {
         if (Date.now() - getAnimationSnap() > 1000 / getFPS()) {
-            //console.log("print")
             setAnimationSnap(Date.now())
             setFrameReq(window.requestAnimationFrame(createEnvironment));
-            //console.log(Model.state.framereq)
         } else {
 
             setFrameReq(window.requestAnimationFrame(countFPS));
-            //console.log(Model.state.framereq)
         }
     }
 }
@@ -1313,10 +1286,6 @@ function createEnvironment() {
     }
     var time2 = (state.loopTimes + loopProgress) * (Tone.Transport.loopEnd) * 1000
     state.loopProgressSaved = loopProgress
-    //console.log("time:")
-    //console.log(time)
-    //console.log("progress:")
-    //console.log(Tone.Transport.progress)
     var h = canvas.height;
     var w = canvas.width;
 
@@ -1421,16 +1390,12 @@ function createEnvironment() {
     ctx.save()
     let flyObjs = getImageToDraw("flyingObject")
     if (flyObjs.length != 0) {
-        //console.log("num of objs")
-        //console.log(flyObjs.length)
         for (let flyObj of flyObjs) {
             ctx.save()
             ctx.translate(-w / 5, 0)
-            //ctx.translate() /* (((2 * flyObj.left * 2 * w) +*/ 
             var valLeft = flyObj.left
             var newLeft = (valLeft + (angle * 0.00002)) % 1.2
 
-            //console.log(newLeft)
             flyObj.left = newLeft
             flyObj.drawThisImage(0, alphaNight, lightOn, canvas.height, canvas.width, ctx, factor)
             flyObj.drawThisImage(1, alphaSunrise, lightOn, canvas.height, canvas.width, ctx, factor)
@@ -1484,25 +1449,18 @@ document.querySelectorAll(".nes-btn").forEach((button) => {
     }
 })
 
-// btn_center.onclick = function () {
-//     console.log("BTN CT CLICKED");
-//     console.log(Tone.now());
-//     console.log(Tone.now);
-//     state.buttonSound.trigger(Tone.now())
-// }
-
 
 
 async function createMenu() {
-    console.log("menu Creation")
-    var btnContainer = document.getElementById("tokenGrid")// document.createElement('div')
+    controlledLog("menu Creation")
+    var btnContainer = document.getElementById("tokenGrid")
     btnContainer.className = 'token-btn-container'
-    console.log(getStateElements())
+    controlledLog(getStateElements())
     for (let datum of getStateElements()) {
-        console.log('datum: ')
-        console.log(datum)
-        console.log(datum.image.previewUrl)
-        console.log(datum.elementType)
+        controlledLog('datum: ')
+        controlledLog(datum)
+        controlledLog(datum.image.previewUrl)
+        controlledLog(datum.elementType)
         if ((datum.elementType == "background") || (datum.elementType == "astrumDay") || (datum.elementType == "astrumNight")) { }
         else {
 
@@ -1533,7 +1491,6 @@ async function createMenu() {
                 btnDiv.appendChild(tokenAdd)
                 btnContainer.appendChild(btnDiv)
 
-                console.log("ciao nuvoletta")
 
             } else {
                 btn.classList.add(datum.environment)
@@ -1551,9 +1508,9 @@ function assignClick() {
             var id = btn.id
             var env = btn.classList[3]
             var el = btn.classList[2]
-            console.log("elements")
-            console.log(env)
-            console.log(el)
+            controlledLog("elements")
+            controlledLog(env)
+            controlledLog(el)
             modifyIdList(id)
 
             visualizeSelectedTokens()
@@ -1595,8 +1552,8 @@ function showInitPanel() {
 
 async function updatePage(aPage) {
     setNavPage(aPage)
-    console.log("page")
-    console.log(aPage)
+    controlledLog("page")
+    controlledLog(aPage)
 
     switch (aPage) {
         case 0:
@@ -1641,8 +1598,8 @@ async function playerPage() {
     //disableScrolling();
     state.loadingPage.isFirstLoading = false;
     state.loadingPage.value = 0;
-    console.log("value loading page:")
-    console.log(state.loadingPage.value)
+    controlledLog("value loading page:")
+    controlledLog(state.loadingPage.value)
     increase();
     setLimit(60);
     document.getElementById("initialLoadingPanel").style.visibility = 'visible'
@@ -1652,8 +1609,6 @@ async function playerPage() {
     setLimit(85);
 
     await updateState()
-    //console.log("state::")
-    //console.log(state)
     loadMelody()
     setLimit(99);
 
@@ -1710,17 +1665,10 @@ async function menuPage() {
         loadMelody()
         if (tour.isActive()) {
             var step = tour.steps.find(element => element.id == "generateMusic")
-            //console.log(step)
-            //console.log(step.options.buttons)
-            //step.options.buttons[1].disabled = false;
-            //console.log(step.options.buttons)
-            //tour.back()
-            //tour.next()
         }
-        //document.getElementById('dialog-music').showModal();
-        console.log("BTN CT CLICKED");
-        console.log(Tone.now());
-        console.log(Tone.now);
+        controlledLog("BTN CT CLICKED");
+        controlledLog(Tone.now());
+        controlledLog(Tone.now);
         state.buttonSound.trigger(Tone.now())
         setTimeout(() => {
             document.getElementById('dialog-music').showModal()
@@ -1740,13 +1688,13 @@ async function menuPage() {
     document.getElementById("menu-navbar").hidden = false;
     document.getElementById("upbar").hidden = false;
     document.getElementById("confirm-load-dialog").onclick = function () {
-        console.log("loading select");
-        console.log(document.getElementById("loading_select").value)
+        controlledLog("loading select");
+        controlledLog(document.getElementById("loading_select").value)
         loadSnapshot(document.getElementById("loading_select").value)
     }
     document.getElementById("delete-load-dialog").onclick = function () {
-        console.log("loading select");
-        console.log(document.getElementById("loading_select").value)
+        controlledLog("loading select");
+        controlledLog(document.getElementById("loading_select").value)
         removeSnapshot(document.getElementById("loading_select").value)
     }
 
@@ -1756,10 +1704,10 @@ async function menuPage() {
 async function prepareLoadingSnapshot() {
     await getSnapshotsList();
     loading_select = document.getElementById("loading_select")
-    console.log("loading_select")
-    console.log(loading_select)
-    console.log("loading select length:")
-    console.log(loading_select.length)
+    controlledLog("loading_select")
+    controlledLog(loading_select)
+    controlledLog("loading select length:")
+    controlledLog(loading_select.length)
     while (loading_select.length > 0) {
         loading_select.remove(0);
     }
@@ -1777,7 +1725,7 @@ async function prepareLoadingSnapshot() {
  * fullscreen handling part 
  */
 function openFullscreen(element) {
-    console.log(element)
+    controlledLog(element)
     var elem = document.getElementById(element)
     if (elem.requestFullscreen) {
         elem.requestFullscreen();
@@ -1849,17 +1797,17 @@ function volumeUpdate(valueToSet) {
     document.getElementById("volume-slider").value = valueToSet;
     let vts = valueToSet / 100
     setMasterVolume(vts)
-    console.log(getMasterVolume())
+    controlledLog(getMasterVolume())
 }
 
 function volumeButton() {
     let testValue = getMasterVolume() * 100
-    console.log(testValue)
+    controlledLog(testValue)
     if (testValue > 0) {
         volumeUpdate(0)
     } else {
-        console.log("savedVolume")
-        console.log(getSavedVolume() * 100)
+        controlledLog("savedVolume")
+        controlledLog(getSavedVolume() * 100)
         volumeUpdate(getSavedVolume() * 100)
     }
 }
@@ -1906,23 +1854,6 @@ class DrawableImage {
     clone() {
         return new DrawableImage(this.imageArray, this.left, this.bottom, this.imageType);
     }
-    /*
-    changeRandomParams() {
-        if (this.imageType == 4) {
-            this.bottom = Math.random()
-            this.left = Math.random()
-            let newproperty = {
-                velocity: this.property.velocity,
-                shift: Math.random()
-            }
-            this.property = newproperty;
-        } else {
-            console.log("imageType:")
-            console.log(this.imageType)
-            console.error("wrong imageType for utilizing changeRandomParams")
-        }
-    }
-    */
     drawThisImage(imageToDraw = 0, alpha0 = 1, lightOn, canvasHeight = 0, canvasWidth = 0, ctx, factor) {
         var h = this.imageArray[imageToDraw].naturalHeight * factor;
         var w = this.imageArray[imageToDraw].naturalWidth * factor;
@@ -2032,7 +1963,7 @@ function initializeFirebase() {
 async function getAsset(imageName) {
     let assetPos = 'assets/' + imageName
     let reference = storage.ref(assetPos)
-    console.log(reference)
+    controlledLog(reference)
     let url = await reference.getDownloadURL()
     try {
         return new URL(url)
@@ -2062,9 +1993,9 @@ async function getAsset(imageName) {
 async function getSample(instr, note) {
     let instrPos = 'samples/' + instr + '/'
     let notePos = instrPos + note
-    console.log(notePos)
+    controlledLog(notePos)
     let reference = ref(storage, notePos)
-    console.log(reference)
+    controlledLog(reference)
     let url = await getDownloadURL(reference)
     try {
         return new URL(url)
@@ -2095,20 +2026,17 @@ async function getSample(instr, note) {
 //-------------------------------database handling--------------------------//
 async function getMenuTypes() {
     const docRef = db.collection("menu").doc("menuTypes");
-    console.log("ci sono arrivato qui")
-    //const docSnap = await getDoc(docRef);
     let doc = await docRef.get()
     try {
         if (doc.exists) {
-            console.log("Document data:", doc.data());
+            controlledLog("Document data:", doc.data());
             return doc.data();
         } else {
-            console.log("No such document!");
+            controlledLog("No such document!");
         }
     } catch (error) {
-        console.log("Error getting document:", error);
+        controlledLog("Error getting document:", error);
     };
-    //console.log("ci sono arrivato qui2")
 
 }
 
@@ -2127,7 +2055,7 @@ async function getElements() {
     let elementsToRet = [];
     let querySnapshot = await db.collection("elements").get()
     querySnapshot.forEach((doc) => {
-        console.log(doc.id, " => ", doc.data());
+        controlledLog(doc.id, " => ", doc.data());
         elementsToRet.push(doc.data());
     });
     return elementsToRet
@@ -2140,27 +2068,24 @@ async function getDocumentElement(docId) {
     if (docSnap.exists()) {
         return docSnap.data();
     } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
+        controlledLog("No such document!");
     }
 }
 
 async function getNodes() {
-    //const q = query(collection(db, "nodes"));
 
-    const querySnapshot = await db.collection("nodes").get();//getDocs(q);
+    const querySnapshot = await db.collection("nodes").get();
     let elementsToRet = []
     querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
         elementsToRet.push(doc.data());
     });
-    console.log("elToRet")
-    console.log(elementsToRet)
+    controlledLog("elToRet")
+    controlledLog(elementsToRet)
     return elementsToRet
 }
 
 function saveSnapshot(snapshotName) {
-    console.log("snapshotLaunched");
+    controlledLog("snapshotLaunched");
     db.collection("snapshots").add(
         {
             name: snapshotName,
@@ -2170,7 +2095,7 @@ function saveSnapshot(snapshotName) {
         }
     )
         .then((docRef) => {
-            console.log("Document written with ID: ", docRef.id);
+            controlledLog("Document written with ID: ", docRef.id);
         })
         .catch((error) => {
             console.error("Error adding document: ", error);
@@ -2180,8 +2105,8 @@ function saveSnapshot(snapshotName) {
 
 function loadSnapshot(id) {
     let selectedSnapshot = state.snapshots.find(element => element.docId == id)
-    console.log("select snapshot")
-    console.log(selectedSnapshot)
+    controlledLog("select snapshot")
+    controlledLog(selectedSnapshot)
     state.drawing.idList = selectedSnapshot.idList
     state.drawing.audio.chords = selectedSnapshot.chords
     state.drawing.audio.melody = selectedSnapshot.melody
@@ -2191,19 +2116,19 @@ function loadSnapshot(id) {
 }
 function removeSnapshot(id) {
     db.collection("snapshots").doc(id).delete().then(() => {
-        console.log("Document successfully deleted!");
+        controlledLog("Document successfully deleted!");
     }).catch((error) => {
         console.error("Error removing document: ", error);
     });
 }
 
 async function getSnapshotsList() {
-    console.log("download started")
+    controlledLog("download started")
     let querySnapshot = await db.collection("snapshots").get();
     let snapshots = [];
-    //console.log(querySnapshot)
+    //controlledLog(querySnapshot)
     querySnapshot.forEach((doc) => {
-        console.log(doc)
+        controlledLog(doc)
         snapshots.push({
             name: doc.data().name,
             melody: doc.data().melody,
@@ -2213,9 +2138,9 @@ async function getSnapshotsList() {
         });
     });
     state.snapshots = snapshots;
-    console.log("download ended")
-    console.log("values:")
-    console.log(snapshots)
+    controlledLog("download ended")
+    controlledLog("values:")
+    controlledLog(snapshots)
 
 }
 
@@ -2229,7 +2154,7 @@ async function getSnapshotsList() {
 class MarkovMelody {
     constructor(nodes) {
         this.nodes = nodes
-        console.log(this.nodes)
+        controlledLog(this.nodes)
     }
 
     generateMelody(startId = 0) {
@@ -2248,8 +2173,6 @@ class MarkovMelody {
     }
 
     _generatePath(anId = 0) {
-        //anId = anId.toString()
-        //console.log(this.tree)
         var startingNode = this.nodes.find(x => x.id == anId)
         var startingNodeId = startingNode.id
         let thisNodeId = -1;
@@ -2257,9 +2180,9 @@ class MarkovMelody {
         let path = []
         while (thisNodeId != startingNodeId) {
             path.push(thisNode)
-            console.log(thisNode)
+            controlledLog(thisNode)
             var nextNodeId = this._nextRandomNode(thisNode)
-            console.log(nextNodeId)
+            controlledLog(nextNodeId)
             thisNodeId = nextNodeId
             thisNode = this.nodes.find(x => x.id == nextNodeId)
         }
@@ -2271,14 +2194,12 @@ class MarkovMelody {
         if (!Array.isArray(possibleNodes)) {
             possibleNodes = Array.from(Object.values(possibleNodes));
         }
-        console.log(possibleNodes)
+        controlledLog(possibleNodes)
         let totalWeights = 0;
         for (var i = 0; i < possibleNodes.length; i++) {
             totalWeights = totalWeights + possibleNodes[i].prob
         }
         var random = Math.random() * totalWeights;
-        //console.log(totalWeights)
-        //console.log(random)
         for (var i = 0; i < possibleNodes.length; i++) {
             random -= possibleNodes[i].prob;
 
@@ -2353,7 +2274,7 @@ class bellSample {
         });
         var bell = new Tone.Players(bellUrls2, () => {
             resolvePromise();
-            console.log("bell loaded")
+            controlledLog("bell loaded")
         });
         bell.toDestination();
         this.bell = bell;
@@ -2366,8 +2287,6 @@ class bellSample {
             console.error("wrong note feeding: " + "note");
         }
         this.bell.player(ntp).start(time);
-        //this.kick.triggerAttackRelease("C1", "8n", time, velocity)
-        // console.log("kicktime")
     }
 }
 
@@ -2411,7 +2330,7 @@ class padSample {
         });
         var pad = new Tone.Players(padUrls2, () => {
             resolvePromise()
-            console.log("pad loaded")
+            controlledLog("pad loaded")
         });
         pad.toDestination();
         this.pad = pad;
@@ -2452,12 +2371,10 @@ class Synth1 {
         };
         var pad = new Tone.Players(padUrls, () => {
             resolvePromise()
-            console.log("padEnv1 loaded")
+            controlledLog("padEnv1 loaded")
         });
         pad.toDestination();
         this.pad = pad;
-        // console.log("PAD");
-        // console.log(pad);
 
     }
 
@@ -2496,31 +2413,19 @@ class Synth2 {
         };
         var pad = new Tone.Players(padUrls, () => {
             resolvePromise()
-            console.log("padEnv2 loaded")
+            controlledLog("padEnv2 loaded")
         });
         pad.toDestination();
         pad.set({
             volume: 0.0,
         });
         this.pad = pad;
-        // console.log("PAD");
-        // console.log(pad);
-
     }
 
     triggerAttackRelease(notes, duration, time) {
-        // notes.forEach((note) => {
-        //     let ntp = Tonal.Note.midi(note);
-        //     if (ntp == "") {
-        //         console.error("wrong note feeding: " + "note");
-        //     }
-        //     this.pad.player(ntp).start(time);
-        //     //this.pad.player(ntp).stop(time+duration);
-        //     // this.pad.player(ntp).fadeOut='4n';
-        // })
-        console.log("NotesPAD2: " + notes);
-        console.log(time);
-        console.log(time + Tone.Time(duration).toSeconds());
+        controlledLog("NotesPAD2: " + notes);
+        controlledLog(time);
+        controlledLog(time + Tone.Time(duration).toSeconds());
         let pattern = [0, 1, 2, 1]
         let dur = Tone.Time(duration).toSeconds();
         let incr = dur / 16;
@@ -2530,14 +2435,6 @@ class Synth2 {
             this.pad.player(ntp).start(time);
             time += incr
         }
-
-        /* const pattern = new Tone.Pattern((atime, note) => {
-            let ntp = Tonal.Note.midi(note);
-            this.pad.player(ntp).start(atime);
-            console.log("PAD2 time: " + atime + " note: " + note);
-        }, notes, "upDown").start(0);
-        pattern.stop(time + Tone.Time(duration).toSeconds());
-        pattern.interval = "16n"; */
     }
 
     connect(node) {
@@ -2562,12 +2459,10 @@ class Synth3 {
         };
         var pad = new Tone.Players(padUrls, () => {
             resolvePromise()
-            console.log("padEnv3 loaded")
+            controlledLog("padEnv3 loaded")
         });
         pad.toDestination();
         this.pad = pad;
-        // console.log("PAD");
-        // console.log(pad);
 
     }
 
@@ -2605,12 +2500,10 @@ class Synth4 {
         };
         var pad = new Tone.Players(padUrls, () => {
             resolvePromise
-            console.log("padEnv4 loaded")
+            controlledLog("padEnv4 loaded")
         });
         pad.toDestination();
         this.pad = pad;
-        // console.log("PAD");
-        // console.log(pad);
 
     }
 
@@ -2657,7 +2550,7 @@ class Bell {
         };
         var mel = new Tone.Players(melUrls, () => {
             resolvePromise()
-            console.log("Bell loaded")
+            controlledLog("Bell loaded")
         });
         mel.volume.value = -9;
         mel.toDestination();
@@ -2696,7 +2589,7 @@ class Moog {
         };
         var mel = new Tone.Players(melUrls, () => {
             resolvePromise()
-            console.log("Moog loaded")
+            controlledLog("Moog loaded")
         });
         mel.toDestination();
         this.mel = mel;
@@ -2737,7 +2630,7 @@ class Sitar {
         };
         var mel = new Tone.Players(melUrls, () => {
             resolvePromise()
-            console.log("Sitar loaded")
+            controlledLog("Sitar loaded")
         });
         mel.toDestination();
         this.mel = mel;
@@ -2777,7 +2670,7 @@ class Marimba {
         };
         var mel = new Tone.Players(melUrls, () => {
             resolvePromise()
-            console.log("Marimba loaded")
+            controlledLog("Marimba loaded")
         });
         mel.set({
             volume: +3,
@@ -2834,17 +2727,14 @@ class Bass1 {
         };
         var bass = new Tone.Players(bassUrls, () => {
             resolvePromise()
-            console.log("Bass1 loaded")
+            controlledLog("Bass1 loaded")
         });
         bass.toDestination();
         this.bass = bass;
-        // console.log("bass");
-        // console.log(bass);
-
     }
 
     triggerAttackRelease(notes, duration, time) {
-        console.log(notes);
+        controlledLog(notes);
         let ntp1 = Tonal.Note.midi(notes[0]) - 12;
         let ntp5 = Tonal.Note.midi(notes[2]) - 12;
 
@@ -2885,13 +2775,10 @@ class Bass2 {
         };
         var bass = new Tone.Players(bassUrls, () => {
             resolvePromise()
-            console.log("Bass2 loaded")
+            controlledLog("Bass2 loaded")
         });
         bass.toDestination();
         this.bass = bass;
-        // console.log("bass");
-        // console.log(bass);
-
     }
 
     triggerAttackRelease(notes, duration, time) {
@@ -2934,13 +2821,10 @@ class Bass3 {
         };
         var bass = new Tone.Players(bassUrls, () => {
             resolvePromise()
-            console.log("Bass3 loaded")
+            controlledLog("Bass3 loaded")
         });
         bass.toDestination();
         this.bass = bass;
-        // console.log("bass");
-        // console.log(bass);
-
     }
 
     triggerAttackRelease(notes, duration, time) {
@@ -2983,13 +2867,10 @@ class Bass4 {
         };
         var bass = new Tone.Players(bassUrls, () => {
             resolvePromise()
-            console.log("Bass4 loaded")
+            controlledLog("Bass4 loaded")
         });
         bass.toDestination();
         this.bass = bass;
-        // console.log("bass");
-        // console.log(bass);
-
     }
 
     triggerAttackRelease(notes, duration, time) {
@@ -3029,8 +2910,7 @@ class Kick {
         var kickUrl = DRUM_BASE_URL + "Kick_Sample.mp3"
         var kick = new Tone.Player(kickUrl, () => {
             resolvePromise()
-            console.log("Kick Loaded")
-            // this.playPart1();
+            controlledLog("Kick Loaded")
         });
         kick.toDestination();
 
@@ -3039,7 +2919,6 @@ class Kick {
 
     trigger(time, velocity) {
         this.kick.start(time);
-        // console.log("kicktime")
     }
 
     playPart(aPart) {
@@ -3056,7 +2935,7 @@ class Kick {
                     ]
                 ).start(0);
                 part.loop = true;
-                console.log("Part playing");
+                controlledLog("Part playing");
             }
                 break;
 
@@ -3071,7 +2950,7 @@ class Kick {
                     ]
                 ).start(0);
                 part.loop = true;
-                console.log("Part playing");
+                controlledLog("Part playing");
             }
                 break;
 
@@ -3086,12 +2965,12 @@ class Kick {
                     ]
                 ).start(0);
                 part.loop = true;
-                console.log("Part playing");
+                controlledLog("Part playing");
             }
                 break;
 
             default:
-                console.log("Invalid Pattern ID for Kick");
+                controlledLog("Invalid Pattern ID for Kick");
                 break;
         }
     }
@@ -3111,7 +2990,7 @@ class Snare {
         var snareUrl = DRUM_BASE_URL + "Snare2_Sample.mp3"
         var snare = new Tone.Player(snareUrl, () => {
             resolvePromise()
-            console.log("Snare Loaded")
+            controlledLog("Snare Loaded")
         });
         snare.toDestination();
 
@@ -3120,7 +2999,6 @@ class Snare {
 
     trigger(time, velocity) {
         this.snare.start(time);
-        // console.log("kicktime")
     }
 
     playPart(aPart) {
@@ -3136,7 +3014,7 @@ class Snare {
                     { time: "0:3:0" }]
                 ).start(0);
                 part.loop = true;
-                console.log("Part playing");
+                controlledLog("Part playing");
             }
                 break;
 
@@ -3151,7 +3029,7 @@ class Snare {
                     ]
                 ).start(0);
                 part.loop = true;
-                console.log("Part playing");
+                controlledLog("Part playing");
             }
                 break;
 
@@ -3166,12 +3044,12 @@ class Snare {
                     ]
                 ).start(0);
                 part.loop = true;
-                console.log("Part playing");
+                controlledLog("Part playing");
             }
                 break;
 
             default:
-                console.log("Invalid Pattern ID for Snare");
+                controlledLog("Invalid Pattern ID for Snare");
                 break;
         }
     }
@@ -3192,10 +3070,10 @@ class HiHat {
         var hihatUrl2 = DRUM_BASE_URL + "ShakHH_Lo_Sample.mp3"
         var hihat = new Tone.Players({ 0: hihatUrl1, 1: hihatUrl2 }, () => {
             resolvePromise()
-            console.log("HH Loaded")
+            controlledLog("HH Loaded")
         });
         hihat.toDestination();
-        console.log("Players Name: " + hihat.name);
+        controlledLog("Players Name: " + hihat.name);
 
         this.hihat = hihat;
     }
@@ -3226,7 +3104,7 @@ class HiHat {
                 ).start(0);
                 part.loop = true;
                 part.humanize = 0.02;
-                console.log("Part playing");
+                controlledLog("Part playing");
             }
                 break;
 
@@ -3251,7 +3129,7 @@ class HiHat {
                 ).start(0);
                 part.loop = true;
                 part.humanize = 0.02;
-                console.log("Part playing");
+                controlledLog("Part playing");
             }
                 break;
 
@@ -3282,12 +3160,12 @@ class HiHat {
                 ).start(0);
                 part.loop = true;
                 part.humanize = 0.02;
-                console.log("Part playing");
+                controlledLog("Part playing");
             }
                 break;
 
             default:
-                console.log("Invalid Pattern ID for Snare");
+                controlledLog("Invalid Pattern ID for Snare");
                 break;
         }
     }
@@ -3307,7 +3185,7 @@ class Perc {
         var percUrl = DRUM_BASE_URL + "Perc_Sample.mp3"
         var perc = new Tone.Player(percUrl, () => {
             resolvePromise()
-            console.log("Perc Loaded")
+            controlledLog("Perc Loaded")
         });
         perc.toDestination();
 
@@ -3316,7 +3194,6 @@ class Perc {
 
     trigger(time, velocity) {
         this.perc.start(time);
-        // console.log("kicktime")
     }
 
     playPart(aPart) {
@@ -3334,7 +3211,7 @@ class Perc {
                     ]
                 ).start(0);
                 part.loop = true;
-                console.log("Part playing");
+                controlledLog("Part playing");
             }
                 break;
 
@@ -3350,7 +3227,7 @@ class Perc {
                     ]
                 ).start(0);
                 part.loop = true;
-                console.log("Part playing");
+                controlledLog("Part playing");
             }
                 break;
 
@@ -3366,12 +3243,12 @@ class Perc {
                     ]
                 ).start(0);
                 part.loop = true;
-                console.log("Part playing");
+                controlledLog("Part playing");
             }
                 break;
 
             default:
-                console.log("Invalid Pattern ID for Perc");
+                controlledLog("Invalid Pattern ID for Perc");
                 break;
         }
     }
@@ -3415,7 +3292,7 @@ class ButtonSound {
         var percUrl = "./Samples/Button/Button.mp3"
         var perc = new Tone.Player(percUrl, () => {
             resolvePromise()
-            console.log("soundBtn Loaded")
+            controlledLog("soundBtn Loaded")
         });
         perc.toDestination();
 
@@ -3424,7 +3301,6 @@ class ButtonSound {
 
     trigger(time) {
         this.perc.start(time);
-        // console.log("kicktime")
     }
 
 }
@@ -3438,7 +3314,7 @@ class NesBtnSound {
         var percUrl = "./Samples/Button/NesBtnSound.mp3"
         var perc = new Tone.Player(percUrl, () => {
             resolvePromise()
-            console.log("NesBtnSound Loaded")
+            controlledLog("NesBtnSound Loaded")
         });
         perc.toDestination();
 
@@ -3447,7 +3323,7 @@ class NesBtnSound {
 
     trigger(time) {
         this.perc.start(time);
-        console.log("nesbnsound yeah yeah")
+        controlledLog("nesbnsound yeah yeah")
         this.perc.stop(time + 1);
     }
 
@@ -3843,6 +3719,6 @@ document.getElementById("guideTourStart").onclick = function () {
 
 function controlledLog(val) {
     if (state.logON) {
-        console.log(val)
+        controlledLog(val)
     }
 }
