@@ -40,7 +40,7 @@
 ### Introduction Video
 
 <a align="center" href="https://www.youtube.com/watch?v=dbA7kzkFlpw" target="_blank">
- <img src="./GitAssets/image_2022-06-27_23-43-16.png" alt="Watch the video" width="1920" height="1080" />
+ <img src="./GitAssets/image_2022-06-27_23-43-16.png" alt="Watch the video" width="860" height="540" />
 </a>
 
 ### Environments Overview video
