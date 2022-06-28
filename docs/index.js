@@ -3719,6 +3719,6 @@ document.getElementById("guideTourStart").onclick = function () {
 
 function controlledLog(val) {
     if (state.logON) {
-        controlledLog(val)
+        console.log(val)
     }
 }
