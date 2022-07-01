@@ -31,6 +31,7 @@
     - [Styles](#styles)
   - [Implementation](#implementation)
     - [Audio Generation](#audio-generation)
+  - [Presentation files](#presentation-files)
   - [Group members](#group-members)
 
 ## INTRODUCTION
@@ -222,6 +223,7 @@ Seaside:
 - creation of loops similar to each other, one can be the variation of the other, for example one with the same melody but headless 
 - large use of minor harmony, use of weak cadences 
 
+
 ## Implementation
  Given the unusual nature of the system, it is implemented using mostly raw HTML, CSS and JAVASCRIPT code, some frameworks and instruments have been used for the development in order to speed up and enhance the results obtained by the system: 
 
@@ -235,6 +237,10 @@ Seaside:
 
 ### Audio Generation
 All the audio generations and synchronizations are implemented using Tone.js. The initial idea was to synthesize all sounds with the tools provided by Tone.js like Oscillators, Synths, Envelopes, Filters, Modulation Effects and Ambient Effects. We later realized that this solution did not prove efficient, so we opted for the [Player](https://tonejs.github.io/docs/14.7.77/Player.html) component combined with [Part](https://tonejs.github.io/docs/14.7.77/Part), that allows to play the music parts contained into markov chain nodes. **Player** is an AudioNode that allows the user to upload an audio sample and manipulate it through Tone.js framework. All sounds used in this system are samples, however they're unique because they all have been synthesized in a DAW by developers.
+
+## Presentation files
+More information about the implementation of the project are available on the [slides](/BIOMASHUPPresentazione.pdf) uploaded and used as aid during the final presentation of the project for the Course of **Advanced Coding Tools and Metodologies**.
+ For the Music Notation and Generation informations can be found on the [slides](/CMRM%20presentazione.pdf) uploaded and used during the final presentation of the **Computer Music Representations and Models**.
 
 
 ## Group members
